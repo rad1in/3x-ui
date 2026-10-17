@@ -19,6 +19,9 @@ import (
 // keep serving depleted clients until an unrelated restart. Inbounds whose
 // every secret is filtered away are omitted so Reconcile stops their sidecar.
 func (s *InboundService) DesiredMtprotoInstances() ([]mtproto.Instance, error) {
+	if hostedSidecarsHalted() {
+		return nil, nil
+	}
 	db := database.GetDB()
 	var inbounds []*model.Inbound
 	err := db.Model(model.Inbound{}).

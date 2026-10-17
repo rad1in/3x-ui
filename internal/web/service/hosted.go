@@ -162,6 +162,12 @@ func blockReason(limits hosted.Limits, used int64, now time.Time) string {
 	return ""
 }
 
+// hostedSidecarsHalted keeps MTProto, TUIC and AmneziaWG down with Xray while
+// a hosted panel is suspended; MTProto would otherwise keep serving directly.
+func hostedSidecarsHalted() bool {
+	return (&HostedService{}).Blocked() != ""
+}
+
 // Blocked reports why this hosted panel must not serve, or "" when it may.
 func (h *HostedService) Blocked() string {
 	limits, ok, err := hostedLimits()

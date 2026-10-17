@@ -80,14 +80,14 @@ func (j *XrayTrafficJob) Run() {
 	if err != nil {
 		return
 	}
-	if blocked := j.hostedService.AddUsage(traffics); blocked != "" {
-		if err := j.xrayService.RestartXray(false); err != nil {
-			logger.Info("hosted panel limit reached:", err)
-		}
-	}
 	needRestart0, clientsDisabled, err := j.inboundService.AddTraffic(traffics, clientTraffics)
 	if err != nil {
 		logger.Warning("add inbound traffic failed:", err)
+	}
+	if blocked := j.hostedService.Blocked(); blocked != "" {
+		if err := j.xrayService.RestartXray(false); err != nil {
+			logger.Info("hosted panel limit reached:", err)
+		}
 	}
 	err, needRestart1 := j.outboundService.AddTraffic(traffics, clientTraffics)
 	if err != nil {

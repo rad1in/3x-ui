@@ -237,3 +237,31 @@ func TestHostedPanelStatusCarriesNoHostMetrics(t *testing.T) {
 		t.Error("the panel's own fields must still be reported")
 	}
 }
+
+// MTProto not routed through Xray reports its bytes to AddTraffic only; the
+// hosted meter must see them or that traffic escapes the owner's quota.
+func TestHostedUsageMetersTrafficFromEveryProtocol(t *testing.T) {
+	setupHosted(t, hosted.Limits{TrafficBytes: 1000})
+	direct := []*xray.Traffic{{IsInbound: true, Tag: "mt-direct", Up: 400, Down: 300}}
+	if _, _, err := (&InboundService{}).AddTraffic(direct, nil); err != nil {
+		t.Fatal(err)
+	}
+	if view, _ := (&HostedService{}).View(); view.UsedBytes != 700 {
+		t.Fatalf("used = %d after 700 bytes of sidecar traffic", view.UsedBytes)
+	}
+}
+
+func TestSuspendedHostedPanelStopsItsSidecars(t *testing.T) {
+	setupHosted(t, hosted.Limits{ExpiresAt: time.Now().Add(-time.Minute).UnixMilli()})
+	seedInboundConflict(t, "mt-hosted", "", 30001, model.MTProto, "",
+		`{"clients":[{"email":"alice","secret":"`+mtprotoTestSecretA+`","enable":true}]}`)
+	seedClientTraffic(t, loadInboundByTag(t, "mt-hosted").Id, "alice", true)
+
+	instances, err := (&InboundService{}).DesiredMtprotoInstances()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(instances) != 0 {
+		t.Fatalf("an expired hosted panel still serves %d mtproto sidecars", len(instances))
+	}
+}

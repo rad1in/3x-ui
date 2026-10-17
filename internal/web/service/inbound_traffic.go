@@ -32,6 +32,10 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	err = submitTrafficWrite(func() error {
 		var inner error
 		needRestart, clientsDisabled, disabledNodeIDs, remotePlans, renewed, inner = s.addTrafficLocked(inboundTraffics, clientTraffics)
+		if inner == nil {
+			// Every protocol's inbound bytes pass here, so the hosted meter sees all of them once.
+			(&HostedService{}).AddUsage(inboundTraffics)
+		}
 		return inner
 	})
 	if err != nil {
