@@ -78,6 +78,19 @@
   "emptyFakeDnsDesc": "No hay servidores Fake DNS añadidos.",
   "emptyBalancersDesc": "No hay balanceadores añadidos.",
   "somethingWentWrong": "Algo salió mal",
+  "emptyState": {
+    "inboundsTitle": "Aún no hay entradas",
+    "inboundsDesc": "Una entrada es el puerto y protocolo al que se conectan tus clientes. Crea una para empezar a dar servicio.",
+    "clientsTitle": "Aún no hay clientes",
+    "clientsDesc": "Los clientes son quienes usan tus entradas. Cada uno tiene su propia cuota, caducidad y enlace.",
+    "noMatches": "Ningún resultado coincide con tu búsqueda o filtros"
+  },
+  "gettingStarted": {
+    "title": "Primeros pasos",
+    "step1": "Crea una entrada",
+    "step2": "Añádele clientes",
+    "step3": "Comparte el enlace o código QR de cada cliente"
+  },
   "subscription": {
     "title": "Información de suscripción",
     "status": "Estado",

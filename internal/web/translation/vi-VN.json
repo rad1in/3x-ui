@@ -78,6 +78,19 @@
   "emptyFakeDnsDesc": "Không có máy chủ Fake DNS nào được thêm.",
   "emptyBalancersDesc": "Không có bộ cân bằng tải nào được thêm.",
   "somethingWentWrong": "Đã xảy ra lỗi",
+  "emptyState": {
+    "inboundsTitle": "Chưa có inbound nào",
+    "inboundsDesc": "Inbound là cổng và giao thức mà client kết nối tới. Hãy tạo một inbound để bắt đầu phục vụ.",
+    "clientsTitle": "Chưa có client nào",
+    "clientsDesc": "Client là người dùng các inbound của bạn. Mỗi client có hạn mức, hạn dùng và liên kết riêng.",
+    "noMatches": "Không có kết quả phù hợp với tìm kiếm hoặc bộ lọc"
+  },
+  "gettingStarted": {
+    "title": "Bắt đầu",
+    "step1": "Tạo một inbound",
+    "step2": "Thêm client vào inbound",
+    "step3": "Chia sẻ liên kết hoặc mã QR của từng client"
+  },
   "subscription": {
     "title": "Thông tin đăng ký",
     "status": "Trạng thái",

@@ -85,6 +85,7 @@ const ClientInfoModal = lazy(() => import('./ClientInfoModal'));
 const ClientQrModal = lazy(() => import('./ClientQrModal'));
 const ClientBulkAddModal = lazy(() => import('./ClientBulkAddModal'));
 const ClientBulkAdjustModal = lazy(() => import('./ClientBulkAdjustModal'));
+import ClientsEmptyState from './ClientsEmptyState';
 const FilterDrawer = lazy(() => import('./FilterDrawer'));
 const SubLinksModal = lazy(() => import('./SubLinksModal'));
 const BulkAddToGroupModal = lazy(() => import('./BulkAddToGroupModal'));
@@ -543,6 +544,19 @@ export default function ClientsPage() {
   ]);
 
   const activeCount = activeFilterCount(filters);
+
+  const emptyContent = (
+    <ClientsEmptyState
+      hasAnyClient={total > 0}
+      hasInbound={inbounds.length > 0}
+      onAdd={onAdd}
+      onClear={() => {
+        setSearchKey('');
+        setDebouncedSearch('');
+        setFilters(emptyFilters());
+      }}
+    />
+  );
 
   // Row handlers take an email and look the row up here at call time. Keying
   // them on the record object instead would defeat the memoised cells: every
@@ -1707,12 +1721,7 @@ export default function ClientsPage() {
                           scroll={{ x: 1200 }}
                           onChange={onTableChange}
                           locale={{
-                            emptyText: (
-                              <div className="clients-empty">
-                                <TeamOutlined style={{ fontSize: 32, marginBottom: 8 }} />
-                                <div>{t('noData')}</div>
-                              </div>
-                            ),
+                            emptyText: emptyContent,
                           }}
                         />
                       ) : (
@@ -1732,12 +1741,7 @@ export default function ClientsPage() {
                                 )}
                               </div>
                             )}
-                            {filteredClients.length === 0 && (
-                              <div className="card-empty">
-                                <TeamOutlined style={{ fontSize: 28, opacity: 0.5 }} />
-                                <div>{t('noData')}</div>
-                              </div>
-                            )}
+                            {filteredClients.length === 0 && emptyContent}
                             {filteredClients.length > 0 && (
                               <div className="card-pagination">
                                 <Pagination

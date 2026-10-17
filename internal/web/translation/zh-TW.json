@@ -78,6 +78,19 @@
   "emptyFakeDnsDesc": "未添加 Fake DNS 伺服器。",
   "emptyBalancersDesc": "未添加負載平衡器。",
   "somethingWentWrong": "發生錯誤",
+  "emptyState": {
+    "inboundsTitle": "尚無入站",
+    "inboundsDesc": "入站是用戶端連線的連接埠與協定。建立一個即可開始提供服務。",
+    "clientsTitle": "尚無用戶端",
+    "clientsDesc": "用戶端是使用入站的使用者，各自擁有獨立的流量、到期時間與分享連結。",
+    "noMatches": "沒有符合搜尋或篩選條件的結果"
+  },
+  "gettingStarted": {
+    "title": "快速開始",
+    "step1": "建立一個入站",
+    "step2": "為其新增用戶端",
+    "step3": "分享每個用戶端的連結或 QR 碼"
+  },
   "subscription": {
     "title": "訂閱資訊",
     "status": "狀態",

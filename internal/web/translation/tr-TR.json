@@ -78,6 +78,19 @@
   "emptyFakeDnsDesc": "Eklenmiş Fake DNS sunucusu yok.",
   "emptyBalancersDesc": "Eklenmiş dengeleyici yok.",
   "somethingWentWrong": "Bir hata oluştu",
+  "emptyState": {
+    "inboundsTitle": "Henüz gelen bağlantı yok",
+    "inboundsDesc": "Gelen bağlantı, istemcilerinizin bağlandığı port ve protokoldür. Hizmet vermeye başlamak için bir tane oluşturun.",
+    "clientsTitle": "Henüz istemci yok",
+    "clientsDesc": "İstemciler gelen bağlantılarınızı kullanan kişilerdir. Her birinin kendi kotası, bitiş tarihi ve bağlantısı vardır.",
+    "noMatches": "Aramanız veya filtrelerinizle eşleşen sonuç yok"
+  },
+  "gettingStarted": {
+    "title": "Başlarken",
+    "step1": "Bir gelen bağlantı oluşturun",
+    "step2": "Ona istemci ekleyin",
+    "step3": "Her istemcinin bağlantısını veya QR kodunu paylaşın"
+  },
   "subscription": {
     "title": "Abonelik Bilgisi",
     "status": "Durum",

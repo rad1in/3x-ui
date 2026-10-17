@@ -78,6 +78,19 @@
   "emptyFakeDnsDesc": "未添加 Fake DNS 服务器。",
   "emptyBalancersDesc": "未添加负载均衡器。",
   "somethingWentWrong": "出了点问题",
+  "emptyState": {
+    "inboundsTitle": "还没有入站",
+    "inboundsDesc": "入站是客户端连接的端口和协议。创建一个即可开始提供服务。",
+    "clientsTitle": "还没有客户端",
+    "clientsDesc": "客户端是使用入站的用户，每个都有独立的流量、到期时间和分享链接。",
+    "noMatches": "没有与搜索或筛选条件匹配的结果"
+  },
+  "gettingStarted": {
+    "title": "快速开始",
+    "step1": "创建一个入站",
+    "step2": "为其添加客户端",
+    "step3": "分享每个客户端的链接或二维码"
+  },
   "subscription": {
     "title": "订阅信息",
     "status": "状态",

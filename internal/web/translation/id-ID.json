@@ -78,6 +78,19 @@
   "emptyFakeDnsDesc": "Tidak ada server Fake DNS yang ditambahkan.",
   "emptyBalancersDesc": "Tidak ada penyeimbang yang ditambahkan.",
   "somethingWentWrong": "Terjadi kesalahan",
+  "emptyState": {
+    "inboundsTitle": "Belum ada inbound",
+    "inboundsDesc": "Inbound adalah port dan protokol tempat klien Anda terhubung. Buat satu untuk mulai melayani.",
+    "clientsTitle": "Belum ada klien",
+    "clientsDesc": "Klien adalah pengguna inbound Anda. Masing-masing memiliki kuota, masa berlaku, dan tautan sendiri.",
+    "noMatches": "Tidak ada hasil yang cocok dengan pencarian atau filter Anda"
+  },
+  "gettingStarted": {
+    "title": "Memulai",
+    "step1": "Buat inbound",
+    "step2": "Tambahkan klien ke dalamnya",
+    "step3": "Bagikan tautan atau kode QR setiap klien"
+  },
   "subscription": {
     "title": "Info langganan",
     "status": "Status",

@@ -78,6 +78,19 @@
   "emptyFakeDnsDesc": "追加されたFake DNSサーバーはありません。",
   "emptyBalancersDesc": "追加されたバランサーはありません。",
   "somethingWentWrong": "エラーが発生しました",
+  "emptyState": {
+    "inboundsTitle": "インバウンドはまだありません",
+    "inboundsDesc": "インバウンドはクライアントが接続するポートとプロトコルです。作成してサービスを開始しましょう。",
+    "clientsTitle": "クライアントはまだいません",
+    "clientsDesc": "クライアントはインバウンドの利用者です。それぞれに容量・有効期限・共有リンクがあります。",
+    "noMatches": "検索またはフィルターに一致する結果はありません"
+  },
+  "gettingStarted": {
+    "title": "はじめに",
+    "step1": "インバウンドを作成する",
+    "step2": "クライアントを追加する",
+    "step3": "各クライアントのリンクまたは QR コードを共有する"
+  },
   "subscription": {
     "title": "サブスクリプション情報",
     "status": "ステータス",

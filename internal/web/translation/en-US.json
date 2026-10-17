@@ -78,6 +78,19 @@
   "emptyFakeDnsDesc": "No added Fake DNS servers.",
   "emptyBalancersDesc": "No added balancers.",
   "somethingWentWrong": "Something went wrong",
+  "emptyState": {
+    "inboundsTitle": "No inbounds yet",
+    "inboundsDesc": "An inbound is the port and protocol your clients connect to. Create one to start serving traffic.",
+    "clientsTitle": "No clients yet",
+    "clientsDesc": "Clients are the people who use your inbounds. Each gets its own quota, expiry and share link.",
+    "noMatches": "No results match your search or filters"
+  },
+  "gettingStarted": {
+    "title": "Getting started",
+    "step1": "Create an inbound",
+    "step2": "Add clients to it",
+    "step3": "Share each client's link or QR code"
+  },
   "subscription": {
     "title": "Subscription info",
     "status": "Status",
