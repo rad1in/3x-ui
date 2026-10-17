@@ -186,3 +186,23 @@ func TestHostedPanelKeepsOwnerAssignedAddress(t *testing.T) {
 		t.Errorf("ordinary settings must still save, pageSize = %d", after.PageSize)
 	}
 }
+
+func TestHostedStatusReportsWhetherThePanelServesTLS(t *testing.T) {
+	dir := setupHosted(t, hosted.Limits{})
+	h := &HostedService{}
+	h.Reconcile(&XrayService{})
+	if st, err := hosted.ReadStatus(dir); err != nil || st.WebTLS {
+		t.Fatalf("no certificate: status = %+v, %v; want webTls false", st, err)
+	}
+	s := &SettingService{}
+	if err := s.setString("webCertFile", "/etc/ssl/panel.crt"); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.setString("webKeyFile", "/etc/ssl/panel.key"); err != nil {
+		t.Fatal(err)
+	}
+	h.Reconcile(&XrayService{})
+	if st, _ := hosted.ReadStatus(dir); !st.WebTLS {
+		t.Fatal("with a certificate the master would link the panel over plain http")
+	}
+}

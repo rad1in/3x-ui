@@ -4,6 +4,9 @@ export const keys = {
   hosted: {
     status: () => ['hosted', 'status'] as const,
   },
+  hostedPanels: {
+    list: () => ['hostedPanels', 'list'] as const,
+  },
   audit: {
     list: (params: unknown) => ['audit', 'list', params] as const,
   },

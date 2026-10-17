@@ -42,6 +42,7 @@ func run(root, outDir string) error {
 				"SubBalancer",
 				"AuditLog",
 				"SponsorRecord",
+				"HostedPanel",
 			),
 			AliasAllow: setOf("Protocol"),
 			Overrides: map[string][]walkOverride{
@@ -118,11 +119,11 @@ func run(root, outDir string) error {
 		},
 		{
 			Path:        resolveRel(root, "internal/hosted"),
-			StructAllow: setOf("Limits"),
+			StructAllow: setOf("Limits", "PanelStatus", "ProcState"),
 		},
 		{
 			Path:        resolveRel(root, "internal/web/service/panel"),
-			StructAllow: setOf("ApiTokenView", "PanelUpdateStatus", "Sponsor", "SponsorList", "SponsorConfig", "SponsorAdminView"),
+			StructAllow: setOf("ApiTokenView", "PanelUpdateStatus", "Sponsor", "SponsorList", "SponsorConfig", "SponsorAdminView", "HostedPanelInput", "HostedPanelView"),
 		},
 		{
 			Path:        resolveRel(root, "internal/amneziawg"),

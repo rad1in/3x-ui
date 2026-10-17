@@ -49,7 +49,7 @@ func TestLimitsPortAndExpiry(t *testing.T) {
 
 func TestStatusRoundTrip(t *testing.T) {
 	dir := t.TempDir()
-	want := Status{Inbounds: 2, Clients: 9, UsedBytes: 12345, Blocked: BlockedTraffic, XrayRunning: true, UpdatedAt: 99}
+	want := PanelStatus{Inbounds: 2, Clients: 9, UsedBytes: 12345, Blocked: BlockedTraffic, XrayRunning: true, UpdatedAt: 99}
 	if err := WriteStatus(dir, want); err != nil {
 		t.Fatal(err)
 	}

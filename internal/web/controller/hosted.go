@@ -11,8 +11,12 @@ import (
 )
 
 // hostedForbiddenRoutes would let a hosted panel escape its limits: a restored
-// database resets its usage meter, and the binaries and geo files are shared.
+// database resets its usage meter, binaries are shared, and nesting is unmetered.
 var hostedForbiddenRoutes = map[string]bool{
+	"POST /hostedPanels/add":               true,
+	"POST /hostedPanels/update/:id":        true,
+	"POST /hostedPanels/del/:id":           true,
+	"POST /hostedPanels/resetUsage/:id":    true,
 	"POST /server/importDB":                true,
 	"POST /server/installXray/:version":    true,
 	"POST /server/updatePanel":             true,

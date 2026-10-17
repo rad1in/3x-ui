@@ -16,6 +16,7 @@ const TITLE_KEYS: Record<string, string> = {
   '/api-docs': 'menu.apiDocs',
   '/sponsors': 'menu.sponsors',
   '/audit': 'menu.audit',
+  '/panels': 'menu.panels',
 };
 
 export function usePageTitle() {

@@ -324,6 +324,7 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 		if err != nil {
 			logger.Warning("start xray failed:", err)
 		}
+		go panel.StartHostedPanels()
 	}
 	// Check whether xray is running every second
 	_, _ = s.cron.AddJob(cadenceXrayRunning, job.NewCheckXrayRunningJob())
@@ -789,6 +790,7 @@ func (s *Server) stop(stopXray bool, stopTgBot bool) error {
 			err2 = err
 		}
 		mtproto.GetManager().StopAll()
+		panel.StopHostedPanels()
 		amneziawgnet.GetManager().StopAll()
 		amneziawgnet.GetOutboundManager().StopAll()
 	}

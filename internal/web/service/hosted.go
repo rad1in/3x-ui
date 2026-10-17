@@ -223,7 +223,10 @@ func (h *HostedService) Reconcile(xs *XrayService) {
 			logger.Warning("hosted: restart xray after limits cleared:", err)
 		}
 	}
-	status := hosted.Status{
+	certFile, _ := h.settingService.GetCertFile()
+	keyFile, _ := h.settingService.GetKeyFile()
+	status := hosted.PanelStatus{
+		WebTLS:      certFile != "" && keyFile != "",
 		Inbounds:    int(view.Inbounds),
 		Clients:     int(view.Clients),
 		UsedBytes:   view.UsedBytes,
@@ -234,4 +237,21 @@ func (h *HostedService) Reconcile(xs *XrayService) {
 	if err := hosted.WriteStatus(hosted.Dir(), status); err != nil {
 		logger.Warning("hosted: write status:", err)
 	}
+}
+
+// SetHostedAddress applies the address the master assigned this hosted panel.
+func (s *SettingService) SetHostedAddress(webPort, subPort int, basePath string) error {
+	if err := s.SetListen(""); err != nil {
+		return err
+	}
+	if err := s.SetPort(webPort); err != nil {
+		return err
+	}
+	if err := s.SetBasePath(basePath); err != nil {
+		return err
+	}
+	if err := s.setString("subListen", ""); err != nil {
+		return err
+	}
+	return s.setInt("subPort", subPort)
 }

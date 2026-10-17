@@ -2114,6 +2114,55 @@ export const sections: readonly Section[] = [
   },
 
   {
+    id: 'hosted-panels',
+    title: 'Hosted Panels',
+    description:
+      'Separate panels this server runs for other people. Each has its own database, login, address and inbound port range, and enforces the limits set here. Not available from inside a hosted panel.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/hostedPanels/list',
+        summary:
+          'Every hosted panel with its last reported usage (status) and its process state. status.updatedAt is 0 until the panel has reported once.',
+        responseSchema: 'HostedPanelView',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/hostedPanels/add',
+        summary:
+          'Create a hosted panel and start it when enable is true. The password must be at least 8 characters. webPort, subPort and the portMin-portMax inbound range must not collide with this panel, its inbounds or another hosted panel. Zero limits mean unlimited; expiresAt is unix ms.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'HostedPanelInput.' }],
+        responseSchema: 'HostedPanel',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/hostedPanels/update/:id',
+        summary:
+          'Replace the settings of a hosted panel. An empty password keeps the current login; a new one also turns off its 2FA. Changing the address restarts the panel; limits apply live.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Hosted panel id.' },
+          { name: 'body', in: 'body (json)', type: 'object', desc: 'HostedPanelInput.' },
+        ],
+        responseSchema: 'HostedPanel',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/hostedPanels/del/:id',
+        summary: 'Stop a hosted panel and delete it together with its database and files.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Hosted panel id.' }],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/hostedPanels/resetUsage/:id',
+        summary:
+          'Start a new usage period: the hosted panel zeroes its traffic meter and resumes if traffic was what stopped it.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Hosted panel id.' }],
+      },
+    ],
+  },
+
+  {
     id: 'sponsors',
     title: 'Sponsors',
     description:

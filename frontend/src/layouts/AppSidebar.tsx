@@ -7,6 +7,7 @@ import type { MenuProps } from 'antd';
 import {
   ApiOutlined,
   ApartmentOutlined,
+  AppstoreOutlined,
   CloseOutlined,
   CloudServerOutlined,
   ClusterOutlined,
@@ -44,6 +45,7 @@ import { HttpUtil } from '@/utils';
 import { formatPanelVersion } from '@/lib/panel-version';
 import { pauseAnimationsUntilLeave, useTheme } from '@/hooks/useTheme';
 import { useAllSettings } from '@/api/queries/useAllSettings';
+import { useHostedStatus } from '@/api/queries/useHostedStatus';
 import { useCommandPalette } from '@/components/command-palette/useCommandPalette';
 import { BrandMark } from '@/components/ui';
 import './AppSidebar.css';
@@ -75,7 +77,8 @@ type IconName =
   | 'apidocs'
   | 'outbound'
   | 'routing'
-  | 'audit';
+  | 'audit'
+  | 'panels';
 
 const iconByName: Record<IconName, ComponentType> = {
   dashboard: DashboardOutlined,
@@ -92,6 +95,7 @@ const iconByName: Record<IconName, ComponentType> = {
   outbound: ExportOutlined,
   routing: SwapOutlined,
   audit: HistoryOutlined,
+  panels: AppstoreOutlined,
 };
 
 function DonateButton({ ariaLabel }: { ariaLabel: string }) {
@@ -193,6 +197,7 @@ export default function AppSidebar() {
   const { allSetting } = useAllSettings();
   const showSubFormats = !!(allSetting.subJsonEnable || allSetting.subClashEnable);
   const showSubBalancers = !!allSetting.subJsonEnable;
+  const isHostedPanel = !!useHostedStatus().data?.enabled;
 
   const [hovered, setHovered] = useState(() => hoveredAcrossRemounts);
   const [pinned, setPinned] = useState(readSidebarPinned);
@@ -233,6 +238,9 @@ export default function AppSidebar() {
       { key: '/clients', icon: 'team', title: t('menu.clients') },
       { key: '/groups', icon: 'groups', title: t('menu.groups') },
       { key: '/nodes', icon: 'cluster', title: t('menu.nodes') },
+      ...(isHostedPanel
+        ? []
+        : [{ key: '/panels', icon: 'panels' as const, title: t('menu.panels') }]),
       { key: '/hosts', icon: 'hosts', title: t('menu.hosts') },
       { key: '/outbound', icon: 'outbound', title: t('menu.outbounds') },
       { key: '/routing', icon: 'routing', title: t('menu.routing') },
@@ -243,7 +251,7 @@ export default function AppSidebar() {
       { key: '/sponsors', icon: 'sponsors', title: t('menu.sponsors') },
       { key: LOGOUT_KEY, icon: 'logout', title: t('logout') },
     ],
-    [t],
+    [t, isHostedPanel],
   );
 
   const navItems = useMemo(() => tabs.filter((tab) => tab.icon !== 'logout'), [tabs]);

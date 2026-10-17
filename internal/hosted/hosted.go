@@ -28,14 +28,14 @@ const (
 
 // Limits are the owner-set caps for one hosted panel. Zero means unlimited.
 type Limits struct {
-	MaxInbounds  int   `json:"maxInbounds"`
-	MaxClients   int   `json:"maxClients"`
-	TrafficBytes int64 `json:"trafficBytes"`
-	ExpiresAt    int64 `json:"expiresAt"`
-	PortMin      int   `json:"portMin"`
-	PortMax      int   `json:"portMax"`
+	MaxInbounds  int   `json:"maxInbounds" example:"5"`
+	MaxClients   int   `json:"maxClients" example:"100"`
+	TrafficBytes int64 `json:"trafficBytes" example:"107374182400"`
+	ExpiresAt    int64 `json:"expiresAt" example:"0"`
+	PortMin      int   `json:"portMin" example:"30000"`
+	PortMax      int   `json:"portMax" example:"30099"`
 	// UsageEpoch bumps when the owner resets usage; the child zeroes its counter.
-	UsageEpoch int `json:"usageEpoch"`
+	UsageEpoch int `json:"usageEpoch" example:"0"`
 }
 
 func (l Limits) PortAllowed(port int) bool {
@@ -49,14 +49,15 @@ func (l Limits) Expired(now time.Time) bool {
 	return l.ExpiresAt > 0 && now.UnixMilli() >= l.ExpiresAt
 }
 
-// Status is what the child reports back for the master's Panels page.
-type Status struct {
-	Inbounds    int    `json:"inbounds"`
-	Clients     int    `json:"clients"`
-	UsedBytes   int64  `json:"usedBytes"`
-	Blocked     string `json:"blocked"`
-	XrayRunning bool   `json:"xrayRunning"`
-	UpdatedAt   int64  `json:"updatedAt"`
+// PanelStatus is what the child reports back for the master's Panels page.
+type PanelStatus struct {
+	Inbounds    int    `json:"inbounds" example:"2"`
+	Clients     int    `json:"clients" example:"40"`
+	UsedBytes   int64  `json:"usedBytes" example:"1073741824"`
+	Blocked     string `json:"blocked" example:""`
+	XrayRunning bool   `json:"xrayRunning" example:"true"`
+	WebTLS      bool   `json:"webTls" example:"false"`
+	UpdatedAt   int64  `json:"updatedAt" example:"1760000000000"`
 }
 
 // Dir is this process's hosted directory, or "" for an ordinary panel.
@@ -77,12 +78,12 @@ func WriteLimits(dir string, l Limits) error {
 	return writeJSON(dir, limitsFile, l)
 }
 
-func ReadStatus(dir string) (Status, error) {
-	var s Status
+func ReadStatus(dir string) (PanelStatus, error) {
+	var s PanelStatus
 	return s, readJSON(filepath.Join(dir, statusFile), &s)
 }
 
-func WriteStatus(dir string, s Status) error {
+func WriteStatus(dir string, s PanelStatus) error {
 	return writeJSON(dir, statusFile, s)
 }
 

@@ -218,6 +218,7 @@ func (a *APIController) initRouter(g *gin.RouterGroup) {
 	NewAuditController(api.Group("/audit"))
 	NewSponsorAdminController(api.Group("/sponsors"))
 	NewHostedController(api.Group("/hosted"))
+	NewHostedPanelController(api.Group("/hostedPanels"))
 
 	// Extra routes
 	api.POST("/backuptotgbot", a.BackuptoTgbot)

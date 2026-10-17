@@ -793,6 +793,71 @@ export const EXAMPLES: Record<string, unknown> = {
     "verifyPeerCertByName": "",
     "vlessRoute": ""
   },
+  "HostedPanel": {
+    "createdAt": 1760000000000,
+    "enable": true,
+    "expiresAt": 0,
+    "id": 1,
+    "maxClients": 100,
+    "maxInbounds": 5,
+    "name": "Reseller A",
+    "portMax": 30099,
+    "portMin": 30000,
+    "subPort": 20531,
+    "trafficBytes": 107374182400,
+    "usageEpoch": 0,
+    "username": "reseller",
+    "webBasePath": "/reseller/",
+    "webPort": 20530
+  },
+  "HostedPanelInput": {
+    "enable": true,
+    "expiresAt": 0,
+    "maxClients": 100,
+    "maxInbounds": 5,
+    "name": "Reseller A",
+    "password": "change-me-please",
+    "portMax": 30099,
+    "portMin": 30000,
+    "subPort": 20531,
+    "trafficBytes": 107374182400,
+    "username": "reseller",
+    "webBasePath": "/reseller/",
+    "webPort": 20530
+  },
+  "HostedPanelView": {
+    "createdAt": 1760000000000,
+    "enable": true,
+    "expiresAt": 0,
+    "id": 1,
+    "maxClients": 100,
+    "maxInbounds": 5,
+    "name": "Reseller A",
+    "portMax": 30099,
+    "portMin": 30000,
+    "process": {
+      "lastError": "",
+      "pid": 4242,
+      "restarts": 0,
+      "running": true,
+      "startedAt": 1760000000000
+    },
+    "status": {
+      "blocked": "",
+      "clients": 40,
+      "inbounds": 2,
+      "updatedAt": 1760000000000,
+      "usedBytes": 1073741824,
+      "webTls": false,
+      "xrayRunning": true
+    },
+    "subPort": 20531,
+    "trafficBytes": 107374182400,
+    "usageEpoch": 0,
+    "username": "reseller",
+    "webBasePath": "/reseller/",
+    "webPort": 20530
+  },
   "HostedView": {
     "blocked": "",
     "clients": 40,
@@ -800,11 +865,11 @@ export const EXAMPLES: Record<string, unknown> = {
     "inbounds": 2,
     "limits": {
       "expiresAt": 0,
-      "maxClients": 0,
-      "maxInbounds": 0,
-      "portMax": 0,
-      "portMin": 0,
-      "trafficBytes": 0,
+      "maxClients": 100,
+      "maxInbounds": 5,
+      "portMax": 30099,
+      "portMin": 30000,
+      "trafficBytes": 107374182400,
       "usageEpoch": 0
     },
     "usedBytes": 1073741824
@@ -912,11 +977,11 @@ export const EXAMPLES: Record<string, unknown> = {
   },
   "Limits": {
     "expiresAt": 0,
-    "maxClients": 0,
-    "maxInbounds": 0,
-    "portMax": 0,
-    "portMin": 0,
-    "trafficBytes": 0,
+    "maxClients": 100,
+    "maxInbounds": 5,
+    "portMax": 30099,
+    "portMin": 30000,
+    "trafficBytes": 107374182400,
     "usageEpoch": 0
   },
   "LogEntry": {
@@ -1060,6 +1125,15 @@ export const EXAMPLES: Record<string, unknown> = {
     "total": 0,
     "up": 0
   },
+  "PanelStatus": {
+    "blocked": "",
+    "clients": 40,
+    "inbounds": 2,
+    "updatedAt": 1760000000000,
+    "usedBytes": 1073741824,
+    "webTls": false,
+    "xrayRunning": true
+  },
   "PanelUpdateStatus": {
     "exitCode": 0,
     "finishedAt": 1735689612,
@@ -1089,6 +1163,13 @@ export const EXAMPLES: Record<string, unknown> = {
     "xrayError": "",
     "xrayState": "",
     "xrayVersion": "25.10.31"
+  },
+  "ProcState": {
+    "lastError": "",
+    "pid": 4242,
+    "restarts": 0,
+    "running": true,
+    "startedAt": 1760000000000
   },
   "RealityScanResult": {
     "alpn": "h2",

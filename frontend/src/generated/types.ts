@@ -713,6 +713,60 @@ export interface HostGroup {
   vlessRoute: string;
 }
 
+export interface HostedPanel {
+  createdAt: number;
+  enable: boolean;
+  expiresAt: number;
+  id: number;
+  maxClients: number;
+  maxInbounds: number;
+  name: string;
+  portMax: number;
+  portMin: number;
+  subPort: number;
+  trafficBytes: number;
+  usageEpoch: number;
+  username: string;
+  webBasePath: string;
+  webPort: number;
+}
+
+export interface HostedPanelInput {
+  enable: boolean;
+  expiresAt: number;
+  maxClients: number;
+  maxInbounds: number;
+  name: string;
+  password: string;
+  portMax: number;
+  portMin: number;
+  subPort: number;
+  trafficBytes: number;
+  username: string;
+  webBasePath: string;
+  webPort: number;
+}
+
+export interface HostedPanelView {
+  createdAt: number;
+  enable: boolean;
+  expiresAt: number;
+  id: number;
+  maxClients: number;
+  maxInbounds: number;
+  name: string;
+  portMax: number;
+  portMin: number;
+  process: ProcState;
+  status: PanelStatus;
+  subPort: number;
+  trafficBytes: number;
+  usageEpoch: number;
+  username: string;
+  webBasePath: string;
+  webPort: number;
+}
+
 export interface HostedView {
   blocked: string;
   clients: number;
@@ -963,6 +1017,16 @@ export interface OutboundTraffics {
   up: number;
 }
 
+export interface PanelStatus {
+  blocked: string;
+  clients: number;
+  inbounds: number;
+  updatedAt: number;
+  usedBytes: number;
+  webTls: boolean;
+  xrayRunning: boolean;
+}
+
 export interface PanelUpdateStatus {
   exitCode: number;
   finishedAt: number;
@@ -994,6 +1058,14 @@ export interface ProbeResultUI {
   xrayError: string;
   xrayState: string;
   xrayVersion: string;
+}
+
+export interface ProcState {
+  lastError: string;
+  pid: number;
+  restarts: number;
+  running: boolean;
+  startedAt: number;
 }
 
 export interface RealityScanResult {

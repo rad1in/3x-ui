@@ -200,10 +200,14 @@ type portConflictDetail struct {
 	// reason for the conflict.
 	ForwardedBy string
 	Transports  transportBits
+	HostedPanel string
 }
 
 // String renders the detail as a single-line, user-facing summary.
 func (d *portConflictDetail) String() string {
+	if d.HostedPanel != "" {
+		return fmt.Sprintf("port %d is reserved for hosted panel '%s'", d.Port, d.HostedPanel)
+	}
 	name := d.Remark
 	if name == "" {
 		name = d.Tag
@@ -269,6 +273,16 @@ func (s *InboundService) checkPortConflict(inbound *model.Inbound, ignoreId int)
 
 func checkPortConflictTx(db *gorm.DB, inbound *model.Inbound, ignoreId int) (*portConflictDetail, error) {
 	newBits := inboundTransports(inbound.Protocol, inbound.StreamSettings, inbound.Settings)
+
+	if inbound.NodeID == nil {
+		owner, err := hostedPanelOwning(db, inbound.Port)
+		if err != nil {
+			return nil, err
+		}
+		if owner != nil {
+			return &portConflictDetail{Port: inbound.Port, HostedPanel: owner.Name}, nil
+		}
+	}
 
 	// The internal Xray API inbound (tag "api", loopback TCP) isn't a DB row,
 	// so a local user inbound reusing its port would leave Xray binding the

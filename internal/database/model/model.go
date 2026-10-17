@@ -207,6 +207,26 @@ type SponsorRecord struct {
 	Logo    string   `json:"logo" gorm:"type:text;not null;default:''" example:""`
 }
 
+// HostedPanel is a separate panel process the master runs on this server for
+// someone else, with its own database, address, port range and limits.
+type HostedPanel struct {
+	Id           int    `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
+	Name         string `json:"name" gorm:"not null" example:"Reseller A"`
+	Enable       bool   `json:"enable" gorm:"not null" example:"true"`
+	Username     string `json:"username" gorm:"not null" example:"reseller"`
+	WebPort      int    `json:"webPort" gorm:"not null" example:"20530"`
+	SubPort      int    `json:"subPort" gorm:"not null" example:"20531"`
+	WebBasePath  string `json:"webBasePath" gorm:"not null" example:"/reseller/"`
+	PortMin      int    `json:"portMin" gorm:"not null" example:"30000"`
+	PortMax      int    `json:"portMax" gorm:"not null" example:"30099"`
+	MaxInbounds  int    `json:"maxInbounds" gorm:"not null;default:0" example:"5"`
+	MaxClients   int    `json:"maxClients" gorm:"not null;default:0" example:"100"`
+	TrafficBytes int64  `json:"trafficBytes" gorm:"not null;default:0" example:"107374182400"`
+	ExpiresAt    int64  `json:"expiresAt" gorm:"not null;default:0" example:"0"`
+	UsageEpoch   int    `json:"usageEpoch" gorm:"not null;default:0" example:"0"`
+	CreatedAt    int64  `json:"createdAt" gorm:"not null;default:0" example:"1760000000000"`
+}
+
 // MarshalJSON emits settings, streamSettings, and sniffing as nested JSON
 // objects rather than escaped strings, so API consumers don't need to JSON.parse
 // a string inside a string. Empty fields render as null; fields whose stored

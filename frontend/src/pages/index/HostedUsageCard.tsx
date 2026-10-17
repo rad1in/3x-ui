@@ -1,24 +1,15 @@
 import { useTranslation } from 'react-i18next';
 import { Alert, Card, Progress } from 'antd';
-import { useQuery } from '@tanstack/react-query';
 
-import { keys } from '@/api/queryKeys';
-import { HostedViewSchema, type HostedView } from '@/generated/zod';
+import { useHostedStatus } from '@/api/queries/useHostedStatus';
 import { useDatepicker } from '@/hooks/useDatepicker';
-import { HttpUtil, IntlUtil, SizeFormatter } from '@/utils';
-import { parseMsg } from '@/utils/zodValidate';
+import { IntlUtil, SizeFormatter } from '@/utils';
 
 const BLOCKED_KEYS: Record<string, string> = {
   traffic: 'pages.index.hosted.blockedTraffic',
   expired: 'pages.index.hosted.blockedExpired',
   'no-limits': 'pages.index.hosted.blockedNoLimits',
 };
-
-async function fetchHosted(): Promise<HostedView | null> {
-  const msg = await HttpUtil.get('/panel/api/hosted/status', undefined, { silent: true });
-  if (!msg?.success) return null;
-  return parseMsg(msg, HostedViewSchema, 'hosted/status').obj ?? null;
-}
 
 function UsageRow({
   label,
@@ -54,11 +45,7 @@ function UsageRow({
 export default function HostedUsageCard() {
   const { t } = useTranslation();
   const { datepicker } = useDatepicker();
-  const { data } = useQuery({
-    queryKey: keys.hosted.status(),
-    queryFn: fetchHosted,
-    refetchInterval: 30_000,
-  });
+  const { data } = useHostedStatus({ poll: true });
   if (!data?.enabled) return null;
   const { limits } = data;
   const count = (n: number) => String(n);

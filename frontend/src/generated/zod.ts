@@ -757,6 +757,63 @@ export const HostGroupSchema = z.object({
 });
 export type HostGroup = z.infer<typeof HostGroupSchema>;
 
+export const HostedPanelSchema = z.object({
+  createdAt: z.number().int(),
+  enable: z.boolean(),
+  expiresAt: z.number().int(),
+  id: z.number().int(),
+  maxClients: z.number().int(),
+  maxInbounds: z.number().int(),
+  name: z.string(),
+  portMax: z.number().int(),
+  portMin: z.number().int(),
+  subPort: z.number().int(),
+  trafficBytes: z.number().int(),
+  usageEpoch: z.number().int(),
+  username: z.string(),
+  webBasePath: z.string(),
+  webPort: z.number().int(),
+});
+export type HostedPanel = z.infer<typeof HostedPanelSchema>;
+
+export const HostedPanelInputSchema = z.object({
+  enable: z.boolean(),
+  expiresAt: z.number().int(),
+  maxClients: z.number().int(),
+  maxInbounds: z.number().int(),
+  name: z.string(),
+  password: z.string(),
+  portMax: z.number().int(),
+  portMin: z.number().int(),
+  subPort: z.number().int(),
+  trafficBytes: z.number().int(),
+  username: z.string(),
+  webBasePath: z.string(),
+  webPort: z.number().int(),
+});
+export type HostedPanelInput = z.infer<typeof HostedPanelInputSchema>;
+
+export const HostedPanelViewSchema = z.object({
+  createdAt: z.number().int(),
+  enable: z.boolean(),
+  expiresAt: z.number().int(),
+  id: z.number().int(),
+  maxClients: z.number().int(),
+  maxInbounds: z.number().int(),
+  name: z.string(),
+  portMax: z.number().int(),
+  portMin: z.number().int(),
+  process: z.lazy(() => ProcStateSchema),
+  status: z.lazy(() => PanelStatusSchema),
+  subPort: z.number().int(),
+  trafficBytes: z.number().int(),
+  usageEpoch: z.number().int(),
+  username: z.string(),
+  webBasePath: z.string(),
+  webPort: z.number().int(),
+});
+export type HostedPanelView = z.infer<typeof HostedPanelViewSchema>;
+
 export const HostedViewSchema = z.object({
   blocked: z.string(),
   clients: z.number().int(),
@@ -1024,6 +1081,17 @@ export const OutboundTrafficsSchema = z.object({
 });
 export type OutboundTraffics = z.infer<typeof OutboundTrafficsSchema>;
 
+export const PanelStatusSchema = z.object({
+  blocked: z.string(),
+  clients: z.number().int(),
+  inbounds: z.number().int(),
+  updatedAt: z.number().int(),
+  usedBytes: z.number().int(),
+  webTls: z.boolean(),
+  xrayRunning: z.boolean(),
+});
+export type PanelStatus = z.infer<typeof PanelStatusSchema>;
+
 export const PanelUpdateStatusSchema = z.object({
   exitCode: z.number().int(),
   finishedAt: z.number().int(),
@@ -1059,6 +1127,15 @@ export const ProbeResultUISchema = z.object({
   xrayVersion: z.string(),
 });
 export type ProbeResultUI = z.infer<typeof ProbeResultUISchema>;
+
+export const ProcStateSchema = z.object({
+  lastError: z.string(),
+  pid: z.number().int(),
+  restarts: z.number().int(),
+  running: z.boolean(),
+  startedAt: z.number().int(),
+});
+export type ProcState = z.infer<typeof ProcStateSchema>;
 
 export const RealityScanResultSchema = z.object({
   alpn: z.string(),

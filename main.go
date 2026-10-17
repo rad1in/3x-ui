@@ -18,6 +18,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/crypto/nodetoken"
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
+	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/sub"
 	"github.com/mhsanaei/3x-ui/v3/internal/tunnelmonitor"
@@ -138,6 +139,12 @@ func runWebServer() {
 		default:
 		}
 	})
+	if hosted.Enabled() {
+		hosted.ExitWithParent(func() {
+			logger.Warning("hosted panel: master panel is gone, shutting down")
+			sigCh <- syscall.SIGTERM
+		})
+	}
 
 	var stopTunnelHealthMonitor context.CancelFunc
 	monitorCfg := tunnelmonitor.ConfigFromEnv()
@@ -667,6 +674,11 @@ func main() {
 		runWebServer()
 	case "migrate":
 		migrateDb()
+	case "hosted-init":
+		if err := panel.RunHostedInit(os.Stdin); err != nil {
+			fmt.Println("hosted-init failed:", err)
+			os.Exit(1)
+		}
 	case "encrypt-tokens":
 		encryptNodeTokens()
 	case "migrate-db":

@@ -3060,6 +3060,261 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "HostedPanel": {
+    "description": "HostedPanel is a separate panel process the master runs on this server for\nsomeone else, with its own database, address, port range and limits.",
+    "properties": {
+      "createdAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "enable": {
+        "example": true,
+        "type": "boolean"
+      },
+      "expiresAt": {
+        "example": 0,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "maxClients": {
+        "example": 100,
+        "type": "integer"
+      },
+      "maxInbounds": {
+        "example": 5,
+        "type": "integer"
+      },
+      "name": {
+        "example": "Reseller A",
+        "type": "string"
+      },
+      "portMax": {
+        "example": 30099,
+        "type": "integer"
+      },
+      "portMin": {
+        "example": 30000,
+        "type": "integer"
+      },
+      "subPort": {
+        "example": 20531,
+        "type": "integer"
+      },
+      "trafficBytes": {
+        "example": 107374182400,
+        "format": "int64",
+        "type": "integer"
+      },
+      "usageEpoch": {
+        "example": 0,
+        "type": "integer"
+      },
+      "username": {
+        "example": "reseller",
+        "type": "string"
+      },
+      "webBasePath": {
+        "example": "/reseller/",
+        "type": "string"
+      },
+      "webPort": {
+        "example": 20530,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "createdAt",
+      "enable",
+      "expiresAt",
+      "id",
+      "maxClients",
+      "maxInbounds",
+      "name",
+      "portMax",
+      "portMin",
+      "subPort",
+      "trafficBytes",
+      "usageEpoch",
+      "username",
+      "webBasePath",
+      "webPort"
+    ],
+    "type": "object"
+  },
+  "HostedPanelInput": {
+    "description": "HostedPanelInput is what the owner submits; an empty password on edit keeps the login.",
+    "properties": {
+      "enable": {
+        "example": true,
+        "type": "boolean"
+      },
+      "expiresAt": {
+        "example": 0,
+        "format": "int64",
+        "type": "integer"
+      },
+      "maxClients": {
+        "example": 100,
+        "type": "integer"
+      },
+      "maxInbounds": {
+        "example": 5,
+        "type": "integer"
+      },
+      "name": {
+        "example": "Reseller A",
+        "type": "string"
+      },
+      "password": {
+        "example": "change-me-please",
+        "type": "string"
+      },
+      "portMax": {
+        "example": 30099,
+        "type": "integer"
+      },
+      "portMin": {
+        "example": 30000,
+        "type": "integer"
+      },
+      "subPort": {
+        "example": 20531,
+        "type": "integer"
+      },
+      "trafficBytes": {
+        "example": 107374182400,
+        "format": "int64",
+        "type": "integer"
+      },
+      "username": {
+        "example": "reseller",
+        "type": "string"
+      },
+      "webBasePath": {
+        "example": "/reseller/",
+        "type": "string"
+      },
+      "webPort": {
+        "example": 20530,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "enable",
+      "expiresAt",
+      "maxClients",
+      "maxInbounds",
+      "name",
+      "password",
+      "portMax",
+      "portMin",
+      "subPort",
+      "trafficBytes",
+      "username",
+      "webBasePath",
+      "webPort"
+    ],
+    "type": "object"
+  },
+  "HostedPanelView": {
+    "description": "HostedPanelView is one row of the Panels page.",
+    "properties": {
+      "createdAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "enable": {
+        "example": true,
+        "type": "boolean"
+      },
+      "expiresAt": {
+        "example": 0,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "maxClients": {
+        "example": 100,
+        "type": "integer"
+      },
+      "maxInbounds": {
+        "example": 5,
+        "type": "integer"
+      },
+      "name": {
+        "example": "Reseller A",
+        "type": "string"
+      },
+      "portMax": {
+        "example": 30099,
+        "type": "integer"
+      },
+      "portMin": {
+        "example": 30000,
+        "type": "integer"
+      },
+      "process": {
+        "$ref": "#/components/schemas/ProcState"
+      },
+      "status": {
+        "$ref": "#/components/schemas/PanelStatus"
+      },
+      "subPort": {
+        "example": 20531,
+        "type": "integer"
+      },
+      "trafficBytes": {
+        "example": 107374182400,
+        "format": "int64",
+        "type": "integer"
+      },
+      "usageEpoch": {
+        "example": 0,
+        "type": "integer"
+      },
+      "username": {
+        "example": "reseller",
+        "type": "string"
+      },
+      "webBasePath": {
+        "example": "/reseller/",
+        "type": "string"
+      },
+      "webPort": {
+        "example": 20530,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "createdAt",
+      "enable",
+      "expiresAt",
+      "id",
+      "maxClients",
+      "maxInbounds",
+      "name",
+      "portMax",
+      "portMin",
+      "process",
+      "status",
+      "subPort",
+      "trafficBytes",
+      "usageEpoch",
+      "username",
+      "webBasePath",
+      "webPort"
+    ],
+    "type": "object"
+  },
   "HostedView": {
     "description": "HostedView is the hosted panel's own view of its limits and usage.",
     "properties": {
@@ -3506,27 +3761,34 @@ export const SCHEMAS: Record<string, unknown> = {
     "description": "Limits are the owner-set caps for one hosted panel. Zero means unlimited.",
     "properties": {
       "expiresAt": {
+        "example": 0,
         "format": "int64",
         "type": "integer"
       },
       "maxClients": {
+        "example": 100,
         "type": "integer"
       },
       "maxInbounds": {
+        "example": 5,
         "type": "integer"
       },
       "portMax": {
+        "example": 30099,
         "type": "integer"
       },
       "portMin": {
+        "example": 30000,
         "type": "integer"
       },
       "trafficBytes": {
+        "example": 107374182400,
         "format": "int64",
         "type": "integer"
       },
       "usageEpoch": {
         "description": "UsageEpoch bumps when the owner resets usage; the child zeroes its counter.",
+        "example": 0,
         "type": "integer"
       }
     },
@@ -4209,6 +4471,50 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "PanelStatus": {
+    "description": "PanelStatus is what the child reports back for the master's Panels page.",
+    "properties": {
+      "blocked": {
+        "type": "string"
+      },
+      "clients": {
+        "example": 40,
+        "type": "integer"
+      },
+      "inbounds": {
+        "example": 2,
+        "type": "integer"
+      },
+      "updatedAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "usedBytes": {
+        "example": 1073741824,
+        "format": "int64",
+        "type": "integer"
+      },
+      "webTls": {
+        "example": false,
+        "type": "boolean"
+      },
+      "xrayRunning": {
+        "example": true,
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "blocked",
+      "clients",
+      "inbounds",
+      "updatedAt",
+      "usedBytes",
+      "webTls",
+      "xrayRunning"
+    ],
+    "type": "object"
+  },
   "PanelUpdateStatus": {
     "description": "PanelUpdateStatus reports the outcome of the most recently launched panel\nself-update. RunID lets the caller confirm this status belongs to the\nupdate it started rather than a stale result left over from an earlier\nrun; State is one of \"pending\", \"success\", or \"failed\". RunID is a decimal\nstring, not a JSON number: it's a formatted UnixNano timestamp, and\nJavaScript's number type can't represent that precisely (it exceeds\nNumber.MAX_SAFE_INTEGER), which would let two different runs round to the\nsame value on the wire and defeat the whole point of this field.",
     "properties": {
@@ -4353,6 +4659,39 @@ export const SCHEMAS: Record<string, unknown> = {
       "xrayError",
       "xrayState",
       "xrayVersion"
+    ],
+    "type": "object"
+  },
+  "ProcState": {
+    "description": "ProcState is the supervisor's view of one panel process.",
+    "properties": {
+      "lastError": {
+        "type": "string"
+      },
+      "pid": {
+        "example": 4242,
+        "type": "integer"
+      },
+      "restarts": {
+        "example": 0,
+        "type": "integer"
+      },
+      "running": {
+        "example": true,
+        "type": "boolean"
+      },
+      "startedAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "lastError",
+      "pid",
+      "restarts",
+      "running",
+      "startedAt"
     ],
     "type": "object"
   },

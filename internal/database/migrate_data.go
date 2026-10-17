@@ -62,6 +62,7 @@ func migrationModels() []any {
 		&model.TuicTrafficReceipt{},
 		&model.AuditLog{},
 		&model.SponsorRecord{},
+		&model.HostedPanel{},
 	}
 }
 

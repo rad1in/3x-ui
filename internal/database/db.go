@@ -90,6 +90,7 @@ func allModels() []any {
 		&model.TuicTrafficReceipt{},
 		&model.AuditLog{},
 		&model.SponsorRecord{},
+		&model.HostedPanel{},
 	}
 }
 
