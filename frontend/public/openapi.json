@@ -32,6 +32,34 @@
             "minimum": 0,
             "type": "integer"
           },
+          "backupKeep": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "backupLocalDir": {
+            "type": "string"
+          },
+          "backupS3AccessKey": {
+            "type": "string"
+          },
+          "backupS3Bucket": {
+            "type": "string"
+          },
+          "backupS3Endpoint": {
+            "type": "string"
+          },
+          "backupS3Prefix": {
+            "type": "string"
+          },
+          "backupS3Region": {
+            "type": "string"
+          },
+          "backupS3SecretKey": {
+            "type": "string"
+          },
+          "backupSchedule": {
+            "type": "string"
+          },
           "datepicker": {
             "type": "string"
           },
@@ -639,6 +667,15 @@
         },
         "required": [
           "autoDeleteDepletedDays",
+          "backupKeep",
+          "backupLocalDir",
+          "backupS3AccessKey",
+          "backupS3Bucket",
+          "backupS3Endpoint",
+          "backupS3Prefix",
+          "backupS3Region",
+          "backupS3SecretKey",
+          "backupSchedule",
           "datepicker",
           "decoyHtml",
           "decoyMode",
@@ -836,6 +873,34 @@
             "minimum": 0,
             "type": "integer"
           },
+          "backupKeep": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "backupLocalDir": {
+            "type": "string"
+          },
+          "backupS3AccessKey": {
+            "type": "string"
+          },
+          "backupS3Bucket": {
+            "type": "string"
+          },
+          "backupS3Endpoint": {
+            "type": "string"
+          },
+          "backupS3Prefix": {
+            "type": "string"
+          },
+          "backupS3Region": {
+            "type": "string"
+          },
+          "backupS3SecretKey": {
+            "type": "string"
+          },
+          "backupSchedule": {
+            "type": "string"
+          },
           "datepicker": {
             "type": "string"
           },
@@ -899,6 +964,9 @@
             "type": "boolean"
           },
           "hasApiToken": {
+            "type": "boolean"
+          },
+          "hasBackupS3Secret": {
             "type": "boolean"
           },
           "hasDiscordBotToken": {
@@ -1470,6 +1538,15 @@
         },
         "required": [
           "autoDeleteDepletedDays",
+          "backupKeep",
+          "backupLocalDir",
+          "backupS3AccessKey",
+          "backupS3Bucket",
+          "backupS3Endpoint",
+          "backupS3Prefix",
+          "backupS3Region",
+          "backupS3SecretKey",
+          "backupSchedule",
           "datepicker",
           "decoyHtml",
           "decoyMode",
@@ -1490,6 +1567,7 @@
           "externalTrafficInformURI",
           "happLinkEnable",
           "hasApiToken",
+          "hasBackupS3Secret",
           "hasDiscordBotToken",
           "hasLdapPassword",
           "hasNordSecret",
@@ -1843,6 +1921,32 @@
         "required": [
           "items",
           "total"
+        ],
+        "type": "object"
+      },
+      "BackupResult": {
+        "description": "BackupResult is how one destination of a scheduled backup went.",
+        "properties": {
+          "destination": {
+            "example": "s3",
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "name": {
+            "example": "panel.example.com_2026-10-17_030000.db.gz",
+            "type": "string"
+          },
+          "pruned": {
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "destination",
+          "name",
+          "pruned"
         ],
         "type": "object"
       },
@@ -14148,6 +14252,46 @@
                 "example": {
                   "success": true,
                   "msg": "Test event delivered to every webhook URL"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/setting/backupNow": {
+      "post": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Run the scheduled backup once with the saved settings: a gzipped database backup to the local folder and/or the S3 bucket, pruning beyond backupKeep. Returns one result per destination.",
+        "operationId": "post_panel_api_setting_backupNow",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "destination": "s3",
+                      "name": "panel.example.com_2026-10-17_030000.db.gz",
+                      "pruned": 1
+                    }
+                  ]
                 }
               }
             }

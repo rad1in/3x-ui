@@ -26,6 +26,15 @@ export type transportBits = z.infer<typeof transportBitsSchema>;
 
 export const AllSettingSchema = z.object({
   autoDeleteDepletedDays: z.number().int().min(0),
+  backupKeep: z.number().int().min(0),
+  backupLocalDir: z.string(),
+  backupS3AccessKey: z.string(),
+  backupS3Bucket: z.string(),
+  backupS3Endpoint: z.string(),
+  backupS3Prefix: z.string(),
+  backupS3Region: z.string(),
+  backupS3SecretKey: z.string(),
+  backupSchedule: z.string(),
   datepicker: z.string(),
   decoyHtml: z.string(),
   decoyMode: z.string(),
@@ -219,6 +228,15 @@ export type AllSetting = z.infer<typeof AllSettingSchema>;
 
 export const AllSettingViewSchema = z.object({
   autoDeleteDepletedDays: z.number().int().min(0),
+  backupKeep: z.number().int().min(0),
+  backupLocalDir: z.string(),
+  backupS3AccessKey: z.string(),
+  backupS3Bucket: z.string(),
+  backupS3Endpoint: z.string(),
+  backupS3Prefix: z.string(),
+  backupS3Region: z.string(),
+  backupS3SecretKey: z.string(),
+  backupSchedule: z.string(),
   datepicker: z.string(),
   decoyHtml: z.string(),
   decoyMode: z.string(),
@@ -239,6 +257,7 @@ export const AllSettingViewSchema = z.object({
   externalTrafficInformURI: z.string(),
   happLinkEnable: z.boolean(),
   hasApiToken: z.boolean(),
+  hasBackupS3Secret: z.boolean(),
   hasDiscordBotToken: z.boolean(),
   hasLdapPassword: z.boolean(),
   hasNordSecret: z.boolean(),
@@ -464,6 +483,14 @@ export const AuditLogPageSchema = z.object({
   total: z.number().int(),
 });
 export type AuditLogPage = z.infer<typeof AuditLogPageSchema>;
+
+export const BackupResultSchema = z.object({
+  destination: z.string(),
+  error: z.string().optional(),
+  name: z.string(),
+  pruned: z.number().int(),
+});
+export type BackupResult = z.infer<typeof BackupResultSchema>;
 
 export const ClientSchema = z.object({
   adTag: z.string().optional(),

@@ -25,6 +25,17 @@ export class AllSetting {
   decoyMode = '';
   decoyTarget = '';
   decoyHtml = '';
+  backupSchedule = '';
+  backupKeep = 7;
+  backupLocalDir = '';
+  backupS3Endpoint = '';
+  backupS3Region = '';
+  backupS3Bucket = '';
+  backupS3AccessKey = '';
+  backupS3SecretKey = '';
+  backupS3Prefix = '';
+  hasBackupS3Secret = false;
+  clearBackupS3Secret = false;
   remarkTemplate = '{{INBOUND}}-{{EMAIL}}|📊{{TRAFFIC_LEFT}}|⏳{{DAYS_LEFT}}D';
   subShowIdentityOnAllLinks = false;
   subInfoNodeEnable = false;

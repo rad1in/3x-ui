@@ -2,6 +2,15 @@
 export const EXAMPLES: Record<string, unknown> = {
   "AllSetting": {
     "autoDeleteDepletedDays": 0,
+    "backupKeep": 0,
+    "backupLocalDir": "",
+    "backupS3AccessKey": "",
+    "backupS3Bucket": "",
+    "backupS3Endpoint": "",
+    "backupS3Prefix": "",
+    "backupS3Region": "",
+    "backupS3SecretKey": "",
+    "backupSchedule": "",
     "datepicker": "",
     "decoyHtml": "",
     "decoyMode": "",
@@ -193,6 +202,15 @@ export const EXAMPLES: Record<string, unknown> = {
   },
   "AllSettingView": {
     "autoDeleteDepletedDays": 0,
+    "backupKeep": 0,
+    "backupLocalDir": "",
+    "backupS3AccessKey": "",
+    "backupS3Bucket": "",
+    "backupS3Endpoint": "",
+    "backupS3Prefix": "",
+    "backupS3Region": "",
+    "backupS3SecretKey": "",
+    "backupSchedule": "",
     "datepicker": "",
     "decoyHtml": "",
     "decoyMode": "",
@@ -213,6 +231,7 @@ export const EXAMPLES: Record<string, unknown> = {
     "externalTrafficInformURI": "",
     "happLinkEnable": false,
     "hasApiToken": false,
+    "hasBackupS3Secret": false,
     "hasDiscordBotToken": false,
     "hasLdapPassword": false,
     "hasNordSecret": false,
@@ -451,6 +470,12 @@ export const EXAMPLES: Record<string, unknown> = {
       }
     ],
     "total": 120
+  },
+  "BackupResult": {
+    "destination": "s3",
+    "error": "",
+    "name": "panel.example.com_2026-10-17_030000.db.gz",
+    "pruned": 1
   },
   "Client": {
     "adTag": "0123456789abcdef0123456789abcdef",

@@ -6,6 +6,34 @@ export const SCHEMAS: Record<string, unknown> = {
         "minimum": 0,
         "type": "integer"
       },
+      "backupKeep": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "backupLocalDir": {
+        "type": "string"
+      },
+      "backupS3AccessKey": {
+        "type": "string"
+      },
+      "backupS3Bucket": {
+        "type": "string"
+      },
+      "backupS3Endpoint": {
+        "type": "string"
+      },
+      "backupS3Prefix": {
+        "type": "string"
+      },
+      "backupS3Region": {
+        "type": "string"
+      },
+      "backupS3SecretKey": {
+        "type": "string"
+      },
+      "backupSchedule": {
+        "type": "string"
+      },
       "datepicker": {
         "type": "string"
       },
@@ -613,6 +641,15 @@ export const SCHEMAS: Record<string, unknown> = {
     },
     "required": [
       "autoDeleteDepletedDays",
+      "backupKeep",
+      "backupLocalDir",
+      "backupS3AccessKey",
+      "backupS3Bucket",
+      "backupS3Endpoint",
+      "backupS3Prefix",
+      "backupS3Region",
+      "backupS3SecretKey",
+      "backupSchedule",
       "datepicker",
       "decoyHtml",
       "decoyMode",
@@ -810,6 +847,34 @@ export const SCHEMAS: Record<string, unknown> = {
         "minimum": 0,
         "type": "integer"
       },
+      "backupKeep": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "backupLocalDir": {
+        "type": "string"
+      },
+      "backupS3AccessKey": {
+        "type": "string"
+      },
+      "backupS3Bucket": {
+        "type": "string"
+      },
+      "backupS3Endpoint": {
+        "type": "string"
+      },
+      "backupS3Prefix": {
+        "type": "string"
+      },
+      "backupS3Region": {
+        "type": "string"
+      },
+      "backupS3SecretKey": {
+        "type": "string"
+      },
+      "backupSchedule": {
+        "type": "string"
+      },
       "datepicker": {
         "type": "string"
       },
@@ -873,6 +938,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "boolean"
       },
       "hasApiToken": {
+        "type": "boolean"
+      },
+      "hasBackupS3Secret": {
         "type": "boolean"
       },
       "hasDiscordBotToken": {
@@ -1444,6 +1512,15 @@ export const SCHEMAS: Record<string, unknown> = {
     },
     "required": [
       "autoDeleteDepletedDays",
+      "backupKeep",
+      "backupLocalDir",
+      "backupS3AccessKey",
+      "backupS3Bucket",
+      "backupS3Endpoint",
+      "backupS3Prefix",
+      "backupS3Region",
+      "backupS3SecretKey",
+      "backupSchedule",
       "datepicker",
       "decoyHtml",
       "decoyMode",
@@ -1464,6 +1541,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "externalTrafficInformURI",
       "happLinkEnable",
       "hasApiToken",
+      "hasBackupS3Secret",
       "hasDiscordBotToken",
       "hasLdapPassword",
       "hasNordSecret",
@@ -1817,6 +1895,32 @@ export const SCHEMAS: Record<string, unknown> = {
     "required": [
       "items",
       "total"
+    ],
+    "type": "object"
+  },
+  "BackupResult": {
+    "description": "BackupResult is how one destination of a scheduled backup went.",
+    "properties": {
+      "destination": {
+        "example": "s3",
+        "type": "string"
+      },
+      "error": {
+        "type": "string"
+      },
+      "name": {
+        "example": "panel.example.com_2026-10-17_030000.db.gz",
+        "type": "string"
+      },
+      "pruned": {
+        "example": 1,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "destination",
+      "name",
+      "pruned"
     ],
     "type": "object"
   },

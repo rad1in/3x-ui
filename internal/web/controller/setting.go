@@ -41,6 +41,7 @@ type updateSettingForm struct {
 	ClearSmtpPassword    bool   `json:"clearSmtpPassword" form:"clearSmtpPassword"`
 	ClearDiscordBotToken bool   `json:"clearDiscordBotToken" form:"clearDiscordBotToken"`
 	ClearWebhookSecret   bool   `json:"clearWebhookSecret" form:"clearWebhookSecret"`
+	ClearBackupS3Secret  bool   `json:"clearBackupS3Secret" form:"clearBackupS3Secret"`
 }
 
 type validateRegexForm struct {
@@ -83,6 +84,7 @@ func (a *SettingController) initRouter(g *gin.RouterGroup) {
 	g.POST("/testTgBot", a.testTgBot)
 	g.POST("/testDiscord", a.testDiscord)
 	g.POST("/testWebhook", a.testWebhook)
+	g.POST("/backupNow", a.backupNow)
 }
 
 func (a *SettingController) validateRegex(c *gin.Context) {
@@ -158,6 +160,7 @@ func (a *SettingController) updateSetting(c *gin.Context) {
 		SmtpPassword:    form.ClearSmtpPassword,
 		DiscordBotToken: form.ClearDiscordBotToken,
 		WebhookSecret:   form.ClearWebhookSecret,
+		BackupS3Secret:  form.ClearBackupS3Secret,
 	})
 	if err == nil && twoFactorErr == nil && !oldTwoFactor && allSetting.TwoFactorEnable {
 		if bumpErr := a.userService.BumpLoginEpoch(); bumpErr != nil {
@@ -411,4 +414,10 @@ func (a *SettingController) testDiscord(c *gin.Context) {
 		return
 	}
 	jsonMsg(c, I18nWeb(c, "pages.settings.discordTestSuccess"), nil)
+}
+
+// backupNow runs the scheduled backup once, with the saved destinations.
+func (a *SettingController) backupNow(c *gin.Context) {
+	results, err := (&service.ScheduledBackupService{}).Run(c.Request.Context())
+	jsonObj(c, results, err)
 }

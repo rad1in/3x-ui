@@ -12,6 +12,7 @@ import {
   CloseCircleFilled,
   CloudServerOutlined,
   ClusterOutlined,
+  CloudUploadOutlined,
   CodeOutlined,
   CopyOutlined,
   CrownOutlined,
@@ -491,6 +492,13 @@ export default function CommandPalette() {
         subtitle: t('pages.settings.webhookSettings'),
         keywords: ['webhook', 'n8n', 'zapier', 'http', 'events', 'billing'],
         icon: <BranchesOutlined />,
+      },
+      {
+        path: '/settings#backups',
+        title: `${t('menu.settings')} · ${t('pages.settings.backupSettings')}`,
+        subtitle: t('pages.settings.backupSettings'),
+        keywords: ['backup', 's3', 'r2', 'minio', 'schedule', 'restore'],
+        icon: <CloudUploadOutlined />,
       },
       {
         path: '/settings#subscription',

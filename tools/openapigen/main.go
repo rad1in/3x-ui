@@ -95,6 +95,7 @@ func run(root, outDir string) error {
 			StructAllow: setOf(
 				"InboundOption",
 				"VPNStatus",
+				"BackupResult",
 				"HappLinkResult",
 				"ClientSlim",
 				"ClientRenewalPreviewRequest",

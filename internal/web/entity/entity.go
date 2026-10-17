@@ -93,6 +93,15 @@ type AllSetting struct {
 	DecoyMode                  string `json:"decoyMode" form:"decoyMode"`
 	DecoyTarget                string `json:"decoyTarget" form:"decoyTarget"`
 	DecoyHtml                  string `json:"decoyHtml" form:"decoyHtml"`
+	BackupSchedule             string `json:"backupSchedule" form:"backupSchedule"`
+	BackupKeep                 int    `json:"backupKeep" form:"backupKeep" validate:"gte=0"`
+	BackupLocalDir             string `json:"backupLocalDir" form:"backupLocalDir"`
+	BackupS3Endpoint           string `json:"backupS3Endpoint" form:"backupS3Endpoint"`
+	BackupS3Region             string `json:"backupS3Region" form:"backupS3Region"`
+	BackupS3Bucket             string `json:"backupS3Bucket" form:"backupS3Bucket"`
+	BackupS3AccessKey          string `json:"backupS3AccessKey" form:"backupS3AccessKey"`
+	BackupS3SecretKey          string `json:"backupS3SecretKey" form:"backupS3SecretKey"`
+	BackupS3Prefix             string `json:"backupS3Prefix" form:"backupS3Prefix"`
 	RemarkTemplate             string `json:"remarkTemplate" form:"remarkTemplate"`
 	SubShowIdentityOnAllLinks  bool   `json:"subShowIdentityOnAllLinks" form:"subShowIdentityOnAllLinks"`
 	SubInfoNodeEnable          bool   `json:"subInfoNodeEnable" form:"subInfoNodeEnable"`
@@ -289,6 +298,7 @@ type AllSettingView struct {
 	HasSmtpPassword    bool `json:"hasSmtpPassword"`
 	HasDiscordBotToken bool `json:"hasDiscordBotToken"`
 	HasWebhookSecret   bool `json:"hasWebhookSecret"`
+	HasBackupS3Secret  bool `json:"hasBackupS3Secret"`
 }
 
 func pathHasForbiddenChar(s string) bool {
@@ -422,6 +432,7 @@ func (s *AllSetting) CheckValid() error {
 		{"tgRunTime", s.TgRunTime},
 		{"discordRunTime", s.DiscordRunTime},
 		{"ldapSyncCron", s.LdapSyncCron},
+		{"backupSchedule", s.BackupSchedule},
 	} {
 		if strings.TrimSpace(sched.spec) == "" {
 			continue

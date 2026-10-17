@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -88,6 +89,15 @@ var defaultValueMap = map[string]string{
 	"decoyMode":                   "",
 	"decoyTarget":                 "",
 	"decoyHtml":                   "",
+	"backupSchedule":              "",
+	"backupKeep":                  "7",
+	"backupLocalDir":              "",
+	"backupS3Endpoint":            "",
+	"backupS3Region":              "",
+	"backupS3Bucket":              "",
+	"backupS3AccessKey":           "",
+	"backupS3SecretKey":           "",
+	"backupS3Prefix":              "",
 	"remarkTemplate":              DefaultRemarkTemplate,
 	"subShowIdentityOnAllLinks":   "false",
 	"subInfoNodeEnable":           "false",
@@ -380,6 +390,7 @@ func (s *SettingService) GetAllSettingView() (*entity.AllSettingView, error) {
 	view.HasSmtpPassword = secretConfigured(allSetting.SmtpPassword)
 	view.HasDiscordBotToken = secretConfigured(allSetting.DiscordBotToken)
 	view.HasWebhookSecret = secretConfigured(allSetting.WebhookSecret)
+	view.HasBackupS3Secret = secretConfigured(allSetting.BackupS3SecretKey)
 	var apiTokenCount int64
 	if err := database.GetDB().Model(model.ApiToken{}).Where("enabled = ?", true).Count(&apiTokenCount).Error; err == nil {
 		view.HasApiToken = apiTokenCount > 0
@@ -390,6 +401,7 @@ func (s *SettingService) GetAllSettingView() (*entity.AllSettingView, error) {
 	view.SmtpPassword = ""
 	view.DiscordBotToken = ""
 	view.WebhookSecret = ""
+	view.BackupS3SecretKey = ""
 	return view, nil
 }
 
@@ -1728,6 +1740,7 @@ type SecretClears struct {
 	SmtpPassword    bool
 	DiscordBotToken bool
 	WebhookSecret   bool
+	BackupS3Secret  bool
 }
 
 func (s *SettingService) UpdateAllSetting(allSetting *entity.AllSetting, clears SecretClears) error {
@@ -1885,6 +1898,13 @@ func (s *SettingService) preserveRedactedSecrets(allSetting *entity.AllSetting, 
 		}
 		allSetting.WebhookSecret = value
 	}
+	if !clears.BackupS3Secret && strings.TrimSpace(allSetting.BackupS3SecretKey) == "" {
+		value, err := s.getString("backupS3SecretKey")
+		if err != nil {
+			return err
+		}
+		allSetting.BackupS3SecretKey = value
+	}
 	return nil
 }
 
@@ -1901,6 +1921,22 @@ func validateSettingsURLs(allSetting *entity.AllSetting) error {
 		hooks = append(hooks, u)
 	}
 	allSetting.WebhookUrls = strings.Join(hooks, "\n")
+	if dir := strings.TrimSpace(allSetting.BackupLocalDir); dir != "" {
+		if hosted.Enabled() {
+			return common.NewError("a hosted panel cannot write backups to the server's disk; use S3")
+		}
+		if !filepath.IsAbs(dir) {
+			return common.NewError("backup folder must be an absolute path")
+		}
+		allSetting.BackupLocalDir = filepath.Clean(dir)
+	}
+	if allSetting.BackupS3Endpoint != "" {
+		u, err := SanitizeHTTPURL(allSetting.BackupS3Endpoint)
+		if err != nil {
+			return common.NewError("S3 endpoint is invalid:", err)
+		}
+		allSetting.BackupS3Endpoint = u
+	}
 	switch allSetting.DecoyMode {
 	case decoy.ModeOff, decoy.ModeNginx, decoy.ModeHTML:
 	case decoy.ModeRedirect:
@@ -2117,12 +2153,13 @@ func (s *SettingService) GetDefaultSettings(host string) (any, error) {
 }
 
 var factoryDefaultSecretKeys = map[string]bool{
-	"tgBotToken":      true,
-	"twoFactorToken":  true,
-	"ldapPassword":    true,
-	"smtpPassword":    true,
-	"discordBotToken": true,
-	"webhookSecret":   true,
+	"tgBotToken":        true,
+	"twoFactorToken":    true,
+	"ldapPassword":      true,
+	"smtpPassword":      true,
+	"discordBotToken":   true,
+	"webhookSecret":     true,
+	"backupS3SecretKey": true,
 }
 
 /*

@@ -34,6 +34,7 @@ export const AllSettingSchema = z
     decoyMode: z.enum(['', 'nginx', 'redirect', 'html']).optional(),
     decoyTarget: z.string().optional(),
     decoyHtml: z.string().optional(),
+    backupKeep: nonNegativeInt.optional(),
     remarkTemplate: z.string().optional(),
     subShowIdentityOnAllLinks: z.boolean().optional(),
     subInfoNodeEnable: z.boolean().optional(),

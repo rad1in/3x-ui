@@ -10,6 +10,15 @@ export type transportBits = number;
 
 export interface AllSetting {
   autoDeleteDepletedDays: number;
+  backupKeep: number;
+  backupLocalDir: string;
+  backupS3AccessKey: string;
+  backupS3Bucket: string;
+  backupS3Endpoint: string;
+  backupS3Prefix: string;
+  backupS3Region: string;
+  backupS3SecretKey: string;
+  backupSchedule: string;
   datepicker: string;
   decoyHtml: string;
   decoyMode: string;
@@ -202,6 +211,15 @@ export interface AllSetting {
 
 export interface AllSettingView {
   autoDeleteDepletedDays: number;
+  backupKeep: number;
+  backupLocalDir: string;
+  backupS3AccessKey: string;
+  backupS3Bucket: string;
+  backupS3Endpoint: string;
+  backupS3Prefix: string;
+  backupS3Region: string;
+  backupS3SecretKey: string;
+  backupSchedule: string;
   datepicker: string;
   decoyHtml: string;
   decoyMode: string;
@@ -222,6 +240,7 @@ export interface AllSettingView {
   externalTrafficInformURI: string;
   happLinkEnable: boolean;
   hasApiToken: boolean;
+  hasBackupS3Secret: boolean;
   hasDiscordBotToken: boolean;
   hasLdapPassword: boolean;
   hasNordSecret: boolean;
@@ -440,6 +459,13 @@ export interface AuditLog {
 export interface AuditLogPage {
   items: AuditLog[];
   total: number;
+}
+
+export interface BackupResult {
+  destination: string;
+  error?: string;
+  name: string;
+  pruned: number;
 }
 
 export interface Client {

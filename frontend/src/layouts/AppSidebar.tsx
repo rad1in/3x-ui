@@ -12,6 +12,7 @@ import {
   CloseOutlined,
   CloudServerOutlined,
   ClusterOutlined,
+  CloudUploadOutlined,
   CodeOutlined,
   CrownOutlined,
   DashboardOutlined,
@@ -285,6 +286,11 @@ export default function AppSidebar() {
         key: '/settings#webhooks',
         icon: <BranchesOutlined />,
         label: t('pages.settings.webhookSettings'),
+      },
+      {
+        key: '/settings#backups',
+        icon: <CloudUploadOutlined />,
+        label: t('pages.settings.backupSettings'),
       },
       {
         key: '/settings#subscription',

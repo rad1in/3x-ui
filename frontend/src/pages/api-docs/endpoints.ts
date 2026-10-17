@@ -2050,6 +2050,14 @@ export const sections: readonly Section[] = [
         response: '{\n  "success": true,\n  "msg": "Test event delivered to every webhook URL"\n}',
       },
       {
+        method: 'POST',
+        path: '/panel/api/setting/backupNow',
+        summary:
+          'Run the scheduled backup once with the saved settings: a gzipped database backup to the local folder and/or the S3 bucket, pruning beyond backupKeep. Returns one result per destination.',
+        response:
+          '{\n  "success": true,\n  "obj": [\n    { "destination": "s3", "name": "panel.example.com_2026-10-17_030000.db.gz", "pruned": 1 }\n  ]\n}',
+      },
+      {
         method: 'GET',
         path: '/panel/api/setting/getDefaultJsonConfig',
         summary:
