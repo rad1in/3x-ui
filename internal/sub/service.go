@@ -3098,6 +3098,7 @@ type PageData struct {
 	SubUrl        string
 	SubJsonUrl    string
 	SubClashUrl   string
+	SubSingbox    string
 	SubTitle      string
 	SubSupportUrl string
 	SubAnnounce   string
@@ -3172,22 +3173,28 @@ func (s *SubService) BuildURLs(subPath, subJsonPath, subClashPath, subId string)
 
 	subURL = s.buildSingleURL(configuredSubURI, base, subPath, subId)
 
-	// When subURI is explicitly configured (reverse-proxy setup), use its
-	// scheme+host as the base for JSON and Clash URLs so they match the
-	// reverse-proxy endpoint instead of the raw sub-server port. Fall back
-	// to the request-derived base if subURI is empty or can't be parsed
-	// into a scheme+host (e.g. a malformed value with no scheme).
-	jsonClashBase := base
-	if configuredSubURI != "" {
-		if derived := s.extractBaseFromURI(configuredSubURI); derived != "" {
-			jsonClashBase = derived
-		}
-	}
-
+	jsonClashBase := s.formatsBase(configuredSubURI, base)
 	subJsonURL = s.buildSingleURL(configuredSubJsonURI, jsonClashBase, subJsonPath, subId)
 	subClashURL = s.buildSingleURL(configuredSubClashURI, jsonClashBase, subClashPath, subId)
 
 	return subURL, subJsonURL, subClashURL
+}
+
+// formatsBase is where the JSON, Clash and sing-box URLs live: a configured
+// subURI's scheme+host (a reverse proxy), else the request-derived base.
+func (s *SubService) formatsBase(configuredSubURI, base string) string {
+	if configuredSubURI != "" {
+		if derived := s.extractBaseFromURI(configuredSubURI); derived != "" {
+			return derived
+		}
+	}
+	return base
+}
+
+// SingboxURL is the subscription's /singbox/ alias on the formats base.
+func (s *SubService) SingboxURL(subId string) string {
+	configuredSubURI, _ := s.settingService.GetSubURI()
+	return s.buildSingleURL("", s.formatsBase(configuredSubURI, s.settingService.BuildSubURIBase(s.address)), subSingboxPath, subId)
 }
 
 // extractBaseFromURI extracts scheme://host from a configured URI.

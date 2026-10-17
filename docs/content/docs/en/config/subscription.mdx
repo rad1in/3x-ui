@@ -49,6 +49,7 @@ The **format is chosen by path**, each with its own enable toggle:
 | **Clash / Mihomo**             | `subClashPath`   | `subClashEnable` | Full Mihomo-compatible YAML profile.                |
 | **Mihomo (explicit)**          | `/mihomo/`       | `subClashEnable` | Alias for the full `subClashPath` profile.          |
 | **Clash for Windows (legacy)** | `/clash-legacy/` | `subClashEnable` | YAML limited to proxy types, transports, and ciphers supported by the legacy Clash core. |
+| **sing-box**                   | `/singbox/`      | `subClashEnable` | Full sing-box 1.12+ JSON profile (TUN, local mixed port, url-test group). |
 
 Only enabled inbounds using **VLESS, VMess, Trojan, Shadowsocks, WireGuard, AmneziaWG, MTProto, TUIC, or Hysteria2**
 appear in a subscription, ordered by their sub-sort index (TUIC and AmneziaWG are included in raw links and Clash/Mihomo profiles, but omitted from JSON endpoints; MTProto is included in raw links). Requesting `subPath`
@@ -65,7 +66,13 @@ To avoid Mihomo-only syntax entering the legacy profile, this endpoint always
 uses its minimal `PROXY` group and `MATCH,PROXY` rule and ignores custom Clash
 routing settings.
 
-If an administrator has already assigned `/mihomo/` or `/clash-legacy/` to a
+Use `/singbox/<sub-id>` for sing-box (SFA, SFI, SFM) and sing-box based apps.
+It is built from the same nodes as the Mihomo profile; nodes sing-box cannot
+express (XHTTP, mKCP, VLESS encryption, Hysteria v1, gecko obfs, AmneziaWG) are
+left out, and if none remain it returns an explicit `422`. WireGuard nodes come
+as `endpoints`. The subscription page links it with a `sing-box://` import button.
+
+If an administrator has already assigned `/mihomo/`, `/clash-legacy/` or `/singbox/` to a
 different configurable subscription path, that existing path is preserved and
 the conflicting alias is skipped with a warning at startup.
 

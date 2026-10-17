@@ -104,6 +104,7 @@
     "unlimited": "無限制",
     "noExpiry": "無到期",
     "copyAllConfigs": "複製全部配置",
+    "importToApp": "在應用程式中開啟",
     "copyAllConfigsCopied": "已複製全部配置",
     "daysLeft": "剩餘天數",
     "expired": "已過期",

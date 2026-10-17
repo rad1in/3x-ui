@@ -29,6 +29,7 @@ const sId = subData.sId || '';
 const subUrl = subData.subUrl || '';
 const subJsonUrl = subData.subJsonUrl || '';
 const subClashUrl = subData.subClashUrl || '';
+const subSingboxUrl = subData.subSingboxUrl || '';
 const subTitle = subData.subTitle || '';
 const subSupportUrl = subData.subSupportUrl || '';
 const updateHours = Number(subData.subUpdates || 0);
@@ -104,6 +105,7 @@ export default function SubPage() {
             subUrl={subUrl}
             subJsonUrl={subJsonUrl}
             subClashUrl={subClashUrl}
+            subSingboxUrl={subSingboxUrl}
             onCopy={copy}
           />
         ),

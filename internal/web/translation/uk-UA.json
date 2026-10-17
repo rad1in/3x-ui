@@ -104,6 +104,7 @@
     "unlimited": "Безліміт",
     "noExpiry": "Без строку",
     "copyAllConfigs": "Копіювати всі конфігурації",
+    "importToApp": "Відкрити в застосунку",
     "copyAllConfigsCopied": "Всі конфігурації скопійовано",
     "daysLeft": "Залишилось днів",
     "expired": "Термін дії минув",

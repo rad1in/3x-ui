@@ -104,6 +104,7 @@
     "unlimited": "Неограниченно",
     "noExpiry": "Бессрочно",
     "copyAllConfigs": "Копировать все конфигурации",
+    "importToApp": "Открыть в приложении",
     "copyAllConfigsCopied": "Все конфигурации скопированы",
     "daysLeft": "Осталось дней",
     "expired": "Истёк",

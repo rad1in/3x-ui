@@ -28,6 +28,7 @@ import (
 const (
 	subMihomoPath      = "/mihomo/"
 	subClashLegacyPath = "/clash-legacy/"
+	subSingboxPath     = "/singbox/"
 )
 
 // writeSubError translates a service-layer result into an HTTP response.
@@ -77,6 +78,7 @@ type SUBController struct {
 	jsonAlwaysArray    bool
 	jsonEnabled        bool
 	clashEnabled       bool
+	singboxEnabled     bool
 	subEncrypt         bool
 	updateInterval     string
 
@@ -362,6 +364,14 @@ func (a *SUBController) initRouter(g *gin.RouterGroup) {
 			gLegacy.GET(":subid", a.subClashLegacy)
 			gLegacy.HEAD(":subid", a.subClashLegacy)
 		}
+		if owner := a.configuredSubscriptionPathOwner(subSingboxPath); owner != "" {
+			logger.Warningf("sing-box subscription alias %q is unavailable because it conflicts with the configured %s path", subSingboxPath, owner)
+		} else {
+			a.singboxEnabled = true
+			gSingbox := g.Group(subSingboxPath)
+			gSingbox.GET(":subid", a.subSingbox)
+			gSingbox.HEAD(":subid", a.subSingbox)
+		}
 	}
 }
 
@@ -443,6 +453,9 @@ func (a *SUBController) buildSubPageData(c *gin.Context) (PageData, bool) {
 	metadata := a.metadataForSubRequest(func() *SubService { return subReq }, subId, "")
 	page := subReq.BuildPageData(subId, hostHeader, traffic, lastOnline, subs, emails, subURL, subJsonURL, subClashURL, basePathStr, metadata.Title, metadata.SupportURL)
 	page.SubAnnounce = metadata.Announce
+	if a.singboxEnabled {
+		page.SubSingbox = subReq.SingboxURL(subId)
+	}
 	return page, true
 }
 
@@ -694,6 +707,7 @@ func (a *SUBController) subPageContext(page PageData) map[string]any {
 		"subUrl":        page.SubUrl,
 		"subJsonUrl":    page.SubJsonUrl,
 		"subClashUrl":   page.SubClashUrl,
+		"subSingboxUrl": page.SubSingbox,
 		"subTitle":      page.SubTitle,
 		"subSupportUrl": page.SubSupportUrl,
 		"subUpdates":    updateHours,
@@ -962,6 +976,36 @@ func (a *SUBController) serveClashBody(c *gin.Context, rawDownload bool, legacy 
 	}
 	c.Data(200, "application/yaml; charset=utf-8", []byte(clashSub))
 	return true
+}
+
+func (a *SUBController) subSingbox(c *gin.Context) {
+	if a.maybeServeSubPage(c) {
+		return
+	}
+	if !a.enforceHwid(c) {
+		return
+	}
+	subId := c.Param("subid")
+	scheme, host, hostWithPort, _ := a.subService.ResolveRequest(c)
+	body, header, err := a.subClashService.GetSingbox(subId, host)
+	if errors.Is(err, errNoSingboxProxies) {
+		c.String(http.StatusUnprocessableEntity, err.Error())
+		return
+	}
+	if err != nil || (body == "" && header == "") {
+		writeSubError(c, err)
+		return
+	}
+	var subReq *SubService
+	metadata := a.metadataForSubRequest(func() *SubService {
+		if subReq == nil {
+			subReq = a.subService.ForRequest(host)
+		}
+		return subReq
+	}, subId, builtinProfileURL(c, scheme, hostWithPort))
+	a.ApplyCommonHeaders(c, header, a.updateInterval, metadata.Title, metadata.SupportURL, metadata.ProfileURL, metadata.Announce, a.subEnableRouting, a.subRoutingRules, a.subHideSettings)
+	c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(body))
+	a.recordSubscriptionFetch(c)
 }
 
 func builtinProfileURL(c *gin.Context, scheme, hostWithPort string) string {

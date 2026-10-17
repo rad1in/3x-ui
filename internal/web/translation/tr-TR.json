@@ -104,6 +104,7 @@
     "unlimited": "Sınırsız",
     "noExpiry": "Süresiz",
     "copyAllConfigs": "Tüm Yapılandırmaları Kopyala",
+    "importToApp": "Uygulamada aç",
     "copyAllConfigsCopied": "Tüm yapılandırmalar kopyalandı",
     "daysLeft": "Kalan gün",
     "expired": "Süresi doldu",

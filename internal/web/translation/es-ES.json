@@ -104,6 +104,7 @@
     "unlimited": "Ilimitado",
     "noExpiry": "Sin caducidad",
     "copyAllConfigs": "Copiar Todas las Configuraciones",
+    "importToApp": "Abrir en la app",
     "copyAllConfigsCopied": "Todas las configuraciones copiadas",
     "daysLeft": "Días restantes",
     "expired": "Caducada",

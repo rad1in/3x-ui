@@ -104,6 +104,7 @@
     "unlimited": "Unlimited",
     "noExpiry": "No expiry",
     "copyAllConfigs": "Copy All Configs",
+    "importToApp": "Open in the app",
     "copyAllConfigsCopied": "All configs copied",
     "daysLeft": "Days left",
     "expired": "Expired",
