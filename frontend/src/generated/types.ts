@@ -9,6 +9,7 @@ export type trafficLocalApplyAction = number;
 export type transportBits = number;
 
 export interface AllSetting {
+  autoDeleteDepletedDays: number;
   datepicker: string;
   discordAdminIds: string;
   discordBotBackup: boolean;
@@ -197,6 +198,7 @@ export interface AllSetting {
 }
 
 export interface AllSettingView {
+  autoDeleteDepletedDays: number;
   datepicker: string;
   discordAdminIds: string;
   discordBotBackup: boolean;

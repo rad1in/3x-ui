@@ -2,6 +2,10 @@
 export const SCHEMAS: Record<string, unknown> = {
   "AllSetting": {
     "properties": {
+      "autoDeleteDepletedDays": {
+        "minimum": 0,
+        "type": "integer"
+      },
       "datepicker": {
         "type": "string"
       },
@@ -599,6 +603,7 @@ export const SCHEMAS: Record<string, unknown> = {
       }
     },
     "required": [
+      "autoDeleteDepletedDays",
       "datepicker",
       "discordAdminIds",
       "discordBotBackup",
@@ -789,6 +794,10 @@ export const SCHEMAS: Record<string, unknown> = {
   },
   "AllSettingView": {
     "properties": {
+      "autoDeleteDepletedDays": {
+        "minimum": 0,
+        "type": "integer"
+      },
       "datepicker": {
         "type": "string"
       },
@@ -1413,6 +1422,7 @@ export const SCHEMAS: Record<string, unknown> = {
       }
     },
     "required": [
+      "autoDeleteDepletedDays",
       "datepicker",
       "discordAdminIds",
       "discordBotBackup",

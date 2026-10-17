@@ -1398,6 +1398,8 @@
       "externalTrafficInformURIDesc": "Trafik güncellemeleri bu URI'ye gönderilir.",
       "restartXrayOnClientDisable": "İstemci Devre Dışı Bırakıldığında Xray'i Yeniden Başlat",
       "restartXrayOnClientDisableDesc": "Bir istemci artık sunulmadığında — süre dolumu veya trafik limiti nedeniyle otomatik, ya da elle devre dışı bırakıldığında veya silindiğinde — açık bağlantıları bitsin diye Xray'i yeniden başlatır.",
+      "autoDeleteDepletedDays": "Biten İstemcileri Otomatik Sil",
+      "autoDeleteDepletedDaysDesc": "Trafiği biten veya süresi dolan istemciyi bu kadar gün sonra sil (0 = asla). Periyodik sıfırlaması olan istemciler korunur. Saatte bir kontrol edilir.",
       "fragment": "Parçalama",
       "fragmentDesc": "TLS merhaba paketinin parçalanmasını etkinleştirir.",
       "fragmentSett": "Parçalama Ayarları",

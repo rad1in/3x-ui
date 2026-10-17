@@ -338,6 +338,25 @@ export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProp
                 />
               </SettingListItem>
 
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.autoDeleteDepletedDays')}
+                badge={
+                  <DefaultSettingTag
+                    settingKey="autoDeleteDepletedDays"
+                    value={allSetting.autoDeleteDepletedDays}
+                  />
+                }
+                description={t('pages.settings.autoDeleteDepletedDaysDesc')}
+              >
+                <InputNumber
+                  value={allSetting.autoDeleteDepletedDays}
+                  min={0}
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ autoDeleteDepletedDays: v }))}
+                />
+              </SettingListItem>
+
               <SettingListItem paddings="small" title={t('pages.settings.language')}>
                 <Select
                   value={lang}

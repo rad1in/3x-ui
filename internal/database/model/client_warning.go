@@ -7,3 +7,10 @@ type ClientWarning struct {
 	Quota  bool   `gorm:"not null;default:false"`
 	Expiry bool   `gorm:"not null;default:false"`
 }
+
+// ClientDepletion is when a client was first seen out of quota or past its
+// expiry; autoDeleteDepletedDays counts from it.
+type ClientDepletion struct {
+	Email string `gorm:"primaryKey"`
+	Since int64  `gorm:"not null"`
+}

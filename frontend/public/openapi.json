@@ -28,6 +28,10 @@
     "schemas": {
       "AllSetting": {
         "properties": {
+          "autoDeleteDepletedDays": {
+            "minimum": 0,
+            "type": "integer"
+          },
           "datepicker": {
             "type": "string"
           },
@@ -625,6 +629,7 @@
           }
         },
         "required": [
+          "autoDeleteDepletedDays",
           "datepicker",
           "discordAdminIds",
           "discordBotBackup",
@@ -815,6 +820,10 @@
       },
       "AllSettingView": {
         "properties": {
+          "autoDeleteDepletedDays": {
+            "minimum": 0,
+            "type": "integer"
+          },
           "datepicker": {
             "type": "string"
           },
@@ -1439,6 +1448,7 @@
           }
         },
         "required": [
+          "autoDeleteDepletedDays",
           "datepicker",
           "discordAdminIds",
           "discordBotBackup",

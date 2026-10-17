@@ -1398,6 +1398,8 @@
       "externalTrafficInformURIDesc": "As atualizações de tráfego são enviadas para este URI.",
       "restartXrayOnClientDisable": "Reiniciar Xray Após Desativar um Cliente",
       "restartXrayOnClientDisableDesc": "Quando um cliente deixa de ser atendido — desativado automaticamente por expiração ou limite de tráfego, ou desativado ou excluído manualmente — reinicie o Xray para encerrar suas conexões ativas.",
+      "autoDeleteDepletedDays": "Excluir automaticamente clientes esgotados",
+      "autoDeleteDepletedDaysDesc": "Exclui o cliente estes dias depois de esgotar o tráfego ou expirar (0 = nunca). Clientes com reset periódico são mantidos. Verificado a cada hora.",
       "fragment": "Fragmentação",
       "fragmentDesc": "Ativa a fragmentação para o pacote TLS hello.",
       "fragmentSett": "Configurações de Fragmentação",

@@ -21,6 +21,7 @@ export class AllSetting {
   expireDiff = 0;
   trafficDiff = 0;
   quotaWarnPercent = 80;
+  autoDeleteDepletedDays = 0;
   remarkTemplate = '{{INBOUND}}-{{EMAIL}}|📊{{TRAFFIC_LEFT}}|⏳{{DAYS_LEFT}}D';
   subShowIdentityOnAllLinks = false;
   subInfoNodeEnable = false;

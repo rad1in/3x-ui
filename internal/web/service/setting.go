@@ -83,6 +83,7 @@ var defaultValueMap = map[string]string{
 	"trafficDiff":                 "0",
 	"quotaWarnPercent":            "80",
 	"clientWarningsSeeded":        "false",
+	"autoDeleteDepletedDays":      "0",
 	"remarkTemplate":              DefaultRemarkTemplate,
 	"subShowIdentityOnAllLinks":   "false",
 	"subInfoNodeEnable":           "false",

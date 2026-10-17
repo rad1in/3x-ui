@@ -92,6 +92,7 @@ func allModels() []any {
 		&model.SponsorRecord{},
 		&model.HostedPanel{},
 		&model.ClientWarning{},
+		&model.ClientDepletion{},
 	}
 }
 

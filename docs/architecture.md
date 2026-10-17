@@ -396,6 +396,7 @@ All registered in `web.go` → `startTask()`. Each is a struct with a `Run()` me
 | `@every 15s`        | `hosted_status_job`                                                                              | Hosted panels only (`XUI_HOSTED_DIR`): report usage, stop/start Xray against owner limits |
 | `@every 1m`         | `hosted_sponsors_job`                                                                            | Masters only (not hosted): copy the owner's live sponsors into each hosted panel |
 | `@every 1m`         | `client_warning_job`                                                                             | Publishes `client.quota_warning` / `client.expiry_warning` once per crossing |
+| `@hourly`           | `client_cleanup_job`                                                                             | Deletes clients out of quota/time for `autoDeleteDepletedDays` (0 = off) |
 | `@weekly`           | `periodic_traffic_reset_job("weekly")`                                                           | Weekly traffic resets                                                                 |
 | default `@every 1m` | `ldap_sync_job`                                                                                  | Only if LDAP enabled; schedule configurable                                           |
 | default `@daily`    | `stats_notify_job`                                                                               | Only if TG bot enabled; schedule configurable                                         |

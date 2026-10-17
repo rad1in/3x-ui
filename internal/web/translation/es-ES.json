@@ -1398,6 +1398,8 @@
       "externalTrafficInformURIDesc": "Las actualizaciones de tráfico se envían a este URI.",
       "restartXrayOnClientDisable": "Reiniciar Xray al desactivar un cliente",
       "restartXrayOnClientDisableDesc": "Cuando un cliente deja de atenderse — desactivado automáticamente por vencimiento o límite de tráfico, o desactivado o eliminado a mano — reiniciar Xray para que terminen sus conexiones activas.",
+      "autoDeleteDepletedDays": "Borrado automático de clientes agotados",
+      "autoDeleteDepletedDaysDesc": "Borra un cliente estos días después de agotar su tráfico o caducar (0 = nunca). Los clientes con reinicio periódico se conservan. Se revisa cada hora.",
       "fragment": "Fragmentación",
       "fragmentDesc": "Habilitar la fragmentación para el paquete de saludo de TLS",
       "fragmentSett": "Configuración de Fragmentación",

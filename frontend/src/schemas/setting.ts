@@ -30,6 +30,7 @@ export const AllSettingSchema = z
     expireDiff: nonNegativeInt.optional(),
     trafficDiff: nonNegativeInt.max(100).optional(),
     quotaWarnPercent: nonNegativeInt.max(99).optional(),
+    autoDeleteDepletedDays: nonNegativeInt.optional(),
     remarkTemplate: z.string().optional(),
     subShowIdentityOnAllLinks: z.boolean().optional(),
     subInfoNodeEnable: z.boolean().optional(),

@@ -1398,6 +1398,8 @@
       "externalTrafficInformURIDesc": "Cập nhật lưu lượng truy cập được gửi tới URI này.",
       "restartXrayOnClientDisable": "Khởi Động Lại Xray Sau Khi Vô Hiệu Hóa Máy Khách",
       "restartXrayOnClientDisableDesc": "Khi một máy khách không còn được phục vụ — bị vô hiệu hóa tự động do hết hạn hoặc giới hạn lưu lượng, hoặc bị vô hiệu hóa hay xóa thủ công — hãy khởi động lại Xray để các kết nối đang mở của nó kết thúc.",
+      "autoDeleteDepletedDays": "Tự động xóa khách hàng đã hết",
+      "autoDeleteDepletedDaysDesc": "Xóa khách hàng sau số ngày này kể từ khi hết lưu lượng hoặc hết hạn (0 = không bao giờ). Khách hàng có đặt lại định kỳ được giữ lại. Kiểm tra mỗi giờ.",
       "fragment": "Sự phân mảnh",
       "fragmentDesc": "Kích hoạt phân mảnh cho gói TLS hello",
       "fragmentSett": "Cài đặt phân mảnh",

@@ -1398,6 +1398,8 @@
       "externalTrafficInformURIDesc": "流量更新将发送到此 URI",
       "restartXrayOnClientDisable": "客户端被禁用后重启 Xray",
       "restartXrayOnClientDisableDesc": "当客户端不再被服务时——因到期或流量超限被自动禁用，或被手动禁用、删除——重启 Xray 以断开其活动连接。",
+      "autoDeleteDepletedDays": "自动删除已用尽的客户端",
+      "autoDeleteDepletedDaysDesc": "客户端流量用尽或过期后这么多天将其删除（0 = 从不）。设置了周期重置的客户端会保留。每小时检查一次。",
       "fragment": "分片",
       "fragmentDesc": "启用 TLS hello 数据包分片",
       "fragmentSett": "设置",
