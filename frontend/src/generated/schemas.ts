@@ -1671,6 +1671,71 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "AuditLog": {
+    "description": "AuditLog is one admin action: a state-changing API call or a login attempt.\nAction is the method plus route template, so rows group by endpoint.",
+    "properties": {
+      "action": {
+        "example": "POST /clients/update/:email",
+        "type": "string"
+      },
+      "actor": {
+        "example": "admin",
+        "type": "string"
+      },
+      "createdAt": {
+        "example": 1760684400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 42,
+        "format": "int64",
+        "type": "integer"
+      },
+      "ip": {
+        "example": "203.0.113.5",
+        "type": "string"
+      },
+      "success": {
+        "example": true,
+        "type": "boolean"
+      },
+      "target": {
+        "example": "email=alice@example.com",
+        "type": "string"
+      }
+    },
+    "required": [
+      "action",
+      "actor",
+      "createdAt",
+      "id",
+      "ip",
+      "success",
+      "target"
+    ],
+    "type": "object"
+  },
+  "AuditLogPage": {
+    "properties": {
+      "items": {
+        "items": {
+          "$ref": "#/components/schemas/AuditLog"
+        },
+        "type": "array"
+      },
+      "total": {
+        "example": 120,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "items",
+      "total"
+    ],
+    "type": "object"
+  },
   "Client": {
     "description": "Client represents a client configuration for Xray inbounds with traffic limits and settings.",
     "properties": {

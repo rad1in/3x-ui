@@ -5,6 +5,7 @@
     "index",
     "authentication",
     "api-tokens",
+    "activity-log",
     "inbounds",
     "clients",
     "server",

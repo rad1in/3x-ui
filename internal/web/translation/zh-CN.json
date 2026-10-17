@@ -134,6 +134,7 @@
     "apiDocs": "API 文档",
     "donate": "捐赠",
     "sponsors": "赞助商",
+    "audit": "操作日志",
     "hosts": "主机",
     "docs": "文档",
     "openMenu": "打开菜单",
@@ -2455,6 +2456,19 @@
       "visit": "访问",
       "yourBrand": "您的品牌展示位",
       "yourBrandText": "让每天打开 3X-UI 的数千名服务器管理员看到您的公司。"
+    },
+    "audit": {
+      "title": "操作日志",
+      "hint": "记录通过面板或 API 进行的每一次更改以及每一次登录尝试。不会保存请求内容；记录保留 90 天。",
+      "time": "时间",
+      "actor": "操作者",
+      "action": "操作",
+      "target": "对象",
+      "result": "结果",
+      "searchPlaceholder": "搜索用户、IP、操作或对象",
+      "empty": "暂无操作记录",
+      "login": "登录",
+      "sectionServer": "服务器"
     }
   },
   "tgbot": {

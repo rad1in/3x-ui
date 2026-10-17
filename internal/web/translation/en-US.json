@@ -135,6 +135,7 @@
     "apiDocs": "API Docs",
     "donate": "Donate",
     "sponsors": "Sponsors",
+    "audit": "Activity",
     "docs": "Documentation",
     "openMenu": "Open menu",
     "pinSidebar": "Pin sidebar",
@@ -2455,6 +2456,19 @@
       "visit": "Visit",
       "yourBrand": "Your brand here",
       "yourBrandText": "Put your company in front of thousands of server admins who open 3X-UI every day."
+    },
+    "audit": {
+      "title": "Activity log",
+      "hint": "Every change made through the panel or the API, and every login attempt. Request contents are never stored; entries are kept for 90 days.",
+      "time": "Time",
+      "actor": "By",
+      "action": "Action",
+      "target": "Target",
+      "result": "Result",
+      "searchPlaceholder": "Search user, IP, action or target",
+      "empty": "No activity recorded yet",
+      "login": "Login",
+      "sectionServer": "Server"
     }
   },
   "tgbot": {

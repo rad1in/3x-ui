@@ -1,0 +1,44 @@
+.audit-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.audit-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.audit-hint {
+  margin: 4px 0 12px;
+  font-size: 12.5px;
+  color: var(--ant-color-text-tertiary);
+}
+
+.audit-time,
+.audit-ip,
+.audit-target,
+.audit-op {
+  font-variant-numeric: tabular-nums;
+}
+
+.audit-ip,
+.audit-target,
+.audit-op {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+}
+
+.audit-target {
+  color: var(--ant-color-text-secondary);
+  word-break: break-all;
+}
+
+.audit-actor {
+  font-weight: 500;
+}

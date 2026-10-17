@@ -134,6 +134,7 @@
     "apiDocs": "API ドキュメント",
     "donate": "寄付",
     "sponsors": "スポンサー",
+    "audit": "操作ログ",
     "hosts": "ホスト",
     "docs": "ドキュメント",
     "openMenu": "メニューを開く",
@@ -2455,6 +2456,19 @@
       "visit": "訪問",
       "yourBrand": "ここにあなたのブランドを",
       "yourBrandText": "毎日 3X-UI を開く何千人ものサーバー管理者に御社をアピールできます。"
+    },
+    "audit": {
+      "title": "操作ログ",
+      "hint": "パネルまたは API で行われたすべての変更と、すべてのログイン試行を記録します。リクエスト内容は保存されず、記録は 90 日間保持されます。",
+      "time": "日時",
+      "actor": "実行者",
+      "action": "操作",
+      "target": "対象",
+      "result": "結果",
+      "searchPlaceholder": "ユーザー・IP・操作・対象を検索",
+      "empty": "まだ操作は記録されていません",
+      "login": "ログイン",
+      "sectionServer": "サーバー"
     }
   },
   "tgbot": {

@@ -429,6 +429,23 @@ export const ApiTokenViewSchema = z.object({
 });
 export type ApiTokenView = z.infer<typeof ApiTokenViewSchema>;
 
+export const AuditLogSchema = z.object({
+  action: z.string(),
+  actor: z.string(),
+  createdAt: z.number().int(),
+  id: z.number().int(),
+  ip: z.string(),
+  success: z.boolean(),
+  target: z.string(),
+});
+export type AuditLog = z.infer<typeof AuditLogSchema>;
+
+export const AuditLogPageSchema = z.object({
+  items: z.array(z.lazy(() => AuditLogSchema)),
+  total: z.number().int(),
+});
+export type AuditLogPage = z.infer<typeof AuditLogPageSchema>;
+
 export const ClientSchema = z.object({
   adTag: z.string().optional(),
   allowedIPs: z.array(z.string()).optional(),

@@ -134,6 +134,7 @@
     "apiDocs": "Tài liệu API",
     "donate": "Quyên góp",
     "sponsors": "Nhà tài trợ",
+    "audit": "Hoạt động",
     "hosts": "Hosts",
     "docs": "Tài liệu",
     "openMenu": "Mở menu",
@@ -2455,6 +2456,19 @@
       "visit": "Truy cập",
       "yourBrand": "Thương hiệu của bạn ở đây",
       "yourBrandText": "Đưa công ty bạn đến hàng nghìn quản trị viên máy chủ mở 3X-UI mỗi ngày."
+    },
+    "audit": {
+      "title": "Nhật ký hoạt động",
+      "hint": "Mọi thay đổi qua bảng điều khiển hoặc API và mọi lần đăng nhập. Nội dung yêu cầu không bao giờ được lưu; bản ghi được giữ 90 ngày.",
+      "time": "Thời gian",
+      "actor": "Bởi",
+      "action": "Hành động",
+      "target": "Đối tượng",
+      "result": "Kết quả",
+      "searchPlaceholder": "Tìm người dùng, IP, hành động hoặc đối tượng",
+      "empty": "Chưa có hoạt động nào",
+      "login": "Đăng nhập",
+      "sectionServer": "Máy chủ"
     }
   },
   "tgbot": {

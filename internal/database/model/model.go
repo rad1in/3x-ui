@@ -180,6 +180,18 @@ type ApiToken struct {
 	ExpiresAt int64  `json:"expiresAt" gorm:"not null;default:0"`
 }
 
+// AuditLog is one admin action: a state-changing API call or a login attempt.
+// Action is the method plus route template, so rows group by endpoint.
+type AuditLog struct {
+	Id        int64  `json:"id" gorm:"primaryKey;autoIncrement" example:"42"`
+	CreatedAt int64  `json:"createdAt" gorm:"index;not null" example:"1760684400000"`
+	Actor     string `json:"actor" gorm:"index;not null;default:''" example:"admin"`
+	Ip        string `json:"ip" gorm:"not null;default:''" example:"203.0.113.5"`
+	Action    string `json:"action" gorm:"index;not null" example:"POST /clients/update/:email"`
+	Target    string `json:"target" gorm:"not null;default:''" example:"email=alice@example.com"`
+	Success   bool   `json:"success" gorm:"not null" example:"true"`
+}
+
 // MarshalJSON emits settings, streamSettings, and sniffing as nested JSON
 // objects rather than escaped strings, so API consumers don't need to JSON.parse
 // a string inside a string. Empty fields render as null; fields whose stored

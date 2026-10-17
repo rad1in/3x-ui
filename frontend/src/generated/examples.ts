@@ -410,6 +410,29 @@ export const EXAMPLES: Record<string, unknown> = {
     "scope": "admin",
     "token": "new-token-string"
   },
+  "AuditLog": {
+    "action": "POST /clients/update/:email",
+    "actor": "admin",
+    "createdAt": 1760684400000,
+    "id": 42,
+    "ip": "203.0.113.5",
+    "success": true,
+    "target": "email=alice@example.com"
+  },
+  "AuditLogPage": {
+    "items": [
+      {
+        "action": "POST /clients/update/:email",
+        "actor": "admin",
+        "createdAt": 1760684400000,
+        "id": 42,
+        "ip": "203.0.113.5",
+        "success": true,
+        "target": "email=alice@example.com"
+      }
+    ],
+    "total": 120
+  },
   "Client": {
     "adTag": "0123456789abcdef0123456789abcdef",
     "allowedIPs": [

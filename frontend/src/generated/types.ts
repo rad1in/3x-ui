@@ -408,6 +408,21 @@ export interface ApiTokenView {
   token?: string;
 }
 
+export interface AuditLog {
+  action: string;
+  actor: string;
+  createdAt: number;
+  id: number;
+  ip: string;
+  success: boolean;
+  target: string;
+}
+
+export interface AuditLogPage {
+  items: AuditLog[];
+  total: number;
+}
+
 export interface Client {
   adTag?: string;
   allowedIPs?: string[];

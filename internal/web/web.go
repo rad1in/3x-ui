@@ -371,6 +371,7 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 
 	// check client ips from log file every day
 	_, _ = s.cron.AddJob("@daily", job.NewClearLogsJob())
+	_, _ = s.cron.AddJob("@daily", job.NewPruneAuditLogJob())
 	_, _ = s.cron.AddJob(cadenceXrayLogPrune, job.NewPruneXrayLogsJob())
 	_, _ = s.cron.AddJob("@hourly", job.NewWarpIpJob())
 
@@ -646,6 +647,7 @@ func (s *Server) start(restartXray bool, startTgBot bool) (err error) {
 	service.SetEventBus(s.bus)
 	job.EventBus = s.bus
 	tgbot.EventBus = s.bus
+	s.bus.Subscribe("audit-log", (&service.AuditService{}).HandleEvent)
 
 	// Wire xray crash callback BEFORE startTask so it's ready
 	xray.OnCrash = func(err error) {

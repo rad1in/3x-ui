@@ -179,6 +179,7 @@ func jsonMsgObj(c *gin.Context, msg string, obj any, err error) {
 			logger.Warningf("%s %s %s", ctx, m.Msg, fail)
 		}
 	}
+	c.Set(auditSuccessKey, m.Success)
 	c.JSON(http.StatusOK, m)
 }
 

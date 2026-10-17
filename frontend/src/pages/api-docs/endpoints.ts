@@ -2077,6 +2077,54 @@ export const sections: readonly Section[] = [
   },
 
   {
+    id: 'activity-log',
+    title: 'Activity Log',
+    description:
+      'Who changed what and when. Every state-changing API call is recorded with its actor (panel user or token:<name>), client IP, route template, path parameters and outcome, along with every login attempt. Request bodies are never stored. Rows older than 90 days are pruned daily.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/audit/list',
+        summary: 'Page through the activity log, newest first.',
+        params: [
+          {
+            name: 'page',
+            in: 'query',
+            type: 'number',
+            desc: '1-indexed page number. Defaults to 1.',
+            optional: true,
+            defaultValue: 1,
+          },
+          {
+            name: 'pageSize',
+            in: 'query',
+            type: 'number',
+            desc: 'Rows per page. Defaults to 50, capped at 200.',
+            optional: true,
+            defaultValue: 50,
+          },
+          {
+            name: 'search',
+            in: 'query',
+            type: 'string',
+            desc: 'Case-insensitive substring match on actor, IP, action or target.',
+            optional: true,
+          },
+          {
+            name: 'result',
+            in: 'query',
+            type: 'string',
+            desc: 'ok for successful actions only, fail for failures only; omit for both.',
+            optional: true,
+            enum: ['ok', 'fail'],
+          },
+        ],
+        responseSchema: 'AuditLogPage',
+      },
+    ],
+  },
+
+  {
     id: 'xray-settings',
     title: 'Xray Settings',
     description:

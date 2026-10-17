@@ -134,6 +134,7 @@
     "apiDocs": "API Belgeleri",
     "donate": "Bağış Yap",
     "sponsors": "Sponsorlar",
+    "audit": "Etkinlik",
     "hosts": "Host'lar",
     "docs": "Belgeler",
     "openMenu": "Menüyü aç",
@@ -2455,6 +2456,19 @@
       "visit": "Ziyaret et",
       "yourBrand": "Markanız burada",
       "yourBrandText": "Şirketinizi her gün 3X-UI açan binlerce sunucu yöneticisinin önüne çıkarın."
+    },
+    "audit": {
+      "title": "Etkinlik günlüğü",
+      "hint": "Panel veya API üzerinden yapılan her değişiklik ve her giriş denemesi. İstek içerikleri asla saklanmaz; kayıtlar 90 gün tutulur.",
+      "time": "Zaman",
+      "actor": "Yapan",
+      "action": "İşlem",
+      "target": "Hedef",
+      "result": "Sonuç",
+      "searchPlaceholder": "Kullanıcı, IP, işlem veya hedef ara",
+      "empty": "Henüz kayıtlı etkinlik yok",
+      "login": "Giriş",
+      "sectionServer": "Sunucu"
     }
   },
   "tgbot": {

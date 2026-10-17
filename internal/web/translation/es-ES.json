@@ -134,6 +134,7 @@
     "apiDocs": "Documentación de la API",
     "donate": "Donar",
     "sponsors": "Patrocinadores",
+    "audit": "Actividad",
     "hosts": "Hosts",
     "docs": "Documentación",
     "openMenu": "Abrir menú",
@@ -2455,6 +2456,19 @@
       "visit": "Visitar",
       "yourBrand": "Tu marca aquí",
       "yourBrandText": "Muestra tu empresa a miles de administradores de servidores que abren 3X-UI cada día."
+    },
+    "audit": {
+      "title": "Registro de actividad",
+      "hint": "Cada cambio hecho desde el panel o la API y cada intento de inicio de sesión. El contenido de las solicitudes nunca se guarda; las entradas se conservan 90 días.",
+      "time": "Hora",
+      "actor": "Por",
+      "action": "Acción",
+      "target": "Objetivo",
+      "result": "Resultado",
+      "searchPlaceholder": "Buscar usuario, IP, acción u objetivo",
+      "empty": "Aún no hay actividad registrada",
+      "login": "Inicio de sesión",
+      "sectionServer": "Servidor"
     }
   },
   "tgbot": {
