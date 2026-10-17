@@ -1310,6 +1310,8 @@
       "expireTimeDiffDesc": "このしきい値に達した場合、有効期限に関する通知を受け取る（単位：日）",
       "trafficDiff": "トラフィック消耗しきい値",
       "trafficDiffDesc": "このしきい値に達した場合、トラフィック消耗に関する通知を受け取る（単位：GB）",
+      "quotaWarnPercent": "通信量の警告",
+      "quotaWarnPercentDesc": "クライアントが通信量上限のこの割合に達したら一度だけ警告します（0 = オフ）。期限の警告は上の有効期限のしきい値を使います。Telegram ではクライアント本人の連携アカウントにも送信します。",
       "tgNotifyCpu": "CPU負荷通知しきい値",
       "tgNotifyCpuDesc": "CPU負荷がこのしきい値を超えた場合、通知を受け取る（単位：%）",
       "timeZone": "タイムゾーン",
@@ -1791,6 +1793,8 @@
       "eventClientExpired": "クライアントの期限切れ",
       "eventClientRenewed": "クライアント更新",
       "eventClientTrafficReset": "通信量リセット",
+      "eventClientQuotaWarning": "通信量の警告",
+      "eventClientExpiryWarning": "期限の警告",
       "testDiscordDesc": "BotトークンとチャンネルIDを確認するためのテスト通知を送信します",
       "discordNotInitialized": "Discord サービスが初期化されていません",
       "discordBotNotEnabled": "Discord ボットが有効になっていません",
@@ -2740,7 +2744,13 @@
       "eventNodeDown": "ノード {{ .Name }} がダウンしています",
       "eventNodeUp": "ノード {{ .Name }} が復旧しました",
       "eventLoginFallback": "{{ .Source }} からのログインに失敗しました",
-      "memoryThreshold": "メモリ使用率 {{ .Percent }}% がしきい値 {{ .Threshold }}% を超えました"
+      "memoryThreshold": "メモリ使用率 {{ .Percent }}% がしきい値 {{ .Threshold }}% を超えました",
+      "usagePercent": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expiresOn": "{{ .Date }}（残り {{ .Days }} 日）",
+      "eventQuotaWarning": "⚠️ クライアント {{ .Email }} が通信量の {{ .Usage }} を使用しました",
+      "eventExpiryWarning": "⏳ クライアント {{ .Email }} の期限: {{ .Expires }}",
+      "ownQuotaWarning": "⚠️ 通信量の {{ .Usage }} を使用しました。接続を続けるにはプランを更新してください。",
+      "ownExpiryWarning": "⏳ プランの期限は {{ .Expires }} です。接続を続けるには更新してください。"
     },
     "buttons": {
       "closeKeyboard": "❌ キーボードを閉じる",
@@ -2834,13 +2844,17 @@
       "threshold": "しきい値",
       "reason": "理由",
       "time": "時刻",
-      "source": "送信元"
+      "source": "送信元",
+      "client": "クライアント",
+      "expires": "期限"
     },
     "values": {
       "uptime": "{{ .Days }}日 {{ .Hours }}時間",
       "traffic": "↑{{ .Up }}  ↓{{ .Down }}（合計: {{ .Total }}）",
       "counts": "合計: {{ .Total }} | 残りわずか: {{ .Depleting }} | 無効: {{ .Disabled }}",
-      "inbound": "プロトコル: `{{ .Protocol }}` | ポート: `{{ .Port }}` | クライアント: `{{ .Clients }}` | トラフィック: `↑{{ .Up }} ↓{{ .Down }}` | 状態: `{{ .State }}`"
+      "inbound": "プロトコル: `{{ .Protocol }}` | ポート: `{{ .Port }}` | クライアント: `{{ .Clients }}` | トラフィック: `↑{{ .Up }} ↓{{ .Down }}` | 状態: `{{ .State }}`",
+      "usage": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expires": "{{ .Date }}（残り {{ .Days }} 日）"
     },
     "alerts": {
       "outboundDown": "アウトバウンド停止",
@@ -2851,7 +2865,9 @@
       "cpuHigh": "CPU しきい値超過",
       "memoryHigh": "メモリしきい値超過",
       "loginSuccess": "ログイン成功",
-      "loginFailed": "ログイン失敗"
+      "loginFailed": "ログイン失敗",
+      "quotaWarning": "通信量の残りわずか",
+      "expiryWarning": "まもなく期限切れ"
     },
     "report": {
       "title": "📊 3x-ui ステータスレポート",
@@ -2904,7 +2920,10 @@
     "statusSuccess": "成功",
     "statusFailed": "失敗",
     "statusDown": "ダウン",
-    "statusUp": "アップ"
+    "statusUp": "アップ",
+    "labelClient": "クライアント",
+    "labelUsage": "使用量",
+    "labelExpires": "期限"
   },
   "commandPalette": {
     "title": "コマンドパレット",

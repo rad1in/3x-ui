@@ -383,6 +383,26 @@ export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProp
                   onChange={onNumber((v) => updateSetting({ trafficDiff: v }))}
                 />
               </SettingListItem>
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.quotaWarnPercent')}
+                badge={
+                  <DefaultSettingTag
+                    settingKey="quotaWarnPercent"
+                    value={allSetting.quotaWarnPercent}
+                  />
+                }
+                description={t('pages.settings.quotaWarnPercentDesc')}
+              >
+                <InputNumber
+                  value={allSetting.quotaWarnPercent}
+                  min={0}
+                  max={99}
+                  suffix="%"
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ quotaWarnPercent: v }))}
+                />
+              </SettingListItem>
             </>
           ),
         },

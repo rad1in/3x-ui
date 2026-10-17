@@ -1314,6 +1314,8 @@
       "expireTimeDiffDesc": "(فاصله زمانی هشدار تا رسیدن به زمان انقضا. (واحد: روز",
       "trafficDiff": "آستانه ترافیک باقی مانده",
       "trafficDiffDesc": "(فاصله زمانی هشدار تا رسیدن به اتمام ترافیک. (واحد: گیگابایت",
+      "quotaWarnPercent": "هشدار حجم",
+      "quotaWarnPercentDesc": "وقتی کاربر این درصد از حجم خود را مصرف کرد، یک بار هشدار داده می‌شود (۰ = خاموش). هشدار انقضا از آستانه‌ی تاریخ انقضای بالا استفاده می‌کند. تلگرام به حساب متصل خود کاربر هم پیام می‌دهد.",
       "tgNotifyCpu": "آستانه هشدار بار پردازنده",
       "tgNotifyCpuDesc": "(اگر بار روی پردازنده ازاین آستانه فراتر رفت، برای شما پیام ارسال می‌شود. (واحد: درصد",
       "timeZone": "منطقه زمانی",
@@ -1791,6 +1793,8 @@
       "eventClientExpired": "اعتبار کاربر تمام شد",
       "eventClientRenewed": "کاربر تمدید شد",
       "eventClientTrafficReset": "ترافیک صفر شد",
+      "eventClientQuotaWarning": "هشدار حجم",
+      "eventClientExpiryWarning": "هشدار انقضا",
       "testDiscordDesc": "ارسال یک اعلان آزمایشی برای بررسی توکن ربات و شناسه کانال",
       "discordNotInitialized": "سرویس دیسکورد راه‌اندازی نشده است",
       "discordBotNotEnabled": "ربات دیسکورد فعال نیست",
@@ -2740,7 +2744,13 @@
       "eventNodeDown": "نود {{ .Name }} قطع است",
       "eventNodeUp": "نود {{ .Name }} وصل است",
       "eventLoginFallback": "ورود ناموفق از {{ .Source }}",
-      "memoryThreshold": "مصرف حافظه {{ .Percent }}% از حد آستانه {{ .Threshold }}% فراتر رفته است"
+      "memoryThreshold": "مصرف حافظه {{ .Percent }}% از حد آستانه {{ .Threshold }}% فراتر رفته است",
+      "usagePercent": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expiresOn": "{{ .Date }} ({{ .Days }} روز مانده)",
+      "eventQuotaWarning": "⚠️ کاربر {{ .Email }} مقدار {{ .Usage }} از حجم خود را مصرف کرده است",
+      "eventExpiryWarning": "⏳ اعتبار کاربر {{ .Email }} در تاریخ {{ .Expires }} تمام می‌شود",
+      "ownQuotaWarning": "⚠️ شما {{ .Usage }} از حجم خود را مصرف کرده‌اید. برای قطع نشدن، سرویس خود را تمدید کنید.",
+      "ownExpiryWarning": "⏳ اعتبار سرویس شما در تاریخ {{ .Expires }} تمام می‌شود. برای قطع نشدن آن را تمدید کنید."
     },
     "buttons": {
       "closeKeyboard": "❌ بستن کیبورد",
@@ -2834,13 +2844,17 @@
       "threshold": "آستانه",
       "reason": "دلیل",
       "time": "زمان",
-      "source": "منبع"
+      "source": "منبع",
+      "client": "کاربر",
+      "expires": "انقضا"
     },
     "values": {
       "uptime": "{{ .Days }} روز {{ .Hours }} ساعت",
       "traffic": "↑{{ .Up }}  ↓{{ .Down }} (مجموع: {{ .Total }})",
       "counts": "مجموع: {{ .Total }} | در حال اتمام: {{ .Depleting }} | غیرفعال: {{ .Disabled }}",
-      "inbound": "پروتکل: `{{ .Protocol }}` | پورت: `{{ .Port }}` | کاربران: `{{ .Clients }}` | ترافیک: `↑{{ .Up }} ↓{{ .Down }}` | وضعیت: `{{ .State }}`"
+      "inbound": "پروتکل: `{{ .Protocol }}` | پورت: `{{ .Port }}` | کاربران: `{{ .Clients }}` | ترافیک: `↑{{ .Up }} ↓{{ .Down }}` | وضعیت: `{{ .State }}`",
+      "usage": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expires": "{{ .Date }} ({{ .Days }} روز مانده)"
     },
     "alerts": {
       "outboundDown": "خروجی از دسترس خارج شد",
@@ -2851,7 +2865,9 @@
       "cpuHigh": "عبور از آستانه پردازنده",
       "memoryHigh": "عبور از آستانه حافظه",
       "loginSuccess": "ورود موفق",
-      "loginFailed": "ورود ناموفق"
+      "loginFailed": "ورود ناموفق",
+      "quotaWarning": "حجم تقریباً تمام شده",
+      "expiryWarning": "اعتبار به‌زودی تمام می‌شود"
     },
     "report": {
       "title": "📊 گزارش وضعیت 3x-ui",
@@ -2904,7 +2920,10 @@
     "statusSuccess": "موفق",
     "statusFailed": "ناموفق",
     "statusDown": "قطع",
-    "statusUp": "وصل"
+    "statusUp": "وصل",
+    "labelClient": "کاربر",
+    "labelUsage": "مصرف",
+    "labelExpires": "انقضا"
   },
   "commandPalette": {
     "title": "پالت دستورات",

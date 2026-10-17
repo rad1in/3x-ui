@@ -2,12 +2,14 @@ package tgbot
 
 import (
 	"fmt"
+	"html"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/eventbus"
+	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 )
 
 var cachedHostname string
@@ -42,6 +44,40 @@ func (t *Tgbot) HandleEvent(e eventbus.Event) {
 	if msg != "" {
 		t.SendMsgToTgbotAdmins(msg)
 	}
+	t.notifyClientOwner(e)
+}
+
+// notifyClientOwner also tells the client, in its linked chat, that its plan runs low.
+func (t *Tgbot) notifyClientOwner(e eventbus.Event) {
+	if e.Type != eventbus.EventClientQuotaWarning && e.Type != eventbus.EventClientExpiryWarning {
+		return
+	}
+	data, ok := e.Data.(*eventbus.ClientEventData)
+	if !ok {
+		return
+	}
+	rec, err := t.clientService.GetRecordByEmail(nil, data.Email)
+	if err != nil || rec.TgID == 0 {
+		return
+	}
+	t.SendMsgToTgbot(rec.TgID, t.clientWarningText(e.Type, data, true))
+}
+
+func (t *Tgbot) clientWarningText(typ eventbus.EventType, d *eventbus.ClientEventData, own bool) string {
+	email := "Email==" + html.EscapeString(d.Email)
+	if typ == eventbus.EventClientQuotaWarning {
+		usage := "Usage==" + t.I18nBot("tgbot.messages.usagePercent", "Percent=="+strconv.Itoa(d.Percent),
+			"Used=="+common.FormatTraffic(d.Used()), "Total=="+common.FormatTraffic(d.Total))
+		if own {
+			return t.I18nBot("tgbot.messages.ownQuotaWarning", usage)
+		}
+		return t.I18nBot("tgbot.messages.eventQuotaWarning", email, usage)
+	}
+	expires := "Expires==" + t.I18nBot("tgbot.messages.expiresOn", "Date=="+d.ExpiryDate(), "Days=="+strconv.Itoa(d.DaysLeft))
+	if own {
+		return t.I18nBot("tgbot.messages.ownExpiryWarning", expires)
+	}
+	return t.I18nBot("tgbot.messages.eventExpiryWarning", email, expires)
 }
 
 func (t *Tgbot) isEventEnabled(eventType eventbus.EventType) bool {
@@ -132,6 +168,12 @@ func (t *Tgbot) formatEventMessage(e eventbus.Event) string {
 			return header + "🔴 " + t.I18nBot("tgbot.messages.memoryThreshold",
 				"Percent=="+strconv.FormatFloat(data.Percent, 'f', 2, 64),
 				"Threshold=="+strconv.Itoa(tgMemory))
+		}
+		return ""
+
+	case eventbus.EventClientQuotaWarning, eventbus.EventClientExpiryWarning:
+		if data, ok := e.Data.(*eventbus.ClientEventData); ok {
+			return header + t.clientWarningText(e.Type, data, false)
 		}
 		return ""
 

@@ -10,8 +10,10 @@ import type { AllSetting } from '@/models/setting';
 import { NotificationLayout } from './NotificationLayout';
 import { NotificationGroup } from './NotificationGroup';
 import type { NotificationGroupConfig } from './types';
+import { CLIENT_WARNING_GROUP } from './clientWarningGroup';
 
 const GROUPS: NotificationGroupConfig[] = [
+  CLIENT_WARNING_GROUP,
   {
     icon: <CloudServerOutlined />,
     title: 'eventGroupOutbound',

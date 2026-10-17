@@ -1310,6 +1310,8 @@
       "expireTimeDiffDesc": "Bu eşik seviyesine ulaşıldığında son kullanma tarihi hakkında bildirim almanızı sağlar. (birim: gün)",
       "trafficDiff": "Trafik Sınırı Bildirimi",
       "trafficDiffDesc": "Bu eşik seviyesine ulaşıldığında trafik sınırı hakkında bildirim almanızı sağlar. (birim: GB)",
+      "quotaWarnPercent": "Kota Uyarısı",
+      "quotaWarnPercentDesc": "İstemci kotasının bu yüzdesini kullandığında bir kez uyarır (0 = kapalı). Süre uyarısı yukarıdaki bitiş eşiğini kullanır. Telegram, istemcinin bağlı hesabına da yazar.",
       "tgNotifyCpu": "CPU Yükü Bildirimi",
       "tgNotifyCpuDesc": "CPU yükü bu eşik seviyesini aşarsa bildirim almanızı sağlar. (birim: %)",
       "timeZone": "Saat Dilimi",
@@ -1791,6 +1793,8 @@
       "eventClientExpired": "İstemcinin süresi doldu",
       "eventClientRenewed": "İstemci yenilendi",
       "eventClientTrafficReset": "Trafik sıfırlandı",
+      "eventClientQuotaWarning": "Kota uyarısı",
+      "eventClientExpiryWarning": "Süre uyarısı",
       "testDiscordDesc": "Bot belirtecinizi ve kanal kimliğinizi doğrulamak için bir test bildirimi gönderin",
       "discordNotInitialized": "Discord servisi başlatılmadı",
       "discordBotNotEnabled": "Discord botu etkin değil",
@@ -2740,7 +2744,13 @@
       "eventNodeDown": "{{ .Name }} düğümü ÇEVRİMDIŞI",
       "eventNodeUp": "{{ .Name }} düğümü ÇEVRİMİÇİ",
       "eventLoginFallback": "{{ .Source }} adresinden oturum açma başarısız",
-      "memoryThreshold": "Bellek kullanımı {{ .Percent }}% eşiği {{ .Threshold }}% aşıyor"
+      "memoryThreshold": "Bellek kullanımı {{ .Percent }}% eşiği {{ .Threshold }}% aşıyor",
+      "usagePercent": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expiresOn": "{{ .Date }} ({{ .Days }} gün kaldı)",
+      "eventQuotaWarning": "⚠️ {{ .Email }} istemcisi trafiğinin {{ .Usage }} kadarını kullandı",
+      "eventExpiryWarning": "⏳ {{ .Email }} istemcisinin süresi {{ .Expires }} tarihinde bitiyor",
+      "ownQuotaWarning": "⚠️ Trafiğinizin {{ .Usage }} kadarını kullandınız. Bağlı kalmak için paketinizi yenileyin.",
+      "ownExpiryWarning": "⏳ Paketiniz {{ .Expires }} tarihinde bitiyor. Bağlı kalmak için yenileyin."
     },
     "buttons": {
       "closeKeyboard": "❌ Klavyeyi Kapat",
@@ -2834,13 +2844,17 @@
       "threshold": "Eşik",
       "reason": "Neden",
       "time": "Zaman",
-      "source": "Kaynak"
+      "source": "Kaynak",
+      "client": "İstemci",
+      "expires": "Bitiş"
     },
     "values": {
       "uptime": "{{ .Days }}g {{ .Hours }}s",
       "traffic": "↑{{ .Up }}  ↓{{ .Down }} (Toplam: {{ .Total }})",
       "counts": "Toplam: {{ .Total }} | Tükenmek üzere: {{ .Depleting }} | Devre dışı: {{ .Disabled }}",
-      "inbound": "Protokol: `{{ .Protocol }}` | Port: `{{ .Port }}` | İstemciler: `{{ .Clients }}` | Trafik: `↑{{ .Up }} ↓{{ .Down }}` | Durum: `{{ .State }}`"
+      "inbound": "Protokol: `{{ .Protocol }}` | Port: `{{ .Port }}` | İstemciler: `{{ .Clients }}` | Trafik: `↑{{ .Up }} ↓{{ .Down }}` | Durum: `{{ .State }}`",
+      "usage": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expires": "{{ .Date }} ({{ .Days }} gün kaldı)"
     },
     "alerts": {
       "outboundDown": "Giden Bağlantı Kesildi",
@@ -2851,7 +2865,9 @@
       "cpuHigh": "CPU Eşiği Aşıldı",
       "memoryHigh": "Bellek Eşiği Aşıldı",
       "loginSuccess": "Giriş Başarılı",
-      "loginFailed": "Giriş Başarısız"
+      "loginFailed": "Giriş Başarısız",
+      "quotaWarning": "Trafik Neredeyse Bitti",
+      "expiryWarning": "Paket Yakında Bitiyor"
     },
     "report": {
       "title": "📊 3x-ui Durum Raporu",
@@ -2904,7 +2920,10 @@
     "statusSuccess": "BAŞARILI",
     "statusFailed": "BAŞARISIZ",
     "statusDown": "ÇEVRİMDIŞI",
-    "statusUp": "ÇEVRİMİÇİ"
+    "statusUp": "ÇEVRİMİÇİ",
+    "labelClient": "İstemci",
+    "labelUsage": "Kullanım",
+    "labelExpires": "Bitiş"
   },
   "commandPalette": {
     "title": "Komut Paleti",

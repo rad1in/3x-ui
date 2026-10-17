@@ -49,6 +49,13 @@ type ClientEventData struct {
 	DaysLeft   int    `json:"daysLeft,omitempty"`
 }
 
+func (d ClientEventData) Used() int64 { return d.Up + d.Down }
+
+// ExpiryDate is the expiry in the server's local time, as notifications print it.
+func (d ClientEventData) ExpiryDate() string {
+	return time.UnixMilli(d.ExpiryTime).Format("2006-01-02 15:04")
+}
+
 // Event is the unit of information flowing through the bus.
 type Event struct {
 	Type      EventType

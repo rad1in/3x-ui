@@ -148,6 +148,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "panelOutbound": {
         "type": "string"
       },
+      "quotaWarnPercent": {
+        "maximum": 99,
+        "minimum": 0,
+        "type": "integer"
+      },
       "realityScanCandidates": {
         "type": "string"
       },
@@ -638,6 +643,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "panelBrandLogo",
       "panelBrandName",
       "panelOutbound",
+      "quotaWarnPercent",
       "realityScanCandidates",
       "remarkTemplate",
       "restartXrayOnClientDisable",
@@ -955,6 +961,11 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "panelOutbound": {
         "type": "string"
+      },
+      "quotaWarnPercent": {
+        "maximum": 99,
+        "minimum": 0,
+        "type": "integer"
       },
       "realityScanCandidates": {
         "type": "string"
@@ -1455,6 +1466,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "panelBrandLogo",
       "panelBrandName",
       "panelOutbound",
+      "quotaWarnPercent",
       "realityScanCandidates",
       "remarkTemplate",
       "restartXrayOnClientDisable",

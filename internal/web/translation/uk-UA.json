@@ -1310,6 +1310,8 @@
       "expireTimeDiffDesc": "Отримувати сповіщення про термін дії при досягненні цього порогу. (одиниця: день)",
       "trafficDiff": "Повідомлення про обмеження трафіку",
       "trafficDiffDesc": "Отримувати сповіщення про обмеження трафіку при досягненні цього порогу. (одиниця: ГБ)",
+      "quotaWarnPercent": "Попередження про квоту",
+      "quotaWarnPercentDesc": "Попередити один раз, коли клієнт використає цей відсоток квоти (0 = вимк.). Попередження про закінчення використовує поріг дати вище. Telegram також пише на прив'язаний акаунт клієнта.",
       "tgNotifyCpu": "Сповіщення про завантаження ЦП",
       "tgNotifyCpuDesc": "Отримувати сповіщення, якщо навантаження ЦП перевищує це порогове значення. (одиниця: %)",
       "timeZone": "Часовий пояс",
@@ -1791,6 +1793,8 @@
       "eventClientExpired": "Термін клієнта минув",
       "eventClientRenewed": "Клієнта продовжено",
       "eventClientTrafficReset": "Трафік скинуто",
+      "eventClientQuotaWarning": "Попередження про квоту",
+      "eventClientExpiryWarning": "Попередження про закінчення",
       "testDiscordDesc": "Надіслати тестове сповіщення для перевірки токена бота та ID каналу",
       "discordNotInitialized": "Служба Discord не ініціалізована",
       "discordBotNotEnabled": "Discord-бот не увімкнено",
@@ -2740,7 +2744,13 @@
       "eventNodeDown": "Вузол {{ .Name }} НЕДОСТУПНИЙ",
       "eventNodeUp": "Вузол {{ .Name }} ДОСТУПНИЙ",
       "eventLoginFallback": "Невдала спроба входу з {{ .Source }}",
-      "memoryThreshold": "Використання пам'яті {{ .Percent }}% перевищує порогове значення {{ .Threshold }}%"
+      "memoryThreshold": "Використання пам'яті {{ .Percent }}% перевищує порогове значення {{ .Threshold }}%",
+      "usagePercent": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expiresOn": "{{ .Date }} (залишилось днів: {{ .Days }})",
+      "eventQuotaWarning": "⚠️ Клієнт {{ .Email }} використав {{ .Usage }} трафіку",
+      "eventExpiryWarning": "⏳ Клієнт {{ .Email }} закінчується {{ .Expires }}",
+      "ownQuotaWarning": "⚠️ Ви використали {{ .Usage }} трафіку. Продовжте тариф, щоб не втратити доступ.",
+      "ownExpiryWarning": "⏳ Ваш тариф закінчується {{ .Expires }}. Продовжте його, щоб не втратити доступ."
     },
     "buttons": {
       "closeKeyboard": "❌ Закрити клавіатуру",
@@ -2834,13 +2844,17 @@
       "threshold": "Поріг",
       "reason": "Причина",
       "time": "Час",
-      "source": "Джерело"
+      "source": "Джерело",
+      "client": "Клієнт",
+      "expires": "Закінчується"
     },
     "values": {
       "uptime": "{{ .Days }} д {{ .Hours }} год",
       "traffic": "↑{{ .Up }}  ↓{{ .Down }} (Всього: {{ .Total }})",
       "counts": "Всього: {{ .Total }} | Майже вичерпано: {{ .Depleting }} | Вимкнено: {{ .Disabled }}",
-      "inbound": "Протокол: `{{ .Protocol }}` | Порт: `{{ .Port }}` | Клієнти: `{{ .Clients }}` | Трафік: `↑{{ .Up }} ↓{{ .Down }}` | Стан: `{{ .State }}`"
+      "inbound": "Протокол: `{{ .Protocol }}` | Порт: `{{ .Port }}` | Клієнти: `{{ .Clients }}` | Трафік: `↑{{ .Up }} ↓{{ .Down }}` | Стан: `{{ .State }}`",
+      "usage": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expires": "{{ .Date }} (залишилось днів: {{ .Days }})"
     },
     "alerts": {
       "outboundDown": "Вихідне недоступне",
@@ -2851,7 +2865,9 @@
       "cpuHigh": "Перевищено поріг CPU",
       "memoryHigh": "Перевищено поріг пам'яті",
       "loginSuccess": "Успішний вхід",
-      "loginFailed": "Невдалий вхід"
+      "loginFailed": "Невдалий вхід",
+      "quotaWarning": "Трафік майже вичерпано",
+      "expiryWarning": "Тариф скоро закінчується"
     },
     "report": {
       "title": "📊 Звіт про стан 3x-ui",
@@ -2904,7 +2920,10 @@
     "statusSuccess": "УСПІШНО",
     "statusFailed": "НЕВДАЛО",
     "statusDown": "НЕДОСТУПНО",
-    "statusUp": "ДОСТУПНО"
+    "statusUp": "ДОСТУПНО",
+    "labelClient": "Клієнт",
+    "labelUsage": "Використано",
+    "labelExpires": "Закінчується"
   },
   "commandPalette": {
     "title": "Командний рядок",

@@ -81,6 +81,8 @@ var defaultValueMap = map[string]string{
 	"pageSize":                    "25",
 	"expireDiff":                  "0",
 	"trafficDiff":                 "0",
+	"quotaWarnPercent":            "80",
+	"clientWarningsSeeded":        "false",
 	"remarkTemplate":              DefaultRemarkTemplate,
 	"subShowIdentityOnAllLinks":   "false",
 	"subInfoNodeEnable":           "false",
@@ -272,7 +274,7 @@ var defaultValueMap = map[string]string{
 	"webhookEnable": "false",
 	"webhookUrls":   "",
 	"webhookSecret": "",
-	"webhookEvents": "client.created,client.deleted,client.depleted,client.expired,client.renewed",
+	"webhookEvents": "client.created,client.deleted,client.depleted,client.expired,client.renewed,client.quota_warning,client.expiry_warning",
 }
 
 // SettingService provides business logic for application settings management.
@@ -751,6 +753,10 @@ func (s *SettingService) GetExpireDiff() (int, error) {
 
 func (s *SettingService) GetTrafficDiff() (int, error) {
 	return s.getInt("trafficDiff")
+}
+
+func (s *SettingService) GetQuotaWarnPercent() (int, error) {
+	return s.getInt("quotaWarnPercent")
 }
 
 func (s *SettingService) GetSessionMaxAge() (int, error) {

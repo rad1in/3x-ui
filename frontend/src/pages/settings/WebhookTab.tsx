@@ -42,6 +42,8 @@ const GROUPS: NotificationGroupConfig[] = [
       { key: 'client.expired', label: 'eventClientExpired', settingKey: '' },
       { key: 'client.renewed', label: 'eventClientRenewed', settingKey: '' },
       { key: 'client.traffic_reset', label: 'eventClientTrafficReset', settingKey: '' },
+      { key: 'client.quota_warning', label: 'eventClientQuotaWarning', settingKey: '' },
+      { key: 'client.expiry_warning', label: 'eventClientExpiryWarning', settingKey: '' },
     ],
   },
   {

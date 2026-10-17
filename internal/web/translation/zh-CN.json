@@ -1310,6 +1310,8 @@
       "expireTimeDiffDesc": "达到此阈值时，将收到有关到期时间的通知（单位：天）",
       "trafficDiff": "流量耗尽阈值",
       "trafficDiffDesc": "达到此阈值时，将收到有关流量耗尽的通知（单位：GB）",
+      "quotaWarnPercent": "流量预警",
+      "quotaWarnPercentDesc": "客户端用到配额的这个百分比时提醒一次（0 = 关闭）。到期提醒使用上方的到期阈值。Telegram 还会发给客户端绑定的账号。",
       "tgNotifyCpu": "CPU 负载通知阈值",
       "tgNotifyCpuDesc": "CPU 负载超过此阈值时，将收到通知（单位：%）",
       "timeZone": "时区",
@@ -1791,6 +1793,8 @@
       "eventClientExpired": "客户端已过期",
       "eventClientRenewed": "客户端已续期",
       "eventClientTrafficReset": "流量已重置",
+      "eventClientQuotaWarning": "流量预警",
+      "eventClientExpiryWarning": "到期预警",
       "testDiscordDesc": "发送测试通知以验证您的机器人令牌和频道 ID",
       "discordNotInitialized": "Discord 服务未初始化",
       "discordBotNotEnabled": "Discord 机器人未启用",
@@ -2740,7 +2744,13 @@
       "eventNodeDown": "节点 {{ .Name }} 已离线",
       "eventNodeUp": "节点 {{ .Name }} 已上线",
       "eventLoginFallback": "来自 {{ .Source }} 的登录失败",
-      "memoryThreshold": "内存使用率 {{ .Percent }}% 超过阈值 {{ .Threshold }}%"
+      "memoryThreshold": "内存使用率 {{ .Percent }}% 超过阈值 {{ .Threshold }}%",
+      "usagePercent": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expiresOn": "{{ .Date }}（剩余 {{ .Days }} 天）",
+      "eventQuotaWarning": "⚠️ 客户端 {{ .Email }} 已使用 {{ .Usage }} 的流量",
+      "eventExpiryWarning": "⏳ 客户端 {{ .Email }} 将于 {{ .Expires }} 到期",
+      "ownQuotaWarning": "⚠️ 你已使用 {{ .Usage }} 的流量。请续费以保持连接。",
+      "ownExpiryWarning": "⏳ 你的套餐将于 {{ .Expires }} 到期。请续费以保持连接。"
     },
     "buttons": {
       "closeKeyboard": "❌ 关闭键盘",
@@ -2834,13 +2844,17 @@
       "threshold": "阈值",
       "reason": "原因",
       "time": "时间",
-      "source": "来源"
+      "source": "来源",
+      "client": "客户端",
+      "expires": "到期"
     },
     "values": {
       "uptime": "{{ .Days }}天 {{ .Hours }}小时",
       "traffic": "↑{{ .Up }}  ↓{{ .Down }}（总计：{{ .Total }}）",
       "counts": "总计：{{ .Total }} | 即将耗尽：{{ .Depleting }} | 已禁用：{{ .Disabled }}",
-      "inbound": "协议：`{{ .Protocol }}` | 端口：`{{ .Port }}` | 客户端：`{{ .Clients }}` | 流量：`↑{{ .Up }} ↓{{ .Down }}` | 状态：`{{ .State }}`"
+      "inbound": "协议：`{{ .Protocol }}` | 端口：`{{ .Port }}` | 客户端：`{{ .Clients }}` | 流量：`↑{{ .Up }} ↓{{ .Down }}` | 状态：`{{ .State }}`",
+      "usage": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expires": "{{ .Date }}（剩余 {{ .Days }} 天）"
     },
     "alerts": {
       "outboundDown": "出站已断开",
@@ -2851,7 +2865,9 @@
       "cpuHigh": "CPU 超出阈值",
       "memoryHigh": "内存超出阈值",
       "loginSuccess": "登录成功",
-      "loginFailed": "登录失败"
+      "loginFailed": "登录失败",
+      "quotaWarning": "流量即将用完",
+      "expiryWarning": "套餐即将到期"
     },
     "report": {
       "title": "📊 3x-ui 状态报告",
@@ -2904,7 +2920,10 @@
     "statusSuccess": "成功",
     "statusFailed": "失败",
     "statusDown": "断开",
-    "statusUp": "恢复"
+    "statusUp": "恢复",
+    "labelClient": "客户端",
+    "labelUsage": "用量",
+    "labelExpires": "到期"
   },
   "commandPalette": {
     "title": "命令面板",

@@ -1310,6 +1310,8 @@
       "expireTimeDiffDesc": "Dapatkan notifikasi tentang tanggal kedaluwarsa saat mencapai ambang batas ini. (unit: hari)",
       "trafficDiff": "Notifikasi Batas Traffic",
       "trafficDiffDesc": "Dapatkan notifikasi tentang batas traffic saat mencapai ambang batas ini. (unit: GB)",
+      "quotaWarnPercent": "Peringatan Kuota",
+      "quotaWarnPercentDesc": "Beri peringatan sekali saat klien memakai persentase ini dari kuotanya (0 = mati). Peringatan kedaluwarsa memakai ambang tanggal di atas. Telegram juga mengirim pesan ke akun terhubung klien.",
       "tgNotifyCpu": "Notifikasi Beban CPU",
       "tgNotifyCpuDesc": "Dapatkan notifikasi jika beban CPU melebihi ambang batas ini. (unit: %)",
       "timeZone": "Zone Waktu",
@@ -1791,6 +1793,8 @@
       "eventClientExpired": "Klien kedaluwarsa",
       "eventClientRenewed": "Klien diperpanjang",
       "eventClientTrafficReset": "Trafik direset",
+      "eventClientQuotaWarning": "Peringatan kuota",
+      "eventClientExpiryWarning": "Peringatan kedaluwarsa",
       "testDiscordDesc": "Kirim notifikasi uji untuk memverifikasi token bot dan ID saluran Anda",
       "discordNotInitialized": "Layanan Discord belum diinisialisasi",
       "discordBotNotEnabled": "Bot Discord belum diaktifkan",
@@ -2740,7 +2744,13 @@
       "eventNodeDown": "Node {{ .Name }} MATI",
       "eventNodeUp": "Node {{ .Name }} AKTIF",
       "eventLoginFallback": "Gagal masuk dari {{ .Source }}",
-      "memoryThreshold": "Penggunaan memori {{ .Percent }}% melebihi ambang batas {{ .Threshold }}%"
+      "memoryThreshold": "Penggunaan memori {{ .Percent }}% melebihi ambang batas {{ .Threshold }}%",
+      "usagePercent": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expiresOn": "{{ .Date }} (sisa {{ .Days }} hari)",
+      "eventQuotaWarning": "⚠️ Klien {{ .Email }} telah memakai {{ .Usage }} dari trafiknya",
+      "eventExpiryWarning": "⏳ Klien {{ .Email }} berakhir pada {{ .Expires }}",
+      "ownQuotaWarning": "⚠️ Anda telah memakai {{ .Usage }} dari trafik Anda. Perpanjang paket agar tetap terhubung.",
+      "ownExpiryWarning": "⏳ Paket Anda berakhir pada {{ .Expires }}. Perpanjang agar tetap terhubung."
     },
     "buttons": {
       "closeKeyboard": "❌ Tutup Papan Ketik",
@@ -2834,13 +2844,17 @@
       "threshold": "Ambang Batas",
       "reason": "Alasan",
       "time": "Waktu",
-      "source": "Sumber"
+      "source": "Sumber",
+      "client": "Klien",
+      "expires": "Berakhir"
     },
     "values": {
       "uptime": "{{ .Days }} hari {{ .Hours }} jam",
       "traffic": "↑{{ .Up }}  ↓{{ .Down }} (Total: {{ .Total }})",
       "counts": "Total: {{ .Total }} | Hampir habis: {{ .Depleting }} | Nonaktif: {{ .Disabled }}",
-      "inbound": "Protokol: `{{ .Protocol }}` | Port: `{{ .Port }}` | Klien: `{{ .Clients }}` | Lalu lintas: `↑{{ .Up }} ↓{{ .Down }}` | Status: `{{ .State }}`"
+      "inbound": "Protokol: `{{ .Protocol }}` | Port: `{{ .Port }}` | Klien: `{{ .Clients }}` | Lalu lintas: `↑{{ .Up }} ↓{{ .Down }}` | Status: `{{ .State }}`",
+      "usage": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expires": "{{ .Date }} (sisa {{ .Days }} hari)"
     },
     "alerts": {
       "outboundDown": "Outbound Mati",
@@ -2851,7 +2865,9 @@
       "cpuHigh": "Ambang Batas CPU Terlampaui",
       "memoryHigh": "Ambang Batas Memori Terlampaui",
       "loginSuccess": "Login Berhasil",
-      "loginFailed": "Login Gagal"
+      "loginFailed": "Login Gagal",
+      "quotaWarning": "Trafik Hampir Habis",
+      "expiryWarning": "Paket Segera Berakhir"
     },
     "report": {
       "title": "📊 Laporan Status 3x-ui",
@@ -2904,7 +2920,10 @@
     "statusSuccess": "BERHASIL",
     "statusFailed": "GAGAL",
     "statusDown": "MATI",
-    "statusUp": "AKTIF"
+    "statusUp": "AKTIF",
+    "labelClient": "Klien",
+    "labelUsage": "Pemakaian",
+    "labelExpires": "Berakhir"
   },
   "commandPalette": {
     "title": "Palet Perintah",

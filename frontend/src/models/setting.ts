@@ -20,6 +20,7 @@ export class AllSetting {
   pageSize = 25;
   expireDiff = 0;
   trafficDiff = 0;
+  quotaWarnPercent = 80;
   remarkTemplate = '{{INBOUND}}-{{EMAIL}}|📊{{TRAFFIC_LEFT}}|⏳{{DAYS_LEFT}}D';
   subShowIdentityOnAllLinks = false;
   subInfoNodeEnable = false;
@@ -201,7 +202,8 @@ export class AllSetting {
   webhookEnable = false;
   webhookUrls = '';
   webhookSecret = '';
-  webhookEvents = 'client.created,client.deleted,client.depleted,client.expired,client.renewed';
+  webhookEvents =
+    'client.created,client.deleted,client.depleted,client.expired,client.renewed,client.quota_warning,client.expiry_warning';
   hasWebhookSecret = false;
   clearWebhookSecret = false;
 

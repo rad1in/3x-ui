@@ -63,6 +63,7 @@ func migrationModels() []any {
 		&model.AuditLog{},
 		&model.SponsorRecord{},
 		&model.HostedPanel{},
+		&model.ClientWarning{},
 	}
 }
 

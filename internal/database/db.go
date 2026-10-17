@@ -91,6 +91,7 @@ func allModels() []any {
 		&model.AuditLog{},
 		&model.SponsorRecord{},
 		&model.HostedPanel{},
+		&model.ClientWarning{},
 	}
 }
 

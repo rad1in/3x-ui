@@ -1310,6 +1310,8 @@
       "expireTimeDiffDesc": "Receba notificações sobre a data de expiração ao atingir esse limite. (unidade: dia)",
       "trafficDiff": "Notificação de Limite de Tráfego",
       "trafficDiffDesc": "Receba notificações sobre o limite de tráfego ao atingir esse limite. (unidade: GB)",
+      "quotaWarnPercent": "Aviso de cota",
+      "quotaWarnPercentDesc": "Avisa uma vez quando o cliente usa esta porcentagem da cota (0 = desligado). O aviso de expiração usa o limite de data acima. O Telegram também envia à conta vinculada do cliente.",
       "tgNotifyCpu": "Notificação de Carga da CPU",
       "tgNotifyCpuDesc": "Receba notificações se a carga da CPU ultrapassar esse limite. (unidade: %)",
       "timeZone": "Fuso Horário",
@@ -1791,6 +1793,8 @@
       "eventClientExpired": "Cliente expirado",
       "eventClientRenewed": "Cliente renovado",
       "eventClientTrafficReset": "Tráfego zerado",
+      "eventClientQuotaWarning": "Aviso de cota",
+      "eventClientExpiryWarning": "Aviso de expiração",
       "testDiscordDesc": "Enviar uma notificação de teste para verificar o token do bot e o ID do canal",
       "discordNotInitialized": "Serviço Discord não inicializado",
       "discordBotNotEnabled": "Bot do Discord não está ativado",
@@ -2740,7 +2744,13 @@
       "eventNodeDown": "O nó {{ .Name }} está INATIVO",
       "eventNodeUp": "O nó {{ .Name }} está ATIVO",
       "eventLoginFallback": "Falha de login a partir de {{ .Source }}",
-      "memoryThreshold": "Uso de memória {{ .Percent }}% excede o limite de {{ .Threshold }}%"
+      "memoryThreshold": "Uso de memória {{ .Percent }}% excede o limite de {{ .Threshold }}%",
+      "usagePercent": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expiresOn": "{{ .Date }} (faltam {{ .Days }} dias)",
+      "eventQuotaWarning": "⚠️ O cliente {{ .Email }} usou {{ .Usage }} do tráfego",
+      "eventExpiryWarning": "⏳ O cliente {{ .Email }} expira em {{ .Expires }}",
+      "ownQuotaWarning": "⚠️ Você usou {{ .Usage }} do seu tráfego. Renove o plano para continuar conectado.",
+      "ownExpiryWarning": "⏳ Seu plano expira em {{ .Expires }}. Renove para continuar conectado."
     },
     "buttons": {
       "closeKeyboard": "❌ Fechar teclado",
@@ -2834,13 +2844,17 @@
       "threshold": "Limite",
       "reason": "Motivo",
       "time": "Horário",
-      "source": "Origem"
+      "source": "Origem",
+      "client": "Cliente",
+      "expires": "Expira"
     },
     "values": {
       "uptime": "{{ .Days }}d {{ .Hours }}h",
       "traffic": "↑{{ .Up }}  ↓{{ .Down }} (Total: {{ .Total }})",
       "counts": "Total: {{ .Total }} | Esgotando: {{ .Depleting }} | Desativados: {{ .Disabled }}",
-      "inbound": "Protocolo: `{{ .Protocol }}` | Porta: `{{ .Port }}` | Clientes: `{{ .Clients }}` | Tráfego: `↑{{ .Up }} ↓{{ .Down }}` | Estado: `{{ .State }}`"
+      "inbound": "Protocolo: `{{ .Protocol }}` | Porta: `{{ .Port }}` | Clientes: `{{ .Clients }}` | Tráfego: `↑{{ .Up }} ↓{{ .Down }}` | Estado: `{{ .State }}`",
+      "usage": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expires": "{{ .Date }} (faltam {{ .Days }} dias)"
     },
     "alerts": {
       "outboundDown": "Saída fora do ar",
@@ -2851,7 +2865,9 @@
       "cpuHigh": "Limite de CPU excedido",
       "memoryHigh": "Limite de memória excedido",
       "loginSuccess": "Login bem-sucedido",
-      "loginFailed": "Falha no login"
+      "loginFailed": "Falha no login",
+      "quotaWarning": "Tráfego quase esgotado",
+      "expiryWarning": "Plano expirando em breve"
     },
     "report": {
       "title": "📊 Relatório de status do 3x-ui",
@@ -2904,7 +2920,10 @@
     "statusSuccess": "SUCESSO",
     "statusFailed": "FALHOU",
     "statusDown": "INATIVO",
-    "statusUp": "ATIVO"
+    "statusUp": "ATIVO",
+    "labelClient": "Cliente",
+    "labelUsage": "Uso",
+    "labelExpires": "Expira"
   },
   "commandPalette": {
     "title": "Paleta de comandos",

@@ -1310,6 +1310,8 @@
       "expireTimeDiffDesc": "استقبل تنبيه قبل ما توصل لتاريخ الانتهاء بالمدة المحددة. (الوحدة: يوم)",
       "trafficDiff": "تنبيه حد الترافيك",
       "trafficDiffDesc": "استقبل تنبيه عند وصول الترافيك للحد المحدد. (الوحدة: جيجابايت)",
+      "quotaWarnPercent": "تحذير الحصة",
+      "quotaWarnPercentDesc": "ينبّه مرة واحدة عندما يستخدم العميل هذه النسبة من حصته (0 = متوقف). يستخدم تحذير الانتهاء حد تاريخ الانتهاء أعلاه. يراسل تيليجرام أيضًا حساب العميل المرتبط.",
       "tgNotifyCpu": "تنبيه حمل المعالج",
       "tgNotifyCpuDesc": "استقبل تنبيه لو حمل المعالج عدى الحد المحدد. (الوحدة: %)",
       "timeZone": "المنطقة الزمنية",
@@ -1791,6 +1793,8 @@
       "eventClientExpired": "انتهت صلاحية العميل",
       "eventClientRenewed": "تم تجديد العميل",
       "eventClientTrafficReset": "تمت إعادة تعيين الترافيك",
+      "eventClientQuotaWarning": "تحذير الحصة",
+      "eventClientExpiryWarning": "تحذير الانتهاء",
       "testDiscordDesc": "إرسال إشعار تجريبي للتحقق من رمز البوت ومعرّف القناة",
       "discordNotInitialized": "خدمة ديسكورد غير مهيأة",
       "discordBotNotEnabled": "بوت ديسكورد غير مفعّل",
@@ -2740,7 +2744,13 @@
       "eventNodeDown": "العقدة {{ .Name }} غير متصلة",
       "eventNodeUp": "العقدة {{ .Name }} متصلة",
       "eventLoginFallback": "فشل تسجيل الدخول من {{ .Source }}",
-      "memoryThreshold": "استخدام الذاكرة {{ .Percent }}% يتجاوز الحد {{ .Threshold }}%"
+      "memoryThreshold": "استخدام الذاكرة {{ .Percent }}% يتجاوز الحد {{ .Threshold }}%",
+      "usagePercent": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expiresOn": "{{ .Date }} (متبقٍ {{ .Days }} يوم)",
+      "eventQuotaWarning": "⚠️ استخدم العميل {{ .Email }} ‏{{ .Usage }} من حصته",
+      "eventExpiryWarning": "⏳ ينتهي اشتراك العميل {{ .Email }} في {{ .Expires }}",
+      "ownQuotaWarning": "⚠️ لقد استخدمت {{ .Usage }} من حصتك. جدّد اشتراكك لتبقى متصلًا.",
+      "ownExpiryWarning": "⏳ ينتهي اشتراكك في {{ .Expires }}. جدّده لتبقى متصلًا."
     },
     "buttons": {
       "closeKeyboard": "❌ اقفل الكيبورد",
@@ -2834,13 +2844,17 @@
       "threshold": "الحد",
       "reason": "السبب",
       "time": "الوقت",
-      "source": "المصدر"
+      "source": "المصدر",
+      "client": "العميل",
+      "expires": "ينتهي"
     },
     "values": {
       "uptime": "{{ .Days }} يوم {{ .Hours }} ساعة",
       "traffic": "↑{{ .Up }}  ↓{{ .Down }} (الإجمالي: {{ .Total }})",
       "counts": "الإجمالي: {{ .Total }} | قارب على النفاد: {{ .Depleting }} | معطّل: {{ .Disabled }}",
-      "inbound": "البروتوكول: `{{ .Protocol }}` | المنفذ: `{{ .Port }}` | العملاء: `{{ .Clients }}` | حركة المرور: `↑{{ .Up }} ↓{{ .Down }}` | الحالة: `{{ .State }}`"
+      "inbound": "البروتوكول: `{{ .Protocol }}` | المنفذ: `{{ .Port }}` | العملاء: `{{ .Clients }}` | حركة المرور: `↑{{ .Up }} ↓{{ .Down }}` | الحالة: `{{ .State }}`",
+      "usage": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expires": "{{ .Date }} (متبقٍ {{ .Days }} يوم)"
     },
     "alerts": {
       "outboundDown": "الصادر متوقف",
@@ -2851,7 +2865,9 @@
       "cpuHigh": "تم تجاوز حد المعالج",
       "memoryHigh": "تم تجاوز حد الذاكرة",
       "loginSuccess": "تسجيل دخول ناجح",
-      "loginFailed": "فشل تسجيل الدخول"
+      "loginFailed": "فشل تسجيل الدخول",
+      "quotaWarning": "الترافيك على وشك النفاد",
+      "expiryWarning": "الاشتراك ينتهي قريبًا"
     },
     "report": {
       "title": "📊 تقرير حالة 3x-ui",
@@ -2904,7 +2920,10 @@
     "statusSuccess": "نجاح",
     "statusFailed": "فشل",
     "statusDown": "غير متصل",
-    "statusUp": "متصل"
+    "statusUp": "متصل",
+    "labelClient": "العميل",
+    "labelUsage": "الاستخدام",
+    "labelExpires": "ينتهي"
   },
   "commandPalette": {
     "title": "لوحة الأوامر",

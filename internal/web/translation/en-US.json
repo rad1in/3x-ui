@@ -1432,6 +1432,8 @@
       "expireTimeDiffDesc": "Get notified about expiration date when reaching this threshold. (unit: day)",
       "trafficDiff": "Traffic Cap Notification",
       "trafficDiffDesc": "Get notified about traffic cap when reaching this threshold. (unit: GB)",
+      "quotaWarnPercent": "Quota Warning",
+      "quotaWarnPercentDesc": "Warn once when a client has used this percent of its traffic quota (0 = off). The expiry warning uses the expiration threshold above. Telegram also messages the client's linked account.",
       "tgNotifyCpu": "CPU Load Notification",
       "tgNotifyCpuDesc": "Get notified if CPU load exceeds this threshold. (unit: %)",
       "timeZone": "Time Zone",
@@ -1909,6 +1911,8 @@
       "eventClientExpired": "Client expired",
       "eventClientRenewed": "Client renewed",
       "eventClientTrafficReset": "Traffic reset",
+      "eventClientQuotaWarning": "Quota warning",
+      "eventClientExpiryWarning": "Expiry warning",
       "testDiscordDesc": "Send a test notification to verify your bot token and channel ID",
       "discordNotInitialized": "Discord service not initialized",
       "discordBotNotEnabled": "Discord bot is not enabled",
@@ -2740,7 +2744,13 @@
       "eventNodeDown": "Node {{ .Name }} is DOWN",
       "eventNodeUp": "Node {{ .Name }} is UP",
       "eventLoginFallback": "Login failed from {{ .Source }}",
-      "memoryThreshold": "Memory Load {{ .Percent }}% exceeds the threshold of {{ .Threshold }}%"
+      "memoryThreshold": "Memory Load {{ .Percent }}% exceeds the threshold of {{ .Threshold }}%",
+      "usagePercent": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expiresOn": "{{ .Date }} ({{ .Days }} days left)",
+      "eventQuotaWarning": "⚠️ Client {{ .Email }} has used {{ .Usage }} of their traffic",
+      "eventExpiryWarning": "⏳ Client {{ .Email }} expires on {{ .Expires }}",
+      "ownQuotaWarning": "⚠️ You have used {{ .Usage }} of your traffic. Renew your plan to stay connected.",
+      "ownExpiryWarning": "⏳ Your plan expires on {{ .Expires }}. Renew it to stay connected."
     },
     "buttons": {
       "closeKeyboard": "❌ Close Keyboard",
@@ -2834,13 +2844,17 @@
       "threshold": "Threshold",
       "reason": "Reason",
       "time": "Time",
-      "source": "Source"
+      "source": "Source",
+      "client": "Client",
+      "expires": "Expires"
     },
     "values": {
       "uptime": "{{ .Days }}d {{ .Hours }}h",
       "traffic": "↑{{ .Up }}  ↓{{ .Down }} (Total: {{ .Total }})",
       "counts": "Total: {{ .Total }} | Depleting: {{ .Depleting }} | Disabled: {{ .Disabled }}",
-      "inbound": "Protocol: `{{ .Protocol }}` | Port: `{{ .Port }}` | Clients: `{{ .Clients }}` | Traffic: `↑{{ .Up }} ↓{{ .Down }}` | State: `{{ .State }}`"
+      "inbound": "Protocol: `{{ .Protocol }}` | Port: `{{ .Port }}` | Clients: `{{ .Clients }}` | Traffic: `↑{{ .Up }} ↓{{ .Down }}` | State: `{{ .State }}`",
+      "usage": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expires": "{{ .Date }} ({{ .Days }} days left)"
     },
     "alerts": {
       "outboundDown": "Outbound Down",
@@ -2851,7 +2865,9 @@
       "cpuHigh": "CPU Threshold Exceeded",
       "memoryHigh": "Memory Threshold Exceeded",
       "loginSuccess": "Login Success",
-      "loginFailed": "Login Failed"
+      "loginFailed": "Login Failed",
+      "quotaWarning": "Traffic Almost Used Up",
+      "expiryWarning": "Plan Expiring Soon"
     },
     "report": {
       "title": "📊 3x-ui Status Report",
@@ -2904,7 +2920,10 @@
     "statusSuccess": "SUCCESS",
     "statusFailed": "FAILED",
     "statusDown": "DOWN",
-    "statusUp": "UP"
+    "statusUp": "UP",
+    "labelClient": "Client",
+    "labelUsage": "Usage",
+    "labelExpires": "Expires"
   },
   "commandPalette": {
     "title": "Command Palette",

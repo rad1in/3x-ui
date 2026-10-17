@@ -1310,6 +1310,8 @@
       "expireTimeDiffDesc": "Nhận thông báo về việc hết hạn tài khoản trước ngưỡng này (đơn vị: ngày)",
       "trafficDiff": "Ngưỡng lưu lượng cho thông báo",
       "trafficDiffDesc": "Nhận thông báo về việc cạn kiệt lưu lượng trước khi đạt đến ngưỡng này (đơn vị: GB)",
+      "quotaWarnPercent": "Cảnh báo hạn mức",
+      "quotaWarnPercentDesc": "Cảnh báo một lần khi khách hàng dùng hết tỷ lệ này của hạn mức (0 = tắt). Cảnh báo hết hạn dùng ngưỡng ngày ở trên. Telegram cũng nhắn tới tài khoản đã liên kết của khách hàng.",
       "tgNotifyCpu": "Ngưỡng cảnh báo tỷ lệ CPU",
       "tgNotifyCpuDesc": "Nhận thông báo nếu tỷ lệ sử dụng CPU vượt quá ngưỡng này (đơn vị: %)",
       "timeZone": "Múi giờ",
@@ -1791,6 +1793,8 @@
       "eventClientExpired": "Khách hàng hết hạn",
       "eventClientRenewed": "Khách hàng được gia hạn",
       "eventClientTrafficReset": "Đã đặt lại lưu lượng",
+      "eventClientQuotaWarning": "Cảnh báo hạn mức",
+      "eventClientExpiryWarning": "Cảnh báo hết hạn",
       "testDiscordDesc": "Gửi thông báo thử nghiệm để xác minh token bot và ID kênh",
       "discordNotInitialized": "Dịch vụ Discord chưa được khởi tạo",
       "discordBotNotEnabled": "Bot Discord chưa được bật",
@@ -2740,7 +2744,13 @@
       "eventNodeDown": "Node {{ .Name }} đã NGỪNG HOẠT ĐỘNG",
       "eventNodeUp": "Node {{ .Name }} đã HOẠT ĐỘNG",
       "eventLoginFallback": "Đăng nhập thất bại từ {{ .Source }}",
-      "memoryThreshold": "Sử dụng bộ nhớ {{ .Percent }}% vượt quá ngưỡng {{ .Threshold }}%"
+      "memoryThreshold": "Sử dụng bộ nhớ {{ .Percent }}% vượt quá ngưỡng {{ .Threshold }}%",
+      "usagePercent": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expiresOn": "{{ .Date }} (còn {{ .Days }} ngày)",
+      "eventQuotaWarning": "⚠️ Khách hàng {{ .Email }} đã dùng {{ .Usage }} lưu lượng",
+      "eventExpiryWarning": "⏳ Khách hàng {{ .Email }} hết hạn vào {{ .Expires }}",
+      "ownQuotaWarning": "⚠️ Bạn đã dùng {{ .Usage }} lưu lượng. Hãy gia hạn gói để tiếp tục kết nối.",
+      "ownExpiryWarning": "⏳ Gói của bạn hết hạn vào {{ .Expires }}. Hãy gia hạn để tiếp tục kết nối."
     },
     "buttons": {
       "closeKeyboard": "❌ Đóng Bàn Phím",
@@ -2834,13 +2844,17 @@
       "threshold": "Ngưỡng",
       "reason": "Lý do",
       "time": "Thời gian",
-      "source": "Nguồn"
+      "source": "Nguồn",
+      "client": "Khách hàng",
+      "expires": "Hết hạn"
     },
     "values": {
       "uptime": "{{ .Days }} ngày {{ .Hours }} giờ",
       "traffic": "↑{{ .Up }}  ↓{{ .Down }} (Tổng: {{ .Total }})",
       "counts": "Tổng: {{ .Total }} | Sắp hết: {{ .Depleting }} | Đã tắt: {{ .Disabled }}",
-      "inbound": "Giao thức: `{{ .Protocol }}` | Cổng: `{{ .Port }}` | Máy khách: `{{ .Clients }}` | Lưu lượng: `↑{{ .Up }} ↓{{ .Down }}` | Trạng thái: `{{ .State }}`"
+      "inbound": "Giao thức: `{{ .Protocol }}` | Cổng: `{{ .Port }}` | Máy khách: `{{ .Clients }}` | Lưu lượng: `↑{{ .Up }} ↓{{ .Down }}` | Trạng thái: `{{ .State }}`",
+      "usage": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expires": "{{ .Date }} (còn {{ .Days }} ngày)"
     },
     "alerts": {
       "outboundDown": "Outbound ngừng hoạt động",
@@ -2851,7 +2865,9 @@
       "cpuHigh": "Vượt ngưỡng CPU",
       "memoryHigh": "Vượt ngưỡng bộ nhớ",
       "loginSuccess": "Đăng nhập thành công",
-      "loginFailed": "Đăng nhập thất bại"
+      "loginFailed": "Đăng nhập thất bại",
+      "quotaWarning": "Sắp hết lưu lượng",
+      "expiryWarning": "Gói sắp hết hạn"
     },
     "report": {
       "title": "📊 Báo cáo trạng thái 3x-ui",
@@ -2904,7 +2920,10 @@
     "statusSuccess": "THÀNH CÔNG",
     "statusFailed": "THẤT BẠI",
     "statusDown": "NGỪNG HOẠT ĐỘNG",
-    "statusUp": "HOẠT ĐỘNG"
+    "statusUp": "HOẠT ĐỘNG",
+    "labelClient": "Khách hàng",
+    "labelUsage": "Đã dùng",
+    "labelExpires": "Hết hạn"
   },
   "commandPalette": {
     "title": "Bảng lệnh",

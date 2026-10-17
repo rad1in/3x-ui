@@ -1310,6 +1310,8 @@
       "expireTimeDiffDesc": "Reciba notificaciones sobre la expiración de la cuenta antes del umbral (unidad: días).",
       "trafficDiff": "Umbral de Tráfico para Notificación",
       "trafficDiffDesc": "Reciba notificaciones sobre el agotamiento del tráfico antes de alcanzar el umbral (unidad: GB).",
+      "quotaWarnPercent": "Aviso de cuota",
+      "quotaWarnPercentDesc": "Avisa una vez cuando un cliente ha usado este porcentaje de su cuota (0 = desactivado). El aviso de vencimiento usa el umbral de fecha de arriba. Telegram también escribe a la cuenta vinculada del cliente.",
       "tgNotifyCpu": "Umbral de Alerta de Porcentaje de CPU",
       "tgNotifyCpuDesc": "Reciba notificaciones si el uso de la CPU supera este umbral (unidad: %).",
       "timeZone": "Zona Horaria",
@@ -1791,6 +1793,8 @@
       "eventClientExpired": "Cliente caducado",
       "eventClientRenewed": "Cliente renovado",
       "eventClientTrafficReset": "Tráfico reiniciado",
+      "eventClientQuotaWarning": "Aviso de cuota",
+      "eventClientExpiryWarning": "Aviso de vencimiento",
       "testDiscordDesc": "Enviar una notificación de prueba para verificar el token del bot y el ID del canal",
       "discordNotInitialized": "Servicio de Discord no inicializado",
       "discordBotNotEnabled": "El bot de Discord no está habilitado",
@@ -2740,7 +2744,13 @@
       "eventNodeDown": "El nodo {{ .Name }} está CAÍDO",
       "eventNodeUp": "El nodo {{ .Name }} está ACTIVO",
       "eventLoginFallback": "Inicio de sesión fallido desde {{ .Source }}",
-      "memoryThreshold": "Uso de memoria {{ .Percent }}% supera el umbral de {{ .Threshold }}%"
+      "memoryThreshold": "Uso de memoria {{ .Percent }}% supera el umbral de {{ .Threshold }}%",
+      "usagePercent": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expiresOn": "{{ .Date }} (quedan {{ .Days }} días)",
+      "eventQuotaWarning": "⚠️ El cliente {{ .Email }} ha usado {{ .Usage }} de su tráfico",
+      "eventExpiryWarning": "⏳ El cliente {{ .Email }} vence el {{ .Expires }}",
+      "ownQuotaWarning": "⚠️ Has usado {{ .Usage }} de tu tráfico. Renueva tu plan para seguir conectado.",
+      "ownExpiryWarning": "⏳ Tu plan vence el {{ .Expires }}. Renuévalo para seguir conectado."
     },
     "buttons": {
       "closeKeyboard": "❌ Cerrar Teclado",
@@ -2834,13 +2844,17 @@
       "threshold": "Umbral",
       "reason": "Motivo",
       "time": "Hora",
-      "source": "Origen"
+      "source": "Origen",
+      "client": "Cliente",
+      "expires": "Vence"
     },
     "values": {
       "uptime": "{{ .Days }} d {{ .Hours }} h",
       "traffic": "↑{{ .Up }}  ↓{{ .Down }} (Total: {{ .Total }})",
       "counts": "Total: {{ .Total }} | Por agotarse: {{ .Depleting }} | Deshabilitados: {{ .Disabled }}",
-      "inbound": "Protocolo: `{{ .Protocol }}` | Puerto: `{{ .Port }}` | Clientes: `{{ .Clients }}` | Tráfico: `↑{{ .Up }} ↓{{ .Down }}` | Estado: `{{ .State }}`"
+      "inbound": "Protocolo: `{{ .Protocol }}` | Puerto: `{{ .Port }}` | Clientes: `{{ .Clients }}` | Tráfico: `↑{{ .Up }} ↓{{ .Down }}` | Estado: `{{ .State }}`",
+      "usage": "{{ .Percent }}% ({{ .Used }} / {{ .Total }})",
+      "expires": "{{ .Date }} (quedan {{ .Days }} días)"
     },
     "alerts": {
       "outboundDown": "Salida caída",
@@ -2851,7 +2865,9 @@
       "cpuHigh": "Umbral de CPU superado",
       "memoryHigh": "Umbral de memoria superado",
       "loginSuccess": "Inicio de sesión correcto",
-      "loginFailed": "Inicio de sesión fallido"
+      "loginFailed": "Inicio de sesión fallido",
+      "quotaWarning": "Tráfico casi agotado",
+      "expiryWarning": "El plan vence pronto"
     },
     "report": {
       "title": "📊 Informe de estado de 3x-ui",
@@ -2904,7 +2920,10 @@
     "statusSuccess": "CORRECTO",
     "statusFailed": "FALLIDO",
     "statusDown": "CAÍDO",
-    "statusUp": "ACTIVO"
+    "statusUp": "ACTIVO",
+    "labelClient": "Cliente",
+    "labelUsage": "Uso",
+    "labelExpires": "Vence"
   },
   "commandPalette": {
     "title": "Paleta de comandos",
