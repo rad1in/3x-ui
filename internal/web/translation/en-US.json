@@ -308,7 +308,15 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Keep this machine's settings",
-      "importKeepHostSettingsDesc": "Keeps this panel's listen addresses, ports, base path, certificates and node identity instead of taking them from the uploaded file."
+      "importKeepHostSettingsDesc": "Keeps this panel's listen addresses, ports, base path, certificates and node identity instead of taking them from the uploaded file.",
+      "hosted": {
+        "title": "Your plan",
+        "expires": "Expires",
+        "ports": "Allowed ports",
+        "blockedTraffic": "This panel has used all of its traffic. Contact your provider to renew it.",
+        "blockedExpired": "This panel has expired. Contact your provider to renew it.",
+        "blockedNoLimits": "This panel's plan could not be read, so it is paused. Contact your provider."
+      }
     },
     "inbounds": {
       "totalDownUp": "Total Sent/Received",

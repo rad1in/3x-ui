@@ -757,6 +757,16 @@ export const HostGroupSchema = z.object({
 });
 export type HostGroup = z.infer<typeof HostGroupSchema>;
 
+export const HostedViewSchema = z.object({
+  blocked: z.string(),
+  clients: z.number().int(),
+  enabled: z.boolean(),
+  inbounds: z.number().int(),
+  limits: z.lazy(() => LimitsSchema),
+  usedBytes: z.number().int(),
+});
+export type HostedView = z.infer<typeof HostedViewSchema>;
+
 export const HwidSlotStatusSchema = z.object({
   active: z.boolean(),
   full: z.boolean(),
@@ -849,6 +859,17 @@ export const InboundTrafficSummarySchema = z.object({
   up: z.number().int(),
 });
 export type InboundTrafficSummary = z.infer<typeof InboundTrafficSummarySchema>;
+
+export const LimitsSchema = z.object({
+  expiresAt: z.number().int(),
+  maxClients: z.number().int(),
+  maxInbounds: z.number().int(),
+  portMax: z.number().int(),
+  portMin: z.number().int(),
+  trafficBytes: z.number().int(),
+  usageEpoch: z.number().int(),
+});
+export type Limits = z.infer<typeof LimitsSchema>;
 
 export const LogEntrySchema = z.object({
   DateTime: z.string(),

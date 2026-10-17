@@ -2098,6 +2098,22 @@ export const sections: readonly Section[] = [
   },
 
   {
+    id: 'hosted',
+    title: 'Hosted Panel',
+    description:
+      'A panel the owner of this server runs for someone else. Its inbound, client, port, traffic and expiry limits are set by the owner and cannot be changed from inside the panel.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/hosted/status',
+        summary:
+          "This panel's limits and usage. enabled is false on an ordinary panel. blocked is expired, traffic or no-limits while Xray is held stopped, otherwise empty. Zero limits mean unlimited.",
+        responseSchema: 'HostedView',
+      },
+    ],
+  },
+
+  {
     id: 'sponsors',
     title: 'Sponsors',
     description:

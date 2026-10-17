@@ -793,6 +793,22 @@ export const EXAMPLES: Record<string, unknown> = {
     "verifyPeerCertByName": "",
     "vlessRoute": ""
   },
+  "HostedView": {
+    "blocked": "",
+    "clients": 40,
+    "enabled": true,
+    "inbounds": 2,
+    "limits": {
+      "expiresAt": 0,
+      "maxClients": 0,
+      "maxInbounds": 0,
+      "portMax": 0,
+      "portMin": 0,
+      "trafficBytes": 0,
+      "usageEpoch": 0
+    },
+    "usedBytes": 1073741824
+  },
   "HwidSlotStatus": {
     "active": true,
     "full": false,
@@ -893,6 +909,15 @@ export const EXAMPLES: Record<string, unknown> = {
     "id": 1,
     "total": 10737418240,
     "up": 1048576
+  },
+  "Limits": {
+    "expiresAt": 0,
+    "maxClients": 0,
+    "maxInbounds": 0,
+    "portMax": 0,
+    "portMin": 0,
+    "trafficBytes": 0,
+    "usageEpoch": 0
   },
   "LogEntry": {
     "DateTime": "2025-01-01T12:00:00Z",

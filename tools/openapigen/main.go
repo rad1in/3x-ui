@@ -113,7 +113,12 @@ func run(root, outDir string) error {
 				"PeerActivity",
 				"HwidSlotStatus",
 				"AuditLogPage",
+				"HostedView",
 			),
+		},
+		{
+			Path:        resolveRel(root, "internal/hosted"),
+			StructAllow: setOf("Limits"),
 		},
 		{
 			Path:        resolveRel(root, "internal/web/service/panel"),

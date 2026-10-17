@@ -308,7 +308,15 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "保留本机设置",
-      "importKeepHostSettingsDesc": "保留本面板的监听地址、端口、基础路径、证书和节点身份，而不是使用上传文件中的值。"
+      "importKeepHostSettingsDesc": "保留本面板的监听地址、端口、基础路径、证书和节点身份，而不是使用上传文件中的值。",
+      "hosted": {
+        "title": "你的套餐",
+        "expires": "到期时间",
+        "ports": "允许的端口",
+        "blockedTraffic": "此面板的流量已用完。请联系你的服务商续费。",
+        "blockedExpired": "此面板已到期。请联系你的服务商续费。",
+        "blockedNoLimits": "无法读取此面板的套餐，面板已暂停。请联系你的服务商。"
+      }
     },
     "inbounds": {
       "totalDownUp": "总上传 / 下载",

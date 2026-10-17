@@ -308,7 +308,15 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "保留本機設定",
-      "importKeepHostSettingsDesc": "保留本面板的監聽位址、連接埠、基礎路徑、憑證與節點身分，而不是使用上傳檔案中的值。"
+      "importKeepHostSettingsDesc": "保留本面板的監聽位址、連接埠、基礎路徑、憑證與節點身分，而不是使用上傳檔案中的值。",
+      "hosted": {
+        "title": "你的方案",
+        "expires": "到期時間",
+        "ports": "允許的連接埠",
+        "blockedTraffic": "此面板的流量已用完。請聯絡你的服務商續約。",
+        "blockedExpired": "此面板已到期。請聯絡你的服務商續約。",
+        "blockedNoLimits": "無法讀取此面板的方案，面板已暫停。請聯絡你的服務商。"
+      }
     },
     "inbounds": {
       "totalDownUp": "總上傳 / 下載",

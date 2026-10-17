@@ -308,7 +308,15 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Bu makinenin ayarlarını koru",
-      "importKeepHostSettingsDesc": "Yüklenen dosyadan almak yerine bu panelin dinleme adreslerini, portlarını, temel yolunu, sertifikalarını ve düğüm kimliğini korur."
+      "importKeepHostSettingsDesc": "Yüklenen dosyadan almak yerine bu panelin dinleme adreslerini, portlarını, temel yolunu, sertifikalarını ve düğüm kimliğini korur.",
+      "hosted": {
+        "title": "Paketiniz",
+        "expires": "Bitiş",
+        "ports": "İzin verilen portlar",
+        "blockedTraffic": "Bu panelin trafiği bitti. Yenilemek için sağlayıcınıza başvurun.",
+        "blockedExpired": "Bu panelin süresi doldu. Yenilemek için sağlayıcınıza başvurun.",
+        "blockedNoLimits": "Bu panelin paketi okunamadığı için duraklatıldı. Sağlayıcınıza başvurun."
+      }
     },
     "inbounds": {
       "totalDownUp": "Toplam Gönderilen/Alınan",

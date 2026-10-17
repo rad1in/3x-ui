@@ -20,6 +20,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/netproxy"
@@ -199,6 +200,8 @@ var defaultValueMap = map[string]string{
 	"panelBrandLogo":              "",
 	"sponsorFeedUrl":              "",
 	"sponsorContact":              "",
+	"hostedUsedBytes":             "0",
+	"hostedUsageEpoch":            "0",
 	"warp":                        "",
 	"warpUpdateInterval":          "0",
 	"nord":                        "",
@@ -1691,6 +1694,11 @@ type SecretClears struct {
 }
 
 func (s *SettingService) UpdateAllSetting(allSetting *entity.AllSetting, clears SecretClears) error {
+	if hosted.Enabled() {
+		if err := s.keepHostedAddress(allSetting); err != nil {
+			return err
+		}
+	}
 	switch allSetting.SubProfileMode {
 	case "", SubProfileModeNone, SubProfileModeBuiltin, SubProfileModeCustom:
 		allSetting.SubProfileMode = effectiveSubProfileMode(allSetting.SubProfileMode, allSetting.SubProfileUrl)
@@ -2069,4 +2077,16 @@ func (s *SettingService) GetFactoryDefaults() map[string]string {
 		}
 	}
 	return result
+}
+
+// keepHostedAddress pins the listen address, ports and path the owner gave a
+// hosted panel; moving them could collide with a sibling or break its link.
+func (s *SettingService) keepHostedAddress(next *entity.AllSetting) error {
+	current, err := s.GetAllSetting()
+	if err != nil {
+		return err
+	}
+	next.WebListen, next.WebPort, next.WebBasePath = current.WebListen, current.WebPort, current.WebBasePath
+	next.SubListen, next.SubPort = current.SubListen, current.SubPort
+	return nil
 }

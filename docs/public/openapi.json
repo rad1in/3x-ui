@@ -3086,6 +3086,45 @@
         ],
         "type": "object"
       },
+      "HostedView": {
+        "description": "HostedView is the hosted panel's own view of its limits and usage.",
+        "properties": {
+          "blocked": {
+            "type": "string"
+          },
+          "clients": {
+            "example": 40,
+            "format": "int64",
+            "type": "integer"
+          },
+          "enabled": {
+            "example": true,
+            "type": "boolean"
+          },
+          "inbounds": {
+            "example": 2,
+            "format": "int64",
+            "type": "integer"
+          },
+          "limits": {
+            "$ref": "#/components/schemas/Limits"
+          },
+          "usedBytes": {
+            "example": 1073741824,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "blocked",
+          "clients",
+          "enabled",
+          "inbounds",
+          "limits",
+          "usedBytes"
+        ],
+        "type": "object"
+      },
       "HwidSlotStatus": {
         "description": "HwidSlotStatus is the aggregate device-slot view exposed to subscribers:\ncounters only, no hwid value or hash, no email, no device metadata.",
         "properties": {
@@ -3486,6 +3525,45 @@
           "id",
           "total",
           "up"
+        ],
+        "type": "object"
+      },
+      "Limits": {
+        "description": "Limits are the owner-set caps for one hosted panel. Zero means unlimited.",
+        "properties": {
+          "expiresAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "maxClients": {
+            "type": "integer"
+          },
+          "maxInbounds": {
+            "type": "integer"
+          },
+          "portMax": {
+            "type": "integer"
+          },
+          "portMin": {
+            "type": "integer"
+          },
+          "trafficBytes": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "usageEpoch": {
+            "description": "UsageEpoch bumps when the owner resets usage; the child zeroes its counter.",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "expiresAt",
+          "maxClients",
+          "maxInbounds",
+          "portMax",
+          "portMin",
+          "trafficBytes",
+          "usageEpoch"
         ],
         "type": "object"
       },
@@ -5046,6 +5124,10 @@
     {
       "name": "API Tokens",
       "description": "Manage scoped Bearer tokens for programmatic auth. Tokens grant admin, monitor, or node-sync access, may expire, and are stored as SHA-256 hashes. The plaintext is returned only once at creation."
+    },
+    {
+      "name": "Hosted Panel",
+      "description": "A panel the owner of this server runs for someone else. Its inbound, client, port, traffic and expiry limits are set by the owner and cannot be changed from inside the panel."
     },
     {
       "name": "Sponsors",
@@ -13742,6 +13824,57 @@
                 },
                 "example": {
                   "success": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/hosted/status": {
+      "get": {
+        "tags": [
+          "Hosted Panel"
+        ],
+        "summary": "This panel's limits and usage. enabled is false on an ordinary panel. blocked is expired, traffic or no-limits while Xray is held stopped, otherwise empty. Zero limits mean unlimited.",
+        "operationId": "get_panel_api_hosted_status",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/HostedView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "blocked": "",
+                    "clients": 40,
+                    "enabled": true,
+                    "inbounds": 2,
+                    "limits": {
+                      "expiresAt": 0,
+                      "maxClients": 0,
+                      "maxInbounds": 0,
+                      "portMax": 0,
+                      "portMin": 0,
+                      "trafficBytes": 0,
+                      "usageEpoch": 0
+                    },
+                    "usedBytes": 1073741824
+                  }
                 }
               }
             }

@@ -308,7 +308,15 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "このマシンの設定を保持する",
-      "importKeepHostSettingsDesc": "アップロードしたファイルの値ではなく、このパネルのリッスンアドレス、ポート、ベースパス、証明書、ノード ID を保持します。"
+      "importKeepHostSettingsDesc": "アップロードしたファイルの値ではなく、このパネルのリッスンアドレス、ポート、ベースパス、証明書、ノード ID を保持します。",
+      "hosted": {
+        "title": "ご契約プラン",
+        "expires": "有効期限",
+        "ports": "使用可能なポート",
+        "blockedTraffic": "このパネルの通信量を使い切りました。更新についてはプロバイダーにお問い合わせください。",
+        "blockedExpired": "このパネルは期限切れです。更新についてはプロバイダーにお問い合わせください。",
+        "blockedNoLimits": "プランを読み込めないため、このパネルは停止しています。プロバイダーにお問い合わせください。"
+      }
     },
     "inbounds": {
       "totalDownUp": "総アップロード / ダウンロード",

@@ -308,7 +308,15 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Manter as configurações desta máquina",
-      "importKeepHostSettingsDesc": "Mantém os endereços de escuta, as portas, o caminho base, os certificados e a identidade de nó deste painel em vez de obtê-los do arquivo enviado."
+      "importKeepHostSettingsDesc": "Mantém os endereços de escuta, as portas, o caminho base, os certificados e a identidade de nó deste painel em vez de obtê-los do arquivo enviado.",
+      "hosted": {
+        "title": "Seu plano",
+        "expires": "Expira em",
+        "ports": "Portas permitidas",
+        "blockedTraffic": "Este painel usou todo o seu tráfego. Fale com seu provedor para renovar.",
+        "blockedExpired": "Este painel expirou. Fale com seu provedor para renovar.",
+        "blockedNoLimits": "Não foi possível ler o plano deste painel, então ele está pausado. Fale com seu provedor."
+      }
     },
     "inbounds": {
       "totalDownUp": "Total Enviado/Recebido",

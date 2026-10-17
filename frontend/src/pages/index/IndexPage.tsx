@@ -29,6 +29,7 @@ import VitalTile from './VitalTile';
 import ThroughputCard from './ThroughputCard';
 import ConnectionsCard from './ConnectionsCard';
 import ClientsInsightCard from './ClientsInsightCard';
+import HostedUsageCard from './HostedUsageCard';
 import SystemStrip from './SystemStrip';
 import { mean, peak, useOverviewHistory } from './useOverviewHistory';
 import type { PanelUpdateInfo } from './PanelUpdateModal';
@@ -238,6 +239,8 @@ export default function IndexPage() {
                       {health.text}
                     </div>
                   )}
+
+                  <HostedUsageCard />
 
                   <hr className="ov-rule" />
 

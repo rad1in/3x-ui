@@ -713,6 +713,15 @@ export interface HostGroup {
   vlessRoute: string;
 }
 
+export interface HostedView {
+  blocked: string;
+  clients: number;
+  enabled: boolean;
+  inbounds: number;
+  limits: Limits;
+  usedBytes: number;
+}
+
 export interface HwidSlotStatus {
   active: boolean;
   full: boolean;
@@ -798,6 +807,16 @@ export interface InboundTrafficSummary {
   id: number;
   total: number;
   up: number;
+}
+
+export interface Limits {
+  expiresAt: number;
+  maxClients: number;
+  maxInbounds: number;
+  portMax: number;
+  portMin: number;
+  trafficBytes: number;
+  usageEpoch: number;
 }
 
 export interface LogEntry {

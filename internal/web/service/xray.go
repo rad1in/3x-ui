@@ -16,6 +16,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/amneziawgnet"
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/tuic"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/json_util"
@@ -179,6 +180,9 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 	}
 	xrayConfig.LogConfig = resolveXrayLogPaths(xrayConfig.LogConfig)
 	xrayConfig.API = ensureAPIServices(xrayConfig.API)
+	if hosted.Enabled() {
+		xrayConfig.InboundConfigs = onlyAPIInbound(xrayConfig.InboundConfigs)
+	}
 	bindAPIInboundToLoopback(xrayConfig.InboundConfigs)
 	xrayConfig.Policy = ensureStatsPolicy(xrayConfig.Policy)
 	xrayConfig.RouterConfig = stripDisabledRules(xrayConfig.RouterConfig)
@@ -1385,6 +1389,14 @@ func (s *XrayService) RestartXray(isForce bool) error {
 	lock.Lock()
 	defer lock.Unlock()
 	logger.Debug("restart Xray, force:", isForce)
+	if reason := (&HostedService{}).Blocked(); reason != "" {
+		isManuallyStopped.Store(true)
+		hostedHalted.Store(true)
+		if process := currentXrayProcess(); process != nil && process.IsRunning() {
+			_ = process.Stop()
+		}
+		return fmt.Errorf("%w (%s)", ErrHostedBlocked, reason)
+	}
 	if !isForce && isManuallyStopped.Load() {
 		return nil
 	}
@@ -1771,4 +1783,16 @@ func bindAPIInboundToLoopback(inbounds []xray.InboundConfig) {
 			inbounds[i].Listen = loopbackListen()
 		}
 	}
+}
+
+// onlyAPIInbound drops template inbounds on a hosted panel: they would escape
+// its inbound, port and traffic limits.
+func onlyAPIInbound(inbounds []xray.InboundConfig) []xray.InboundConfig {
+	kept := inbounds[:0]
+	for _, ib := range inbounds {
+		if ib.Tag == "api" {
+			kept = append(kept, ib)
+		}
+	}
+	return kept
 }

@@ -181,6 +181,7 @@ func (a *APIController) initRouter(g *gin.RouterGroup) {
 	// advertise support, before CSRF/handlers read the body.
 	api.Use(middleware.ConfigEnvelopeMiddleware())
 	api.Use(middleware.CSRFMiddleware())
+	api.Use(hostedGuard)
 	api.Use(auditMiddleware(&service.AuditService{}))
 
 	api.GET("/openapi.json", ServeOpenAPISpec)
@@ -216,6 +217,7 @@ func (a *APIController) initRouter(g *gin.RouterGroup) {
 
 	NewAuditController(api.Group("/audit"))
 	NewSponsorAdminController(api.Group("/sponsors"))
+	NewHostedController(api.Group("/hosted"))
 
 	// Extra routes
 	api.POST("/backuptotgbot", a.BackuptoTgbot)

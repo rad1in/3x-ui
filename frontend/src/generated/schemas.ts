@@ -3060,6 +3060,45 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "HostedView": {
+    "description": "HostedView is the hosted panel's own view of its limits and usage.",
+    "properties": {
+      "blocked": {
+        "type": "string"
+      },
+      "clients": {
+        "example": 40,
+        "format": "int64",
+        "type": "integer"
+      },
+      "enabled": {
+        "example": true,
+        "type": "boolean"
+      },
+      "inbounds": {
+        "example": 2,
+        "format": "int64",
+        "type": "integer"
+      },
+      "limits": {
+        "$ref": "#/components/schemas/Limits"
+      },
+      "usedBytes": {
+        "example": 1073741824,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "blocked",
+      "clients",
+      "enabled",
+      "inbounds",
+      "limits",
+      "usedBytes"
+    ],
+    "type": "object"
+  },
   "HwidSlotStatus": {
     "description": "HwidSlotStatus is the aggregate device-slot view exposed to subscribers:\ncounters only, no hwid value or hash, no email, no device metadata.",
     "properties": {
@@ -3460,6 +3499,45 @@ export const SCHEMAS: Record<string, unknown> = {
       "id",
       "total",
       "up"
+    ],
+    "type": "object"
+  },
+  "Limits": {
+    "description": "Limits are the owner-set caps for one hosted panel. Zero means unlimited.",
+    "properties": {
+      "expiresAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "maxClients": {
+        "type": "integer"
+      },
+      "maxInbounds": {
+        "type": "integer"
+      },
+      "portMax": {
+        "type": "integer"
+      },
+      "portMin": {
+        "type": "integer"
+      },
+      "trafficBytes": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "usageEpoch": {
+        "description": "UsageEpoch bumps when the owner resets usage; the child zeroes its counter.",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "expiresAt",
+      "maxClients",
+      "maxInbounds",
+      "portMax",
+      "portMin",
+      "trafficBytes",
+      "usageEpoch"
     ],
     "type": "object"
   },

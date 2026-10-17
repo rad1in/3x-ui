@@ -1393,6 +1393,9 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 		if conflict != nil {
 			return common.NewError(conflict.String())
 		}
+		if err := checkHostedInboundCreate(tx, inbound); err != nil {
+			return err
+		}
 		markDirty := false
 		if err := tx.Omit("ClientStats").Save(inbound).Error; err != nil {
 			return err
@@ -1917,6 +1920,11 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 	// Restore the stored NodeID before any host-scoped check so a node inbound
 	// stays scoped to its own node (the payload's nodeId is unreliable, often absent).
 	inbound.NodeID = oldInbound.NodeID
+	if inbound.Port != oldInbound.Port {
+		if err := checkHostedInboundPort(inbound); err != nil {
+			return inbound, false, err
+		}
+	}
 	if err := normalizeTuicSettings(inbound); err != nil {
 		return inbound, false, err
 	}

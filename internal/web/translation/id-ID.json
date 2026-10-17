@@ -308,7 +308,15 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Pertahankan pengaturan mesin ini",
-      "importKeepHostSettingsDesc": "Mempertahankan alamat dengar, port, path dasar, sertifikat, dan identitas node panel ini alih-alih mengambilnya dari berkas yang diunggah."
+      "importKeepHostSettingsDesc": "Mempertahankan alamat dengar, port, path dasar, sertifikat, dan identitas node panel ini alih-alih mengambilnya dari berkas yang diunggah.",
+      "hosted": {
+        "title": "Paket Anda",
+        "expires": "Berakhir",
+        "ports": "Port yang diizinkan",
+        "blockedTraffic": "Kuota trafik panel ini sudah habis. Hubungi penyedia Anda untuk memperpanjang.",
+        "blockedExpired": "Masa berlaku panel ini telah habis. Hubungi penyedia Anda untuk memperpanjang.",
+        "blockedNoLimits": "Paket panel ini tidak dapat dibaca sehingga dijeda. Hubungi penyedia Anda."
+      }
     },
     "inbounds": {
       "totalDownUp": "Total Terkirim/Diterima",
