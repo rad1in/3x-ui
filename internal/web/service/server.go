@@ -37,6 +37,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/netsafe"
@@ -520,12 +521,9 @@ func (s *ServerService) publicIPs() (ipv4 string, ipv6 string) {
 	return s.cachedIPv4, s.cachedIPv6
 }
 
-func (s *ServerService) GetStatus(lastStatus *Status) *Status {
-	now := time.Now()
-	status := &Status{
-		T: now,
-	}
-
+// collectHostMetrics fills the server-wide CPU, memory, disk, load and network figures.
+func (s *ServerService) collectHostMetrics(status *Status, lastStatus *Status) {
+	now := status.T
 	// CPU stats
 	util, err := s.sampleCPUUtilization()
 	if err != nil {
@@ -679,6 +677,18 @@ func (s *ServerService) GetStatus(lastStatus *Status) *Status {
 	status.UdpCount, err = sys.GetUDPCount()
 	if err != nil {
 		logger.Warning("get udp connections failed:", err)
+	}
+}
+
+func (s *ServerService) GetStatus(lastStatus *Status) *Status {
+	now := time.Now()
+	status := &Status{
+		T: now,
+	}
+
+	// A hosted panel belongs to someone else; the server's own load is not theirs to see.
+	if !hosted.Enabled() {
+		s.collectHostMetrics(status, lastStatus)
 	}
 
 	s.resolvePublicIPsInBackground()

@@ -206,3 +206,34 @@ func TestHostedStatusReportsWhetherThePanelServesTLS(t *testing.T) {
 		t.Fatal("with a certificate the master would link the panel over plain http")
 	}
 }
+
+// A hosted panel belongs to someone else; the server's own load and traffic
+// are the owner's business and must not reach its dashboard, bots or API.
+func TestHostedPanelStatusCarriesNoHostMetrics(t *testing.T) {
+	setupConflictDB(t)
+	server := &ServerService{}
+	if own := server.GetStatus(nil); own.Mem.Total == 0 || own.Disk.Total == 0 {
+		t.Fatalf("ordinary panel status lacks host metrics: mem %d disk %d", own.Mem.Total, own.Disk.Total)
+	}
+
+	t.Setenv(hosted.EnvDir, t.TempDir())
+	st := server.GetStatus(nil)
+	host := []struct {
+		name string
+		zero bool
+	}{
+		{"cpu", st.Cpu == 0 && st.CpuCores == 0 && st.LogicalPro == 0 && st.CpuSpeedMhz == 0},
+		{"memory", st.Mem.Total == 0 && st.Mem.Current == 0 && st.Swap.Total == 0},
+		{"disk", st.Disk.Total == 0 && st.DiskTraffic.Read == 0 && st.DiskTraffic.Write == 0},
+		{"network", st.NetTraffic.Sent == 0 && st.NetTraffic.Recv == 0 && st.TcpCount == 0 && st.UdpCount == 0},
+		{"uptime and load", st.Uptime == 0 && len(st.Loads) == 0},
+	}
+	for _, h := range host {
+		if !h.zero {
+			t.Errorf("hosted panel status still reports the server's %s: %+v", h.name, st)
+		}
+	}
+	if st.PanelVersion == "" {
+		t.Error("the panel's own fields must still be reported")
+	}
+}

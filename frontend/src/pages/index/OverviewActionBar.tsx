@@ -32,7 +32,7 @@ interface OverviewActionBarProps {
   onOpenAmneziaWGLogs: () => void;
   onOpenConfig: () => void;
   onOpenBackup: () => void;
-  onOpenSystemHistory: () => void;
+  onOpenSystemHistory?: () => void;
   onOpenXrayMetrics: () => void;
   onOpenPanelUpdate: () => void;
   onOpenVersionSwitch: () => void;
@@ -128,12 +128,16 @@ export default function OverviewActionBar({
       },
     ],
     [
-      {
-        key: 'history',
-        icon: <AreaChartOutlined />,
-        text: t('pages.index.systemHistoryTitle'),
-        onClick: onOpenSystemHistory,
-      },
+      ...(onOpenSystemHistory
+        ? [
+            {
+              key: 'history',
+              icon: <AreaChartOutlined />,
+              text: t('pages.index.systemHistoryTitle'),
+              onClick: onOpenSystemHistory,
+            },
+          ]
+        : []),
       {
         key: 'metrics',
         icon: <ArrowUpOutlined />,
