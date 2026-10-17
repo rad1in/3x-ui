@@ -1,6 +1,6 @@
 import { lazy, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, ConfigProvider, Layout, Modal, Result, Spin, message } from 'antd';
+import { Alert, Button, ConfigProvider, Layout, Modal, Result, Spin, message } from 'antd';
 import {
   CopyOutlined,
   CloudDownloadOutlined,
@@ -28,6 +28,7 @@ import OverviewActionBar from './OverviewActionBar';
 import VitalTile from './VitalTile';
 import ThroughputCard from './ThroughputCard';
 import ConnectionsCard from './ConnectionsCard';
+import ClientsInsightCard from './ClientsInsightCard';
 import SystemStrip from './SystemStrip';
 import { mean, peak, useOverviewHistory } from './useOverviewHistory';
 import type { PanelUpdateInfo } from './PanelUpdateModal';
@@ -216,6 +217,21 @@ export default function IndexPage() {
 
                   <SponsorSlot slot="dashboard" />
 
+                  {status.xray.state !== 'running' && (
+                    <Alert
+                      className="ov-xray-alert"
+                      type={status.xray.state === 'error' ? 'error' : 'warning'}
+                      showIcon
+                      title={t('pages.index.xrayDownAlert')}
+                      description={status.xray.errorMsg || undefined}
+                      action={
+                        <Button size="small" type="primary" onClick={restartXray}>
+                          {t('pages.index.restartXray')}
+                        </Button>
+                      }
+                    />
+                  )}
+
                   {health && (
                     <div className="ov-health" style={{ color: health.color }}>
                       <span className="ov-health-mark" />
@@ -288,6 +304,8 @@ export default function IndexPage() {
                       isMobile={isMobile}
                     />
                   </div>
+
+                  <ClientsInsightCard />
 
                   <SystemStrip
                     status={status}
