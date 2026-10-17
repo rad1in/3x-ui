@@ -862,6 +862,29 @@ func (t *Tgbot) answerCallback(callbackQuery *telego.CallbackQuery, isAdmin bool
 				} else {
 					t.sendCallbackAnswerTgBot(callbackQuery.ID, t.I18nBot("tgbot.answers.errorOperation"))
 				}
+			case "delete_client":
+				inlineKeyboard := tu.InlineKeyboard(
+					tu.InlineKeyboardRow(
+						tu.InlineKeyboardButton(t.I18nBot("tgbot.buttons.cancel")).WithCallbackData(t.encodeQuery("client_cancel "+email)),
+					),
+					tu.InlineKeyboardRow(
+						tu.InlineKeyboardButton(t.I18nBot("tgbot.buttons.confirmDeleteClient")).WithCallbackData(t.encodeQuery("delete_client_c "+email)),
+					),
+				)
+				t.editMessageCallbackTgBot(chatId, callbackQuery.Message.GetMessageID(), inlineKeyboard)
+			case "delete_client_c":
+				needRestart, err := t.clientService.DeleteByEmail(&t.inboundService, email, false)
+				if needRestart {
+					t.xrayService.SetToNeedRestart()
+				}
+				if err != nil {
+					logger.Warning("tgbot: delete client", email, err)
+					t.sendCallbackAnswerTgBot(callbackQuery.ID, t.I18nBot("tgbot.answers.errorOperation"))
+					return
+				}
+				done := t.I18nBot("tgbot.answers.deleteClientSuccess", "Email=="+email)
+				t.sendCallbackAnswerTgBot(callbackQuery.ID, done)
+				t.editMessageTgBot(chatId, callbackQuery.Message.GetMessageID(), html.EscapeString(done))
 			case "get_clients":
 				inboundId := dataArray[1]
 				inboundIdInt, err := strconv.Atoi(inboundId)
