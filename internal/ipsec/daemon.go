@@ -9,7 +9,10 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"sync/atomic"
+	"syscall"
 	"time"
 
 	"github.com/strongswan/govici/vici"
@@ -40,6 +43,26 @@ func BinaryPath() (string, error) {
 		}
 	}
 	return "", errors.New("strongSwan charon not found; install strongswan-charon (Debian/Ubuntu) or strongswan (RHEL)")
+}
+
+// charonPidFile is compiled into charon, so a second daemon on the host (a
+// system strongSwan) makes ours exit at once; it is checked up front instead.
+const charonPidFile = "/var/run/charon.pid"
+
+// runningCharon reports the live process a charon pid file names, if any.
+func runningCharon(pidFile string) (int, bool) {
+	raw, err := os.ReadFile(pidFile)
+	if err != nil {
+		return 0, false
+	}
+	pid, err := strconv.Atoi(strings.TrimSpace(string(raw)))
+	if err != nil || pid <= 0 {
+		return 0, false
+	}
+	if syscall.Kill(pid, 0) != nil {
+		return 0, false
+	}
+	return pid, true
 }
 
 func runDir() string {
@@ -124,6 +147,9 @@ func startDaemon(libipsec bool) (*daemon, error) {
 	bin, err := BinaryPath()
 	if err != nil {
 		return nil, err
+	}
+	if pid, ok := runningCharon(charonPidFile); ok {
+		return nil, fmt.Errorf("ipsec: another strongSwan charon (pid %d) already runs on this server; stop it (systemctl disable --now strongswan-starter strongswan) so the panel can serve IKEv2", pid)
 	}
 	dir := runDir()
 	if err := os.MkdirAll(dir, 0o700); err != nil {

@@ -343,7 +343,7 @@ func overLimit(sas []ikeSA, insts map[string]Instance) []uint64 {
 func (m *Manager) terminateLocked(id uint64) {
 	msg := vici.NewMessage()
 	_ = msg.Set("ike-id", strconv.FormatUint(id, 10))
-	_ = msg.Set("force", "yes")
+	// A proper DELETE tells the client at once; force would leave it waiting for DPD.
 	_ = msg.Set("timeout", "-1")
 	if _, err := m.d.call("terminate", msg); err != nil {
 		logger.Debug("ipsec: terminate", id, err)
