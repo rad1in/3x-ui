@@ -43,7 +43,12 @@ RUN apk add --no-cache --update \
   fail2ban \
   bash \
   curl \
-  openssl
+  openssl \
+  iptables \
+  openvpn \
+  strongswan \
+  xl2tpd \
+  ppp
 
 COPY --from=builder /app/build/ /app/
 COPY --from=builder /app/DockerEntrypoint.sh /app/

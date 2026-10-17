@@ -16,6 +16,14 @@ services:
     # AmneziaWG works in this image: it runs embedded in the panel process
     # (amneziawg-go over a gVisor userspace netstack), so it needs no kernel
     # module and no host tooling. Publish its UDP listen port to use it.
+    #
+    # OpenVPN, IKEv2 and L2TP inbounds run openvpn, strongSwan and xl2tpd in this
+    # container: they need NET_ADMIN (below), a TUN device for OpenVPN and for
+    # IKEv2 on kernels without ESP, and PPP for L2TP. Uncomment `devices` and
+    # publish UDP 500/4500 (IKEv2, L2TP) and 1701 (L2TP) to use them.
+    # devices:
+    #   - /dev/net/tun
+    #   - /dev/ppp
     cap_add:
       - NET_ADMIN
       - NET_RAW
