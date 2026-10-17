@@ -39,22 +39,23 @@ func (s *SubClashService) GetClashLegacy(subId string, host string) (string, str
 	return s.getClash(subId, host, true)
 }
 
-func (s *SubClashService) getClash(subId string, host string, legacy bool) (string, string, error) {
+// collectProxies gathers the subscription's Mihomo proxies, info node included,
+// and its userinfo header; keep narrows them to what the output format carries.
+func (s *SubClashService) collectProxies(subId, host string, keep func([]map[string]any) ([]map[string]any, error)) (proxies []map[string]any, header string, found bool, err error) {
 	subReq := s.SubService.ForRequest(host)
 	subReq.subscriptionBody = true
 	inbounds, err := subReq.getInboundsBySubId(subId)
 	if err != nil {
-		return "", "", err
+		return nil, "", false, err
 	}
 	externalLinks, err := subReq.getClientExternalLinksBySubId(subId)
 	if err != nil {
-		return "", "", err
+		return nil, "", false, err
 	}
 	if len(inbounds) == 0 && len(externalLinks) == 0 {
-		return "", "", nil
+		return nil, "", false, nil
 	}
 
-	var proxies []map[string]any
 	var hasInactiveExternal bool
 	var hasEnabledClient bool
 
@@ -105,12 +106,11 @@ func (s *SubClashService) getClash(subId string, host string, legacy bool) (stri
 	}
 
 	if len(proxies) == 0 && !hasInactiveExternal {
-		return "", "", nil
+		return nil, "", false, nil
 	}
-	if legacy {
-		proxies = legacyClashProxies(proxies)
-		if len(proxies) == 0 {
-			return "", "", errNoLegacyClashProxies
+	if keep != nil {
+		if proxies, err = keep(proxies); err != nil {
+			return nil, "", false, err
 		}
 	}
 
@@ -121,7 +121,7 @@ func (s *SubClashService) getClash(subId string, host string, legacy bool) (stri
 	slices.Sort(emails)
 	traffic, _ := subReq.AggregateTrafficByEmails(emails)
 	traffic.Enable = hasEnabledClient
-	header := subReq.subscriptionUserinfo(traffic)
+	header = subReq.subscriptionUserinfo(traffic)
 
 	if mode, remark := subReq.resolveInfoNodeRemark(subId, emails, traffic, len(proxies) > 0); mode != infoNodeNone {
 		dummyProxy := map[string]any{
@@ -138,10 +138,30 @@ func (s *SubClashService) getClash(subId string, host string, legacy bool) (stri
 	}
 
 	if len(proxies) == 0 {
-		return "", header, nil
+		return nil, header, true, nil
 	}
 
 	ensureUniqueProxyNames(proxies)
+	return proxies, header, true, nil
+}
+
+func (s *SubClashService) getClash(subId string, host string, legacy bool) (string, string, error) {
+	var keep func([]map[string]any) ([]map[string]any, error)
+	if legacy {
+		keep = func(proxies []map[string]any) ([]map[string]any, error) {
+			if proxies = legacyClashProxies(proxies); len(proxies) == 0 {
+				return nil, errNoLegacyClashProxies
+			}
+			return proxies, nil
+		}
+	}
+	proxies, header, found, err := s.collectProxies(subId, host, keep)
+	if err != nil || !found {
+		return "", "", err
+	}
+	if len(proxies) == 0 {
+		return "", header, nil
+	}
 
 	proxyNames := make([]string, 0, len(proxies)+1)
 	for _, proxy := range proxies {
