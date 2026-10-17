@@ -41,6 +41,8 @@ file locations when it can answer in one hop.
 - `internal/xray/geodata/` — streaming geosite/geoip `.dat` reader (cached
   category index + paged entries) and `geosite:`/`geoip:`/`ext:` token parsing.
 - `internal/mtproto/` — MTProto inbounds via the bundled `mtg-multi` binary.
+- `internal/openvpn/` — OpenVPN inbounds: one `openvpn` process each, logins
+  decided and traffic metered by the panel over the management socket.
 - `internal/tuic/` — TUIC v5 inbounds: `tuic-server` sidecar supervisor, native Go UDP relay traffic metering.
 - `internal/amneziawg/` — AmneziaWG protocol shape: instance/peer derivation
   from an inbound, 3.1 obfuscation param generation + validation, port-forward
@@ -59,7 +61,7 @@ file locations when it can answer in one hop.
   - `controller/` — panel + REST API handlers; OpenAPI at /panel/api/openapi.json.
   - `service/` — business logic (InboundService, SettingService, XrayService,
     node sync); subpackages tgbot/, discord/, email/, outbound/, panel/, integration/.
-  - `job/` — 22 cron jobs (traffic, fail2ban IP-limit, node heartbeat/sync, LDAP,
+  - `job/` — 23 cron jobs (traffic, fail2ban IP-limit, node heartbeat/sync, LDAP,
     CPU/memory watchdogs, …); full table in `docs/architecture.md` §5.4.
   - `middleware/`, `entity/`, `global/`, `session/` (CSRF), `network/`,
     `runtime/` (master/sub-node over mTLS), `websocket/`.
@@ -160,9 +162,9 @@ file locations when it can answer in one hop.
   `-race`); `httptest` for HTTP. Keep `database.InitDB` for reopening a file or
   migrating a hand-built legacy DB. `internal/sub`'s `initSubDB(t)` is the template.
 - Code must pass `golangci-lint run` (gofumpt + goimports formatting): `make lint`.
-- Postgres, xray-gRPC-e2e, master+node and scale tests `t.Skip` unless
+- Postgres, xray-gRPC-e2e, master+node, OpenVPN and scale tests `t.Skip` unless
   `XUI_TEST_PG_DSN`, `XUI_DB_TYPE`+`XUI_DB_DSN`, `XRAY_E2E_BINARY`,
-  `XUI_NODE_E2E_BINARY` or `XUI_SCALE_TEST` is set — a green `go test ./...`
+  `XUI_NODE_E2E_BINARY`, `OPENVPN_E2E_BINARY` (needs root) or `XUI_SCALE_TEST` is set — a green `go test ./...`
   does not mean those paths ran.
 
 ## Frontend conventions (summary; full version in frontend/CLAUDE.md)

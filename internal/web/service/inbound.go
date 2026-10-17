@@ -1264,6 +1264,9 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 	if err := s.normalizeAmneziaWGSettings(inbound, ""); err != nil {
 		return inbound, false, err
 	}
+	if err := s.normalizeOpenVPNSettings(inbound, ""); err != nil {
+		return inbound, false, err
+	}
 	if inbound.NodeID != nil {
 		if err := checkNodeCanHostProtocol(database.GetDB(), *inbound.NodeID, inbound.Protocol); err != nil {
 			return inbound, false, err
@@ -1343,7 +1346,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 	// Secure client ID
 	for _, client := range clients {
 		switch inbound.Protocol {
-		case "trojan", "masque":
+		case "trojan", "masque", "openvpn":
 			if client.Password == "" {
 				return inbound, false, common.NewError("empty client ID")
 			}
@@ -1499,7 +1502,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 				if push {
 					payload := inbound
 					pushable := true
-					if inbound.Protocol == model.MTProto || inbound.Protocol == model.TUIC {
+					if inbound.Protocol == model.MTProto || inbound.Protocol == model.TUIC || inbound.Protocol == model.OpenVPN {
 						if built, bErr := s.buildInboundForLocalRuntime(tx, inbound); bErr == nil {
 							payload = built
 						} else {
@@ -1513,7 +1516,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 								logger.Debug("New inbound added on", rt.Name(), ":", inbound.Tag)
 							} else {
 								logger.Debug("Unable to add inbound on", rt.Name(), ":", err1)
-								if inbound.Protocol != model.MTProto && inbound.Protocol != model.TUIC {
+								if inbound.Protocol != model.MTProto && inbound.Protocol != model.TUIC && inbound.Protocol != model.OpenVPN {
 									needRestart = true
 								}
 							}
@@ -1872,7 +1875,7 @@ func (s *InboundService) validateUpdatedInboundClients(inbound *model.Inbound) e
 			if client.Auth == "" {
 				return common.NewError("empty client ID")
 			}
-		case model.MASQUE:
+		case model.MASQUE, model.OpenVPN:
 			if client.Password == "" {
 				return common.NewError("empty client ID")
 			}
@@ -1929,6 +1932,9 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 		return inbound, false, err
 	}
 	if err := s.normalizeAmneziaWGSettings(inbound, oldInbound.Settings); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeOpenVPNSettings(inbound, oldInbound.Settings); err != nil {
 		return inbound, false, err
 	}
 	inbound.SubSortIndex = normalizeSubSortIndex(inbound.SubSortIndex)
@@ -2238,7 +2244,7 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 // servedOutsideXray: these protocols run under their own manager, whose update
 // reconfigures in place where a Del+Add would drop every live session.
 func servedOutsideXray(protocol model.Protocol) bool {
-	return protocol == model.MTProto || protocol == model.TUIC || protocol == model.AmneziaWG
+	return protocol == model.MTProto || protocol == model.TUIC || protocol == model.AmneziaWG || protocol == model.OpenVPN
 }
 
 // applyInboundUserOps reports whether per-user core ops moved running to next, so

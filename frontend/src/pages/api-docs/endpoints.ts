@@ -425,6 +425,14 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/inbounds/:id/openvpnProfile',
+        summary:
+          "Download the .ovpn profile of an OpenVPN inbound. It carries the inbound's CA and tls-crypt key and asks the user for their client email and password. The remote address is the inbound's custom share address, else its listen address, else the host the request reached the panel on.",
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'OpenVPN inbound ID.' }],
+        response: 'client\ndev tun\nproto udp\nremote vpn.example.com 1194\n...',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/inbounds/:id/fallbacks',
         summary:
           "List the fallback rules attached to a master VLESS/Trojan TCP-TLS inbound. Each rule links one child inbound (the dest) to optional SNI/ALPN/path/dest/xver match criteria. When dest is empty the child inbound's listen+port is used.",

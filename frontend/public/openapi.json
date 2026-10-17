@@ -6747,6 +6747,47 @@
         }
       }
     },
+    "/panel/api/inbounds/{id}/openvpnProfile": {
+      "get": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "Download the .ovpn profile of an OpenVPN inbound. It carries the inbound's CA and tls-crypt key and asks the user for their client email and password. The remote address is the inbound's custom share address, else its listen address, else the host the request reached the panel on.",
+        "operationId": "get_panel_api_inbounds_id_openvpnProfile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "OpenVPN inbound ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/panel/api/inbounds/{id}/fallbacks": {
       "get": {
         "tags": [

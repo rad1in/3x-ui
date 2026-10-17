@@ -33,6 +33,14 @@ func inboundTransports(protocol model.Protocol, streamSettings, settings string)
 		return transportUDP
 	case model.MTProto:
 		return transportTCP
+	case model.OpenVPN:
+		var parsed struct {
+			Proto string `json:"proto"`
+		}
+		if json.Unmarshal([]byte(settings), &parsed) == nil && parsed.Proto == "tcp" {
+			return transportTCP
+		}
+		return transportUDP
 	case model.MASQUE:
 		return masqueTransports(streamSettings)
 	}

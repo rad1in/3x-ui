@@ -99,6 +99,12 @@ _openapi:
         panel-to-panel by the node traffic sync job.
       url: '#receive-a-master-panels-aggregated-per-client-usage-keyed-by-the-masters-guid-stored-in-a-side-table-used-only-for-the-ui-display-overlay-and-local-quota-enforcement--never-folded-into-the-local-counters-that-masters-poll-so-delta-accounting-stays-intact-called-panel-to-panel-by-the-node-traffic-sync-job'
     - depth: 2
+      title: Download the .ovpn profile of an OpenVPN inbound. It carries the
+        inbound's CA and tls-crypt key and asks the user for their client email
+        and password. The remote address is the inbound's custom share address,
+        else its listen address, else the host the request reached the panel on.
+      url: '#download-the-ovpn-profile-of-an-openvpn-inbound-it-carries-the-inbounds-ca-and-tls-crypt-key-and-asks-the-user-for-their-client-email-and-password-the-remote-address-is-the-inbounds-custom-share-address-else-its-listen-address-else-the-host-the-request-reached-the-panel-on'
+    - depth: 2
       title: List the fallback rules attached to a master VLESS/Trojan TCP-TLS
         inbound. Each rule links one child inbound (the dest) to optional
         SNI/ALPN/path/dest/xver match criteria. When dest is empty the child
@@ -183,6 +189,12 @@ _openapi:
           counters that masters poll, so delta accounting stays intact. Called
           panel-to-panel by the node traffic sync job.
         id: receive-a-master-panels-aggregated-per-client-usage-keyed-by-the-masters-guid-stored-in-a-side-table-used-only-for-the-ui-display-overlay-and-local-quota-enforcement--never-folded-into-the-local-counters-that-masters-poll-so-delta-accounting-stays-intact-called-panel-to-panel-by-the-node-traffic-sync-job
+      - content: Download the .ovpn profile of an OpenVPN inbound. It carries the
+          inbound's CA and tls-crypt key and asks the user for their client
+          email and password. The remote address is the inbound's custom share
+          address, else its listen address, else the host the request reached
+          the panel on.
+        id: download-the-ovpn-profile-of-an-openvpn-inbound-it-carries-the-inbounds-ca-and-tls-crypt-key-and-asks-the-user-for-their-client-email-and-password-the-remote-address-is-the-inbounds-custom-share-address-else-its-listen-address-else-the-host-the-request-reached-the-panel-on
       - content: List the fallback rules attached to a master VLESS/Trojan TCP-TLS
           inbound. Each rule links one child inbound (the dest) to optional
           SNI/ALPN/path/dest/xver match criteria. When dest is empty the child
@@ -203,7 +215,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/inbounds/list","method":"get"},{"path":"/panel/api/inbounds/list/slim","method":"get"},{"path":"/panel/api/inbounds/options","method":"get"},{"path":"/panel/api/inbounds/allLinks","method":"get"},{"path":"/panel/api/inbounds/get/{id}","method":"get"},{"path":"/panel/api/inbounds/add","method":"post"},{"path":"/panel/api/inbounds/del/{id}","method":"post"},{"path":"/panel/api/inbounds/bulkDel","method":"post"},{"path":"/panel/api/inbounds/update/{id}","method":"post"},{"path":"/panel/api/inbounds/setEnable/{id}","method":"post"},{"path":"/panel/api/inbounds/{id}/subSortIndex","method":"post"},{"path":"/panel/api/inbounds/{id}/resetTraffic","method":"post"},{"path":"/panel/api/inbounds/{id}/delAllClients","method":"post"},{"path":"/panel/api/inbounds/resetAllTraffics","method":"post"},{"path":"/panel/api/inbounds/import","method":"post"},{"path":"/panel/api/inbounds/pushClientTraffics","method":"post"},{"path":"/panel/api/inbounds/{id}/fallbacks","method":"get"},{"path":"/panel/api/inbounds/{id}/fallbacks","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/inbounds/list","method":"get"},{"path":"/panel/api/inbounds/list/slim","method":"get"},{"path":"/panel/api/inbounds/options","method":"get"},{"path":"/panel/api/inbounds/allLinks","method":"get"},{"path":"/panel/api/inbounds/get/{id}","method":"get"},{"path":"/panel/api/inbounds/add","method":"post"},{"path":"/panel/api/inbounds/del/{id}","method":"post"},{"path":"/panel/api/inbounds/bulkDel","method":"post"},{"path":"/panel/api/inbounds/update/{id}","method":"post"},{"path":"/panel/api/inbounds/setEnable/{id}","method":"post"},{"path":"/panel/api/inbounds/{id}/subSortIndex","method":"post"},{"path":"/panel/api/inbounds/{id}/resetTraffic","method":"post"},{"path":"/panel/api/inbounds/{id}/delAllClients","method":"post"},{"path":"/panel/api/inbounds/resetAllTraffics","method":"post"},{"path":"/panel/api/inbounds/import","method":"post"},{"path":"/panel/api/inbounds/pushClientTraffics","method":"post"},{"path":"/panel/api/inbounds/{id}/openvpnProfile","method":"get"},{"path":"/panel/api/inbounds/{id}/fallbacks","method":"get"},{"path":"/panel/api/inbounds/{id}/fallbacks","method":"post"}]} showTitle />
     </>
   );
 }

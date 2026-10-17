@@ -443,7 +443,7 @@ func (s *ClientService) AddInboundClient(inboundSvc *InboundService, data *model
 			return false, common.NewError("client email is required")
 		}
 		switch oldInbound.Protocol {
-		case "trojan", "masque":
+		case "trojan", "masque", "openvpn":
 			if client.Password == "" {
 				return false, common.NewError("empty client ID")
 			}
@@ -584,13 +584,7 @@ func (s *ClientService) AddInboundClient(inboundSvc *InboundService, data *model
 	if oldInbound.NodeID == nil {
 		if !push {
 			needRestart = true
-		} else if oldInbound.Protocol == model.MTProto {
-			inboundSvc.applyLocalMtproto(oldInbound.Id)
-		} else if oldInbound.Protocol == model.AmneziaWG {
-			inboundSvc.applyLocalAmneziaWG(oldInbound.Id)
-		} else if oldInbound.Protocol == model.TUIC {
-			inboundSvc.applyLocalTuic(oldInbound.Id)
-		} else {
+		} else if !inboundSvc.applyLocalSidecar(oldInbound.Protocol, oldInbound.Id) {
 			for _, client := range clients {
 				if len(client.Email) == 0 {
 					needRestart = true
@@ -688,7 +682,7 @@ func (s *ClientService) UpdateInboundClient(inboundSvc *InboundService, data *mo
 
 	newClientId := ""
 	switch oldInbound.Protocol {
-	case "trojan", "masque":
+	case "trojan", "masque", "openvpn":
 		newClientId = clients[0].Password
 	case "shadowsocks":
 		newClientId = clients[0].Email
@@ -1019,13 +1013,7 @@ func (s *ClientService) UpdateInboundClient(inboundSvc *InboundService, data *mo
 		if oldInbound.NodeID == nil {
 			if !push {
 				needRestart = true
-			} else if oldInbound.Protocol == model.MTProto {
-				inboundSvc.applyLocalMtproto(oldInbound.Id)
-			} else if oldInbound.Protocol == model.AmneziaWG {
-				inboundSvc.applyLocalAmneziaWG(oldInbound.Id)
-			} else if oldInbound.Protocol == model.TUIC {
-				inboundSvc.applyLocalTuic(oldInbound.Id)
-			} else {
+			} else if !inboundSvc.applyLocalSidecar(oldInbound.Protocol, oldInbound.Id) {
 				if oldClients[clientIndex].Enable {
 					err1 := rt.RemoveUser(context.Background(), oldInbound, oldEmail)
 					if err1 == nil {
@@ -1206,18 +1194,9 @@ func (s *ClientService) DelInboundClientByEmail(inboundSvc *InboundService, inbo
 	// inbound's runtime even when the same email survives in another inbound.
 	if len(email) > 0 {
 		if oldInbound.NodeID == nil {
-			if oldInbound.Protocol == model.MTProto {
-				// mtg serves the full secret set, so any client delete re-applies
-				// it (removing the last client stops the sidecar) regardless of the
-				// client's enable state.
-				inboundSvc.applyLocalMtproto(oldInbound.Id)
-			} else if oldInbound.Protocol == model.AmneziaWG {
-				// Same reasoning as MTProto above: the interface config is
-				// regenerated from the full peer set, so any delete re-applies it.
-				inboundSvc.applyLocalAmneziaWG(oldInbound.Id)
-			} else if oldInbound.Protocol == model.TUIC {
-				inboundSvc.applyLocalTuic(oldInbound.Id)
-			} else if needApiDel {
+			// Sidecars serve their whole client set, so any delete re-applies it
+			// (removing the last client stops them) whatever the client's state.
+			if !inboundSvc.applyLocalSidecar(oldInbound.Protocol, oldInbound.Id) && needApiDel {
 				// Local inbound: a disabled client isn't in the running Xray, so only
 				// a live one (needApiDel) needs an API removal.
 				if !push {

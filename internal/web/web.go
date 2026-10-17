@@ -23,6 +23,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/mtproto"
+	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
 	"github.com/mhsanaei/3x-ui/v3/internal/tuic"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/cronspec"
@@ -343,6 +344,10 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 	mtJob := job.NewMtprotoJob()
 	_, _ = s.cron.AddJob(cadenceMtproto, mtJob)
 	go mtJob.Run()
+
+	ovpnJob := job.NewOpenVPNJob()
+	_, _ = s.cron.AddJob(cadenceMtproto, ovpnJob)
+	go ovpnJob.Run()
 
 	// Reconcile embedded AmneziaWG interfaces; traffic rides Xray's own stats
 	awgJob := job.NewAmneziaWGJob()
@@ -792,6 +797,7 @@ func (s *Server) stop(stopXray bool, stopTgBot bool) error {
 			err2 = err
 		}
 		mtproto.GetManager().StopAll()
+		openvpn.GetManager().StopAll()
 		panel.StopHostedPanels()
 		amneziawgnet.GetManager().StopAll()
 		amneziawgnet.GetOutboundManager().StopAll()

@@ -44,6 +44,8 @@ type SubService struct {
 	// other context — the sub info page, the panel's link/QR displays — renders
 	// the name-only template, like Remnawave.
 	subscriptionBody bool
+	// openvpnProfiles is filled by getSubs: OpenVPN has profiles, not share links.
+	openvpnProfiles []OpenVPNProfile
 	// usageShown emits info once per subscription identity, including twins.
 	// PrepareForRequest resets this per-request state.
 	usageShown                 map[string]bool
@@ -481,9 +483,21 @@ func (s *SubService) getSubs(subId string) ([]string, []string, int64, xray.Clie
 	}
 
 	seenEmails := make(map[string]struct{})
+	s.openvpnProfiles = nil
 	for _, inbound := range inbounds {
 		clients := s.matchingClients(inbound, subId)
 		if len(clients) == 0 {
+			continue
+		}
+		if inbound.Protocol == model.OpenVPN && !inbound.ExcludeFromSub {
+			s.addOpenVPNProfiles(inbound, clients)
+			for _, client := range clients {
+				hasEnabledClient = hasEnabledClient || client.Enable
+				seenEmails[client.Email] = struct{}{}
+			}
+			if result == nil {
+				result = []string{}
+			}
 			continue
 		}
 		if inbound.ExcludeFromSub {
@@ -686,7 +700,7 @@ func (s *SubService) getInboundsBySubId(subId string) ([]*model.Inbound, error) 
 		JOIN client_inbounds ON client_inbounds.inbound_id = inbounds.id
 		JOIN clients ON clients.id = client_inbounds.client_id
 		WHERE
-			inbounds.protocol in ('vmess','vless','trojan','shadowsocks','hysteria','wireguard','amneziawg','mtproto','tuic','masque')
+			inbounds.protocol in ('vmess','vless','trojan','shadowsocks','hysteria','wireguard','amneziawg','mtproto','tuic','masque','openvpn')
 			AND clients.sub_id = ? AND inbounds.enable = ?
 	)`, subId, true).Order("sub_sort_index ASC").Order("id ASC").Find(&inbounds).Error
 	if err != nil {
@@ -3089,6 +3103,7 @@ type PageData struct {
 	SubAnnounce   string
 	Result        []string
 	Emails        []string
+	OpenVPN       []OpenVPNProfile
 }
 
 // ResolveRequest extracts scheme, host, and header information from an HTTP request.
@@ -3240,7 +3255,7 @@ func (s *SubService) BuildPageData(subId string, hostHeader string, traffic xray
 		BasePath:      basePath,
 		SId:           subId,
 		Enabled:       traffic.Enable,
-		IsOnline:      subIsOnline(emails, s.inboundService.GetOnlineClients()),
+		IsOnline:      subIsOnline(append(slices.Clone(emails), s.openvpnUsernames()...), s.inboundService.GetOnlineClients()),
 		Download:      download,
 		Upload:        upload,
 		Total:         total,
@@ -3259,6 +3274,7 @@ func (s *SubService) BuildPageData(subId string, hostHeader string, traffic xray
 		SubSupportUrl: subSupportUrl,
 		Result:        pageLinks,
 		Emails:        pageEmails,
+		OpenVPN:       s.openvpnProfiles,
 	}
 }
 

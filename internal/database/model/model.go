@@ -35,6 +35,7 @@ const (
 	AmneziaWG   Protocol = "amneziawg"
 	TUIC        Protocol = "tuic"
 	MASQUE      Protocol = "masque"
+	OpenVPN     Protocol = "openvpn"
 )
 
 // User represents a user account in the 3x-ui panel.
