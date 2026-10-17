@@ -344,8 +344,14 @@ func (l *Local) updateTuicInbound(ctx context.Context, oldIb, newIb *model.Inbou
 	return tuic.GetManager().Ensure(inst)
 }
 
+// servedBySidecar: these protocols run outside Xray and take client changes by
+// re-applying the whole inbound, so Xray's per-user ops do not apply to them.
+func servedBySidecar(p model.Protocol) bool {
+	return p == model.MTProto || p == model.AmneziaWG || p == model.TUIC || p == model.OpenVPN || p == model.IKEv2
+}
+
 func (l *Local) AddUser(_ context.Context, ib *model.Inbound, userMap map[string]any) error {
-	if ib.Protocol == model.MTProto || ib.Protocol == model.AmneziaWG || ib.Protocol == model.TUIC {
+	if servedBySidecar(ib.Protocol) {
 		return nil
 	}
 	return l.withAPI(func(api *xray.XrayAPI) error {
@@ -354,7 +360,7 @@ func (l *Local) AddUser(_ context.Context, ib *model.Inbound, userMap map[string
 }
 
 func (l *Local) RemoveUser(_ context.Context, ib *model.Inbound, email string) error {
-	if ib.Protocol == model.MTProto || ib.Protocol == model.AmneziaWG || ib.Protocol == model.TUIC {
+	if servedBySidecar(ib.Protocol) {
 		return nil
 	}
 	return l.withAPI(func(api *xray.XrayAPI) error {

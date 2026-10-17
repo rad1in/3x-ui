@@ -1206,7 +1206,9 @@ func (s *ClientService) bulkDelInboundClients(
 		}
 	} else if oldInbound.NodeID == nil {
 		rt, rterr := inboundSvc.runtimeFor(oldInbound)
-		if rterr != nil {
+		if inboundSvc.applyLocalSidecar(oldInbound.Protocol, oldInbound.Id) {
+			// The sidecar re-reads its whole client set, the deleted ones gone.
+		} else if rterr != nil {
 			res.needRestart = true
 		} else {
 			for email := range foundEmails {
@@ -1805,7 +1807,9 @@ func (s *ClientService) bulkSetEnableInboundClients(inboundSvc *InboundService, 
 	}
 
 	if oldInbound.NodeID == nil {
-		if !push {
+		if inboundSvc.applyLocalSidecar(oldInbound.Protocol, oldInbound.Id) {
+			// The sidecar re-reads its whole client set, revoked sessions included.
+		} else if !push {
 			res.needRestart = true
 		} else {
 			for _, ch := range changed {

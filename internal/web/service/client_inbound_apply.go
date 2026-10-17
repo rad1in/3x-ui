@@ -224,12 +224,13 @@ func (s *ClientService) delInboundClients(inboundSvc *InboundService, inboundId 
 	// Apply runtime deletes after commit — outside the serialized writer so a
 	// slow node call can't stall traffic accounting.
 	nodePushFailed := false
+	sidecarApplied := oldInbound.NodeID == nil && inboundSvc.applyLocalSidecar(oldInbound.Protocol, oldInbound.Id)
 	for _, t := range targets {
 		if len(t.email) == 0 {
 			continue
 		}
 		if oldInbound.NodeID == nil {
-			if t.needApiDel && t.notDepleted {
+			if !sidecarApplied && t.needApiDel && t.notDepleted {
 				rt, rterr := inboundSvc.runtimeFor(oldInbound)
 				if rterr != nil {
 					needRestart = true

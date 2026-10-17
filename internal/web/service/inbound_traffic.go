@@ -806,7 +806,9 @@ func (s *InboundService) resetClientTrafficLocked(id int, clientEmail string) (b
 		return false, nil, err
 	}
 
-	if reenablePlan != nil {
+	if reenablePlan != nil && s.applyLocalSidecar(reenablePlan.inbound.Protocol, reenablePlan.inbound.Id) {
+		// The sidecar re-reads its client set, now with the renewed client.
+	} else if reenablePlan != nil {
 		rt, err := s.runtimeFor(&reenablePlan.inbound)
 		if err != nil {
 			needRestart = true
