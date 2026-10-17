@@ -2725,6 +2725,8 @@
       "disabled": "🛑 Dinonaktifkan: {{ .Disabled }}\r\n",
       "depleteSoon": "🔜 Habis Sebentar: {{ .Deplete }}\r\n\r\n",
       "backupTime": "🗄 Waktu Backup: {{ .Time }}\r\n",
+      "backupCompressed": "📦 Cadangan terlalu besar untuk dikirim apa adanya, jadi dikompres gzip. Ekstrak dengan: gunzip {{ .Name }}.gz",
+      "backupSplit": "📦 Cadangan terlalu besar untuk satu berkas, jadi dikompres dalam {{ .Parts }} bagian. Gabungkan dengan: cat {{ .Name }}.gz.part* | gunzip > {{ .Name }}",
       "refreshedOn": "\r\n📋🔄 Diperbarui Pada: {{ .Time }}\r\n\r\n",
       "yes": "✅ Ya",
       "no": "❌ Tidak",

@@ -12,6 +12,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
+	"github.com/mhsanaei/3x-ui/v3/internal/util/backupparts"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
@@ -205,10 +206,52 @@ func (s *DiscordService) SendReport(ctx context.Context, server ServerProvider, 
 	if err := s.SendMessage(ctx, payload); err != nil {
 		return err
 	}
-	if len(files) == 0 {
-		return nil
+	return s.sendFilesUnderCap(ctx, MessagePayload{}, files...)
+}
+
+// discordUploadLimit keeps each upload under the 10 MiB Discord takes per file.
+var discordUploadLimit = 9 << 20
+
+// sendFilesUnderCap uploads each file in its own message, gzipped and cut into
+// parts when it is over the cap; payload rides on the first message.
+func (s *DiscordService) sendFilesUnderCap(ctx context.Context, payload MessagePayload, files ...FileAttachment) error {
+	tr := translator(s.settingService)
+	first := true
+	for _, f := range files {
+		parts, err := backupparts.Split(f.Filename, f.Data, discordUploadLimit)
+		if err != nil {
+			return err
+		}
+		for i, p := range parts {
+			msg := MessagePayload{}
+			if first {
+				msg, first = payload, false
+			}
+			if i == 0 {
+				if note := backupNote(tr, f.Filename, parts); note != "" {
+					msg.Content = strings.TrimSpace(msg.Content + "\n" + note)
+				}
+			}
+			if err := s.SendMessageWithFiles(ctx, msg, FileAttachment{Filename: p.Name, Data: p.Data}); err != nil {
+				return err
+			}
+		}
 	}
-	return s.SendMessageWithFiles(ctx, MessagePayload{}, files...)
+	if first && (payload.Content != "" || len(payload.Embeds) > 0) {
+		return s.SendMessage(ctx, payload)
+	}
+	return nil
+}
+
+// backupNote tells how to restore a file Split had to compress or cut; "" when sent whole.
+func backupNote(tr func(string, ...string) string, name string, parts []backupparts.Part) string {
+	switch {
+	case len(parts) > 1:
+		return tr("tgbot.messages.backupSplit", "Parts=="+strconv.Itoa(len(parts)), "Name=="+name)
+	case parts[0].Name != name:
+		return tr("tgbot.messages.backupCompressed", "Name=="+name)
+	}
+	return ""
 }
 
 func getInterfaceIPs() (ipv4, ipv6 string) {

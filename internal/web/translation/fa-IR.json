@@ -2725,6 +2725,8 @@
       "disabled": "🛑 غیرفعال: {{ .Disabled }}\r\n",
       "depleteSoon": "🔜 به‌زودی‌به‌پایان‌خواهدرسید: {{ .Deplete }}\r\n\r\n",
       "backupTime": "🗄 زمان‌پشتیبان‌گیری: {{ .Time }}\r\n",
+      "backupCompressed": "📦 بکاپ برای ارسال مستقیم خیلی بزرگ بود، برای همین فشرده شده است. برای باز کردن:\ngunzip {{ .Name }}.gz",
+      "backupSplit": "📦 بکاپ برای یک فایل خیلی بزرگ بود، برای همین فشرده و در {{ .Parts }} قسمت ارسال شده است. برای یکی کردن:\ncat {{ .Name }}.gz.part* | gunzip > {{ .Name }}",
       "refreshedOn": "\r\n📋🔄 تازه‌سازی شده در: {{ .Time }}\r\n\r\n",
       "yes": "✅ بله",
       "no": "❌ خیر",

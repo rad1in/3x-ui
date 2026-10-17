@@ -570,7 +570,7 @@ func (g *GatewayClient) sendBackup(ctx context.Context) {
 		},
 	}
 
-	_ = g.discordService.SendMessageWithFiles(ctx, payload, files...)
+	_ = g.discordService.sendFilesUnderCap(ctx, payload, files...)
 }
 
 func (g *GatewayClient) sendUsage(ctx context.Context, email string) {

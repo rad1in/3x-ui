@@ -2725,6 +2725,8 @@
       "disabled": "🛑 Disabled: {{ .Disabled }}\r\n",
       "depleteSoon": "🔜 Deplete Soon: {{ .Deplete }}\r\n\r\n",
       "backupTime": "🗄 Backup Time: {{ .Time }}\r\n",
+      "backupCompressed": "📦 The backup was too big to send as is, so it is gzip-compressed. Unpack it with: gunzip {{ .Name }}.gz",
+      "backupSplit": "📦 The backup was too big for one file, so it comes gzip-compressed in {{ .Parts }} parts. Rejoin them with: cat {{ .Name }}.gz.part* | gunzip > {{ .Name }}",
       "refreshedOn": "\r\n📋🔄 Refreshed On: {{ .Time }}\r\n\r\n",
       "yes": "✅ Yes",
       "no": "❌ No",

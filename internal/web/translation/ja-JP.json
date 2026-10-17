@@ -2725,6 +2725,8 @@
       "disabled": "🛑 無効化：{{ .Disabled }}\r\n",
       "depleteSoon": "🔜 間もなく消耗：{{ .Deplete }}\r\n\r\n",
       "backupTime": "🗄 バックアップ時間：{{ .Time }}\r\n",
+      "backupCompressed": "📦 バックアップがそのまま送るには大きすぎたため gzip で圧縮しました。展開: gunzip {{ .Name }}.gz",
+      "backupSplit": "📦 バックアップが 1 ファイルに収まらないため、圧縮して {{ .Parts }} 個に分割しました。結合: cat {{ .Name }}.gz.part* | gunzip > {{ .Name }}",
       "refreshedOn": "\r\n📋🔄 更新時間：{{ .Time }}\r\n\r\n",
       "yes": "✅ はい",
       "no": "❌ いいえ",

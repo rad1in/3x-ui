@@ -2725,6 +2725,8 @@
       "disabled": "🛑 Desactivado: {{ .Disabled }}\r\n",
       "depleteSoon": "🔜 Se agotará pronto: {{ .Deplete }}\r\n\r\n",
       "backupTime": "🗄 Hora de la Copia de Seguridad: {{ .Time }}\r\n",
+      "backupCompressed": "📦 La copia era demasiado grande para enviarla tal cual, así que va comprimida con gzip. Descomprímela con: gunzip {{ .Name }}.gz",
+      "backupSplit": "📦 La copia no cabía en un archivo, así que va comprimida en {{ .Parts }} partes. Únelas con: cat {{ .Name }}.gz.part* | gunzip > {{ .Name }}",
       "refreshedOn": "\r\n📋🔄 Actualizado en: {{ .Time }}\r\n\r\n",
       "yes": "✅ Sí",
       "no": "❌ No",

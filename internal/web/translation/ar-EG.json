@@ -2725,6 +2725,8 @@
       "disabled": "🛑 معطل: {{ .Disabled }}\r\n",
       "depleteSoon": "🔜 هينتهي قريب: {{ .Deplete }}\r\n\r\n",
       "backupTime": "🗄 وقت النسخة الاحتياطية: {{ .Time }}\r\n",
+      "backupCompressed": "📦 كانت النسخة الاحتياطية أكبر من أن تُرسل كما هي، لذا ضُغطت. فكّها بالأمر:\ngunzip {{ .Name }}.gz",
+      "backupSplit": "📦 كانت النسخة الاحتياطية أكبر من ملف واحد، لذا ضُغطت وأُرسلت في {{ .Parts }} أجزاء. اجمعها بالأمر:\ncat {{ .Name }}.gz.part* | gunzip > {{ .Name }}",
       "refreshedOn": "\r\n📋🔄 اتحدّث في: {{ .Time }}\r\n\r\n",
       "yes": "✅ أيوه",
       "no": "❌ لا",

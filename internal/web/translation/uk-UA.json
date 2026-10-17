@@ -2725,6 +2725,8 @@
       "disabled": "🛑 Вимкнено: {{ .Disabled }}\r\n",
       "depleteSoon": "🔜 Скоро вичерпається: {{ .Deplete }}\r\n\r\n",
       "backupTime": "🗄 Час резервного копіювання: {{ .Time }}\r\n",
+      "backupCompressed": "📦 Резервна копія завелика для надсилання як є, тому стиснута gzip. Розпакуйте: gunzip {{ .Name }}.gz",
+      "backupSplit": "📦 Резервна копія не вмістилася в один файл, тому стиснута й розбита на {{ .Parts }} частин. Зберіть: cat {{ .Name }}.gz.part* | gunzip > {{ .Name }}",
       "refreshedOn": "\r\n📋🔄 Оновлено: {{ .Time }}\r\n\r\n",
       "yes": "✅ Так",
       "no": "❌ Ні",

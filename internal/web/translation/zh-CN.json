@@ -2725,6 +2725,8 @@
       "disabled": "🛑 禁用：{{ .Disabled }}\r\n",
       "depleteSoon": "🔜 即将耗尽：{{ .Deplete }}\r\n\r\n",
       "backupTime": "🗄 备份时间：{{ .Time }}\r\n",
+      "backupCompressed": "📦 备份太大，无法原样发送，已用 gzip 压缩。解压：gunzip {{ .Name }}.gz",
+      "backupSplit": "📦 备份超出单个文件大小，已压缩并分成 {{ .Parts }} 部分。合并：cat {{ .Name }}.gz.part* | gunzip > {{ .Name }}",
       "refreshedOn": "\r\n📋🔄 刷新时间：{{ .Time }}\r\n\r\n",
       "yes": "✅ 是的",
       "no": "❌ 否",

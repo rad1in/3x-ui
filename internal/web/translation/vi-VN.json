@@ -2725,6 +2725,8 @@
       "disabled": "🛑 Vô hiệu hóa: {{ .Disabled }}\r\n",
       "depleteSoon": "🔜 Sắp cạn kiệt: {{ .Deplete }}\r\n\r\n",
       "backupTime": "🗄 Thời gian sao lưu: {{ .Time }}\r\n",
+      "backupCompressed": "📦 Bản sao lưu quá lớn để gửi nguyên, nên đã được nén gzip. Giải nén bằng: gunzip {{ .Name }}.gz",
+      "backupSplit": "📦 Bản sao lưu quá lớn cho một tệp, nên đã được nén thành {{ .Parts }} phần. Ghép lại bằng: cat {{ .Name }}.gz.part* | gunzip > {{ .Name }}",
       "refreshedOn": "\r\n📋🔄 Đã cập nhật lần cuối vào: {{ .Time }}\r\n\r\n",
       "yes": "✅ Có",
       "no": "❌ Không",

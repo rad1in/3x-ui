@@ -13,6 +13,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/eventbus"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
+	"github.com/mhsanaei/3x-ui/v3/internal/util/backupparts"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
@@ -408,6 +409,9 @@ func (t *Tgbot) onlineClients(chatId int64, messageID ...int) {
 	}
 }
 
+// telegramUploadLimit keeps each document under the Bot API's 50 MB upload cap.
+var telegramUploadLimit = 45 << 20
+
 // sendBackup sends a backup of the database and configuration files.
 func (t *Tgbot) sendBackup(chatId int64) {
 	dbData, err := t.serverService.GetDb()
@@ -424,15 +428,23 @@ func (t *Tgbot) sendBackupData(chatId int64, dbData []byte, dbFilename string) {
 
 	// Send database backup (SQLite file, or a pg_dump archive on PostgreSQL)
 	if dbData != nil {
-		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-		document := tu.Document(
-			tu.ID(chatId),
-			tu.FileFromBytes(dbData, dbFilename),
-		)
-		_, err := bot.SendDocument(ctx, document)
-		cancel()
+		parts, err := backupparts.Split(dbFilename, dbData, telegramUploadLimit)
 		if err != nil {
-			logger.Error("Error in uploading backup: ", err)
+			logger.Error("Error in preparing backup: ", err)
+		}
+		switch {
+		case len(parts) > 1:
+			t.SendMsgToTgbot(chatId, t.I18nBot("tgbot.messages.backupSplit", "Parts=="+strconv.Itoa(len(parts)), "Name=="+dbFilename))
+		case len(parts) == 1 && parts[0].Name != dbFilename:
+			t.SendMsgToTgbot(chatId, t.I18nBot("tgbot.messages.backupCompressed", "Name=="+dbFilename))
+		}
+		for _, p := range parts {
+			ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+			_, err := bot.SendDocument(ctx, tu.Document(tu.ID(chatId), tu.FileFromBytes(p.Data, p.Name)))
+			cancel()
+			if err != nil {
+				logger.Error("Error in uploading backup: ", err)
+			}
 		}
 	}
 

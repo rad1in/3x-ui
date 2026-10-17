@@ -2725,6 +2725,8 @@
       "disabled": "🛑 Devre Dışı: {{ .Disabled }}\r\n",
       "depleteSoon": "🔜 Kotası Dolmak Üzere: {{ .Deplete }}\r\n\r\n",
       "backupTime": "🗄 Yedekleme Zamanı: {{ .Time }}\r\n",
+      "backupCompressed": "📦 Yedek olduğu gibi gönderilemeyecek kadar büyüktü, bu yüzden gzip ile sıkıştırıldı. Açmak için: gunzip {{ .Name }}.gz",
+      "backupSplit": "📦 Yedek tek dosyaya sığmadı, bu yüzden sıkıştırılıp {{ .Parts }} parçaya bölündü. Birleştirmek için: cat {{ .Name }}.gz.part* | gunzip > {{ .Name }}",
       "refreshedOn": "\r\n📋🔄 Yenilendi: {{ .Time }}\r\n\r\n",
       "yes": "✅ Evet",
       "no": "❌ Hayır",
