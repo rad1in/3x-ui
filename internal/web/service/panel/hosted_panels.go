@@ -384,6 +384,7 @@ func lastLine(out []byte) string {
 
 func startHostedPanel(p *model.HostedPanel) {
 	dir := hostedPanelDir(p.Id)
+	PublishHostedSponsors()
 	if err := syncHostedBin(config.GetBinFolderPath(), filepath.Join(dir, "bin")); err != nil {
 		logger.Warning("hosted panel", p.Id, "binaries:", err)
 	}

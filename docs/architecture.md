@@ -390,6 +390,7 @@ All registered in `web.go` → `startTask()`. Each is a struct with a `Run()` me
 | `@daily`            | `clear_logs_job`, `periodic_traffic_reset_job("daily")`, `periodic_traffic_reset_job("monthly")` | IP-limit and Xray access/error log cleanup; daily resets and due monthly resets       |
 | `@daily`            | `audit_prune_job`                                                                                | Drop activity-log rows older than 90 days (`service.AuditRetention`)                  |
 | `@every 15s`        | `hosted_status_job`                                                                              | Hosted panels only (`XUI_HOSTED_DIR`): report usage, stop/start Xray against owner limits |
+| `@every 1m`         | `hosted_sponsors_job`                                                                            | Masters only (not hosted): copy the owner's live sponsors into each hosted panel |
 | `@weekly`           | `periodic_traffic_reset_job("weekly")`                                                           | Weekly traffic resets                                                                 |
 | default `@every 1m` | `ldap_sync_job`                                                                                  | Only if LDAP enabled; schedule configurable                                           |
 | default `@daily`    | `stats_notify_job`                                                                               | Only if TG bot enabled; schedule configurable                                         |

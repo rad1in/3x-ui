@@ -13,6 +13,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 )
@@ -76,6 +77,9 @@ var (
 // or another panel's feed when sponsorFeedUrl is set. The window is re-checked
 // on every call so a slot starts exactly at From and ends at Until.
 func (s *PanelService) GetSponsors() (*SponsorList, error) {
+	if dir := hosted.Dir(); dir != "" {
+		return hostedActiveSponsors(dir), nil
+	}
 	feed, err := sponsorFeedURL()
 	if err != nil {
 		return nil, err
@@ -128,6 +132,9 @@ func (s *PanelService) GetSponsorLogo(name string) ([]byte, string, error) {
 	// Validated here, not only via list membership, so name can never carry a path or URL.
 	if !sponsorLogoRe.MatchString(name) {
 		return nil, "", ErrSponsorLogoUnknown
+	}
+	if dir := hosted.Dir(); dir != "" {
+		return hostedSponsorLogo(dir, name)
 	}
 	feed, err := sponsorFeedURL()
 	if err != nil {

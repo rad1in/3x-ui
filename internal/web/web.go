@@ -376,6 +376,8 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 	_, _ = s.cron.AddJob("@daily", job.NewPruneAuditLogJob())
 	if hosted.Enabled() {
 		_, _ = s.cron.AddJob("@every 15s", job.NewHostedStatusJob())
+	} else {
+		_, _ = s.cron.AddJob("@every 1m", job.NewHostedSponsorsJob())
 	}
 	_, _ = s.cron.AddJob(cadenceXrayLogPrune, job.NewPruneXrayLogsJob())
 	_, _ = s.cron.AddJob("@hourly", job.NewWarpIpJob())

@@ -73,7 +73,11 @@ func (s *PanelService) SaveSponsorRecord(r model.SponsorRecord) (model.SponsorRe
 	}
 	db := database.GetDB()
 	if r.Id == 0 {
-		return r, db.Create(&r).Error
+		if err := db.Create(&r).Error; err != nil {
+			return r, err
+		}
+		PublishHostedSponsors()
+		return r, nil
 	}
 	res := db.Model(&model.SponsorRecord{}).Where("id = ?", r.Id).Select("*").Updates(&r)
 	if res.Error != nil {
@@ -82,11 +86,16 @@ func (s *PanelService) SaveSponsorRecord(r model.SponsorRecord) (model.SponsorRe
 	if res.RowsAffected == 0 {
 		return model.SponsorRecord{}, errors.New("sponsor not found")
 	}
+	PublishHostedSponsors()
 	return r, nil
 }
 
 func (s *PanelService) DeleteSponsorRecord(id int) error {
-	return database.GetDB().Delete(&model.SponsorRecord{}, id).Error
+	if err := database.GetDB().Delete(&model.SponsorRecord{}, id).Error; err != nil {
+		return err
+	}
+	PublishHostedSponsors()
+	return nil
 }
 
 func (s *PanelService) SetSponsorConfig(c SponsorConfig) error {
@@ -98,7 +107,11 @@ func (s *PanelService) SetSponsorConfig(c SponsorConfig) error {
 	if c.Contact != "" && (!strings.HasPrefix(c.Contact, "https://") || len(c.Contact) > sponsorContactMaxLen) {
 		return errors.New("contact link must be an https:// URL")
 	}
-	return (&service.SettingService{}).SetSponsorSettings(c.FeedURL, c.Contact)
+	if err := (&service.SettingService{}).SetSponsorSettings(c.FeedURL, c.Contact); err != nil {
+		return err
+	}
+	PublishHostedSponsors()
+	return nil
 }
 
 func validateSponsorRecord(r model.SponsorRecord) error {

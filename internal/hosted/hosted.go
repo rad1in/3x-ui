@@ -3,6 +3,7 @@
 package hosted
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -15,8 +16,9 @@ import (
 const EnvDir = "XUI_HOSTED_DIR"
 
 const (
-	limitsFile = "limits.json"
-	statusFile = "status.json"
+	limitsFile   = "limits.json"
+	statusFile   = "status.json"
+	sponsorsFile = "sponsors.json"
 )
 
 // Blocked reasons a hosted panel stops serving.
@@ -87,6 +89,20 @@ func WriteStatus(dir string, s PanelStatus) error {
 	return writeJSON(dir, statusFile, s)
 }
 
+// ReadSponsors returns the owner's sponsor snapshot the master last wrote.
+func ReadSponsors(dir string) ([]byte, error) {
+	return os.ReadFile(filepath.Join(dir, sponsorsFile))
+}
+
+// WriteSponsors replaces the snapshot only when it changed, so frequent
+// publishes do not churn the disk.
+func WriteSponsors(dir string, data []byte) error {
+	if old, err := ReadSponsors(dir); err == nil && bytes.Equal(old, data) {
+		return nil
+	}
+	return writeFile(dir, sponsorsFile, data)
+}
+
 func readJSON(path string, v any) error {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -95,12 +111,16 @@ func readJSON(path string, v any) error {
 	return json.Unmarshal(data, v)
 }
 
-// writeJSON replaces the file atomically so a reader never sees half a write.
 func writeJSON(dir, name string, v any) error {
 	data, err := json.Marshal(v)
 	if err != nil {
 		return err
 	}
+	return writeFile(dir, name, data)
+}
+
+// writeFile replaces the file atomically so a reader never sees half a write.
+func writeFile(dir, name string, data []byte) error {
 	tmp, err := os.CreateTemp(dir, name+".*")
 	if err != nil {
 		return err
