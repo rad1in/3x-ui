@@ -120,7 +120,8 @@
     "qrHint": "Quét bằng ứng dụng khách. Không chia sẻ mã này cho người khác.",
     "saveQr": "Lưu QR",
     "openvpnHint": "Nhập hồ sơ vào ứng dụng OpenVPN, sau đó đăng nhập bằng tên người dùng và mật khẩu bên dưới. Ứng dụng đề xuất:",
-    "ikev2Hint": "Trên iPhone và Mac, hãy cài hồ sơ; thông tin đăng nhập đã có sẵn trong đó. Trên Windows, cài chứng chỉ CA rồi thêm VPN IKEv2 với máy chủ, tên người dùng và mật khẩu bên dưới. Trên Android, dùng ứng dụng"
+    "ikev2Hint": "Trên iPhone và Mac, hãy cài hồ sơ; thông tin đăng nhập đã có sẵn trong đó. Trên Windows, cài chứng chỉ CA rồi thêm VPN IKEv2 với máy chủ, tên người dùng và mật khẩu bên dưới. Trên Android, dùng ứng dụng",
+    "l2tpHint": "Thêm VPN L2TP/IPsec (PSK) trong cài đặt VPN của thiết bị với máy chủ, khóa chia sẻ trước, tên người dùng và mật khẩu bên dưới."
   },
   "menu": {
     "theme": "Chủ đề",
@@ -777,6 +778,12 @@
           "apple": "iPhone / Mac",
           "android": "Android",
           "ca": "Chứng chỉ CA"
+        },
+        "l2tp": {
+          "help": "Khách hàng đăng nhập bằng email làm tên người dùng, mật khẩu của họ và khóa chia sẻ trước bên dưới. L2TP chạy trên cổng UDP 1701, IPsec trên 500 và 4500, nên mỗi máy chủ chỉ có thể có một inbound L2TP. Cần kernel hỗ trợ PPP và IPsec.",
+          "psk": "Khóa chia sẻ trước",
+          "pskDesc": "Khóa IPsec mà mỗi khách hàng nhập cùng thông tin đăng nhập. Để trống để tự tạo; thay đổi nó sẽ ngắt kết nối mọi thiết bị.",
+          "poolDesc": "Dải IPv4 riêng cấp cho khách hàng đã kết nối. Để trống để tự động chọn một dải 10.90.x.0/24 còn trống."
         }
       },
       "info": {

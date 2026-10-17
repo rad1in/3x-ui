@@ -366,6 +366,7 @@ export default function CommandPalette() {
           'masque',
           'openvpn',
           'ikev2',
+          'l2tp',
         ],
         icon: <ImportOutlined />,
       },

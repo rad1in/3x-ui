@@ -120,7 +120,8 @@
     "qrHint": "Pindai dengan aplikasi klien Anda. Jaga kerahasiaan kode ini.",
     "saveQr": "Simpan QR",
     "openvpnHint": "Impor profil ke aplikasi OpenVPN, lalu masuk dengan nama pengguna dan kata sandi di bawah. Aplikasi yang disarankan:",
-    "ikev2Hint": "Di iPhone dan Mac, pasang profilnya; login Anda sudah ada di dalamnya. Di Windows, pasang sertifikat CA lalu tambahkan VPN IKEv2 dengan server, nama pengguna, dan kata sandi di bawah. Di Android, gunakan aplikasi"
+    "ikev2Hint": "Di iPhone dan Mac, pasang profilnya; login Anda sudah ada di dalamnya. Di Windows, pasang sertifikat CA lalu tambahkan VPN IKEv2 dengan server, nama pengguna, dan kata sandi di bawah. Di Android, gunakan aplikasi",
+    "l2tpHint": "Tambahkan VPN L2TP/IPsec (PSK) di pengaturan VPN perangkat Anda dengan server, kunci pre-shared, nama pengguna, dan kata sandi di bawah."
   },
   "menu": {
     "theme": "Tema",
@@ -777,6 +778,12 @@
           "apple": "iPhone / Mac",
           "android": "Android",
           "ca": "Sertifikat CA"
+        },
+        "l2tp": {
+          "help": "Klien masuk dengan email sebagai nama pengguna dan kata sandinya, ditambah kunci pre-shared di bawah. L2TP berjalan di port UDP 1701 dengan IPsec di 500 dan 4500, jadi satu server hanya bisa punya satu inbound L2TP. Butuh kernel dengan dukungan PPP dan IPsec.",
+          "psk": "Kunci pre-shared",
+          "pskDesc": "Kunci IPsec yang diketik setiap klien di samping login-nya. Kosongkan untuk membuatnya otomatis; mengubahnya memutus semua perangkat.",
+          "poolDesc": "Rentang IPv4 privat yang diberikan ke klien yang terhubung. Kosongkan untuk memilih 10.90.x.0/24 yang bebas secara otomatis."
         }
       },
       "info": {

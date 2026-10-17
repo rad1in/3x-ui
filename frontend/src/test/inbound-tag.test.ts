@@ -68,6 +68,11 @@ describe('composeInboundTag transport suffix parity', () => {
       'in-443-udp',
     ],
     [
+      'l2tp forced udp',
+      base({ protocol: 'l2tp', streamSettings: { network: 'tcp' } }),
+      'in-443-udp',
+    ],
+    [
       'openvpn tcp transport',
       base({ protocol: 'openvpn', settings: { proto: 'tcp' } }),
       'in-443-tcp',

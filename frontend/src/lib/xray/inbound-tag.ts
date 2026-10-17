@@ -19,7 +19,8 @@ function inboundTransports(
     protocol === 'wireguard' ||
     protocol === 'amneziawg' ||
     protocol === 'tuic' ||
-    protocol === 'ikev2'
+    protocol === 'ikev2' ||
+    protocol === 'l2tp'
   )
     return UDP;
   if (protocol === 'masque') return masqueTransports(streamSettings);

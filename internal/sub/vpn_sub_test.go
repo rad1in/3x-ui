@@ -129,3 +129,34 @@ func TestIKEv2SubscriptionOffersItsProfiles(t *testing.T) {
 		t.Fatal("a subscription id that is not on the inbound downloaded its profile")
 	}
 }
+
+// L2TP has no profile file: the page lists everything a phone's built-in
+// client asks for, the pre-shared key included.
+func TestL2TPSubscriptionListsTheKeyAndLogin(t *testing.T) {
+	initSubDB(t)
+	settings, _ := json.Marshal(map[string]any{
+		"psk": "shared-key-123", "pool": "10.90.0.0/24",
+		"clients": []map[string]any{{"email": "l2@e", "password": "pw-l2", "subId": "L2SUB", "enable": true}},
+	})
+	db := database.GetDB()
+	ib := &model.Inbound{UserId: 1, Tag: "l2tp-1701", Enable: true, Port: 1701, Protocol: model.L2TP, Remark: "Old phones", Settings: string(settings)}
+	if err := db.Create(ib).Error; err != nil {
+		t.Fatal(err)
+	}
+	client := &model.ClientRecord{Email: "l2@e", SubID: "L2SUB", Password: "pw-l2", Enable: true}
+	if err := db.Create(client).Error; err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Create(&model.ClientInbound{ClientId: client.Id, InboundId: ib.Id}).Error; err != nil {
+		t.Fatal(err)
+	}
+	s := &SubService{}
+	s.PrepareForRequest("vpn.example.com")
+	if subs, _, _, _, err := s.getSubs("L2SUB"); err != nil || subs == nil {
+		t.Fatalf("getSubs = %v, %v; an L2TP-only user must still have a subscription", subs, err)
+	}
+	want := VPNAccount{InboundId: ib.Id, Protocol: "l2tp", Remark: "Old phones", Server: "vpn.example.com", Username: "l2@e", Password: "pw-l2", PSK: "shared-key-123"}
+	if len(s.vpnAccounts) != 1 || s.vpnAccounts[0] != want {
+		t.Fatalf("accounts = %+v, want %+v", s.vpnAccounts, want)
+	}
+}

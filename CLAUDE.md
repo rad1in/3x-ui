@@ -45,6 +45,8 @@ file locations when it can answer in one hop.
   decided and traffic metered by the panel over the management socket.
 - `internal/ipsec/` — IKEv2 inbounds: one host-wide strongSwan `charon` (UDP
   500/4500) driven over vici; EAP logins, per-SA metering, Apple/Android profiles.
+- `internal/l2tp/` — L2TP/IPsec inbound: `xl2tpd` + `pppd` (logins in a marked
+  block of `/etc/ppp/chap-secrets`), PSK IPsec on the shared charon.
 - `internal/vpnnat/` — iptables masquerade/forward/MSS clamp for VPN client networks.
 - `internal/tuic/` — TUIC v5 inbounds: `tuic-server` sidecar supervisor, native Go UDP relay traffic metering.
 - `internal/amneziawg/` — AmneziaWG protocol shape: instance/peer derivation
@@ -64,7 +66,7 @@ file locations when it can answer in one hop.
   - `controller/` — panel + REST API handlers; OpenAPI at /panel/api/openapi.json.
   - `service/` — business logic (InboundService, SettingService, XrayService,
     node sync); subpackages tgbot/, discord/, email/, outbound/, panel/, integration/.
-  - `job/` — 24 cron jobs (traffic, fail2ban IP-limit, node heartbeat/sync, LDAP,
+  - `job/` — 25 cron jobs (traffic, fail2ban IP-limit, node heartbeat/sync, LDAP,
     CPU/memory watchdogs, …); full table in `docs/architecture.md` §5.4.
   - `middleware/`, `entity/`, `global/`, `session/` (CSRF), `network/`,
     `runtime/` (master/sub-node over mTLS), `websocket/`.

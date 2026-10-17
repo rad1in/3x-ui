@@ -949,6 +949,7 @@ export const EXAMPLES: Record<string, unknown> = {
     "awgServer": null,
     "enable": true,
     "id": 1,
+    "l2tpPsk": "",
     "listen": "",
     "mtprotoDomain": "",
     "network": "",

@@ -11,6 +11,7 @@ export interface VPNAccountRow {
   server: string;
   username: string;
   password: string;
+  psk?: string;
 }
 
 interface SubVPNTabProps {
@@ -22,6 +23,12 @@ interface SubVPNTabProps {
 const OPENVPN_CONNECT_URL = 'https://openvpn.net/client/';
 const STRONGSWAN_ANDROID_URL =
   'https://play.google.com/store/apps/details?id=org.strongswan.android';
+
+const ROW_TAGS: Record<string, { label: string; color: string }> = {
+  openvpn: { label: 'OVPN', color: 'orange' },
+  ikev2: { label: 'IKEv2', color: 'blue' },
+  l2tp: { label: 'L2TP', color: 'purple' },
+};
 
 const IKEV2_DOWNLOADS = [
   { format: 'mobileconfig', labelKey: 'pages.inbounds.form.ikev2.apple' },
@@ -65,24 +72,26 @@ export default function SubVPNTab({ subUrl, accounts, onCopy }: SubVPNTabProps) 
           </a>
         </p>
       )}
+      {has('l2tp') && <p className="sub-openvpn-hint">{t('subscription.l2tpHint')}</p>}
       {accounts.map((a) => (
         <div key={`${a.protocol}-${a.inboundId}-${a.username}`} className="sub-row sub-openvpn-row">
-          <Tag color={a.protocol === 'ikev2' ? 'blue' : 'orange'} className="sub-row-tag">
-            {a.protocol === 'ikev2' ? 'IKEv2' : 'OVPN'}
+          <Tag color={ROW_TAGS[a.protocol]?.color} className="sub-row-tag">
+            {ROW_TAGS[a.protocol]?.label}
           </Tag>
           <div className="sub-row-main">
             <div className="sub-row-title" dir="auto">
               {a.remark}
             </div>
             <dl className="sub-openvpn-login">
-              {a.protocol === 'ikev2' &&
+              {a.protocol !== 'openvpn' &&
                 field(t('pages.inbounds.form.ikev2.serverAddress'), a.server)}
+              {a.protocol === 'l2tp' && field(t('pages.inbounds.form.l2tp.psk'), a.psk ?? '')}
               {field(t('username'), a.username)}
               {field(t('password'), a.password)}
             </dl>
           </div>
           <div className="sub-row-actions">
-            {a.protocol === 'ikev2' ? (
+            {a.protocol === 'l2tp' ? null : a.protocol === 'ikev2' ? (
               IKEV2_DOWNLOADS.map(({ format, labelKey }) => (
                 <Button
                   key={format}

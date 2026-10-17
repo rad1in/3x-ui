@@ -120,7 +120,8 @@
     "qrHint": "Scan with your client app. Keep this code private.",
     "saveQr": "Save QR",
     "openvpnHint": "Import the profile into an OpenVPN app, then sign in with the username and password below. Recommended app:",
-    "ikev2Hint": "On iPhone and Mac, install the profile; it carries your login. On Windows, install the CA certificate, then add an IKEv2 VPN with the server, username and password below. On Android, use the app"
+    "ikev2Hint": "On iPhone and Mac, install the profile; it carries your login. On Windows, install the CA certificate, then add an IKEv2 VPN with the server, username and password below. On Android, use the app",
+    "l2tpHint": "Add an L2TP/IPsec (PSK) VPN in your device's VPN settings with the server, pre-shared key, username and password below."
   },
   "menu": {
     "theme": "Theme",
@@ -778,6 +779,12 @@
           "apple": "iPhone / Mac",
           "android": "Android",
           "ca": "CA certificate"
+        },
+        "l2tp": {
+          "help": "Clients sign in with their email as the username and their password, plus the pre-shared key below. L2TP runs on UDP port 1701 with IPsec on 500 and 4500, so a server can have only one L2TP inbound. It needs a kernel with PPP and IPsec support.",
+          "psk": "Pre-shared key",
+          "pskDesc": "The IPsec key every client types next to their login. Leave empty to generate one; changing it disconnects every device.",
+          "poolDesc": "Private IPv4 range handed to connected clients. Leave empty to pick a free 10.90.x.0/24 automatically."
         }
       },
       "info": {

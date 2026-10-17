@@ -3501,7 +3501,8 @@
               "tuic",
               "masque",
               "openvpn",
-              "ikev2"
+              "ikev2",
+              "l2tp"
             ],
             "example": "vless",
             "type": "string"
@@ -3669,6 +3670,10 @@
           "id": {
             "example": 1,
             "type": "integer"
+          },
+          "l2tpPsk": {
+            "description": "L2TP clients type the inbound's pre-shared key next to their login.",
+            "type": "string"
           },
           "listen": {
             "type": "string"
@@ -6012,6 +6017,7 @@
                       "awgServer": null,
                       "enable": true,
                       "id": 1,
+                      "l2tpPsk": "",
                       "listen": "",
                       "mtprotoDomain": "",
                       "network": "",

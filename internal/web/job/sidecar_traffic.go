@@ -38,3 +38,10 @@ func bookSidecarTraffic(svc *service.InboundService, name string, deltas []sidec
 	}
 	svc.RefreshLocalOnlineClients(online, activeTags)
 }
+
+func errString(err error) string {
+	if err == nil {
+		return ""
+	}
+	return err.Error()
+}

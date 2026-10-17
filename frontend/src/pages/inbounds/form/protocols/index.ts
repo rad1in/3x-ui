@@ -12,3 +12,4 @@ export { default as TuicFields } from './tuic';
 export { default as MasqueStreamFields, MasqueSettingsFields } from './masque';
 export { default as OpenVPNFields } from './openvpn';
 export { default as IKEv2Fields } from './ikev2';
+export { default as L2TPFields } from './l2tp';

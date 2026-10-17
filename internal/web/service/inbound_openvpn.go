@@ -175,6 +175,8 @@ func (s *InboundService) applyLocalSidecar(protocol model.Protocol, inboundId in
 		s.applyLocalOpenVPN(inboundId)
 	case model.IKEv2:
 		s.applyLocalIKEv2(inboundId)
+	case model.L2TP:
+		s.applyLocalL2TP(inboundId)
 	default:
 		return false
 	}

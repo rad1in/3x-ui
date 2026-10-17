@@ -20,6 +20,7 @@ const MULTI_USER_PROTOCOLS = new Set([
   'masque',
   'openvpn',
   'ikev2',
+  'l2tp',
 ]);
 
 interface BulkAttachInboundsModalProps {

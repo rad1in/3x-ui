@@ -325,6 +325,7 @@ export default function InboundsPage() {
         case 'masque':
         case 'openvpn':
         case 'ikev2':
+        case 'l2tp':
           return c.password === client.password && c.email === client.email;
         default:
           return c.id === client.id && c.email === client.email;

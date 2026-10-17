@@ -31,6 +31,7 @@ interface SubPageData {
     server: string;
     username: string;
     password: string;
+    psk?: string;
   }[];
 }
 

@@ -444,7 +444,7 @@ func (s *ClientService) AddInboundClient(inboundSvc *InboundService, data *model
 			return false, common.NewError("client email is required")
 		}
 		switch oldInbound.Protocol {
-		case "trojan", "masque", "openvpn", "ikev2":
+		case "trojan", "masque", "openvpn", "ikev2", "l2tp":
 			if client.Password == "" {
 				return false, common.NewError("empty client ID")
 			}
@@ -683,7 +683,7 @@ func (s *ClientService) UpdateInboundClient(inboundSvc *InboundService, data *mo
 
 	newClientId := ""
 	switch oldInbound.Protocol {
-	case "trojan", "masque", "openvpn", "ikev2":
+	case "trojan", "masque", "openvpn", "ikev2", "l2tp":
 		newClientId = clients[0].Password
 	case "shadowsocks":
 		newClientId = clients[0].Email

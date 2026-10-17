@@ -136,6 +136,7 @@ export const InboundOptionSchema = z
     awgServer: AwgServerOptionSchema.nullable().optional(),
     tuicServer: TuicServerOptionSchema.nullable().optional(),
     mtprotoDomain: z.string().optional(),
+    l2tpPsk: z.string().optional(),
     // Hosting node id; absent/null for this panel's own inbounds (#4997).
     nodeId: z.number().nullable().optional(),
     // Share-host resolution inputs, mirroring the backend resolveInboundAddress so

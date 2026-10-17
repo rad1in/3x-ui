@@ -120,7 +120,8 @@
     "qrHint": "İstemci uygulamanızla tarayın. Bu kodu kimseyle paylaşmayın.",
     "saveQr": "QR'ı kaydet",
     "openvpnHint": "Profili bir OpenVPN uygulamasına aktarın ve aşağıdaki kullanıcı adı ve şifreyle giriş yapın. Önerilen uygulama:",
-    "ikev2Hint": "iPhone ve Mac'te profili yükleyin; giriş bilgileriniz içindedir. Windows'ta CA sertifikasını yükleyin, ardından aşağıdaki sunucu, kullanıcı adı ve şifreyle bir IKEv2 VPN ekleyin. Android'de şu uygulamayı kullanın:"
+    "ikev2Hint": "iPhone ve Mac'te profili yükleyin; giriş bilgileriniz içindedir. Windows'ta CA sertifikasını yükleyin, ardından aşağıdaki sunucu, kullanıcı adı ve şifreyle bir IKEv2 VPN ekleyin. Android'de şu uygulamayı kullanın:",
+    "l2tpHint": "Cihazınızın VPN ayarlarında bir L2TP/IPsec (PSK) VPN ekleyin ve aşağıdaki sunucu, ön paylaşımlı anahtar, kullanıcı adı ve şifreyi girin."
   },
   "menu": {
     "theme": "Tema",
@@ -777,6 +778,12 @@
           "apple": "iPhone / Mac",
           "android": "Android",
           "ca": "CA sertifikası"
+        },
+        "l2tp": {
+          "help": "İstemciler e-postalarını kullanıcı adı olarak, şifreleriyle ve aşağıdaki ön paylaşımlı anahtarla giriş yapar. L2TP, UDP 1701 portunda, IPsec ise 500 ve 4500'de çalışır; bu yüzden bir sunucuda yalnızca bir L2TP inbound olabilir. PPP ve IPsec destekli bir çekirdek gerekir.",
+          "psk": "Ön paylaşımlı anahtar",
+          "pskDesc": "Her istemcinin giriş bilgileriyle birlikte yazdığı IPsec anahtarı. Boş bırakılırsa oluşturulur; değiştirmek tüm cihazların bağlantısını keser.",
+          "poolDesc": "Bağlanan istemcilere verilen özel IPv4 aralığı. Boş bırakılırsa boş bir 10.90.x.0/24 otomatik seçilir."
         }
       },
       "info": {

@@ -15,6 +15,7 @@ import (
 var vpnClientNetworkKey = map[model.Protocol]string{
 	model.OpenVPN: "network",
 	model.IKEv2:   "pool",
+	model.L2TP:    "pool",
 }
 
 // vpnClientNetwork validates the requested client network, or picks the first

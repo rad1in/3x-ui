@@ -120,7 +120,8 @@
     "qrHint": "使用用戶端應用程式掃描。請勿外洩此 QR 碼。",
     "saveQr": "儲存 QR 碼",
     "openvpnHint": "將設定檔匯入 OpenVPN 應用程式，然後使用下方的使用者名稱和密碼登入。推薦應用程式：",
-    "ikev2Hint": "在 iPhone 與 Mac 上安裝設定檔，其中已包含登入資訊。在 Windows 上安裝 CA 憑證，然後使用下方的伺服器、使用者名稱與密碼新增一個 IKEv2 VPN。在 Android 上使用應用程式"
+    "ikev2Hint": "在 iPhone 與 Mac 上安裝設定檔，其中已包含登入資訊。在 Windows 上安裝 CA 憑證，然後使用下方的伺服器、使用者名稱與密碼新增一個 IKEv2 VPN。在 Android 上使用應用程式",
+    "l2tpHint": "在裝置的 VPN 設定中新增一個 L2TP/IPsec（預先共用金鑰）VPN，並填寫下方的伺服器、預先共用金鑰、使用者名稱與密碼。"
   },
   "menu": {
     "theme": "主題",
@@ -777,6 +778,12 @@
           "apple": "iPhone / Mac",
           "android": "Android",
           "ca": "CA 憑證"
+        },
+        "l2tp": {
+          "help": "用戶端以電子郵件作為使用者名稱，並使用其密碼與下方的預先共用金鑰登入。L2TP 使用 UDP 連接埠 1701，IPsec 使用 500 與 4500，因此每台伺服器只能有一個 L2TP 入站。需要支援 PPP 與 IPsec 的核心。",
+          "psk": "預先共用金鑰",
+          "pskDesc": "每個用戶端在登入資訊旁輸入的 IPsec 金鑰。留空則自動產生；變更它會中斷所有裝置。",
+          "poolDesc": "分配給已連線用戶端的私有 IPv4 網段。留空則自動選擇一個空閒的 10.90.x.0/24。"
         }
       },
       "info": {

@@ -54,9 +54,16 @@ const INBOUND_PROTOCOL_COLORS: Record<string, string> = {
   tuic: 'orange',
   openvpn: 'green',
   ikev2: 'blue',
+  l2tp: 'purple',
 };
 
 const INBOUND_CHIP_LIMIT = 1;
+
+const VPN_TAGS: Record<string, { label: string; color: string }> = {
+  openvpn: { label: 'OpenVPN', color: 'green' },
+  ikev2: { label: 'IKEv2', color: 'blue' },
+  l2tp: { label: 'L2TP', color: 'purple' },
+};
 
 const IKEV2_DOWNLOADS: { format: IKEv2ProfileFormat; labelKey: string }[] = [
   { format: 'mobileconfig', labelKey: 'pages.inbounds.form.ikev2.apple' },
@@ -245,7 +252,8 @@ export default function ClientInfoModal({
       (client?.inboundIds ?? [])
         .map((id) => inboundsById[id])
         .filter(
-          (ib): ib is InboundOption => ib?.protocol === 'openvpn' || ib?.protocol === 'ikev2',
+          (ib): ib is InboundOption =>
+            ib?.protocol === 'openvpn' || ib?.protocol === 'ikev2' || ib?.protocol === 'l2tp',
         ),
     [client, inboundsById],
   );
@@ -872,15 +880,22 @@ export default function ClientInfoModal({
                 <Divider>{t('pages.inbounds.form.openvpn.profile')}</Divider>
                 {vpnInbounds.map((ib) => (
                   <div key={`vpn-${ib.id}`} className="link-row">
-                    <Tag
-                      color={ib.protocol === 'ikev2' ? 'blue' : 'green'}
-                      className="link-row-tag"
-                    >
-                      {ib.protocol === 'ikev2' ? 'IKEv2' : 'OpenVPN'}
+                    <Tag color={VPN_TAGS[ib.protocol ?? '']?.color} className="link-row-tag">
+                      {VPN_TAGS[ib.protocol ?? '']?.label}
                     </Tag>
                     <span className="link-row-title">{formatInboundLabel(ib.tag, ib.remark)}</span>
                     <div className="link-row-actions">
-                      {ib.protocol === 'ikev2' ? (
+                      {ib.protocol === 'l2tp' ? (
+                        <Tooltip title={t('copy')}>
+                          <Button
+                            size="small"
+                            icon={<CopyOutlined />}
+                            onClick={() => copyValue(ib.l2tpPsk ?? '')}
+                          >
+                            {t('pages.inbounds.form.l2tp.psk')}: <span dir="ltr">{ib.l2tpPsk}</span>
+                          </Button>
+                        </Tooltip>
+                      ) : ib.protocol === 'ikev2' ? (
                         IKEV2_DOWNLOADS.map(({ format, labelKey }) => (
                           <Button
                             key={format}

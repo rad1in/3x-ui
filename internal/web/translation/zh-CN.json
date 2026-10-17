@@ -120,7 +120,8 @@
     "qrHint": "使用客户端应用扫描。请勿泄露此二维码。",
     "saveQr": "保存二维码",
     "openvpnHint": "将配置文件导入 OpenVPN 应用，然后使用下面的用户名和密码登录。推荐应用：",
-    "ikev2Hint": "在 iPhone 和 Mac 上安装配置文件，其中已包含登录信息。在 Windows 上安装 CA 证书，然后使用下面的服务器、用户名和密码添加一个 IKEv2 VPN。在 Android 上使用应用"
+    "ikev2Hint": "在 iPhone 和 Mac 上安装配置文件，其中已包含登录信息。在 Windows 上安装 CA 证书，然后使用下面的服务器、用户名和密码添加一个 IKEv2 VPN。在 Android 上使用应用",
+    "l2tpHint": "在设备的 VPN 设置中添加一个 L2TP/IPsec（预共享密钥）VPN，并填写下面的服务器、预共享密钥、用户名和密码。"
   },
   "menu": {
     "theme": "主题",
@@ -777,6 +778,12 @@
           "apple": "iPhone / Mac",
           "android": "Android",
           "ca": "CA 证书"
+        },
+        "l2tp": {
+          "help": "客户端使用邮箱作为用户名，并使用其密码和下方的预共享密钥登录。L2TP 使用 UDP 端口 1701，IPsec 使用 500 和 4500，因此每台服务器只能有一个 L2TP 入站。需要支持 PPP 和 IPsec 的内核。",
+          "psk": "预共享密钥",
+          "pskDesc": "每个客户端在登录信息旁输入的 IPsec 密钥。留空则自动生成；修改它会断开所有设备。",
+          "poolDesc": "分配给已连接客户端的私有 IPv4 网段。留空则自动选择一个空闲的 10.90.x.0/24。"
         }
       },
       "info": {

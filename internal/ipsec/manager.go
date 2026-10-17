@@ -43,6 +43,8 @@ type ikeSA struct {
 type Manager struct {
 	mu       sync.Mutex
 	want     map[int]Instance
+	wantL2TP map[int]L2TPConn
+	l2tpErr  string
 	d        *daemon
 	libipsec *bool
 	startErr string
@@ -68,7 +70,7 @@ func GetManager() *Manager {
 }
 
 func newManager() *Manager {
-	m := &Manager{want: map[int]Instance{}, routed: map[netip.Prefix]bool{}}
+	m := &Manager{want: map[int]Instance{}, wantL2TP: map[int]L2TPConn{}, routed: map[netip.Prefix]bool{}}
 	m.resetLoaded()
 	m.acct.reset()
 	return m
@@ -112,20 +114,56 @@ func (m *Manager) Reconcile(insts []Instance) error {
 	return m.applyWantLocked()
 }
 
+// EnsureL2TP adds the IPsec side of an L2TP inbound; L2TPUnavailable says
+// when this kernel cannot carry it.
+func (m *Manager) EnsureL2TP(c L2TPConn) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.wantL2TP[c.Id] = c
+	return m.applyWantLocked()
+}
+
+func (m *Manager) RemoveL2TP(id int) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	delete(m.wantL2TP, id)
+	if err := m.applyWantLocked(); err != nil {
+		logger.Warning("ipsec: remove l2tp", id, err)
+	}
+}
+
+// L2TPUnavailable is why the L2TP connections are not loaded, or "".
+func (m *Manager) L2TPUnavailable() string {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	return m.l2tpErr
+}
+
 func (m *Manager) applyWantLocked() error {
 	insts := make([]Instance, 0, len(m.want))
 	for _, inst := range m.want {
 		insts = append(insts, inst)
 	}
 	sort.Slice(insts, func(i, j int) bool { return insts[i].Id < insts[j].Id })
-	if len(insts) == 0 {
+	l2tps := make([]L2TPConn, 0, len(m.wantL2TP))
+	for _, c := range m.wantL2TP {
+		l2tps = append(l2tps, c)
+	}
+	if len(insts) == 0 && len(l2tps) == 0 {
+		m.l2tpErr = ""
 		m.stopLocked()
 		return nil
 	}
 	if err := m.ensureDaemonLocked(); err != nil {
 		return err
 	}
-	want := desiredOf(insts)
+	m.l2tpErr = ""
+	if len(l2tps) > 0 && *m.libipsec {
+		// libipsec only does tunnel mode; L2TP/IPsec needs transport mode.
+		m.l2tpErr = "L2TP/IPsec needs IPsec (ESP) support in the kernel, which this server lacks"
+		l2tps = nil
+	}
+	want := desiredOf(insts, l2tps)
 	changed, err := m.applyLocked(want)
 	if err != nil {
 		return err
@@ -209,7 +247,7 @@ func (m *Manager) applyLocked(want desired) (map[string]bool, error) {
 		if _, err := m.d.call("load-shared", msg); err != nil {
 			return nil, err
 		}
-		if had {
+		if had && strings.HasPrefix(id, "eap-") {
 			changed[strings.TrimPrefix(id, "eap-")] = true
 		}
 		m.loadedShared[id] = fp
@@ -224,7 +262,9 @@ func (m *Manager) applyLocked(want desired) (map[string]bool, error) {
 			logger.Debug("ipsec: unload secret", id, err)
 		}
 		delete(m.loadedShared, id)
-		changed[strings.TrimPrefix(id, "eap-")] = true
+		if strings.HasPrefix(id, "eap-") {
+			changed[strings.TrimPrefix(id, "eap-")] = true
+		}
 	}
 	for name, pool := range want.pools {
 		if m.loadedPools[name] {

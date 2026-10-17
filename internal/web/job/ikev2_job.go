@@ -10,6 +10,8 @@ import (
 // crash, dropping depleted users) and books the IPsec traffic.
 type IKEv2Job struct {
 	inboundService service.InboundService
+	// lastErr keeps a server that cannot run the protocol from logging it every tick.
+	lastErr string
 }
 
 func NewIKEv2Job() *IKEv2Job {
@@ -27,8 +29,12 @@ func (j *IKEv2Job) Run() {
 		activeTags = append(activeTags, inst.Tag)
 	}
 	mgr := ipsec.GetManager()
-	if err := mgr.Reconcile(desired); err != nil {
-		logger.Warning("ikev2 job:", err)
+	err = mgr.Reconcile(desired)
+	if msg := errString(err); msg != j.lastErr {
+		if msg != "" {
+			logger.Warning("ikev2 job:", msg)
+		}
+		j.lastErr = msg
 	}
 
 	traffic, online := mgr.CollectTraffic()

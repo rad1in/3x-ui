@@ -835,6 +835,7 @@ export interface InboundOption {
   awgServer?: ServerSettings | null;
   enable: boolean;
   id: number;
+  l2tpPsk?: string;
   listen?: string;
   mtprotoDomain?: string;
   network?: string;

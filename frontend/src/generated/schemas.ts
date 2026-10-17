@@ -3475,7 +3475,8 @@ export const SCHEMAS: Record<string, unknown> = {
           "tuic",
           "masque",
           "openvpn",
-          "ikev2"
+          "ikev2",
+          "l2tp"
         ],
         "example": "vless",
         "type": "string"
@@ -3643,6 +3644,10 @@ export const SCHEMAS: Record<string, unknown> = {
       "id": {
         "example": 1,
         "type": "integer"
+      },
+      "l2tpPsk": {
+        "description": "L2TP clients type the inbound's pre-shared key next to their login.",
+        "type": "string"
       },
       "listen": {
         "type": "string"

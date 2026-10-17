@@ -21,6 +21,7 @@ import {
   type OpenVPNInboundSettings,
 } from '@/schemas/protocols/inbound/openvpn';
 import type { IKEv2InboundSettings } from '@/schemas/protocols/inbound/ikev2';
+import type { L2TPInboundSettings } from '@/schemas/protocols/inbound/l2tp';
 import type { TunInboundSettings } from '@/schemas/protocols/inbound/tun';
 import type { TunnelInboundSettings } from '@/schemas/protocols/inbound/tunnel';
 import type { VlessClient, VlessInboundSettings } from '@/schemas/protocols/inbound/vless';
@@ -355,6 +356,10 @@ export function createDefaultOpenVPNInboundSettings(): OpenVPNInboundSettings {
   return { proto: 'udp', network: '', dns: [...OPENVPN_DEFAULT_DNS], clients: [] };
 }
 
+export function createDefaultL2TPInboundSettings(): L2TPInboundSettings {
+  return { psk: '', pool: '', dns: [...OPENVPN_DEFAULT_DNS], clients: [] };
+}
+
 export function createDefaultIKEv2InboundSettings(serverAddress = ''): IKEv2InboundSettings {
   return { serverAddress, pool: '', dns: [...OPENVPN_DEFAULT_DNS], clients: [] };
 }
@@ -399,7 +404,8 @@ export type AnyInboundSettings =
   | TuicInboundSettings
   | MasqueInboundSettings
   | OpenVPNInboundSettings
-  | IKEv2InboundSettings;
+  | IKEv2InboundSettings
+  | L2TPInboundSettings;
 
 export function createDefaultInboundSettings(protocol: string): AnyInboundSettings | null {
   switch (protocol) {
@@ -435,6 +441,8 @@ export function createDefaultInboundSettings(protocol: string): AnyInboundSettin
       return createDefaultOpenVPNInboundSettings();
     case 'ikev2':
       return createDefaultIKEv2InboundSettings();
+    case 'l2tp':
+      return createDefaultL2TPInboundSettings();
     default:
       return null;
   }

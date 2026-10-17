@@ -38,6 +38,48 @@ type Instance struct {
 
 func connName(id int) string { return "ikev2-" + strconv.Itoa(id) }
 
+// L2TPConn is the IPsec side of an L2TP inbound: IKEv1 with a pre-shared key
+// and transport-mode ESP around xl2tpd's UDP 1701.
+type L2TPConn struct {
+	Id  int
+	PSK string
+}
+
+func l2tpConnName(id int) string { return "l2tp-" + strconv.Itoa(id) }
+
+// L2TP clients are old stacks (Windows, macOS, Android's built-in client) that
+// still default to SHA1 and MODP1024, so those stay offered after the defaults.
+var (
+	l2tpIKEProposals = []string{"default", "aes256-sha256-modp2048", "aes256-sha1-modp2048", "aes128-sha1-modp2048", "aes256-sha1-modp1024", "aes128-sha1-modp1024", "3des-sha1-modp1024"}
+	l2tpESPProposals = []string{"default", "aes256-sha1", "aes128-sha1", "3des-sha1"}
+)
+
+func l2tpConnMessage() *vici.Message {
+	local := vici.NewMessage()
+	_ = local.Set("auth", "psk")
+	remote := vici.NewMessage()
+	_ = remote.Set("auth", "psk")
+
+	child := vici.NewMessage()
+	_ = child.Set("mode", "transport")
+	_ = child.Set("local_ts", []string{"dynamic[udp/1701]"})
+	_ = child.Set("remote_ts", []string{"dynamic[udp/%any]"})
+	_ = child.Set("esp_proposals", l2tpESPProposals)
+	_ = child.Set("dpd_action", "clear")
+	children := vici.NewMessage()
+	_ = children.Set("l2tp", child)
+
+	conn := vici.NewMessage()
+	_ = conn.Set("version", "1")
+	_ = conn.Set("proposals", l2tpIKEProposals)
+	_ = conn.Set("unique", "never")
+	_ = conn.Set("dpd_delay", "30s")
+	_ = conn.Set("local", local)
+	_ = conn.Set("remote", remote)
+	_ = conn.Set("children", children)
+	return conn
+}
+
 // poolName changes with the pool's contents: charon will not redefine a pool
 // with leases out, so a new one is loaded and the old dropped once it drains.
 func poolName(inst Instance) string {
@@ -108,7 +150,7 @@ func (s sharedSecret) fingerprint() string {
 	return s.Type + "|" + s.Data + "|" + strings.Join(s.Owners, ",")
 }
 
-func desiredOf(insts []Instance) desired {
+func desiredOf(insts []Instance, l2tps []L2TPConn) desired {
 	d := desired{
 		conns:  map[string]*vici.Message{},
 		pools:  map[string]*vici.Message{},
@@ -124,6 +166,11 @@ func desiredOf(insts []Instance) desired {
 		for email, u := range inst.Users {
 			d.shared[eapSecretID(email)] = sharedSecret{Type: "EAP", Data: u.Password, Owners: []string{email}}
 		}
+	}
+	for _, c := range l2tps {
+		d.conns[l2tpConnName(c.Id)] = l2tpConnMessage()
+		// No owners: a PSK conn is matched by its peer address, which is anyone's.
+		d.shared["psk-"+l2tpConnName(c.Id)] = sharedSecret{Type: "IKE", Data: c.PSK}
 	}
 	sort.Strings(d.keys)
 	return d

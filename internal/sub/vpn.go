@@ -9,6 +9,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/ipsec"
+	"github.com/mhsanaei/3x-ui/v3/internal/l2tp"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 )
@@ -22,12 +23,13 @@ type VPNAccount struct {
 	Server    string `json:"server"`
 	Username  string `json:"username"`
 	Password  string `json:"password"`
+	PSK       string `json:"psk,omitempty"`
 }
 
 var errNoVPNProfile = errors.New("no vpn profile for this subscription")
 
 func servesVPNAccounts(p model.Protocol) bool {
-	return p == model.OpenVPN || p == model.IKEv2
+	return p == model.OpenVPN || p == model.IKEv2 || p == model.L2TP
 }
 
 var unsafeFileChars = regexp.MustCompile(`[^A-Za-z0-9._-]+`)
@@ -41,10 +43,14 @@ func (s *SubService) addVPNAccounts(inbound *model.Inbound, clients []model.Clie
 	if inst, _, ok := ipsec.ServerOf(inbound); ok {
 		server = inst.Address
 	}
+	var psk string
+	if inst, _, ok := l2tp.ServerOf(inbound); ok {
+		psk = inst.PSK
+	}
 	for _, c := range clients {
 		s.vpnAccounts = append(s.vpnAccounts, VPNAccount{
 			InboundId: inbound.Id, Protocol: string(inbound.Protocol), Remark: remark,
-			Server: server, Username: c.Email, Password: c.Password,
+			Server: server, Username: c.Email, Password: c.Password, PSK: psk,
 		})
 	}
 }
