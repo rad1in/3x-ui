@@ -412,6 +412,35 @@ a.sub-row-title:hover {
   gap: 16px;
 }
 
+.sub-platforms {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.sub-guide {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--ant-color-border-secondary);
+  background: var(--ant-color-fill-quaternary);
+}
+
+.sub-guide-title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ant-color-text);
+}
+
+.sub-guide-steps {
+  margin: 0;
+  padding-inline-start: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--ant-color-text-secondary);
+}
+
 .sub-app-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

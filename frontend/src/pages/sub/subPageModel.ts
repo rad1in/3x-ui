@@ -28,13 +28,47 @@ export function usagePercent(usedByte: number, totalByte: number): number {
   return Number.isFinite(pct) ? Math.min(100, Math.max(0, pct)) : 0;
 }
 
-export type AppPlatform = 'android' | 'ios';
+export type AppPlatform = 'android' | 'ios' | 'windows' | 'macos' | 'linux';
 
-export function detectPlatform(userAgent: string): AppPlatform {
-  // iPadOS sends a Macintosh UA, and App Store clients also run on Apple-silicon Macs.
-  if (/iphone|ipad|ipod|macintosh/i.test(userAgent)) return 'ios';
+export function detectPlatform(userAgent: string, maxTouchPoints = 0): AppPlatform {
+  if (/iphone|ipad|ipod/i.test(userAgent)) return 'ios';
+  // iPadOS sends a Macintosh UA; only its touch screen tells it apart from a Mac.
+  if (/macintosh/i.test(userAgent)) return maxTouchPoints > 1 ? 'ios' : 'macos';
+  if (/android/i.test(userAgent)) return 'android';
+  if (/windows/i.test(userAgent)) return 'windows';
+  if (/linux|x11|cros/i.test(userAgent)) return 'linux';
   return 'android';
 }
+
+export interface InstallGuide {
+  app: string;
+  store: string;
+  url: string;
+}
+
+export const INSTALL_GUIDES: Record<AppPlatform, InstallGuide> = {
+  android: {
+    app: 'V2RayNG',
+    store: 'Google Play',
+    url: 'https://play.google.com/store/apps/details?id=com.v2ray.ang',
+  },
+  ios: { app: 'Streisand', store: 'App Store', url: 'https://apps.apple.com/app/id6450534064' },
+  windows: {
+    app: 'Hiddify',
+    store: 'GitHub',
+    url: 'https://github.com/hiddify/hiddify-app/releases',
+  },
+  macos: {
+    app: 'Hiddify',
+    store: 'GitHub',
+    url: 'https://github.com/hiddify/hiddify-app/releases',
+  },
+  linux: {
+    app: 'Hiddify',
+    store: 'GitHub',
+    url: 'https://github.com/hiddify/hiddify-app/releases',
+  },
+};
 
 export interface SubApp {
   name: string;
@@ -78,6 +112,7 @@ export function buildSubApps({
     name: 'Karing',
     url: `karing://install-config?url=${encSub}&name=${profileName}`,
   };
+  const streisand = { name: 'Streisand', url: `streisand://import/${encSub}` };
   const rocketSource = `${subUrl}${subUrl.includes('?') ? '&' : '?'}flag=shadowrocket`;
   const rocketRemark = encodeURIComponent(subTitle || sId || 'Subscription');
 
@@ -98,7 +133,7 @@ export function buildSubApps({
         url: `shadowrocket://add/sub://${btoa(rocketSource)}?remark=${rocketRemark}`,
       },
       v2box,
-      { name: 'Streisand', url: `streisand://import/${encSub}` },
+      streisand,
       ...singBox,
       v2raytun,
       happ,
@@ -106,6 +141,9 @@ export function buildSubApps({
       hiddify,
       karing,
     ],
+    windows: [hiddify, karing],
+    macos: [hiddify, karing, ...singBox, streisand],
+    linux: [hiddify],
   };
 }
 

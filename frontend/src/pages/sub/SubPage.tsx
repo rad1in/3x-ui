@@ -63,7 +63,7 @@ const heroData = {
 };
 
 const apps = buildSubApps({ subUrl, singboxUrl: subSingboxUrl, sId, subTitle });
-const initialPlatform = detectPlatform(navigator.userAgent);
+const initialPlatform = detectPlatform(navigator.userAgent, navigator.maxTouchPoints);
 const RTL_LANGUAGES = new Set(['fa-IR', 'ar-EG']);
 
 export default function SubPage() {

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  INSTALL_GUIDES,
   buildSubApps,
   daysUntil,
   detectPlatform,
@@ -8,6 +9,7 @@ import {
   resolveSubStatus,
   usagePercent,
 } from '@/pages/sub/subPageModel';
+import type { AppPlatform } from '@/pages/sub/subPageModel';
 
 const DAY = 86_400_000;
 const NOW = Date.UTC(2026, 8, 15, 12, 0, 0);
@@ -64,27 +66,32 @@ describe('usagePercent', () => {
   });
 });
 
+const MAC_UA =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/17.5 Safari/605.1.15';
+
 describe('detectPlatform', () => {
   it.each([
     [
       'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/128.0 Mobile Safari/537.36',
+      0,
       'android',
     ],
     [
       'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148',
+      5,
       'ios',
     ],
-    [
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Version/17.5 Safari/605.1.15',
-      'ios',
-    ],
+    ['an iPad, which sends a Mac UA but has a touch screen', 5, 'ios'],
+    ['a Mac', 0, 'macos'],
     [
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/128.0 Safari/537.36',
-      'android',
+      0,
+      'windows',
     ],
-    ['Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/128.0 Safari/537.36', 'android'],
-  ])('%s -> %s', (ua, want) => {
-    expect(detectPlatform(ua)).toBe(want);
+    ['Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/128.0 Safari/537.36', 0, 'linux'],
+  ] as const)('%s -> %s', (ua, touchPoints, want) => {
+    const agent = ua.startsWith('Mozilla') ? ua : MAC_UA;
+    expect(detectPlatform(agent, touchPoints)).toBe(want);
   });
 });
 
@@ -95,8 +102,22 @@ describe('buildSubApps', () => {
   const encSingbox = encodeURIComponent(singboxUrl);
   const sub = { subUrl, singboxUrl, sId: 'abc', subTitle: 'Nova Net' };
 
-  it('offers Android and iOS app lists only', () => {
-    expect(Object.keys(buildSubApps(sub))).toEqual(['android', 'ios']);
+  it('offers an app list for each install-guide platform', () => {
+    expect(Object.keys(buildSubApps(sub))).toEqual(['android', 'ios', 'windows', 'macos', 'linux']);
+  });
+
+  it('offers desktop apps that import the subscription with one tap', () => {
+    const names = (platform: AppPlatform) => buildSubApps(sub)[platform].map((app) => app.name);
+    expect(names('windows')).toEqual(['Hiddify', 'Karing']);
+    expect(names('macos')).toEqual(['Hiddify', 'Karing', 'Sing-box', 'Streisand']);
+    expect(names('linux')).toEqual(['Hiddify']);
+  });
+
+  it('recommends in each install guide an app the same platform offers a button for', () => {
+    const apps = buildSubApps(sub);
+    for (const [platform, guide] of Object.entries(INSTALL_GUIDES)) {
+      expect(apps[platform as AppPlatform].map((app) => app.name)).toContain(guide.app);
+    }
   });
 
   it('gives every Android app a one-tap import link', () => {
