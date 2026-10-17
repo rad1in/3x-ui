@@ -60,8 +60,12 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		return nil, err
 	}
 
+	decoySite := s.settingService.DecoySite().Handler()
 	if subDomain != "" {
-		engine.Use(middleware.DomainValidatorMiddleware(subDomain))
+		engine.Use(middleware.DomainValidatorMiddleware(subDomain, decoySite))
+	}
+	if decoySite != nil {
+		engine.NoRoute(decoySite)
 	}
 
 	LinksPath, err := s.settingService.GetSubPath()

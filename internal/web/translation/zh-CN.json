@@ -1502,7 +1502,18 @@
         "apiTokenEmpty": "暂无令牌 — 创建一个用于认证机器人或远程面板。",
         "apiTokenDeleteWarning": "使用此令牌的任何调用方将立即无法认证。",
         "apiTokenCreatedTitle": "令牌已创建",
-        "apiTokenCreatedNotice": "请立即复制此令牌。出于安全考虑，它不会以可读形式存储，也不会再次显示。"
+        "apiTokenCreatedNotice": "请立即复制此令牌。出于安全考虑，它不会以可读形式存储，也不会再次显示。",
+        "decoy": "伪装站点",
+        "decoyMode": "对陌生请求返回",
+        "decoyModeDesc": "面板和订阅端口对未知路径或用 IP 而非域名访问时显示的内容，让扫描器看到普通网站而不是 3x-ui。重启后生效。",
+        "decoyOff": "普通错误（关闭）",
+        "decoyNginx": "nginx 默认页面",
+        "decoyRedirect": "重定向到网站",
+        "decoyHtml": "自定义页面",
+        "decoyTarget": "重定向到",
+        "decoyTargetDesc": "一个真实、无害网站的 http(s) 地址。",
+        "decoyHtmlPage": "页面 HTML",
+        "decoyHtmlPageDesc": "对每个未知路径以状态 200 返回。"
       },
       "toasts": {
         "modifySettings": "参数已更改。",

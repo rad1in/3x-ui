@@ -1502,7 +1502,18 @@
         "apiTokenEmpty": "Nenhum token ainda — crie um para autenticar bots ou painéis remotos.",
         "apiTokenDeleteWarning": "Qualquer cliente usando este token deixará de se autenticar imediatamente.",
         "apiTokenCreatedTitle": "Token criado",
-        "apiTokenCreatedNotice": "Copie este token agora. Por segurança, ele não é armazenado de forma legível e não será exibido novamente."
+        "apiTokenCreatedNotice": "Copie este token agora. Por segurança, ele não é armazenado de forma legível e não será exibido novamente.",
+        "decoy": "Site de fachada",
+        "decoyMode": "Responder a estranhos com",
+        "decoyModeDesc": "O que as portas do painel e da assinatura mostram para um caminho alheio ou um acesso por IP em vez do seu domínio, para que um scanner veja um site comum e não o 3x-ui. Vale após reiniciar.",
+        "decoyOff": "Erro simples (desligado)",
+        "decoyNginx": "Página padrão do nginx",
+        "decoyRedirect": "Redirecionar para um site",
+        "decoyHtml": "Minha própria página",
+        "decoyTarget": "Redirecionar para",
+        "decoyTargetDesc": "Um endereço http(s) de um site real e inofensivo.",
+        "decoyHtmlPage": "HTML da página",
+        "decoyHtmlPageDesc": "Servida com status 200 para cada caminho desconhecido."
       },
       "toasts": {
         "modifySettings": "Os parâmetros foram alterados.",

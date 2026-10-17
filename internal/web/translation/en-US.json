@@ -1624,7 +1624,18 @@
         "apiTokenEmpty": "No tokens yet — create one to authenticate bots or remote panels.",
         "apiTokenDeleteWarning": "Any caller using this token will stop authenticating immediately.",
         "apiTokenCreatedTitle": "Token created",
-        "apiTokenCreatedNotice": "Copy this token now. For security it is not stored in readable form and will not be shown again."
+        "apiTokenCreatedNotice": "Copy this token now. For security it is not stored in readable form and will not be shown again.",
+        "decoy": "Decoy site",
+        "decoyMode": "Answer strangers with",
+        "decoyModeDesc": "What the panel and subscription ports show for a path that is not theirs or a request by IP instead of your domain, so a scanner sees an ordinary website instead of 3x-ui. Takes effect after a restart.",
+        "decoyOff": "Plain error (off)",
+        "decoyNginx": "Default nginx page",
+        "decoyRedirect": "Redirect to a website",
+        "decoyHtml": "My own page",
+        "decoyTarget": "Redirect to",
+        "decoyTargetDesc": "An http(s) address of a real, harmless website.",
+        "decoyHtmlPage": "Page HTML",
+        "decoyHtmlPageDesc": "Served with status 200 for every unknown path."
       },
       "toasts": {
         "modifySettings": "The parameters have been changed.",

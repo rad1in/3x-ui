@@ -194,7 +194,7 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 	}
 
 	if webDomain != "" {
-		engine.Use(middleware.DomainValidatorMiddleware(webDomain))
+		engine.Use(middleware.DomainValidatorMiddleware(webDomain, s.settingService.DecoySite().Handler()))
 	}
 
 	secret, err := s.settingService.GetSecret()
@@ -284,8 +284,13 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 
 	// Let unknown panel document routes fall back to the SPA shell, while every
 	// non-SPA miss still returns a hard 404.
+	decoySite := s.settingService.DecoySite().Handler()
 	engine.NoRoute(func(c *gin.Context) {
 		if s.panel.HandleNoRoutePanelSPA(c) {
+			return
+		}
+		if decoySite != nil {
+			decoySite(c)
 			return
 		}
 		c.AbortWithStatus(http.StatusNotFound)

@@ -1502,7 +1502,18 @@
         "apiTokenEmpty": "尚無令牌 — 建立一個以認證機器人或遠端面板。",
         "apiTokenDeleteWarning": "使用此令牌的任何呼叫方將立即無法認證。",
         "apiTokenCreatedTitle": "權杖已建立",
-        "apiTokenCreatedNotice": "請立即複製此權杖。基於安全考量，它不會以可讀形式儲存，也不會再次顯示。"
+        "apiTokenCreatedNotice": "請立即複製此權杖。基於安全考量，它不會以可讀形式儲存，也不會再次顯示。",
+        "decoy": "偽裝網站",
+        "decoyMode": "對陌生請求回應",
+        "decoyModeDesc": "面板和訂閱連接埠對未知路徑或以 IP 而非網域存取時顯示的內容，讓掃描器看到普通網站而非 3x-ui。重新啟動後生效。",
+        "decoyOff": "一般錯誤（關閉）",
+        "decoyNginx": "nginx 預設頁面",
+        "decoyRedirect": "重新導向到網站",
+        "decoyHtml": "自訂頁面",
+        "decoyTarget": "重新導向到",
+        "decoyTargetDesc": "一個真實、無害網站的 http(s) 位址。",
+        "decoyHtmlPage": "頁面 HTML",
+        "decoyHtmlPageDesc": "對每個未知路徑以狀態 200 回應。"
       },
       "toasts": {
         "modifySettings": "參數已更改。",

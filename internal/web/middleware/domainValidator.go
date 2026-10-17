@@ -10,11 +10,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// DomainValidatorMiddleware returns a Gin middleware that validates the request domain.
-// It extracts the host from the request, strips any port number, and compares it
-// against the configured domain. Requests from unauthorized domains are rejected
-// with HTTP 403 Forbidden status.
-func DomainValidatorMiddleware(domain string) gin.HandlerFunc {
+// DomainValidatorMiddleware lets through only requests for the configured domain.
+// Others get reject when it is set (the decoy site), else 403 Forbidden.
+func DomainValidatorMiddleware(domain string, reject gin.HandlerFunc) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		host := c.Request.Host
 		if colonIndex := strings.LastIndex(host, ":"); colonIndex != -1 {
@@ -22,6 +20,11 @@ func DomainValidatorMiddleware(domain string) gin.HandlerFunc {
 		}
 
 		if host != domain {
+			if reject != nil {
+				reject(c)
+				c.Abort()
+				return
+			}
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}

@@ -27,6 +27,9 @@ export type transportBits = z.infer<typeof transportBitsSchema>;
 export const AllSettingSchema = z.object({
   autoDeleteDepletedDays: z.number().int().min(0),
   datepicker: z.string(),
+  decoyHtml: z.string(),
+  decoyMode: z.string(),
+  decoyTarget: z.string(),
   discordAdminIds: z.string(),
   discordBotBackup: z.boolean(),
   discordBotEnable: z.boolean(),
@@ -217,6 +220,9 @@ export type AllSetting = z.infer<typeof AllSettingSchema>;
 export const AllSettingViewSchema = z.object({
   autoDeleteDepletedDays: z.number().int().min(0),
   datepicker: z.string(),
+  decoyHtml: z.string(),
+  decoyMode: z.string(),
+  decoyTarget: z.string(),
   discordAdminIds: z.string(),
   discordBotBackup: z.boolean(),
   discordBotEnable: z.boolean(),

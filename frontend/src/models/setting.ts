@@ -22,6 +22,9 @@ export class AllSetting {
   trafficDiff = 0;
   quotaWarnPercent = 80;
   autoDeleteDepletedDays = 0;
+  decoyMode = '';
+  decoyTarget = '';
+  decoyHtml = '';
   remarkTemplate = '{{INBOUND}}-{{EMAIL}}|📊{{TRAFFIC_LEFT}}|⏳{{DAYS_LEFT}}D';
   subShowIdentityOnAllLinks = false;
   subInfoNodeEnable = false;

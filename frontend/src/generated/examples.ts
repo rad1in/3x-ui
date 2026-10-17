@@ -3,6 +3,9 @@ export const EXAMPLES: Record<string, unknown> = {
   "AllSetting": {
     "autoDeleteDepletedDays": 0,
     "datepicker": "",
+    "decoyHtml": "",
+    "decoyMode": "",
+    "decoyTarget": "",
     "discordAdminIds": "",
     "discordBotBackup": false,
     "discordBotEnable": false,
@@ -191,6 +194,9 @@ export const EXAMPLES: Record<string, unknown> = {
   "AllSettingView": {
     "autoDeleteDepletedDays": 0,
     "datepicker": "",
+    "decoyHtml": "",
+    "decoyMode": "",
+    "decoyTarget": "",
     "discordAdminIds": "",
     "discordBotBackup": false,
     "discordBotEnable": false,

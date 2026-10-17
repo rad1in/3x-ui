@@ -9,6 +9,15 @@ export const SCHEMAS: Record<string, unknown> = {
       "datepicker": {
         "type": "string"
       },
+      "decoyHtml": {
+        "type": "string"
+      },
+      "decoyMode": {
+        "type": "string"
+      },
+      "decoyTarget": {
+        "type": "string"
+      },
       "discordAdminIds": {
         "type": "string"
       },
@@ -605,6 +614,9 @@ export const SCHEMAS: Record<string, unknown> = {
     "required": [
       "autoDeleteDepletedDays",
       "datepicker",
+      "decoyHtml",
+      "decoyMode",
+      "decoyTarget",
       "discordAdminIds",
       "discordBotBackup",
       "discordBotEnable",
@@ -799,6 +811,15 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "integer"
       },
       "datepicker": {
+        "type": "string"
+      },
+      "decoyHtml": {
+        "type": "string"
+      },
+      "decoyMode": {
+        "type": "string"
+      },
+      "decoyTarget": {
         "type": "string"
       },
       "discordAdminIds": {
@@ -1424,6 +1445,9 @@ export const SCHEMAS: Record<string, unknown> = {
     "required": [
       "autoDeleteDepletedDays",
       "datepicker",
+      "decoyHtml",
+      "decoyMode",
+      "decoyTarget",
       "discordAdminIds",
       "discordBotBackup",
       "discordBotEnable",

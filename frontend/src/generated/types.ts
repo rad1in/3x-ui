@@ -11,6 +11,9 @@ export type transportBits = number;
 export interface AllSetting {
   autoDeleteDepletedDays: number;
   datepicker: string;
+  decoyHtml: string;
+  decoyMode: string;
+  decoyTarget: string;
   discordAdminIds: string;
   discordBotBackup: boolean;
   discordBotEnable: boolean;
@@ -200,6 +203,9 @@ export interface AllSetting {
 export interface AllSettingView {
   autoDeleteDepletedDays: number;
   datepicker: string;
+  decoyHtml: string;
+  decoyMode: string;
+  decoyTarget: string;
   discordAdminIds: string;
   discordBotBackup: boolean;
   discordBotEnable: boolean;

@@ -1502,7 +1502,18 @@
         "apiTokenEmpty": "Henüz token yok — botları veya uzak panelleri doğrulamak için bir tane oluşturun.",
         "apiTokenDeleteWarning": "Bu token'ı kullanan tüm bağlantılar anında kimlik doğrulamasını kaybeder.",
         "apiTokenCreatedTitle": "Token Oluşturuldu",
-        "apiTokenCreatedNotice": "Bu token'ı şimdi kopyalayın. Güvenlik nedeniyle okunabilir biçimde saklanmaz ve tekrar gösterilmez."
+        "apiTokenCreatedNotice": "Bu token'ı şimdi kopyalayın. Güvenlik nedeniyle okunabilir biçimde saklanmaz ve tekrar gösterilmez.",
+        "decoy": "Paravan site",
+        "decoyMode": "Yabancılara yanıt",
+        "decoyModeDesc": "Panel ve abonelik portlarının yabancı bir yola veya alan adı yerine IP ile gelen isteğe gösterdiği şey; tarayıcı 3x-ui yerine sıradan bir site görür. Yeniden başlatınca uygulanır.",
+        "decoyOff": "Düz hata (kapalı)",
+        "decoyNginx": "Varsayılan nginx sayfası",
+        "decoyRedirect": "Bir siteye yönlendir",
+        "decoyHtml": "Kendi sayfam",
+        "decoyTarget": "Yönlendirilecek adres",
+        "decoyTargetDesc": "Gerçek ve zararsız bir sitenin http(s) adresi.",
+        "decoyHtmlPage": "Sayfa HTML'i",
+        "decoyHtmlPageDesc": "Bilinmeyen her yol için 200 durumuyla sunulur."
       },
       "toasts": {
         "modifySettings": "Parametreler değiştirildi.",

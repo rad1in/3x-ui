@@ -1502,7 +1502,18 @@
         "apiTokenEmpty": "トークンがまだありません — ボットやリモートパネルを認証するために作成してください。",
         "apiTokenDeleteWarning": "このトークンを使用しているクライアントは直ちに認証できなくなります。",
         "apiTokenCreatedTitle": "トークンを作成しました",
-        "apiTokenCreatedNotice": "このトークンを今すぐコピーしてください。セキュリティ上、読み取り可能な形式では保存されず、再表示されません。"
+        "apiTokenCreatedNotice": "このトークンを今すぐコピーしてください。セキュリティ上、読み取り可能な形式では保存されず、再表示されません。",
+        "decoy": "偽装サイト",
+        "decoyMode": "不明なアクセスへの応答",
+        "decoyModeDesc": "パネルと購読のポートが、存在しないパスやドメインではなく IP でのアクセスに返す内容です。スキャナーには 3x-ui ではなく普通のサイトに見えます。再起動後に反映されます。",
+        "decoyOff": "通常のエラー（オフ）",
+        "decoyNginx": "nginx の初期ページ",
+        "decoyRedirect": "別のサイトへ転送",
+        "decoyHtml": "独自のページ",
+        "decoyTarget": "転送先",
+        "decoyTargetDesc": "実在する無害なサイトの http(s) アドレス。",
+        "decoyHtmlPage": "ページの HTML",
+        "decoyHtmlPageDesc": "未知のパスすべてに状態 200 で返します。"
       },
       "toasts": {
         "modifySettings": "パラメーターが変更されました。",

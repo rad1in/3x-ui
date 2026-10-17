@@ -27,6 +27,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/util/random"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/reflect_util"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/totp"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/decoy"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray/dnsconf"
@@ -84,6 +85,9 @@ var defaultValueMap = map[string]string{
 	"quotaWarnPercent":            "80",
 	"clientWarningsSeeded":        "false",
 	"autoDeleteDepletedDays":      "0",
+	"decoyMode":                   "",
+	"decoyTarget":                 "",
+	"decoyHtml":                   "",
 	"remarkTemplate":              DefaultRemarkTemplate,
 	"subShowIdentityOnAllLinks":   "false",
 	"subInfoNodeEnable":           "false",
@@ -754,6 +758,14 @@ func (s *SettingService) GetExpireDiff() (int, error) {
 
 func (s *SettingService) GetTrafficDiff() (int, error) {
 	return s.getInt("trafficDiff")
+}
+
+// DecoySite is what requests matching no route, or under a foreign Host, are answered with.
+func (s *SettingService) DecoySite() decoy.Site {
+	mode, _ := s.getString("decoyMode")
+	target, _ := s.getString("decoyTarget")
+	html, _ := s.getString("decoyHtml")
+	return decoy.Site{Mode: mode, Target: target, HTML: html}
 }
 
 func (s *SettingService) GetQuotaWarnPercent() (int, error) {
@@ -1889,6 +1901,15 @@ func validateSettingsURLs(allSetting *entity.AllSetting) error {
 		hooks = append(hooks, u)
 	}
 	allSetting.WebhookUrls = strings.Join(hooks, "\n")
+	switch allSetting.DecoyMode {
+	case decoy.ModeOff, decoy.ModeNginx, decoy.ModeHTML:
+	case decoy.ModeRedirect:
+		if !decoy.ValidTarget(allSetting.DecoyTarget) {
+			return common.NewError("decoy redirect target must be an http(s) URL")
+		}
+	default:
+		return common.NewError("unknown decoy mode:", allSetting.DecoyMode)
+	}
 	if allSetting.ExternalTrafficInformURI != "" {
 		u, err := SanitizeHTTPURL(allSetting.ExternalTrafficInformURI)
 		if err != nil {

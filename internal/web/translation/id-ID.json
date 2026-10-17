@@ -1502,7 +1502,18 @@
         "apiTokenEmpty": "Belum ada token — buat satu untuk mengautentikasi bot atau panel jarak jauh.",
         "apiTokenDeleteWarning": "Setiap pemanggil yang menggunakan token ini akan berhenti terautentikasi segera.",
         "apiTokenCreatedTitle": "Token dibuat",
-        "apiTokenCreatedNotice": "Salin token ini sekarang. Demi keamanan, token tidak disimpan dalam bentuk yang dapat dibaca dan tidak akan ditampilkan lagi."
+        "apiTokenCreatedNotice": "Salin token ini sekarang. Demi keamanan, token tidak disimpan dalam bentuk yang dapat dibaca dan tidak akan ditampilkan lagi.",
+        "decoy": "Situs umpan",
+        "decoyMode": "Jawab orang asing dengan",
+        "decoyModeDesc": "Yang ditampilkan port panel dan langganan untuk jalur asing atau permintaan lewat IP alih-alih domain Anda, agar pemindai melihat situs biasa, bukan 3x-ui. Berlaku setelah restart.",
+        "decoyOff": "Galat biasa (mati)",
+        "decoyNginx": "Halaman bawaan nginx",
+        "decoyRedirect": "Alihkan ke situs web",
+        "decoyHtml": "Halaman saya sendiri",
+        "decoyTarget": "Alihkan ke",
+        "decoyTargetDesc": "Alamat http(s) situs nyata yang tidak berbahaya.",
+        "decoyHtmlPage": "HTML halaman",
+        "decoyHtmlPageDesc": "Disajikan dengan status 200 untuk setiap jalur yang tidak dikenal."
       },
       "toasts": {
         "modifySettings": "Parameter telah diubah.",

@@ -1502,7 +1502,18 @@
         "apiTokenEmpty": "Chưa có token nào — tạo một token để xác thực bot hoặc panel từ xa.",
         "apiTokenDeleteWarning": "Mọi client đang dùng token này sẽ ngừng xác thực ngay lập tức.",
         "apiTokenCreatedTitle": "Đã tạo token",
-        "apiTokenCreatedNotice": "Hãy sao chép token này ngay bây giờ. Vì lý do bảo mật, token không được lưu ở dạng đọc được và sẽ không hiển thị lại."
+        "apiTokenCreatedNotice": "Hãy sao chép token này ngay bây giờ. Vì lý do bảo mật, token không được lưu ở dạng đọc được và sẽ không hiển thị lại.",
+        "decoy": "Trang ngụy trang",
+        "decoyMode": "Trả lời người lạ bằng",
+        "decoyModeDesc": "Những gì cổng bảng điều khiển và đăng ký hiển thị cho đường dẫn lạ hoặc yêu cầu bằng IP thay vì tên miền, để máy quét chỉ thấy một trang web thường chứ không phải 3x-ui. Áp dụng sau khi khởi động lại.",
+        "decoyOff": "Lỗi thông thường (tắt)",
+        "decoyNginx": "Trang nginx mặc định",
+        "decoyRedirect": "Chuyển hướng tới một trang",
+        "decoyHtml": "Trang của tôi",
+        "decoyTarget": "Chuyển hướng tới",
+        "decoyTargetDesc": "Địa chỉ http(s) của một trang web thật, vô hại.",
+        "decoyHtmlPage": "HTML của trang",
+        "decoyHtmlPageDesc": "Trả về với mã 200 cho mọi đường dẫn không xác định."
       },
       "toasts": {
         "modifySettings": "Các tham số đã được thay đổi.",

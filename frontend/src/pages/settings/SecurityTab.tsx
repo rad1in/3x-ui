@@ -1,7 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Empty, Form, Input, Modal, Space, Spin, Switch, Tabs, message } from 'antd';
-import { ApiOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Empty,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Space,
+  Spin,
+  Switch,
+  Tabs,
+  message,
+} from 'antd';
+import { ApiOutlined, EyeInvisibleOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons';
 import { ClipboardManager, HttpUtil, IntlUtil, RandomUtil } from '@/utils';
 import type { AllSetting } from '@/models/setting';
 import { SettingListItem } from '@/components/ui';
@@ -370,6 +382,65 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
                   ))}
                 </Spin>
               </div>
+            ),
+          },
+          {
+            key: '4',
+            label: catTabLabel(
+              <EyeInvisibleOutlined />,
+              t('pages.settings.security.decoy'),
+              isMobile,
+            ),
+            children: (
+              <>
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.security.decoyMode')}
+                  description={t('pages.settings.security.decoyModeDesc')}
+                >
+                  <Select
+                    value={allSetting.decoyMode}
+                    onChange={(v) => updateSetting({ decoyMode: v })}
+                    style={{ width: '100%' }}
+                    aria-label={t('pages.settings.security.decoyMode')}
+                    options={[
+                      { value: '', label: t('pages.settings.security.decoyOff') },
+                      { value: 'nginx', label: t('pages.settings.security.decoyNginx') },
+                      { value: 'redirect', label: t('pages.settings.security.decoyRedirect') },
+                      { value: 'html', label: t('pages.settings.security.decoyHtml') },
+                    ]}
+                  />
+                </SettingListItem>
+                {allSetting.decoyMode === 'redirect' && (
+                  <SettingListItem
+                    paddings="small"
+                    title={t('pages.settings.security.decoyTarget')}
+                    description={t('pages.settings.security.decoyTargetDesc')}
+                  >
+                    <Input
+                      value={allSetting.decoyTarget}
+                      placeholder="https://www.example.org/"
+                      style={{ direction: 'ltr' }}
+                      onChange={(e) => updateSetting({ decoyTarget: e.target.value })}
+                    />
+                  </SettingListItem>
+                )}
+                {allSetting.decoyMode === 'html' && (
+                  <SettingListItem
+                    paddings="small"
+                    title={t('pages.settings.security.decoyHtmlPage')}
+                    description={t('pages.settings.security.decoyHtmlPageDesc')}
+                  >
+                    <Input.TextArea
+                      value={allSetting.decoyHtml}
+                      autoSize={{ minRows: 4, maxRows: 14 }}
+                      style={{ direction: 'ltr', fontFamily: 'monospace' }}
+                      aria-label={t('pages.settings.security.decoyHtmlPage')}
+                      onChange={(e) => updateSetting({ decoyHtml: e.target.value })}
+                    />
+                  </SettingListItem>
+                )}
+              </>
             ),
           },
         ]}
