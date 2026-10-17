@@ -73,6 +73,11 @@ export function buildSubApps({
   const v2raytun = { name: 'V2RayTun', url: `v2raytun://import/${subUrl}` };
   const happ = { name: 'Happ', url: `happ://add/${subUrl}` };
   const incy = { name: 'Incy', url: `incy://add/${subUrl}` };
+  const hiddify = { name: 'Hiddify', url: `hiddify://import/${subUrl}#${profileName}` };
+  const karing = {
+    name: 'Karing',
+    url: `karing://install-config?url=${encSub}&name=${profileName}`,
+  };
   const rocketSource = `${subUrl}${subUrl.includes('?') ? '&' : '?'}flag=shadowrocket`;
   const rocketRemark = encodeURIComponent(subTitle || sId || 'Subscription');
 
@@ -84,6 +89,8 @@ export function buildSubApps({
       v2raytun,
       happ,
       incy,
+      hiddify,
+      karing,
     ],
     ios: [
       {
@@ -96,6 +103,8 @@ export function buildSubApps({
       v2raytun,
       happ,
       incy,
+      hiddify,
+      karing,
     ],
   };
 }

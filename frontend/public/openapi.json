@@ -494,6 +494,9 @@
           "subJsonAlwaysArray": {
             "type": "boolean"
           },
+          "subJsonApps": {
+            "type": "string"
+          },
           "subJsonAutoDetect": {
             "type": "boolean"
           },
@@ -812,6 +815,7 @@
           "subIncySupportEmail",
           "subInfoNodeEnable",
           "subJsonAlwaysArray",
+          "subJsonApps",
           "subJsonAutoDetect",
           "subJsonDns",
           "subJsonEnable",
@@ -1365,6 +1369,9 @@
           "subJsonAlwaysArray": {
             "type": "boolean"
           },
+          "subJsonApps": {
+            "type": "string"
+          },
           "subJsonAutoDetect": {
             "type": "boolean"
           },
@@ -1693,6 +1700,7 @@
           "subIncySupportEmail",
           "subInfoNodeEnable",
           "subJsonAlwaysArray",
+          "subJsonApps",
           "subJsonAutoDetect",
           "subJsonDns",
           "subJsonEnable",

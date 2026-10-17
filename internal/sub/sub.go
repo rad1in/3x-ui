@@ -108,6 +108,8 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		subJsonAlwaysArray = false
 	}
 
+	subJsonApps, _ := s.settingService.GetSubJsonApps()
+
 	subJsonUserAgentRegex, err := s.settingService.GetSubJsonUserAgentRegex()
 	if err != nil {
 		subJsonUserAgentRegex = service.DefaultSubJsonUserAgentRegex
@@ -352,6 +354,7 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		WithSUBJsonAutoDetect(subJsonAutoDetect),
 		WithSUBJsonUserAgentRegex(subJsonUserAgentRegex),
 		WithSUBJsonAlwaysArray(subJsonAlwaysArray),
+		WithSUBJsonApps(subJsonApps),
 		WithSUBJsonEnabled(subJsonEnable),
 		WithSUBClashEnabled(subClashEnable),
 		WithSUBEncryption(Encrypt),

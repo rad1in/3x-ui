@@ -155,6 +155,7 @@ export interface AllSetting {
   subIncySupportEmail: string;
   subInfoNodeEnable: boolean;
   subJsonAlwaysArray: boolean;
+  subJsonApps: string;
   subJsonAutoDetect: boolean;
   subJsonDns: string;
   subJsonEnable: boolean;
@@ -366,6 +367,7 @@ export interface AllSettingView {
   subIncySupportEmail: string;
   subInfoNodeEnable: boolean;
   subJsonAlwaysArray: boolean;
+  subJsonApps: string;
   subJsonAutoDetect: boolean;
   subJsonDns: string;
   subJsonEnable: boolean;

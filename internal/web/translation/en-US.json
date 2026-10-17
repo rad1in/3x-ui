@@ -1454,6 +1454,8 @@
       "subJsonAlwaysArrayDesc": "Return the explicit JSON subscription endpoint as an array even when it contains one profile, as required by the XTLS subscription standard. Auto-detected JSON responses always use arrays. Leave disabled to preserve the legacy single-object response.",
       "subJsonUserAgentRegex": "Xray JSON User-Agent regex",
       "subJsonUserAgentRegexDesc": "Go RE2 regular expression matched against the client's User-Agent to auto-select the Xray JSON format on the standard subscription URL. Empty by default, so auto-detection stays off until you set a pattern for the clients you want to serve. Other clients keep the raw/base64 response. Restart the panel after changes.",
+      "subJsonApps": "Xray JSON for these apps",
+      "subJsonAppsDesc": "These apps import a full Xray JSON config, which keeps the fragment, noise, routing and DNS settings that share links cannot carry. When one of them fetches the standard subscription URL it gets the Xray JSON instead of the link list. Protocols Xray cannot run (TUIC, MTProto, OpenVPN) are left out of that JSON. Restart the panel after changes.",
       "subJsonRoutingRules": "JSON subscription routing profile",
       "subJsonRoutingRulesDesc": "Routing JSON, happ:// or incy:// deeplink, or https:// URL. When set, it replaces the JSON subscription's DNS and routing rules (baked into the config for clients that ignore headers, e.g. Happ and INCY with client-side balancers). If the Happ routing header setting is empty, the same profile is automatically sent as the Routing header (inline JSON and URLs as a happ:// deeplink) so clients fetch the matching geo files.",
       "subJsonDns": "DNS servers",

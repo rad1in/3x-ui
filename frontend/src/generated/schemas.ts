@@ -468,6 +468,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "subJsonAlwaysArray": {
         "type": "boolean"
       },
+      "subJsonApps": {
+        "type": "string"
+      },
       "subJsonAutoDetect": {
         "type": "boolean"
       },
@@ -786,6 +789,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "subIncySupportEmail",
       "subInfoNodeEnable",
       "subJsonAlwaysArray",
+      "subJsonApps",
       "subJsonAutoDetect",
       "subJsonDns",
       "subJsonEnable",
@@ -1339,6 +1343,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "subJsonAlwaysArray": {
         "type": "boolean"
       },
+      "subJsonApps": {
+        "type": "string"
+      },
       "subJsonAutoDetect": {
         "type": "boolean"
       },
@@ -1667,6 +1674,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "subIncySupportEmail",
       "subInfoNodeEnable",
       "subJsonAlwaysArray",
+      "subJsonApps",
       "subJsonAutoDetect",
       "subJsonDns",
       "subJsonEnable",

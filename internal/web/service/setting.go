@@ -123,6 +123,7 @@ var defaultValueMap = map[string]string{
 	"subJsonAutoDetect":           "false",
 	"subJsonAlwaysArray":          "false",
 	"subJsonUserAgentRegex":       "",
+	"subJsonApps":                 "",
 	"subClashAutoDetect":          "false",
 	"subClashUserAgentRegex":      "",
 	"subTitle":                    "",
@@ -1770,6 +1771,11 @@ func (s *SettingService) UpdateAllSetting(allSetting *entity.AllSetting, clears 
 	if err := validateSubJsonDnsSetting(allSetting); err != nil {
 		return err
 	}
+	jsonApps, err := normalizeSubJsonApps(allSetting.SubJsonApps)
+	if err != nil {
+		return err
+	}
+	allSetting.SubJsonApps = jsonApps
 	if err := validateFinalMaskJSONSalamander(allSetting.SubJsonFinalMask); err != nil {
 		return err
 	}

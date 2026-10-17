@@ -62,6 +62,7 @@ export class AllSetting {
   subJsonAutoDetect = false;
   subJsonAlwaysArray = false;
   subJsonUserAgentRegex = '';
+  subJsonApps = '';
   subClashAutoDetect = false;
   subClashUserAgentRegex = '';
   subTitle = '';

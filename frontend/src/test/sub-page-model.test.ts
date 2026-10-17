@@ -107,6 +107,8 @@ describe('buildSubApps', () => {
       { name: 'V2RayTun', url: `v2raytun://import/${subUrl}` },
       { name: 'Happ', url: `happ://add/${subUrl}` },
       { name: 'Incy', url: `incy://add/${subUrl}` },
+      { name: 'Hiddify', url: `hiddify://import/${subUrl}#Nova%20Net` },
+      { name: 'Karing', url: `karing://install-config?url=${encSub}&name=Nova%20Net` },
     ]);
   });
 
@@ -125,6 +127,8 @@ describe('buildSubApps', () => {
       { name: 'V2RayTun', url: `v2raytun://import/${subUrl}` },
       { name: 'Happ', url: `happ://add/${subUrl}` },
       { name: 'Incy', url: `incy://add/${subUrl}` },
+      { name: 'Hiddify', url: `hiddify://import/${subUrl}#Nova%20Net` },
+      { name: 'Karing', url: `karing://install-config?url=${encSub}&name=Nova%20Net` },
     ]);
   });
 

@@ -76,6 +76,7 @@ type SUBController struct {
 	jsonAutoDetect     bool
 	jsonUserAgent      *regexp.Regexp
 	jsonAlwaysArray    bool
+	jsonApps           xrayJsonApps
 	jsonEnabled        bool
 	clashEnabled       bool
 	singboxEnabled     bool
@@ -102,6 +103,7 @@ type subControllerConfig struct {
 	subJsonAutoDetect      bool
 	subJsonUserAgentRegex  string
 	subJsonAlwaysArray     bool
+	subJsonApps            string
 	subJsonEnabled         bool
 	subClashEnabled        bool
 
@@ -165,6 +167,10 @@ func WithSUBJsonUserAgentRegex(value string) SUBControllerOption {
 
 func WithSUBJsonAlwaysArray(value bool) SUBControllerOption {
 	return func(config *subControllerConfig) { config.subJsonAlwaysArray = value }
+}
+
+func WithSUBJsonApps(value string) SUBControllerOption {
+	return func(config *subControllerConfig) { config.subJsonApps = value }
 }
 
 func WithSUBJsonEnabled(value bool) SUBControllerOption {
@@ -314,6 +320,7 @@ func NewSUBController(g *gin.RouterGroup, options ...SUBControllerOption) *SUBCo
 		jsonAutoDetect:     config.subJsonAutoDetect,
 		jsonUserAgent:      compileUserAgentRegex("Xray JSON", config.subJsonUserAgentRegex, service.DefaultSubJsonUserAgentRegex),
 		jsonAlwaysArray:    config.subJsonAlwaysArray,
+		jsonApps:           parseXrayJsonApps(config.subJsonApps),
 		jsonEnabled:        config.subJsonEnabled,
 		clashEnabled:       config.subClashEnabled,
 		subEncrypt:         config.subEncrypt,
@@ -494,7 +501,8 @@ func (a *SUBController) subs(c *gin.Context) {
 		logSubscriptionRoute(userAgent, "clash")
 		return
 	}
-	if shouldAutoServeJson(a.jsonAutoDetect, a.jsonEnabled, false, userAgent, a.jsonUserAgent) && a.serveJsonBody(c, true, "application/json; charset=utf-8", false) {
+	wantsJson := shouldAutoServeJson(a.jsonAutoDetect, a.jsonEnabled, false, userAgent, a.jsonUserAgent) || (a.jsonEnabled && a.jsonApps.match(userAgent))
+	if wantsJson && a.serveJsonBody(c, true, "application/json; charset=utf-8", false) {
 		a.recordSubscriptionFetch(c)
 		logSubscriptionRoute(userAgent, "json")
 		return

@@ -164,6 +164,7 @@ type AllSetting struct {
 	SubJsonAutoDetect           bool   `json:"subJsonAutoDetect" form:"subJsonAutoDetect"`
 	SubJsonAlwaysArray          bool   `json:"subJsonAlwaysArray" form:"subJsonAlwaysArray"`
 	SubJsonUserAgentRegex       string `json:"subJsonUserAgentRegex" form:"subJsonUserAgentRegex"`
+	SubJsonApps                 string `json:"subJsonApps" form:"subJsonApps"`
 	SubClashAutoDetect          bool   `json:"subClashAutoDetect" form:"subClashAutoDetect"`
 	SubClashUserAgentRegex      string `json:"subClashUserAgentRegex" form:"subClashUserAgentRegex"`
 	SubTitle                    string `json:"subTitle" form:"subTitle"`
