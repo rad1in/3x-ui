@@ -126,7 +126,8 @@
     "saveQr": "Guardar QR",
     "openvpnHint": "Importa el perfil en una app de OpenVPN y luego inicia sesión con el usuario y la contraseña de abajo. App recomendada:",
     "ikev2Hint": "En iPhone y Mac, instala el perfil; incluye tu acceso. En Windows, instala el certificado CA y añade una VPN IKEv2 con el servidor, usuario y contraseña de abajo. En Android, usa la app",
-    "l2tpHint": "Añade una VPN L2TP/IPsec (PSK) en los ajustes de VPN de tu dispositivo con el servidor, la clave precompartida, el usuario y la contraseña de abajo."
+    "l2tpHint": "Añade una VPN L2TP/IPsec (PSK) en los ajustes de VPN de tu dispositivo con el servidor, la clave precompartida, el usuario y la contraseña de abajo.",
+    "outlineHint": "Claves de Outline: abre una en un dispositivo con la app Outline instalada, o cópiala y añádela en la app. La app vuelve a leer la clave, así que los cambios posteriores del servidor le llegan."
   },
   "menu": {
     "theme": "Tema",

@@ -126,7 +126,8 @@
     "saveQr": "QR'ı kaydet",
     "openvpnHint": "Profili bir OpenVPN uygulamasına aktarın ve aşağıdaki kullanıcı adı ve şifreyle giriş yapın. Önerilen uygulama:",
     "ikev2Hint": "iPhone ve Mac'te profili yükleyin; giriş bilgileriniz içindedir. Windows'ta CA sertifikasını yükleyin, ardından aşağıdaki sunucu, kullanıcı adı ve şifreyle bir IKEv2 VPN ekleyin. Android'de şu uygulamayı kullanın:",
-    "l2tpHint": "Cihazınızın VPN ayarlarında bir L2TP/IPsec (PSK) VPN ekleyin ve aşağıdaki sunucu, ön paylaşımlı anahtar, kullanıcı adı ve şifreyi girin."
+    "l2tpHint": "Cihazınızın VPN ayarlarında bir L2TP/IPsec (PSK) VPN ekleyin ve aşağıdaki sunucu, ön paylaşımlı anahtar, kullanıcı adı ve şifreyi girin.",
+    "outlineHint": "Outline anahtarları: birini Outline uygulaması yüklü bir cihazda açın ya da kopyalayıp uygulamaya ekleyin. Uygulama anahtarı yeniden okur, böylece sonraki sunucu değişiklikleri ona ulaşır."
   },
   "menu": {
     "theme": "Tema",

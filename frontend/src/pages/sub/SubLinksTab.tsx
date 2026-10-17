@@ -9,6 +9,7 @@ interface SubLinksTabProps {
   subJsonUrl: string;
   subClashUrl: string;
   subSingboxUrl?: string;
+  outlineKeys?: { inboundId: number; remark: string; url: string }[];
   onCopy: (value: string) => void;
 }
 
@@ -23,6 +24,7 @@ export default function SubLinksTab({
   subJsonUrl,
   subClashUrl,
   subSingboxUrl = '',
+  outlineKeys = [],
   onCopy,
 }: SubLinksTabProps) {
   const { t } = useTranslation();
@@ -45,6 +47,15 @@ export default function SubLinksTab({
       downloadable: false,
       importUrl: subSingboxUrl && singboxImportUrl(subSingboxUrl),
     },
+    ...outlineKeys.map((key) => ({
+      kind: `OUTLINE-${key.inboundId}`,
+      tag: 'OUTLINE',
+      color: 'cyan',
+      url: key.url,
+      title: `Outline · ${key.remark}`,
+      downloadable: false,
+      importUrl: key.url,
+    })),
   ].filter((row) => row.url);
 
   return (
@@ -52,7 +63,7 @@ export default function SubLinksTab({
       {rows.map((row) => (
         <div key={row.kind} className="sub-row">
           <Tag color={row.color} className="sub-row-tag">
-            {row.kind}
+            {'tag' in row ? row.tag : row.kind}
           </Tag>
           <div className="sub-row-main">
             <a href={row.url} target="_blank" rel="noopener noreferrer" className="sub-row-title">
@@ -91,6 +102,7 @@ export default function SubLinksTab({
           </div>
         </div>
       ))}
+      {outlineKeys.length > 0 && <p className="sub-muted">{t('subscription.outlineHint')}</p>}
       {subUrl && (
         <div className="sub-qr-card">
           <div className="sub-qr-code">

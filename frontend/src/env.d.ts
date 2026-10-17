@@ -34,6 +34,7 @@ interface SubPageData {
     password: string;
     psk?: string;
   }[];
+  outline?: { inboundId: number; remark: string; url: string }[];
 }
 
 interface Window {

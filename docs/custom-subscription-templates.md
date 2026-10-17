@@ -42,6 +42,7 @@ When rendering the template, the following variables are injected into the templ
 - `{{ .subSupportUrl }}`: The support URL configured in the panel. Useful for a "Contact support" link. May be empty.
 - `{{ .links }}`: A list (slice) of string configurations (VMess, VLESS, etc. URLs). You can loop through them using `{{ range .links }} ... {{ end }}`.
 - `{{ .emails }}`: A list (slice) of client emails, parallel to `links` — the email at index _i_ owns the link at index _i_. May contain duplicates when one client has several links.
+- `{{ .outline }}`: Outline dynamic access keys, one per Shadowsocks inbound Outline can use (AEAD cipher, TCP, no plugin). Each item has `.inboundId`, `.remark` and `.url` (an `ssconf://` link). Empty unless the subscription URL is HTTPS, because Outline only fetches keys over HTTPS.
 - `{{ .announce }}`: The announcement text configured in the panel (Settings → Subscription → Announce). May be empty.
 - `{{ .datepicker }}`: Current calendar format used by the panel (e.g. "gregorian" or "jalali").
 

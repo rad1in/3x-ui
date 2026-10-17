@@ -126,7 +126,8 @@
     "saveQr": "保存二维码",
     "openvpnHint": "将配置文件导入 OpenVPN 应用，然后使用下面的用户名和密码登录。推荐应用：",
     "ikev2Hint": "在 iPhone 和 Mac 上安装配置文件，其中已包含登录信息。在 Windows 上安装 CA 证书，然后使用下面的服务器、用户名和密码添加一个 IKEv2 VPN。在 Android 上使用应用",
-    "l2tpHint": "在设备的 VPN 设置中添加一个 L2TP/IPsec（预共享密钥）VPN，并填写下面的服务器、预共享密钥、用户名和密码。"
+    "l2tpHint": "在设备的 VPN 设置中添加一个 L2TP/IPsec（预共享密钥）VPN，并填写下面的服务器、预共享密钥、用户名和密码。",
+    "outlineHint": "Outline 密钥：在已安装 Outline 应用的设备上打开，或复制后在应用中添加。应用会重新读取密钥，之后服务器的变更也会同步。"
   },
   "menu": {
     "theme": "主题",

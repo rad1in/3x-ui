@@ -3105,6 +3105,7 @@ type PageData struct {
 	Result        []string
 	Emails        []string
 	VPN           []VPNAccount
+	Outline       []OutlineKey
 }
 
 // ResolveRequest extracts scheme, host, and header information from an HTTP request.

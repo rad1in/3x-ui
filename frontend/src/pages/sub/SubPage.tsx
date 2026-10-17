@@ -37,6 +37,7 @@ const announce = subData.announce || '';
 const links: string[] = Array.isArray(subData.links) ? subData.links : [];
 const linkEmails: string[] = Array.isArray(subData.emails) ? subData.emails : [];
 const vpnAccounts = Array.isArray(subData.vpn) ? subData.vpn : [];
+const outlineKeys = Array.isArray(subData.outline) ? subData.outline : [];
 const totalByte = Number(subData.totalByte || 0);
 const usedByte =
   Number(subData.usedByte || 0) ||
@@ -106,6 +107,7 @@ export default function SubPage() {
             subJsonUrl={subJsonUrl}
             subClashUrl={subClashUrl}
             subSingboxUrl={subSingboxUrl}
+            outlineKeys={outlineKeys}
             onCopy={copy}
           />
         ),

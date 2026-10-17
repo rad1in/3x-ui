@@ -126,7 +126,8 @@
     "saveQr": "Lưu QR",
     "openvpnHint": "Nhập hồ sơ vào ứng dụng OpenVPN, sau đó đăng nhập bằng tên người dùng và mật khẩu bên dưới. Ứng dụng đề xuất:",
     "ikev2Hint": "Trên iPhone và Mac, hãy cài hồ sơ; thông tin đăng nhập đã có sẵn trong đó. Trên Windows, cài chứng chỉ CA rồi thêm VPN IKEv2 với máy chủ, tên người dùng và mật khẩu bên dưới. Trên Android, dùng ứng dụng",
-    "l2tpHint": "Thêm VPN L2TP/IPsec (PSK) trong cài đặt VPN của thiết bị với máy chủ, khóa chia sẻ trước, tên người dùng và mật khẩu bên dưới."
+    "l2tpHint": "Thêm VPN L2TP/IPsec (PSK) trong cài đặt VPN của thiết bị với máy chủ, khóa chia sẻ trước, tên người dùng và mật khẩu bên dưới.",
+    "outlineHint": "Khóa Outline: mở một khóa trên thiết bị đã cài ứng dụng Outline, hoặc sao chép rồi thêm vào ứng dụng. Ứng dụng đọc lại khóa nên các thay đổi máy chủ sau này vẫn được cập nhật."
   },
   "menu": {
     "theme": "Chủ đề",

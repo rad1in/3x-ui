@@ -345,6 +345,7 @@ func (a *SUBController) initRouter(g *gin.RouterGroup) {
 	gLink.GET(":subid/hwid-status", a.hwidStatus)
 	gLink.HEAD(":subid/hwid-status", a.hwidStatus)
 	gLink.GET(":subid/openvpn/:inbound", a.openvpnProfile)
+	gLink.GET(":subid/outline/:inbound", a.outlineAccessKey)
 	gLink.GET(":subid/ikev2/:inbound/:format", a.ikev2Profile)
 	if a.jsonEnabled {
 		gJson := g.Group(a.subJsonPath)
@@ -463,6 +464,7 @@ func (a *SUBController) buildSubPageData(c *gin.Context) (PageData, bool) {
 	if a.singboxEnabled {
 		page.SubSingbox = subReq.SingboxURL(subId)
 	}
+	page.Outline = a.subClashService.OutlineKeys(subId, host, subURL)
 	return page, true
 }
 
@@ -724,6 +726,7 @@ func (a *SUBController) subPageContext(page PageData) map[string]any {
 		"datepicker":    datepicker,
 		"announce":      page.SubAnnounce,
 		"vpn":           page.VPN,
+		"outline":       page.Outline,
 	}
 }
 
@@ -743,6 +746,28 @@ func (a *SUBController) openvpnProfile(c *gin.Context) {
 	setNoCacheHeaders(c)
 	c.Header("Content-Disposition", `attachment; filename="`+name+`"`)
 	c.Data(http.StatusOK, "application/x-openvpn-profile", []byte(body))
+}
+
+// outlineAccessKey serves the Outline dynamic access key behind an ssconf:// link;
+// it gates on the device limit like every other body route (#GHSA-7ww3).
+func (a *SUBController) outlineAccessKey(c *gin.Context) {
+	inboundId, err := strconv.Atoi(c.Param("inbound"))
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	if !a.enforceHwid(c) {
+		return
+	}
+	_, host, _, _ := a.subService.ResolveRequest(c)
+	key, err := a.subClashService.OutlineAccessKey(c.Param("subid"), host, inboundId)
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	setNoCacheHeaders(c)
+	c.JSON(http.StatusOK, key)
+	a.recordSubscriptionFetch(c)
 }
 
 // ikev2Profile serves one format of an IKEv2 profile of the subscription.

@@ -126,7 +126,8 @@
     "saveQr": "Simpan QR",
     "openvpnHint": "Impor profil ke aplikasi OpenVPN, lalu masuk dengan nama pengguna dan kata sandi di bawah. Aplikasi yang disarankan:",
     "ikev2Hint": "Di iPhone dan Mac, pasang profilnya; login Anda sudah ada di dalamnya. Di Windows, pasang sertifikat CA lalu tambahkan VPN IKEv2 dengan server, nama pengguna, dan kata sandi di bawah. Di Android, gunakan aplikasi",
-    "l2tpHint": "Tambahkan VPN L2TP/IPsec (PSK) di pengaturan VPN perangkat Anda dengan server, kunci pre-shared, nama pengguna, dan kata sandi di bawah."
+    "l2tpHint": "Tambahkan VPN L2TP/IPsec (PSK) di pengaturan VPN perangkat Anda dengan server, kunci pre-shared, nama pengguna, dan kata sandi di bawah.",
+    "outlineHint": "Kunci Outline: buka salah satunya di perangkat yang sudah memasang aplikasi Outline, atau salin lalu tambahkan di aplikasi. Aplikasi membaca ulang kunci, jadi perubahan server berikutnya ikut sampai."
   },
   "menu": {
     "theme": "Tema",
