@@ -62,7 +62,7 @@ const heroData = {
   datepicker: subData.datepicker || 'gregorian',
 };
 
-const apps = buildSubApps({ subUrl, sId, subTitle });
+const apps = buildSubApps({ subUrl, singboxUrl: subSingboxUrl, sId, subTitle });
 const initialPlatform = detectPlatform(navigator.userAgent);
 const RTL_LANGUAGES = new Set(['fa-IR', 'ar-EG']);
 

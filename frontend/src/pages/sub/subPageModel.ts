@@ -43,12 +43,14 @@ export interface SubApp {
 
 export interface SubAppSource {
   subUrl: string;
+  singboxUrl?: string;
   sId: string;
   subTitle: string;
 }
 
 export function buildSubApps({
   subUrl,
+  singboxUrl = '',
   sId,
   subTitle,
 }: SubAppSource): Record<AppPlatform, SubApp[]> {
@@ -59,10 +61,15 @@ export function buildSubApps({
     name: 'V2Box',
     url: `v2box://install-sub?url=${encSub}&name=${encodeURIComponent(sId)}`,
   };
-  const singBox = {
-    name: 'Sing-box',
-    url: `sing-box://import-remote-profile?url=${encSub}#${profileName}`,
-  };
+  // The sing-box apps only import a sing-box profile, never the raw link list.
+  const singBox = singboxUrl
+    ? [
+        {
+          name: 'Sing-box',
+          url: `sing-box://import-remote-profile?url=${encodeURIComponent(singboxUrl)}#${profileName}`,
+        },
+      ]
+    : [];
   const v2raytun = { name: 'V2RayTun', url: `v2raytun://import/${subUrl}` };
   const happ = { name: 'Happ', url: `happ://add/${subUrl}` };
   const incy = { name: 'Incy', url: `incy://add/${subUrl}` };
@@ -73,7 +80,7 @@ export function buildSubApps({
     android: [
       v2box,
       { name: 'V2RayNG', url: `v2rayng://install-config?url=${encSub}` },
-      singBox,
+      ...singBox,
       v2raytun,
       happ,
       incy,
@@ -85,6 +92,7 @@ export function buildSubApps({
       },
       v2box,
       { name: 'Streisand', url: `streisand://import/${encSub}` },
+      ...singBox,
       v2raytun,
       happ,
       incy,
