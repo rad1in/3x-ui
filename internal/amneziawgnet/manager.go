@@ -12,6 +12,7 @@ import (
 	"gvisor.dev/gvisor/pkg/tcpip/adapters/gonet"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/amneziawg"
+	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 )
 
@@ -252,7 +253,7 @@ func (m *Manager) ensureLocked(d Desired) error {
 // needs threading through Desired/DeviceOptions for this.
 func socksRelayForInstance(inst amneziawg.Instance) SocksRelay {
 	return SocksRelay{
-		Addr:     fmt.Sprintf("127.0.0.1:%d", SOCKSPortForInbound(inst.Id)),
+		Addr:     fmt.Sprintf("%s:%d", config.LoopbackIP(), SOCKSPortForInbound(inst.Id)),
 		Password: SocksPassword(),
 	}
 }

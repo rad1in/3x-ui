@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -178,6 +179,7 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 	}
 	xrayConfig.LogConfig = resolveXrayLogPaths(xrayConfig.LogConfig)
 	xrayConfig.API = ensureAPIServices(xrayConfig.API)
+	bindAPIInboundToLoopback(xrayConfig.InboundConfigs)
 	xrayConfig.Policy = ensureStatsPolicy(xrayConfig.Policy)
 	xrayConfig.RouterConfig = stripDisabledRules(xrayConfig.RouterConfig)
 	// A pasted or restored template can carry pre-#6258 XHTTP keys, a pre-26.10.10 xdns mask or a
@@ -543,7 +545,7 @@ func injectPanelEgress(cfg *xray.Config, outboundTag string) {
 	}
 
 	cfg.InboundConfigs = append(cfg.InboundConfigs, xray.InboundConfig{
-		Listen:   json_util.RawMessage(`"127.0.0.1"`),
+		Listen:   loopbackListen(),
 		Port:     port,
 		Protocol: "socks",
 		Settings: json_util.RawMessage(`{"auth":"noauth","udp":false}`),
@@ -636,7 +638,7 @@ func injectNodeEgresses(cfg *xray.Config, nodes []*model.Node) {
 		used[port] = struct{}{}
 
 		cfg.InboundConfigs = append(cfg.InboundConfigs, xray.InboundConfig{
-			Listen:   json_util.RawMessage(`"127.0.0.1"`),
+			Listen:   loopbackListen(),
 			Port:     port,
 			Protocol: "socks",
 			Settings: json_util.RawMessage(`{"auth":"noauth","udp":false}`),
@@ -742,7 +744,7 @@ func injectMtprotoEgress(cfg *xray.Config, inbound *model.Inbound) {
 	}
 
 	cfg.InboundConfigs = append(cfg.InboundConfigs, xray.InboundConfig{
-		Listen:   json_util.RawMessage(`"127.0.0.1"`),
+		Listen:   loopbackListen(),
 		Port:     parsed.RouteXrayPort,
 		Protocol: "socks",
 		Settings: json_util.RawMessage(mtprotoEgressSocksSettings),
@@ -802,7 +804,7 @@ func injectAmneziawgnetSocks(cfg *xray.Config, inbounds []*model.Inbound) {
 
 		existingTags[inbound.Tag] = struct{}{}
 		cfg.InboundConfigs = append(cfg.InboundConfigs, xray.InboundConfig{
-			Listen:   json_util.RawMessage(`"127.0.0.1"`),
+			Listen:   loopbackListen(),
 			Port:     amneziawgnet.SOCKSPortForInbound(inbound.Id),
 			Protocol: "socks",
 			Settings: json_util.RawMessage(settings),
@@ -836,7 +838,7 @@ func injectTuicSocks(cfg *xray.Config, inbounds []*model.Inbound) {
 
 		existingTags[inbound.Tag] = struct{}{}
 		cfg.InboundConfigs = append(cfg.InboundConfigs, xray.InboundConfig{
-			Listen:   json_util.RawMessage(`"127.0.0.1"`),
+			Listen:   loopbackListen(),
 			Port:     tuic.SOCKSPortForInbound(inbound.Id),
 			Protocol: "socks",
 			Settings: json_util.RawMessage(tuicEgressSocksSettings),
@@ -1753,4 +1755,20 @@ func forceUserspaceWireGuardTun(raw json_util.RawMessage) json_util.RawMessage {
 		return raw
 	}
 	return rewritten
+}
+
+// loopbackListen is the listen address for the panel's own helper inbounds.
+func loopbackListen() json_util.RawMessage {
+	return json_util.RawMessage(strconv.Quote(config.LoopbackIP()))
+}
+
+// bindAPIInboundToLoopback moves the template's API inbound from the stock
+// 127.0.0.1 to this panel's loopback, where the panel dials it.
+func bindAPIInboundToLoopback(inbounds []xray.InboundConfig) {
+	for i := range inbounds {
+		listen := strings.Trim(string(inbounds[i].Listen), `"`)
+		if inbounds[i].Tag == "api" && (listen == "" || listen == "127.0.0.1") {
+			inbounds[i].Listen = loopbackListen()
+		}
+	}
 }

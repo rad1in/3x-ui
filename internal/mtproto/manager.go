@@ -18,6 +18,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 )
@@ -501,7 +502,7 @@ func (m *Manager) ResetQuota(email string) {
 
 func resetQuota(port int, token, email string) {
 	client := http.Client{Timeout: 3 * time.Second}
-	endpoint := fmt.Sprintf("http://127.0.0.1:%d/secrets/%s/reset-quota", port, url.PathEscape(email))
+	endpoint := fmt.Sprintf("http://%s:%d/secrets/%s/reset-quota", config.LoopbackIP(), port, url.PathEscape(email))
 	req, err := http.NewRequestWithContext(context.Background(), http.MethodPost, endpoint, nil)
 	if err != nil {
 		return
@@ -518,7 +519,7 @@ func resetQuota(port int, token, email string) {
 // for mtg's /stats API endpoint and to allocate the per-inbound SOCKS egress
 // bridge port persisted into mtproto inbound settings.
 func FreeLocalPort() (int, error) {
-	l, err := (&net.ListenConfig{}).Listen(context.Background(), "tcp", "127.0.0.1:0")
+	l, err := (&net.ListenConfig{}).Listen(context.Background(), "tcp", config.LoopbackIP()+":0")
 	if err != nil {
 		return 0, err
 	}
@@ -545,7 +546,7 @@ func renderConfig(inst Instance, apiPort int, apiToken string) string {
 	if inst.PreferIP != "" {
 		fmt.Fprintf(&b, "prefer-ip = %q\n", inst.PreferIP)
 	}
-	fmt.Fprintf(&b, "api-bind-to = \"127.0.0.1:%d\"\n", apiPort)
+	fmt.Fprintf(&b, "api-bind-to = \"%s:%d\"\n", config.LoopbackIP(), apiPort)
 	if apiToken != "" {
 		fmt.Fprintf(&b, "api-token = %q\n", apiToken)
 	}
@@ -571,7 +572,7 @@ func renderConfig(inst Instance, apiPort int, apiToken string) string {
 	// loopback SOCKS bridge the panel injects into the running Xray config. mtg
 	// only supports SOCKS5 upstreams, which is exactly what the bridge exposes.
 	if inst.RouteThroughXray && inst.XrayRoutePort > 0 {
-		fmt.Fprintf(&b, "\n[network]\nproxies = [\"socks5://127.0.0.1:%d\"]\n", inst.XrayRoutePort)
+		fmt.Fprintf(&b, "\n[network]\nproxies = [\"socks5://%s:%d\"]\n", config.LoopbackIP(), inst.XrayRoutePort)
 	}
 	if inst.ThrottleMaxConnections > 0 {
 		fmt.Fprintf(&b, "\n[throttle]\nmax-connections = %d\n", inst.ThrottleMaxConnections)
@@ -696,7 +697,7 @@ func applySecrets(port int, token string, inst Instance) bool {
 		return false
 	}
 	client := http.Client{Timeout: 3 * time.Second}
-	req, err := http.NewRequestWithContext(context.Background(), http.MethodPut, fmt.Sprintf("http://127.0.0.1:%d/secrets", port), bytes.NewReader(body))
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodPut, fmt.Sprintf("http://%s:%d/secrets", config.LoopbackIP(), port), bytes.NewReader(body))
 	if err != nil {
 		return false
 	}
@@ -715,7 +716,7 @@ func applySecrets(port int, token string, inst Instance) bool {
 // yields ok=false.
 func scrapeStats(port int, token string) (map[string]statsUser, bool) {
 	client := http.Client{Timeout: 3 * time.Second}
-	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, fmt.Sprintf("http://127.0.0.1:%d/stats", port), nil)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, fmt.Sprintf("http://%s:%d/stats", config.LoopbackIP(), port), nil)
 	if err != nil {
 		return nil, false
 	}
