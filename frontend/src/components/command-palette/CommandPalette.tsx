@@ -364,6 +364,7 @@ export default function CommandPalette() {
           'wireguard',
           'hysteria',
           'masque',
+          'openvpn',
         ],
         icon: <ImportOutlined />,
       },

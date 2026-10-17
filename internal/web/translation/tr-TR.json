@@ -118,7 +118,8 @@
     "support": "Destek",
     "qrTitle": "Tara. İçe aktar. Bağlan.",
     "qrHint": "İstemci uygulamanızla tarayın. Bu kodu kimseyle paylaşmayın.",
-    "saveQr": "QR'ı kaydet"
+    "saveQr": "QR'ı kaydet",
+    "openvpnHint": "Profili bir OpenVPN uygulamasına aktarın ve aşağıdaki kullanıcı adı ve şifreyle giriş yapın. Önerilen uygulama:"
   },
   "menu": {
     "theme": "Tema",
@@ -756,7 +757,16 @@
         "autoSystemDnsToGateway": "Sistem DNS'ini ağ geçidine yönlendir",
         "autoSystemDnsToGatewayTooltip": "Yalnızca Linux: sistem sorguları Xray üzerinden gitsin diye systemd-resolved'ı TUN ağ geçidine yönlendirir. Ağ geçidi gerekir ve bu başarısız olursa TUN başlamaz.",
         "autoSystemWfpBlockLeak": "Sızıntıları engelle (WFP)",
-        "autoSystemWfpBlockLeakTooltip": "Yalnızca Windows, Auto system routes ile: dns, DNS'i TUN içinde tutar (DNS sunucuları gerekir); misconfigtun, hiçbir rotanın TUN'a göndermediği IP sürümünü engeller."
+        "autoSystemWfpBlockLeakTooltip": "Yalnızca Windows, Auto system routes ile: dns, DNS'i TUN içinde tutar (DNS sunucuları gerekir); misconfigtun, hiçbir rotanın TUN'a göndermediği IP sürümünü engeller.",
+        "openvpn": {
+          "help": "İstemciler e-postalarını kullanıcı adı olarak ve şifreleriyle giriş yapar. Her istemci hazır bir .ovpn profilini inbound bilgisinden veya abonelik sayfasından indirir.",
+          "transport": "Taşıma",
+          "network": "İstemci ağı",
+          "networkDesc": "Bağlanan istemcilere verilen özel IPv4 aralığı. Boş bırakılırsa boş bir 10.88.x.0/24 otomatik seçilir.",
+          "dns": "DNS sunucuları",
+          "profile": "İstemci profili",
+          "download": ".ovpn indir"
+        }
       },
       "info": {
         "mode": "Mod",

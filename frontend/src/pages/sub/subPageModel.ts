@@ -91,3 +91,9 @@ export function buildSubApps({
     ],
   };
 }
+
+// The profile route hangs under the subscription path: <sub>/<subid>/openvpn/<inbound>.
+export function openvpnProfileUrl(subUrl: string, inboundId: number): string {
+  const base = subUrl.split('?')[0].replace(/\/+$/, '');
+  return `${base}/openvpn/${inboundId}`;
+}

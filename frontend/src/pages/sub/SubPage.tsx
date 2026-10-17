@@ -7,6 +7,7 @@ import {
   ClockCircleOutlined,
   CustomerServiceOutlined,
   LinkOutlined,
+  SafetyCertificateOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
 
@@ -18,6 +19,7 @@ import SubConfigsTab from './SubConfigsTab';
 import SubHeader from './SubHeader';
 import SubHero from './SubHero';
 import SubLinksTab from './SubLinksTab';
+import SubOpenVPNTab from './SubOpenVPNTab';
 import { buildSubApps, daysUntil, detectPlatform, resolveSubStatus } from './subPageModel';
 import './SubPage.css';
 
@@ -33,12 +35,15 @@ const updateHours = Number(subData.subUpdates || 0);
 const announce = subData.announce || '';
 const links: string[] = Array.isArray(subData.links) ? subData.links : [];
 const linkEmails: string[] = Array.isArray(subData.emails) ? subData.emails : [];
+const openvpnProfiles = Array.isArray(subData.openvpn) ? subData.openvpn : [];
 const totalByte = Number(subData.totalByte || 0);
 const usedByte =
   Number(subData.usedByte || 0) ||
   Number(subData.downloadByte || 0) + Number(subData.uploadByte || 0);
 const expireMs = Number(subData.expire || 0) * 1000;
-const clientEmail = [...new Set(linkEmails.filter(Boolean))].join(', ');
+const clientEmail = [
+  ...new Set([...linkEmails, ...openvpnProfiles.map((p) => p.username)].filter(Boolean)),
+].join(', ');
 const loadedAt = Date.now();
 
 const heroData = {
@@ -123,6 +128,14 @@ export default function SubPage() {
           </>
         ),
         children: <SubConfigsTab links={links} onCopy={copy} />,
+      });
+    }
+    if (openvpnProfiles.length > 0 && subUrl) {
+      items.push({
+        key: 'openvpn',
+        icon: <SafetyCertificateOutlined />,
+        label: 'OpenVPN',
+        children: <SubOpenVPNTab subUrl={subUrl} profiles={openvpnProfiles} onCopy={copy} />,
       });
     }
     return items;

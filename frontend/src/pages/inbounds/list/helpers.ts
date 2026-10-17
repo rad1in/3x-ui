@@ -93,10 +93,15 @@ export function isInboundMultiUser(record: { protocol: string }): boolean {
     case 'amneziawg':
     case 'tuic':
     case 'masque':
+    case 'openvpn':
       return true;
     default:
       return false;
   }
+}
+
+export function openvpnPanelProfileUrl(inboundId: number): string {
+  return `${window.X_UI_BASE_PATH || '/'}panel/api/inbounds/${inboundId}/openvpnProfile`;
 }
 
 /** Max host remarks shown inline before truncating with "+N". */

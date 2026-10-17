@@ -118,7 +118,8 @@
     "support": "الدعم",
     "qrTitle": "امسح. استورد. اتصل.",
     "qrHint": "امسح الرمز بتطبيق العميل. لا تشارك هذا الرمز مع أحد.",
-    "saveQr": "حفظ QR"
+    "saveQr": "حفظ QR",
+    "openvpnHint": "استورد الملف في تطبيق OpenVPN ثم سجّل الدخول باسم المستخدم وكلمة المرور أدناه. التطبيق الموصى به:"
   },
   "menu": {
     "theme": "الثيم",
@@ -756,7 +757,16 @@
         "autoSystemDnsToGateway": "DNS النظام إلى البوابة",
         "autoSystemDnsToGatewayTooltip": "على لينكس بس: بيوجّه systemd-resolved لبوابة TUN عشان استعلامات النظام تعدّي من Xray. محتاج بوابة، والـTUN مش هيشتغل لو ده فشل.",
         "autoSystemWfpBlockLeak": "منع التسريب (WFP)",
-        "autoSystemWfpBlockLeakTooltip": "على ويندوز بس، مع Auto system routes: ‏dns بيخلّي DNS جوّه الـTUN (محتاج سيرفرات DNS)، وmisconfigtun بيمنع نسخة IP مفيش مسار بيوديها للـTUN."
+        "autoSystemWfpBlockLeakTooltip": "على ويندوز بس، مع Auto system routes: ‏dns بيخلّي DNS جوّه الـTUN (محتاج سيرفرات DNS)، وmisconfigtun بيمنع نسخة IP مفيش مسار بيوديها للـTUN.",
+        "openvpn": {
+          "help": "يسجّل العملاء الدخول باستخدام بريدهم الإلكتروني كاسم مستخدم وكلمة المرور الخاصة بهم. يقوم كل عميل بتنزيل ملف تعريف جاهز من معلومات الوارد أو من صفحة الاشتراك.",
+          "transport": "بروتوكول النقل",
+          "network": "شبكة العملاء",
+          "networkDesc": "نطاق IPv4 خاص يُمنح للعملاء المتصلين. اتركه فارغًا لاختيار نطاق متاح تلقائيًا.",
+          "dns": "خوادم DNS",
+          "profile": "ملف تعريف العميل",
+          "download": "تنزيل الملف"
+        }
       },
       "info": {
         "mode": "الوضع",

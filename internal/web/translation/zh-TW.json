@@ -118,7 +118,8 @@
     "support": "支援",
     "qrTitle": "掃描。匯入。連線。",
     "qrHint": "使用用戶端應用程式掃描。請勿外洩此 QR 碼。",
-    "saveQr": "儲存 QR 碼"
+    "saveQr": "儲存 QR 碼",
+    "openvpnHint": "將設定檔匯入 OpenVPN 應用程式，然後使用下方的使用者名稱和密碼登入。推薦應用程式："
   },
   "menu": {
     "theme": "主題",
@@ -756,7 +757,16 @@
         "autoSystemDnsToGateway": "系統 DNS 指向閘道",
         "autoSystemDnsToGatewayTooltip": "僅限 Linux：將 systemd-resolved 指向 TUN 閘道，使系統解析經過 Xray。需要設定閘道，失敗時 TUN 不會啟動。",
         "autoSystemWfpBlockLeak": "阻止洩漏 (WFP)",
-        "autoSystemWfpBlockLeakTooltip": "僅限 Windows，需搭配自動系統路由：dns 讓 DNS 只走 TUN（需設定 DNS 伺服器），misconfigtun 阻止沒有任何路由指向 TUN 的 IP 版本。"
+        "autoSystemWfpBlockLeakTooltip": "僅限 Windows，需搭配自動系統路由：dns 讓 DNS 只走 TUN（需設定 DNS 伺服器），misconfigtun 阻止沒有任何路由指向 TUN 的 IP 版本。",
+        "openvpn": {
+          "help": "用戶端以電子郵件作為使用者名稱並使用其密碼登入。每個用戶端都可以在入站資訊或其訂閱頁面下載現成的 .ovpn 設定檔。",
+          "transport": "傳輸協定",
+          "network": "用戶端網路",
+          "networkDesc": "分配給已連線用戶端的私有 IPv4 網段。留空則自動選擇一個空閒的 10.88.x.0/24。",
+          "dns": "DNS 伺服器",
+          "profile": "用戶端設定檔",
+          "download": "下載 .ovpn"
+        }
       },
       "info": {
         "mode": "模式",

@@ -10,6 +10,7 @@ import {
   HysteriaClientSchema,
   MasqueClientSchema,
   MtprotoClientSchema,
+  OpenVPNClientSchema,
   ShadowsocksClientSchema,
   TrojanClientSchema,
   TuicClientSchema,
@@ -293,6 +294,8 @@ function clientSchemaForProtocol(protocol: string): z.ZodType | null {
       return TuicClientSchema;
     case 'masque':
       return MasqueClientSchema;
+    case 'openvpn':
+      return OpenVPNClientSchema;
     default:
       return null;
   }

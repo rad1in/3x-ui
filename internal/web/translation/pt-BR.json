@@ -118,7 +118,8 @@
     "support": "Suporte",
     "qrTitle": "Escaneie. Importe. Conecte.",
     "qrHint": "Escaneie com seu aplicativo cliente. Mantenha este código em sigilo.",
-    "saveQr": "Salvar QR"
+    "saveQr": "Salvar QR",
+    "openvpnHint": "Importe o perfil em um app OpenVPN e entre com o usuário e a senha abaixo. App recomendado:"
   },
   "menu": {
     "theme": "Tema",
@@ -756,7 +757,16 @@
         "autoSystemDnsToGateway": "DNS do sistema para o gateway",
         "autoSystemDnsToGatewayTooltip": "Somente Linux: aponta o systemd-resolved para o gateway do TUN para que as consultas do sistema passem pelo Xray. Precisa de um gateway, e o TUN não inicia se isso falhar.",
         "autoSystemWfpBlockLeak": "Bloquear vazamentos (WFP)",
-        "autoSystemWfpBlockLeakTooltip": "Somente Windows, com Auto system routes: dns mantém o DNS dentro do TUN (precisa de servidores DNS) e misconfigtun bloqueia uma versão de IP que nenhuma rota envia ao TUN."
+        "autoSystemWfpBlockLeakTooltip": "Somente Windows, com Auto system routes: dns mantém o DNS dentro do TUN (precisa de servidores DNS) e misconfigtun bloqueia uma versão de IP que nenhuma rota envia ao TUN.",
+        "openvpn": {
+          "help": "Os clientes entram com o email como usuário e a sua senha. Cada cliente baixa um perfil .ovpn pronto nas informações do inbound ou na sua página de assinatura.",
+          "transport": "Transporte",
+          "network": "Rede dos clientes",
+          "networkDesc": "Faixa IPv4 privada atribuída aos clientes conectados. Deixe vazio para escolher automaticamente uma 10.88.x.0/24 livre.",
+          "dns": "Servidores DNS",
+          "profile": "Perfil do cliente",
+          "download": "Baixar .ovpn"
+        }
       },
       "info": {
         "mode": "Modo",

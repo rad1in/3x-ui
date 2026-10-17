@@ -118,7 +118,8 @@
     "support": "Hỗ trợ",
     "qrTitle": "Quét. Nhập. Kết nối.",
     "qrHint": "Quét bằng ứng dụng khách. Không chia sẻ mã này cho người khác.",
-    "saveQr": "Lưu QR"
+    "saveQr": "Lưu QR",
+    "openvpnHint": "Nhập hồ sơ vào ứng dụng OpenVPN, sau đó đăng nhập bằng tên người dùng và mật khẩu bên dưới. Ứng dụng đề xuất:"
   },
   "menu": {
     "theme": "Chủ đề",
@@ -756,7 +757,16 @@
         "autoSystemDnsToGateway": "DNS hệ thống tới gateway",
         "autoSystemDnsToGatewayTooltip": "Chỉ Linux: trỏ systemd-resolved tới gateway của TUN để truy vấn của hệ thống đi qua Xray. Cần có gateway, và TUN sẽ không khởi động nếu việc này thất bại.",
         "autoSystemWfpBlockLeak": "Chặn rò rỉ (WFP)",
-        "autoSystemWfpBlockLeakTooltip": "Chỉ Windows, cùng với Auto system routes: dns giữ DNS bên trong TUN (cần máy chủ DNS), misconfigtun chặn phiên bản IP mà không tuyến nào đưa vào TUN."
+        "autoSystemWfpBlockLeakTooltip": "Chỉ Windows, cùng với Auto system routes: dns giữ DNS bên trong TUN (cần máy chủ DNS), misconfigtun chặn phiên bản IP mà không tuyến nào đưa vào TUN.",
+        "openvpn": {
+          "help": "Khách hàng đăng nhập bằng email làm tên người dùng và mật khẩu của họ. Mỗi khách hàng tải hồ sơ .ovpn có sẵn từ thông tin inbound hoặc trang đăng ký của mình.",
+          "transport": "Giao thức truyền",
+          "network": "Mạng khách hàng",
+          "networkDesc": "Dải IPv4 riêng cấp cho khách hàng đã kết nối. Để trống để tự động chọn một dải 10.88.x.0/24 còn trống.",
+          "dns": "Máy chủ DNS",
+          "profile": "Hồ sơ khách hàng",
+          "download": "Tải .ovpn"
+        }
       },
       "info": {
         "mode": "Chế độ",

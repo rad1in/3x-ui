@@ -8,6 +8,7 @@ import (
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
+	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
 )
 
 func openvpnSettingsOf(t *testing.T, ib *model.Inbound) map[string]any {
@@ -89,5 +90,29 @@ func TestHostedPanelCannotRunOpenVPN(t *testing.T) {
 	err := (&InboundService{}).normalizeOpenVPNSettings(&model.Inbound{Protocol: model.OpenVPN, Settings: `{}`}, "")
 	if !errors.Is(err, ErrHostedForbidden) {
 		t.Fatalf("err = %v, want ErrHostedForbidden", err)
+	}
+}
+
+// A client added through the clients page must reach openvpn with a password,
+// whether the admin typed one or left it to be generated.
+func TestOpenVPNClientCreateReachesTheServerWithAPassword(t *testing.T) {
+	setupConflictDB(t)
+	inbounds := &InboundService{}
+	ib := &model.Inbound{Protocol: model.OpenVPN, Settings: `{}`}
+	if err := inbounds.normalizeOpenVPNSettings(ib, ""); err != nil {
+		t.Fatal(err)
+	}
+	seedInboundConflict(t, "ovpn-c", "", 1194, model.OpenVPN, "", ib.Settings)
+	id := loadInboundByTag(t, "ovpn-c").Id
+
+	clients := &ClientService{}
+	for _, c := range []model.Client{{Email: "bob", Password: "bob-secret", Enable: true}, {Email: "eve", Enable: true}} {
+		if _, err := clients.Create(inbounds, &ClientCreatePayload{Client: c, InboundIds: []int{id}}); err != nil {
+			t.Fatalf("create %s: %v", c.Email, err)
+		}
+	}
+	inst, ok := openvpn.InstanceFromInbound(loadInboundByTag(t, "ovpn-c"))
+	if !ok || inst.Users["bob"].Password != "bob-secret" || len(inst.Users["eve"].Password) < 8 {
+		t.Fatalf("users = %+v; bob keeps his password, eve gets a generated one", inst.Users)
 	}
 }

@@ -4,6 +4,7 @@ import {
   buildSubApps,
   daysUntil,
   detectPlatform,
+  openvpnProfileUrl,
   resolveSubStatus,
   usagePercent,
 } from '@/pages/sub/subPageModel';
@@ -130,6 +131,17 @@ describe('buildSubApps', () => {
     const rocket = Buffer.from(`${subUrl}?token=1&flag=shadowrocket`).toString('base64');
     expect(buildSubApps(withQuery).ios[0].url).toBe(
       `shadowrocket://add/sub://${rocket}?remark=Nova%20Net`,
+    );
+  });
+});
+
+describe('openvpnProfileUrl', () => {
+  it('hangs the profile under the subscription path, dropping any query', () => {
+    expect(openvpnProfileUrl('https://vpn.example.com:2096/sub/abc', 7)).toBe(
+      'https://vpn.example.com:2096/sub/abc/openvpn/7',
+    );
+    expect(openvpnProfileUrl('https://vpn.example.com/sub/abc/?name=x', 7)).toBe(
+      'https://vpn.example.com/sub/abc/openvpn/7',
     );
   });
 });

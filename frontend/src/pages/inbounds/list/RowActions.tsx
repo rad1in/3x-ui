@@ -8,6 +8,7 @@ import {
   RetweetOutlined,
   BlockOutlined,
   DeleteOutlined,
+  DownloadOutlined,
   InfoCircleOutlined,
   TagsOutlined,
   UsergroupAddOutlined,
@@ -42,8 +43,17 @@ export function buildRowActionsMenu({
   if (isMobile) {
     items.push({ key: 'edit', icon: <EditOutlined />, label: t('edit') });
   }
+  if (record.protocol === 'openvpn') {
+    items.push({
+      key: 'openvpnProfile',
+      icon: <DownloadOutlined />,
+      label: t('pages.inbounds.form.openvpn.download'),
+    });
+  }
   if (isInboundMultiUser(record)) {
-    items.push({ key: 'export', icon: <ExportOutlined />, label: t('pages.inbounds.export') });
+    if (record.protocol !== 'openvpn') {
+      items.push({ key: 'export', icon: <ExportOutlined />, label: t('pages.inbounds.export') });
+    }
     if (subEnable) {
       items.push({
         key: 'subs',

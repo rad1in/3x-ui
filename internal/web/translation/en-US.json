@@ -118,7 +118,8 @@
     "support": "Support",
     "qrTitle": "Scan. Import. Connect.",
     "qrHint": "Scan with your client app. Keep this code private.",
-    "saveQr": "Save QR"
+    "saveQr": "Save QR",
+    "openvpnHint": "Import the profile into an OpenVPN app, then sign in with the username and password below. Recommended app:"
   },
   "menu": {
     "theme": "Theme",
@@ -757,7 +758,16 @@
         "autoSystemDnsToGateway": "System DNS to gateway",
         "autoSystemDnsToGatewayTooltip": "Linux only: points systemd-resolved at the TUN gateway so system lookups go through Xray. Needs a gateway, and the TUN does not start if this fails.",
         "autoSystemWfpBlockLeak": "Block leaks (WFP)",
-        "autoSystemWfpBlockLeakTooltip": "Windows only, with Auto system routes: dns keeps DNS inside the TUN (needs DNS servers), misconfigtun blocks an IP version that no route sends into the TUN."
+        "autoSystemWfpBlockLeakTooltip": "Windows only, with Auto system routes: dns keeps DNS inside the TUN (needs DNS servers), misconfigtun blocks an IP version that no route sends into the TUN.",
+        "openvpn": {
+          "help": "Clients sign in with their email as the username and their password. Each client downloads a ready .ovpn profile from the inbound info or from their subscription page.",
+          "transport": "Transport",
+          "network": "Client network",
+          "networkDesc": "Private IPv4 range handed to connected clients. Leave empty to pick a free 10.88.x.0/24 automatically.",
+          "dns": "DNS servers",
+          "profile": "Client profile",
+          "download": "Download .ovpn"
+        }
       },
       "info": {
         "mode": "Mode",

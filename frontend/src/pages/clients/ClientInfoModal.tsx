@@ -18,6 +18,7 @@ import type { ClientRecord, InboundOption } from '@/hooks/useClients';
 import { isPostQuantumLink } from '@/lib/xray/inbound-link';
 import { LinkTags, linkMetaText, parseLinkParts } from '@/lib/xray/link-label';
 import { QrPanel } from '@/pages/inbounds/qr';
+import { openvpnPanelProfileUrl } from '@/pages/inbounds/list/helpers';
 import ClientHwidListModal from '@/components/clients/ClientHwidList';
 import ConfigBlock from '@/components/clients/ConfigBlock';
 import {
@@ -47,6 +48,7 @@ const INBOUND_PROTOCOL_COLORS: Record<string, string> = {
   mixed: 'lime',
   tunnel: 'orange',
   tuic: 'orange',
+  openvpn: 'green',
 };
 
 const INBOUND_CHIP_LIMIT = 1;
@@ -226,6 +228,14 @@ export default function ClientInfoModal({
       })
       .filter((c) => !!c.text);
   }, [client, awgInbounds, tunnelAllowedIPs, subSettings?.publicHost, hosts]);
+
+  const openvpnInbounds = useMemo(
+    () =>
+      (client?.inboundIds ?? [])
+        .map((id) => inboundsById[id])
+        .filter((ib): ib is InboundOption => ib?.protocol === 'openvpn'),
+    [client, inboundsById],
+  );
 
   async function copyValue(text: string) {
     if (!text) return;
@@ -841,6 +851,29 @@ export default function ClientInfoModal({
                     />
                   );
                 })}
+              </>
+            )}
+
+            {openvpnInbounds.length > 0 && (
+              <>
+                <Divider>{t('pages.inbounds.form.openvpn.profile')}</Divider>
+                {openvpnInbounds.map((ib) => (
+                  <div key={`ovpn-${ib.id}`} className="link-row">
+                    <Tag color="green" className="link-row-tag">
+                      OpenVPN
+                    </Tag>
+                    <span className="link-row-title">{formatInboundLabel(ib.tag, ib.remark)}</span>
+                    <div className="link-row-actions">
+                      <Button
+                        size="small"
+                        icon={<DownloadOutlined />}
+                        href={openvpnPanelProfileUrl(ib.id)}
+                      >
+                        {t('pages.inbounds.form.openvpn.download')}
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </>
             )}
           </>

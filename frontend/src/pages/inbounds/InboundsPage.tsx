@@ -47,6 +47,7 @@ const PromptModal = lazy(() => import('@/components/feedback/PromptModal'));
 
 import { useInbounds } from './useInbounds';
 import { InboundList } from './list';
+import { openvpnPanelProfileUrl } from './list/helpers';
 import { LazyMount } from '@/components/utility';
 const InboundFormModal = lazy(() => import('./form/InboundFormModal'));
 const CloneInboundModal = lazy(() => import('./CloneInboundModal'));
@@ -69,6 +70,7 @@ type RowAction =
   | 'attachExisting'
   | 'detachClients'
   | 'addToGroup'
+  | 'openvpnProfile'
   | 'clone';
 
 type GeneralAction = 'import' | 'export' | 'subs' | 'resetInbounds';
@@ -321,6 +323,7 @@ export default function InboundsPage() {
         case 'trojan':
         case 'shadowsocks':
         case 'masque':
+        case 'openvpn':
           return c.password === client.password && c.email === client.email;
         default:
           return c.id === client.id && c.email === client.email;
@@ -654,6 +657,9 @@ export default function InboundsPage() {
           break;
         case 'export':
           exportInboundLinks(target);
+          break;
+        case 'openvpnProfile':
+          window.location.assign(openvpnPanelProfileUrl(target.id));
           break;
         case 'subs':
           exportInboundSubs(target);

@@ -118,7 +118,8 @@
     "support": "サポート",
     "qrTitle": "スキャン。インポート。接続。",
     "qrHint": "クライアントアプリでスキャンしてください。このコードは他人に見せないでください。",
-    "saveQr": "QR を保存"
+    "saveQr": "QR を保存",
+    "openvpnHint": "プロファイルを OpenVPN アプリに読み込み、下のユーザー名とパスワードでサインインしてください。推奨アプリ:"
   },
   "menu": {
     "theme": "テーマ",
@@ -756,7 +757,16 @@
         "autoSystemDnsToGateway": "システム DNS をゲートウェイへ",
         "autoSystemDnsToGatewayTooltip": "Linux のみ：systemd-resolved を TUN のゲートウェイに向け、システムの名前解決を Xray 経由にします。ゲートウェイが必要で、失敗すると TUN は起動しません。",
         "autoSystemWfpBlockLeak": "リーク遮断 (WFP)",
-        "autoSystemWfpBlockLeakTooltip": "Windows のみ（自動システムルートと併用）：dns は DNS を TUN 内に留め（DNS サーバーが必要）、misconfigtun は TUN へのルートがない IP バージョンを遮断します。"
+        "autoSystemWfpBlockLeakTooltip": "Windows のみ（自動システムルートと併用）：dns は DNS を TUN 内に留め（DNS サーバーが必要）、misconfigtun は TUN へのルートがない IP バージョンを遮断します。",
+        "openvpn": {
+          "help": "クライアントはメールアドレスをユーザー名として、パスワードでサインインします。各クライアントはインバウンド情報またはサブスクリプションページから .ovpn プロファイルをダウンロードできます。",
+          "transport": "トランスポート",
+          "network": "クライアントネットワーク",
+          "networkDesc": "接続したクライアントに割り当てるプライベート IPv4 範囲。空欄にすると空いている 10.88.x.0/24 を自動で選択します。",
+          "dns": "DNS サーバー",
+          "profile": "クライアントプロファイル",
+          "download": ".ovpn をダウンロード"
+        }
       },
       "info": {
         "mode": "モード",

@@ -8,9 +8,11 @@ import (
 
 // The inbound add/update handlers validate the body with this validator, so a protocol
 // missing from Inbound.Protocol's oneof makes every save of that protocol fail.
-func TestValidateAcceptsMasqueInboundProtocol(t *testing.T) {
-	if err := validate.StructPartial(model.Inbound{Protocol: model.MASQUE}, "Protocol"); err != nil {
-		t.Fatalf("validate rejected a masque inbound: %v", err)
+func TestValidateAcceptsInboundProtocols(t *testing.T) {
+	for _, p := range []model.Protocol{model.MASQUE, model.OpenVPN} {
+		if err := validate.StructPartial(model.Inbound{Protocol: p}, "Protocol"); err != nil {
+			t.Errorf("validate rejected a %s inbound: %v", p, err)
+		}
 	}
 	if err := validate.StructPartial(model.Inbound{Protocol: "dokodemo"}, "Protocol"); err == nil {
 		t.Fatal("validate accepted an unknown protocol; the oneof no longer guards it")
