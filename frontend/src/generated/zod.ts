@@ -1308,3 +1308,10 @@ export const UserSchema = z.object({
 });
 export type User = z.infer<typeof UserSchema>;
 
+export const VPNStatusSchema = z.object({
+  id: z.number().int(),
+  reason: z.string().optional(),
+  running: z.boolean(),
+});
+export type VPNStatus = z.infer<typeof VPNStatusSchema>;
+

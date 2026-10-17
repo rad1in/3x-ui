@@ -804,7 +804,9 @@
         "peerNumber": "Peer {n}",
         "peerNumberConfig": "Peer {n} config"
       },
-      "sniffingDestOverride": "Destination override"
+      "sniffingDestOverride": "Destination override",
+      "vpnDownShort": "Not running",
+      "vpnDown": "This VPN server is not running."
     },
     "clients": {
       "tabBasics": "Basics",

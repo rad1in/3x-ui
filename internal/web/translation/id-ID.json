@@ -804,7 +804,9 @@
         "peerNumberConfig": "Konfig Peer {n}"
       },
       "sniffingDestOverride": "Penggantian tujuan",
-      "advancedTitle": "Pengaturan Lanjutan"
+      "advancedTitle": "Pengaturan Lanjutan",
+      "vpnDownShort": "Tidak berjalan",
+      "vpnDown": "Server VPN ini tidak berjalan."
     },
     "clients": {
       "tabBasics": "Dasar",

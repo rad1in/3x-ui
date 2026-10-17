@@ -804,7 +804,9 @@
         "peerNumberConfig": "پیکربندی Peer {n}"
       },
       "sniffingDestOverride": "بازنویسی مقصد",
-      "advancedTitle": "تنظیمات پیشرفته"
+      "advancedTitle": "تنظیمات پیشرفته",
+      "vpnDownShort": "اجرا نمی‌شود",
+      "vpnDown": "این سرور VPN در حال اجرا نیست."
     },
     "clients": {
       "tabBasics": "پایه",

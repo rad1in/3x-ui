@@ -41,6 +41,7 @@ function renderList(props: Partial<InboundListProps>, url = '/inbounds') {
     nodesById: new Map(),
     hasActiveNode: false,
     hosts: [],
+    vpnStatuses: [],
     onAddInbound: vi.fn(),
     onGeneralAction: vi.fn(),
     onRowAction: vi.fn(),

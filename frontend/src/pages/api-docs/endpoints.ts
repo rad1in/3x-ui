@@ -433,6 +433,14 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/inbounds/vpnStatus',
+        summary:
+          'Whether each OpenVPN, IKEv2 and L2TP inbound that should be serving someone is up, and if not, why (a missing binary, a kernel without PPP or IPsec, another strongSwan already running). Inbounds with no live client are left out: nothing runs for them.',
+        response:
+          '{\n  "success": true,\n  "obj": [\n    { "id": 4, "running": false, "reason": "this kernel has no PPP support (/dev/ppp is missing), which L2TP needs" }\n  ]\n}',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/inbounds/:id/ikev2Profile',
         summary:
           "Download one client's profile for an IKEv2 inbound. `mobileconfig` is an Apple configuration profile (iOS, iPadOS, macOS) with the login filled in and the inbound's CA trusted; `sswan` is a profile for the strongSwan Android app, which asks for the password; `ca` is the CA certificate (DER) for setting up Windows or other clients by hand. Every format points at the inbound's server address.",

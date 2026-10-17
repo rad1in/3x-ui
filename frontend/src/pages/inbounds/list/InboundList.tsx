@@ -62,6 +62,7 @@ export default function InboundList({
   nodesById,
   hasActiveNode,
   hosts,
+  vpnStatuses,
   onAddInbound,
   onGeneralAction,
   onRowAction,
@@ -199,6 +200,10 @@ export default function InboundList({
     if (ok) setSelectedRowKeys([]);
   }, [onBulkDelete, selectedRowKeys]);
 
+  const vpnDown = useMemo(
+    () => new Map(vpnStatuses.filter((s) => !s.running).map((s) => [s.id, s.reason ?? ''])),
+    [vpnStatuses],
+  );
   const columns = useInboundColumns({
     hasAnyRemark,
     hasAnySubSortIndex,
@@ -212,6 +217,7 @@ export default function InboundList({
     trafficDiff,
     onRowAction,
     onSwitchEnable,
+    vpnDown,
   });
 
   const tableScrollX = useMemo(

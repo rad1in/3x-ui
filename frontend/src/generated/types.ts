@@ -1226,3 +1226,9 @@ export interface User {
   username: string;
 }
 
+export interface VPNStatus {
+  id: number;
+  reason?: string;
+  running: boolean;
+}
+

@@ -804,7 +804,9 @@
         "peerNumberConfig": "Cấu hình Peer {n}"
       },
       "sniffingDestOverride": "Ghi đè đích",
-      "advancedTitle": "Cài đặt nâng cao"
+      "advancedTitle": "Cài đặt nâng cao",
+      "vpnDownShort": "Không chạy",
+      "vpnDown": "Máy chủ VPN này không chạy."
     },
     "clients": {
       "tabBasics": "Cơ bản",

@@ -804,7 +804,9 @@
         "peerNumberConfig": "Peer {n} Yapılandırması"
       },
       "sniffingDestOverride": "Hedef geçersiz kılma",
-      "advancedTitle": "Gelişmiş Ayarlar"
+      "advancedTitle": "Gelişmiş Ayarlar",
+      "vpnDownShort": "Çalışmıyor",
+      "vpnDown": "Bu VPN sunucusu çalışmıyor."
     },
     "clients": {
       "tabBasics": "Temel",

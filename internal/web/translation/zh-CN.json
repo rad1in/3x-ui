@@ -804,7 +804,9 @@
         "peerNumberConfig": "Peer {n} 配置"
       },
       "sniffingDestOverride": "目标覆盖",
-      "advancedTitle": "高级设置"
+      "advancedTitle": "高级设置",
+      "vpnDownShort": "未运行",
+      "vpnDown": "此 VPN 服务器未运行。"
     },
     "clients": {
       "tabBasics": "基本",

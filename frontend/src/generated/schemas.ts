@@ -5365,5 +5365,27 @@ export const SCHEMAS: Record<string, unknown> = {
       "username"
     ],
     "type": "object"
+  },
+  "VPNStatus": {
+    "description": "VPNStatus is whether a VPN inbound served outside Xray is up and, if not,\nwhy: a missing binary, a kernel without PPP or IPsec, a clashing daemon.",
+    "properties": {
+      "id": {
+        "example": 4,
+        "type": "integer"
+      },
+      "reason": {
+        "example": "this kernel has no PPP support (/dev/ppp is missing), which L2TP needs",
+        "type": "string"
+      },
+      "running": {
+        "example": false,
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "running"
+    ],
+    "type": "object"
   }
 };

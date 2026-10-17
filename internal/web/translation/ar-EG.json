@@ -804,7 +804,9 @@
         "peerNumberConfig": "تكوين Peer {n}"
       },
       "sniffingDestOverride": "تجاوز الوجهة",
-      "advancedTitle": "الإعدادات المتقدمة"
+      "advancedTitle": "الإعدادات المتقدمة",
+      "vpnDownShort": "لا يعمل",
+      "vpnDown": "خادم VPN هذا لا يعمل."
     },
     "clients": {
       "tabBasics": "أساسي",

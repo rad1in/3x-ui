@@ -48,6 +48,9 @@ const PromptModal = lazy(() => import('@/components/feedback/PromptModal'));
 import { useInbounds } from './useInbounds';
 import { InboundList } from './list';
 import { openvpnPanelProfileUrl } from './list/helpers';
+import { useVPNStatus } from '@/api/queries/useVPNStatus';
+
+const VPN_PROTOCOLS = new Set(['openvpn', 'ikev2', 'l2tp']);
 import { LazyMount } from '@/components/utility';
 const InboundFormModal = lazy(() => import('./form/InboundFormModal'));
 const CloneInboundModal = lazy(() => import('./CloneInboundModal'));
@@ -163,6 +166,11 @@ export default function InboundsPage() {
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [formDbInbound, setFormDbInbound] = useState<DBInbound | null>(null);
 
+  const hasVPNInbound = useMemo(
+    () => dbInbounds.some((ib) => VPN_PROTOCOLS.has(ib.protocol)),
+    [dbInbounds],
+  );
+  const { data: vpnStatuses } = useVPNStatus(hasVPNInbound);
   const [infoOpen, setInfoOpen] = useState(false);
   const [infoDbInbound, setInfoDbInbound] = useState<DBInbound | null>(null);
   const [infoClientIndex, setInfoClientIndex] = useState(0);
@@ -802,6 +810,7 @@ export default function InboundsPage() {
                       nodesById={nodesById}
                       hasActiveNode={showNodeInfo}
                       hosts={hosts}
+                      vpnStatuses={vpnStatuses ?? []}
                       onAddInbound={onAddInbound}
                       onGeneralAction={onGeneralAction}
                       onRowAction={({ key, dbInbound }) =>

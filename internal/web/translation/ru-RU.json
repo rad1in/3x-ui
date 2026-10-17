@@ -804,7 +804,9 @@
         "peerNumber": "Peer {n}",
         "peerNumberConfig": "Конфиг Peer {n}"
       },
-      "sniffingDestOverride": "Переопределение назначения"
+      "sniffingDestOverride": "Переопределение назначения",
+      "vpnDownShort": "Не запущен",
+      "vpnDown": "Этот VPN-сервер не запущен."
     },
     "clients": {
       "tabBasics": "Основные",

@@ -82,6 +82,7 @@ func (a *InboundController) initRouter(g *gin.RouterGroup) {
 	g.GET("/:id/fallbacks", a.getFallbacks)
 	g.GET("/:id/openvpnProfile", a.openvpnProfile)
 	g.GET("/:id/ikev2Profile", a.ikev2Profile)
+	g.GET("/vpnStatus", a.vpnStatus)
 
 	g.POST("/add", a.addInbound)
 	g.POST("/del/:id", a.delInbound)
@@ -193,6 +194,11 @@ func (a *InboundController) ikev2Profile(c *gin.Context) {
 	}
 	c.Header("Content-Disposition", `attachment; filename="`+name+`"`)
 	c.Data(http.StatusOK, mime, body)
+}
+
+func (a *InboundController) vpnStatus(c *gin.Context) {
+	statuses, err := a.inboundService.VPNStatuses()
+	jsonObj(c, statuses, err)
 }
 
 // addInbound creates a new inbound configuration.

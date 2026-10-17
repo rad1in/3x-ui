@@ -87,6 +87,8 @@ func (m *managed) running() bool {
 type Manager struct {
 	mu    sync.Mutex
 	procs map[int]*managed
+	// startErrs keeps why an inbound is not running; it is in no process table.
+	startErrs map[int]string
 }
 
 var (
@@ -123,8 +125,13 @@ func (m *Manager) ensureLocked(inst Instance) error {
 	}
 	cur, err := start(inst)
 	if err != nil {
+		if m.startErrs == nil {
+			m.startErrs = map[int]string{}
+		}
+		m.startErrs[inst.Id] = err.Error()
 		return err
 	}
+	delete(m.startErrs, inst.Id)
 	cur.structFP, cur.usersFP = structFP, usersFP
 	m.procs[inst.Id] = cur
 	logger.Infof("openvpn: started inbound %d on %s/%d", inst.Id, inst.Proto, inst.Port)
@@ -213,6 +220,7 @@ func dialMgmt(sock string, done <-chan struct{}) (net.Conn, error) {
 }
 
 func (m *Manager) stopLocked(id int) {
+	delete(m.startErrs, id)
 	cur, ok := m.procs[id]
 	if !ok {
 		return
@@ -301,7 +309,7 @@ func (m *Manager) Status(id int) (running bool, lastLine string) {
 	defer m.mu.Unlock()
 	cur, ok := m.procs[id]
 	if !ok {
-		return false, ""
+		return false, m.startErrs[id]
 	}
 	return cur.running(), cur.last()
 }

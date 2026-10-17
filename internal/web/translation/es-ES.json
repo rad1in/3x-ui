@@ -804,7 +804,9 @@
         "peerNumberConfig": "Config Peer {n}"
       },
       "sniffingDestOverride": "Anulación de destino",
-      "advancedTitle": "Configuración avanzada"
+      "advancedTitle": "Configuración avanzada",
+      "vpnDownShort": "Detenido",
+      "vpnDown": "Este servidor VPN no está en marcha."
     },
     "clients": {
       "tabBasics": "Básico",

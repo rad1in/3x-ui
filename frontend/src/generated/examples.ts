@@ -1361,5 +1361,10 @@ export const EXAMPLES: Record<string, unknown> = {
     "id": 0,
     "password": "",
     "username": ""
+  },
+  "VPNStatus": {
+    "id": 4,
+    "reason": "this kernel has no PPP support (/dev/ppp is missing), which L2TP needs",
+    "running": false
   }
 };
