@@ -10,12 +10,14 @@ import (
 	"slices"
 	"testing"
 	"time"
+
+	"github.com/mhsanaei/3x-ui/v3/internal/vpnnat"
 )
 
 type noRouting struct{}
 
-func (noRouting) up(Instance) error { return nil }
-func (noRouting) down(Instance)     {}
+func (noRouting) Up(netip.Prefix) error { return nil }
+func (noRouting) Down(netip.Prefix)     {}
 
 func freeUDPPort(t *testing.T) int {
 	t.Helper()
@@ -77,9 +79,9 @@ func TestOpenVPNEndToEnd(t *testing.T) {
 	if err := os.Symlink(bin, filepath.Join(os.Getenv("XUI_BIN_FOLDER"), "openvpn")); err != nil {
 		t.Fatal(err)
 	}
-	prev := netSetup
-	netSetup = noRouting{}
-	t.Cleanup(func() { netSetup = prev })
+	prev := vpnnat.Default
+	vpnnat.Default = noRouting{}
+	t.Cleanup(func() { vpnnat.Default = prev })
 
 	pki, err := NewPKI("e2e")
 	if err != nil {

@@ -19,6 +19,7 @@ import (
 
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
+	"github.com/mhsanaei/3x-ui/v3/internal/vpnnat"
 )
 
 const (
@@ -148,7 +149,7 @@ func start(inst Instance) (*managed, error) {
 	if err := os.WriteFile(cfgPath, []byte(renderServerConfig(inst, sock)), 0o600); err != nil {
 		return nil, err
 	}
-	if err := netSetup.up(inst); err != nil {
+	if err := vpnnat.Default.Up(inst.Network); err != nil {
 		logger.Warning("openvpn: routing for inbound", inst.Id, "not set up:", err)
 	}
 	cmd := exec.CommandContext(context.Background(), bin, "--config", cfgPath)
@@ -159,7 +160,7 @@ func start(inst Instance) (*managed, error) {
 	cmd.Stderr = cmd.Stdout
 	cur := &managed{inst: inst, cmd: cmd, done: make(chan struct{})}
 	if err := cmd.Start(); err != nil {
-		netSetup.down(inst)
+		vpnnat.Default.Down(inst.Network)
 		return nil, err
 	}
 	go cur.pump(out)
@@ -174,7 +175,7 @@ func start(inst Instance) (*managed, error) {
 	if err != nil {
 		_ = cmd.Process.Kill()
 		<-cur.done
-		netSetup.down(inst)
+		vpnnat.Default.Down(inst.Network)
 		return nil, fmt.Errorf("openvpn inbound %d: %w (%s)", inst.Id, err, cur.last())
 	}
 	cur.conn = nc
@@ -229,7 +230,7 @@ func (m *Manager) stopLocked(id int) {
 			<-cur.done
 		}
 	}
-	netSetup.down(cur.inst)
+	vpnnat.Default.Down(cur.inst.Network)
 	_ = os.Remove(filepath.Join(runDir(), fmt.Sprintf("server-%d.conf", id)))
 }
 
