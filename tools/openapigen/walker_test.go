@@ -43,3 +43,45 @@ type HappLinkResult struct {
 		t.Fatalf("generated types expose DI interface:\n%s", apiSurface)
 	}
 }
+
+// A named field whose name matches its type (Limits Limits) is a nested object
+// in the JSON; only a truly embedded struct may be flattened into its parent.
+func TestNamedFieldSharingItsTypeNameStaysNested(t *testing.T) {
+	dir := t.TempDir()
+	source := `package service
+
+type Limits struct {
+	MaxClients int ` + "`json:\"maxClients\"`" + `
+}
+
+type Base struct {
+	ID int ` + "`json:\"id\"`" + `
+}
+
+type View struct {
+	Base
+	Limits Limits ` + "`json:\"limits\"`" + `
+}
+`
+	if err := os.WriteFile(filepath.Join(dir, "service.go"), []byte(source), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	schemas, _, err := walkPackages([]packageRequest{{Path: dir, StructAllow: setOf("Limits", "Base", "View")}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, s := range flattenEmbedded(schemas) {
+		if s.Name != "View" {
+			continue
+		}
+		var names []string
+		for _, f := range s.Fields {
+			names = append(names, f.JSONName)
+		}
+		if got := strings.Join(names, ","); got != "id,limits" {
+			t.Fatalf("View fields = %s, want id,limits (Base flattened, Limits nested)", got)
+		}
+		return
+	}
+	t.Fatal("View schema missing")
+}
