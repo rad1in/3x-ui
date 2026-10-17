@@ -553,6 +553,9 @@
           "subRoutingRules": {
             "type": "string"
           },
+          "subShortLinkEnable": {
+            "type": "boolean"
+          },
           "subShowIdentityOnAllLinks": {
             "type": "boolean"
           },
@@ -834,6 +837,7 @@
           "subProfileMode",
           "subProfileUrl",
           "subRoutingRules",
+          "subShortLinkEnable",
           "subShowIdentityOnAllLinks",
           "subSupportUrl",
           "subThemeDir",
@@ -1428,6 +1432,9 @@
           "subRoutingRules": {
             "type": "string"
           },
+          "subShortLinkEnable": {
+            "type": "boolean"
+          },
           "subShowIdentityOnAllLinks": {
             "type": "boolean"
           },
@@ -1719,6 +1726,7 @@
           "subProfileMode",
           "subProfileUrl",
           "subRoutingRules",
+          "subShortLinkEnable",
           "subShowIdentityOnAllLinks",
           "subSupportUrl",
           "subThemeDir",
@@ -5458,6 +5466,24 @@
           "sortOrder",
           "strategy",
           "updatedAt"
+        ],
+        "type": "object"
+      },
+      "SubShortLinkView": {
+        "description": "SubShortLinkView is a subscription's short link as the panel shows it.",
+        "properties": {
+          "token": {
+            "example": "Ab3dE5gH9k",
+            "type": "string"
+          },
+          "url": {
+            "example": "https://sub.example.com:2096/s/Ab3dE5gH9k",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "url"
         ],
         "type": "object"
       },
@@ -11942,6 +11968,150 @@
                   "obj": {
                     "encryptedLink": "happ://crypt5/example"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/subShortLink/{subId}": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Return the short subscription link (/s/<token> on the subscription server) of a subscription ID, or obj null when it has none. The URL origin is the configured subURI origin, else the subscription server address.",
+        "operationId": "get_panel_api_clients_subShortLink_subId",
+        "parameters": [
+          {
+            "name": "subId",
+            "in": "path",
+            "required": true,
+            "description": "The client's subscription ID.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SubShortLinkView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "token": "Ab3dE5gH9k",
+                    "url": "https://sub.example.com:2096/s/Ab3dE5gH9k"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Return the short link of a subscription ID, creating one (10 random base62 characters) when it has none. Fails when short links are turned off (subShortLinkEnable) or no client carries the subscription ID.",
+        "operationId": "post_panel_api_clients_subShortLink_subId",
+        "parameters": [
+          {
+            "name": "subId",
+            "in": "path",
+            "required": true,
+            "description": "The client's subscription ID.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SubShortLinkView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "token": "Ab3dE5gH9k",
+                    "url": "https://sub.example.com:2096/s/Ab3dE5gH9k"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/subShortLink/{subId}/revoke": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Delete the short link of a subscription ID; the old /s/<token> answers 404 at once. Creating a link again issues a new token.",
+        "operationId": "post_panel_api_clients_subShortLink_subId_revoke",
+        "parameters": [
+          {
+            "name": "subId",
+            "in": "path",
+            "required": true,
+            "description": "The client's subscription ID.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "msg": "Short link revoked",
+                  "obj": null
                 }
               }
             }

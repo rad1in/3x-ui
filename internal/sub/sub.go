@@ -230,6 +230,8 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		SubIncyEnableRouting = false
 	}
 
+	subShortLinks, _ := s.settingService.GetSubShortLinkEnable()
+
 	SubIncyRoutingRules, err := s.settingService.GetSubIncyRoutingRules()
 	if err != nil {
 		SubIncyRoutingRules = ""
@@ -380,6 +382,7 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		WithSUBIncyConfig(incyCfg),
 		WithSUBIncyEnableRouting(SubIncyEnableRouting),
 		WithSUBIncyRoutingRules(SubIncyRoutingRules),
+		WithSUBShortLinks(subShortLinks),
 	)
 
 	return engine, nil

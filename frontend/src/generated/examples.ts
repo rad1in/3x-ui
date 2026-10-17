@@ -166,6 +166,7 @@ export const EXAMPLES: Record<string, unknown> = {
     "subProfileMode": "",
     "subProfileUrl": "",
     "subRoutingRules": "",
+    "subShortLinkEnable": false,
     "subShowIdentityOnAllLinks": false,
     "subSupportUrl": "",
     "subThemeDir": "",
@@ -377,6 +378,7 @@ export const EXAMPLES: Record<string, unknown> = {
     "subProfileMode": "",
     "subProfileUrl": "",
     "subRoutingRules": "",
+    "subShortLinkEnable": false,
     "subShowIdentityOnAllLinks": false,
     "subSupportUrl": "",
     "subThemeDir": "",
@@ -1375,6 +1377,10 @@ export const EXAMPLES: Record<string, unknown> = {
     "sortOrder": 1,
     "strategy": "random",
     "updatedAt": 1710000000000
+  },
+  "SubShortLinkView": {
+    "token": "Ab3dE5gH9k",
+    "url": "https://sub.example.com:2096/s/Ab3dE5gH9k"
   },
   "Traffic": {
     "Down": 2097152,

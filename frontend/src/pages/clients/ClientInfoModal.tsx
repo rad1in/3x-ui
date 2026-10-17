@@ -37,6 +37,7 @@ import {
 } from './amneziawgConfig';
 import { tunnelConfigEndpoints, tunnelEndpointLabel } from './tunnelEndpoints';
 import type { HostRecord } from '@/schemas/api/host';
+import SubShortLinkRow from './SubShortLinkRow';
 import './ClientInfoModal.css';
 
 const INBOUND_PROTOCOL_COLORS: Record<string, string> = {
@@ -79,6 +80,7 @@ interface SubSettings {
   subClashURI: string;
   subClashEnable: boolean;
   publicHost?: string;
+  shortLinkEnable?: boolean;
 }
 
 interface ClientInfoModalProps {
@@ -659,6 +661,9 @@ export default function ClientInfoModal({
                     </Popover>
                   </div>
                 </div>
+                {subSettings.shortLinkEnable && client.subId && (
+                  <SubShortLinkRow subId={client.subId} email={client.email} onCopy={copyValue} />
+                )}
                 {subJsonLink && (
                   <div className="link-row">
                     <Tag color="purple" className="link-row-tag">

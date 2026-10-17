@@ -13,6 +13,7 @@ export const DefaultsPayloadSchema = z
     subJsonEnable: z.boolean().optional(),
     subClashURI: z.string().optional(),
     subClashEnable: z.boolean().optional(),
+    subShortLinkEnable: z.boolean().optional(),
     pageSize: z.number().optional(),
     datepicker: z.enum(['gregorian', 'jalalian']).optional(),
     ipLimitEnable: z.boolean().optional(),

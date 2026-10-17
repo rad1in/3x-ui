@@ -139,6 +139,16 @@ export default function SubscriptionGeneralTab({
               </SettingListItem>
               <SettingListItem
                 paddings="small"
+                title={t('pages.settings.subShortLinkEnable')}
+                description={t('pages.settings.subShortLinkEnableDesc')}
+              >
+                <Switch
+                  checked={allSetting.subShortLinkEnable}
+                  onChange={(v) => updateSetting({ subShortLinkEnable: v })}
+                />
+              </SettingListItem>
+              <SettingListItem
+                paddings="small"
                 title={t('pages.settings.subURI')}
                 description={t('pages.settings.subURIDesc')}
               >

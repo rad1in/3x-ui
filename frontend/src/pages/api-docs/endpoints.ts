@@ -1703,6 +1703,36 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/clients/subShortLink/:subId',
+        summary:
+          'Return the short subscription link (/s/<token> on the subscription server) of a subscription ID, or obj null when it has none. The URL origin is the configured subURI origin, else the subscription server address.',
+        params: [
+          { name: 'subId', in: 'path', type: 'string', desc: "The client's subscription ID." },
+        ],
+        responseSchema: 'SubShortLinkView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/subShortLink/:subId',
+        summary:
+          'Return the short link of a subscription ID, creating one (10 random base62 characters) when it has none. Fails when short links are turned off (subShortLinkEnable) or no client carries the subscription ID.',
+        params: [
+          { name: 'subId', in: 'path', type: 'string', desc: "The client's subscription ID." },
+        ],
+        responseSchema: 'SubShortLinkView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/subShortLink/:subId/revoke',
+        summary:
+          'Delete the short link of a subscription ID; the old /s/<token> answers 404 at once. Creating a link again issues a new token.',
+        params: [
+          { name: 'subId', in: 'path', type: 'string', desc: "The client's subscription ID." },
+        ],
+        response: '{\n  "success": true,\n  "msg": "Short link revoked",\n  "obj": null\n}',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/clients/links/:email',
         summary:
           'Return every URL for one client across all attached inbounds, one per advertised endpoint: the managed hosts of the inbound, else its streamSettings.externalProxy entries, else its own address. Supported protocols: vmess, vless, trojan, shadowsocks, hysteria, mtproto. Protocols without a URL form (socks, http, mixed, wireguard, dokodemo, tunnel) contribute nothing.',

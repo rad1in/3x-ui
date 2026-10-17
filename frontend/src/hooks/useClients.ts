@@ -57,6 +57,7 @@ interface SubSettings {
   subClashURI: string;
   subClashEnable: boolean;
   publicHost: string;
+  shortLinkEnable: boolean;
 }
 
 export interface ClientQueryParams {
@@ -276,6 +277,7 @@ export function useClients(options: UseClientsOptions = {}) {
       subClashURI: (defaults.subClashURI as string) || '',
       subClashEnable: !!defaults.subClashEnable,
       publicHost: (defaults.subDomain as string) || (defaults.webDomain as string) || '',
+      shortLinkEnable: defaults.subShortLinkEnable === true,
     }),
     [
       defaults.subEnable,
@@ -287,6 +289,7 @@ export function useClients(options: UseClientsOptions = {}) {
       defaults.subClashEnable,
       defaults.subDomain,
       defaults.webDomain,
+      defaults.subShortLinkEnable,
     ],
   );
 

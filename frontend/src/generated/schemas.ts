@@ -527,6 +527,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "subRoutingRules": {
         "type": "string"
       },
+      "subShortLinkEnable": {
+        "type": "boolean"
+      },
       "subShowIdentityOnAllLinks": {
         "type": "boolean"
       },
@@ -808,6 +811,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "subProfileMode",
       "subProfileUrl",
       "subRoutingRules",
+      "subShortLinkEnable",
       "subShowIdentityOnAllLinks",
       "subSupportUrl",
       "subThemeDir",
@@ -1402,6 +1406,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "subRoutingRules": {
         "type": "string"
       },
+      "subShortLinkEnable": {
+        "type": "boolean"
+      },
       "subShowIdentityOnAllLinks": {
         "type": "boolean"
       },
@@ -1693,6 +1700,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "subProfileMode",
       "subProfileUrl",
       "subRoutingRules",
+      "subShortLinkEnable",
       "subShowIdentityOnAllLinks",
       "subSupportUrl",
       "subThemeDir",
@@ -5432,6 +5440,24 @@ export const SCHEMAS: Record<string, unknown> = {
       "sortOrder",
       "strategy",
       "updatedAt"
+    ],
+    "type": "object"
+  },
+  "SubShortLinkView": {
+    "description": "SubShortLinkView is a subscription's short link as the panel shows it.",
+    "properties": {
+      "token": {
+        "example": "Ab3dE5gH9k",
+        "type": "string"
+      },
+      "url": {
+        "example": "https://sub.example.com:2096/s/Ab3dE5gH9k",
+        "type": "string"
+      }
+    },
+    "required": [
+      "token",
+      "url"
     ],
     "type": "object"
   },

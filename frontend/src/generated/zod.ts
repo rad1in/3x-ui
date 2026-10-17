@@ -190,6 +190,7 @@ export const AllSettingSchema = z.object({
   subProfileMode: z.string(),
   subProfileUrl: z.string(),
   subRoutingRules: z.string(),
+  subShortLinkEnable: z.boolean(),
   subShowIdentityOnAllLinks: z.boolean(),
   subSupportUrl: z.string(),
   subThemeDir: z.string(),
@@ -403,6 +404,7 @@ export const AllSettingViewSchema = z.object({
   subProfileMode: z.string(),
   subProfileUrl: z.string(),
   subRoutingRules: z.string(),
+  subShortLinkEnable: z.boolean(),
   subShowIdentityOnAllLinks: z.boolean(),
   subSupportUrl: z.string(),
   subThemeDir: z.string(),
@@ -1317,6 +1319,12 @@ export const SubBalancerSchema = z.object({
   updatedAt: z.number().int(),
 });
 export type SubBalancer = z.infer<typeof SubBalancerSchema>;
+
+export const SubShortLinkViewSchema = z.object({
+  token: z.string(),
+  url: z.string(),
+});
+export type SubShortLinkView = z.infer<typeof SubShortLinkViewSchema>;
 
 export const TrafficSchema = z.object({
   Down: z.number().int(),

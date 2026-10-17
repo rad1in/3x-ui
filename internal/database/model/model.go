@@ -1117,6 +1117,16 @@ type ClientHwid struct {
 
 func (ClientHwid) TableName() string { return "client_hwids" }
 
+// SubShortLink is a revocable alias /s/<Token> for a subscription id.
+type SubShortLink struct {
+	Id        int    `json:"id" gorm:"primaryKey;autoIncrement"`
+	SubID     string `json:"subId" gorm:"column:sub_id;not null;uniqueIndex"`
+	Token     string `json:"token" gorm:"column:token;not null;uniqueIndex"`
+	CreatedAt int64  `json:"createdAt" gorm:"column:created_at;not null"`
+}
+
+func (SubShortLink) TableName() string { return "sub_short_links" }
+
 // ClientExternalLink is a per-client entry surfaced in the client's
 // subscription. Two kinds:
 //   - "link": a single third-party share link (vless://, vmess://, trojan://,

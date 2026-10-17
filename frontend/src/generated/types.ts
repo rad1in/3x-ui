@@ -174,6 +174,7 @@ export interface AllSetting {
   subProfileMode: string;
   subProfileUrl: string;
   subRoutingRules: string;
+  subShortLinkEnable: boolean;
   subShowIdentityOnAllLinks: boolean;
   subSupportUrl: string;
   subThemeDir: string;
@@ -386,6 +387,7 @@ export interface AllSettingView {
   subProfileMode: string;
   subProfileUrl: string;
   subRoutingRules: string;
+  subShortLinkEnable: boolean;
   subShowIdentityOnAllLinks: boolean;
   subSupportUrl: string;
   subThemeDir: string;
@@ -1237,6 +1239,11 @@ export interface SubBalancer {
   sortOrder: number;
   strategy: string;
   updatedAt: number;
+}
+
+export interface SubShortLinkView {
+  token: string;
+  url: string;
 }
 
 export interface Traffic {

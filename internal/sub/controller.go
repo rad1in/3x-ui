@@ -88,6 +88,8 @@ type SUBController struct {
 	subClashService *SubClashService
 	clientService   service.ClientService
 	settingService  service.SettingService
+	shortLinks      service.SubShortLinkService
+	shortLinksOn    bool
 
 	subTemplateMu    sync.RWMutex
 	subTemplateCache map[string]*cachedSubTemplate
@@ -104,6 +106,7 @@ type subControllerConfig struct {
 	subJsonUserAgentRegex  string
 	subJsonAlwaysArray     bool
 	subJsonApps            string
+	subShortLinks          bool
 	subJsonEnabled         bool
 	subClashEnabled        bool
 
@@ -167,6 +170,10 @@ func WithSUBJsonUserAgentRegex(value string) SUBControllerOption {
 
 func WithSUBJsonAlwaysArray(value bool) SUBControllerOption {
 	return func(config *subControllerConfig) { config.subJsonAlwaysArray = value }
+}
+
+func WithSUBShortLinks(value bool) SUBControllerOption {
+	return func(config *subControllerConfig) { config.subShortLinks = value }
 }
 
 func WithSUBJsonApps(value string) SUBControllerOption {
@@ -331,6 +338,7 @@ func NewSUBController(g *gin.RouterGroup, options ...SUBControllerOption) *SUBCo
 		subClashService: NewSubClashService(config.subClashEnableRouting, config.subClashRules, sub),
 
 		subTemplateCache: map[string]*cachedSubTemplate{},
+		shortLinksOn:     config.subShortLinks,
 	}
 	a.initRouter(g)
 	return a
@@ -347,6 +355,15 @@ func (a *SUBController) initRouter(g *gin.RouterGroup) {
 	gLink.GET(":subid/openvpn/:inbound", a.openvpnProfile)
 	gLink.GET(":subid/outline/:inbound", a.outlineAccessKey)
 	gLink.GET(":subid/ikev2/:inbound/:format", a.ikev2Profile)
+	if a.shortLinksOn {
+		if owner := a.configuredSubscriptionPathOwner(service.SubShortLinkPath); owner != "" {
+			logger.Warningf("Short subscription links %q are unavailable because they conflict with the configured %s path", service.SubShortLinkPath, owner)
+		} else {
+			gShort := g.Group(service.SubShortLinkPath)
+			gShort.GET(":token", a.subShortLink)
+			gShort.HEAD(":token", a.subShortLink)
+		}
+	}
 	if a.jsonEnabled {
 		gJson := g.Group(a.subJsonPath)
 		gJson.GET(":subid", a.subJsons)
@@ -548,6 +565,20 @@ func (a *SUBController) subs(c *gin.Context) {
 		}
 		a.recordSubscriptionFetch(c)
 	}
+}
+
+// subShortLink serves /s/<token> exactly as the subscription it aliases.
+func (a *SUBController) subShortLink(c *gin.Context) {
+	subID, err := a.shortLinks.Resolve(c.Param("token"))
+	if err != nil {
+		if errors.Is(err, service.ErrSubShortLinkNotFound) {
+			err = nil
+		}
+		writeSubError(c, err)
+		return
+	}
+	c.Params = append(c.Params, gin.Param{Key: "subid", Value: subID})
+	a.subs(c)
 }
 
 func (a *SUBController) recordSubscriptionFetch(c *gin.Context) {

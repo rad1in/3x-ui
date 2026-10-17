@@ -40,6 +40,7 @@ type ClientController struct {
 	xrayService    service.XrayService
 	settingService service.SettingService
 	happGenerator  service.HappLinkGenerator
+	shortLinks     service.SubShortLinkService
 }
 
 func NewClientController(g *gin.RouterGroup) *ClientController {
@@ -58,6 +59,9 @@ func (a *ClientController) initRouter(g *gin.RouterGroup) {
 	g.GET("/subLinks/:subId", a.getSubLinks)
 	g.GET("/links/:email", a.getClientLinks)
 	g.POST("/happLink/:id", a.generateHappLink)
+	g.GET("/subShortLink/:subId", a.getSubShortLink)
+	g.POST("/subShortLink/:subId", a.createSubShortLink)
+	g.POST("/subShortLink/:subId/revoke", a.revokeSubShortLink)
 
 	g.POST("/add", a.create)
 	g.POST("/renewalPreview", a.renewalPreview)
@@ -685,6 +689,38 @@ func (a *ClientController) generateHappLink(c *gin.Context) {
 		return
 	}
 	jsonObj(c, result, nil)
+}
+
+// getSubShortLink answers obj null when the subscription has no short link yet.
+func (a *ClientController) getSubShortLink(c *gin.Context) {
+	link, err := a.shortLinks.Get(c.Param("subId"))
+	if errors.Is(err, service.ErrSubShortLinkNotFound) {
+		jsonObj(c, nil, nil)
+		return
+	}
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
+		return
+	}
+	view := a.shortLinks.View(link, resolveHost(c))
+	jsonObj(c, &view, nil)
+}
+
+func (a *ClientController) createSubShortLink(c *gin.Context) {
+	if enabled, _ := a.settingService.GetSubShortLinkEnable(); !enabled {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), service.ErrSubShortLinksDisabled)
+		return
+	}
+	link, err := a.shortLinks.Ensure(c.Param("subId"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	jsonObj(c, a.shortLinks.View(link, resolveHost(c)), nil)
+}
+
+func (a *ClientController) revokeSubShortLink(c *gin.Context) {
+	jsonMsg(c, I18nWeb(c, "pages.clients.shortLinkRevoked"), a.shortLinks.Revoke(c.Param("subId")))
 }
 
 func (a *ClientController) detach(c *gin.Context) {

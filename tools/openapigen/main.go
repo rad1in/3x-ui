@@ -97,6 +97,7 @@ func run(root, outDir string) error {
 				"VPNStatus",
 				"BackupResult",
 				"HappLinkResult",
+				"SubShortLinkView",
 				"ClientSlim",
 				"ClientRenewalPreviewRequest",
 				"ClientRenewalPreview",
