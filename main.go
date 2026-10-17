@@ -13,8 +13,10 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 	_ "unsafe"
 
+	"github.com/mhsanaei/3x-ui/v3/internal/cliclient"
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/crypto/nodetoken"
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
@@ -756,6 +758,8 @@ func main() {
 		if enabletgbot {
 			updateTgbotEnableSts(enabletgbot)
 		}
+	case "client":
+		os.Exit(runClientCommand(os.Args[2:]))
 	case "cert":
 		err := settingCmd.Parse(os.Args[2:])
 		if err != nil {
@@ -776,6 +780,40 @@ func main() {
 	}
 }
 
+// runClientCommand runs `x-ui client ...` against the panel running on this host.
+func runClientCommand(args []string) int {
+	if len(args) == 0 || args[0] == "-h" || args[0] == "--help" || args[0] == "help" {
+		fmt.Print(cliclient.Usage)
+		return 0
+	}
+	if err := database.InitDB(config.GetDBPath()); err != nil {
+		fmt.Println("open database failed:", err)
+		return 1
+	}
+	endpoint, err := cliclient.LocalEndpoint(&service.SettingService{})
+	if err != nil {
+		fmt.Println("read panel settings failed:", err)
+		return 1
+	}
+	base, httpClient, err := endpoint.Client()
+	if err != nil {
+		fmt.Println(err)
+		return 1
+	}
+	token, cleanup, err := cliclient.SessionToken()
+	if err != nil {
+		fmt.Println("create a CLI token failed:", err)
+		return 1
+	}
+	defer cleanup()
+	api := &cliclient.API{Base: base, Token: token, Client: httpClient}
+	if err := cliclient.Run(api, args, os.Stdout, time.Now()); err != nil {
+		fmt.Println("error:", err)
+		return 1
+	}
+	return 0
+}
+
 func commandHelp() string {
 	return `
 Commands:
@@ -784,5 +822,6 @@ Commands:
     migrate-db     SQLite <-> .dump (--dump/--restore) or copy into PostgreSQL (--dsn)
     encrypt-tokens encrypt node bearer tokens with the configured active key
     setting        set settings
+    client         manage clients: list, show, add, del, enable, disable, reset
 `
 }
