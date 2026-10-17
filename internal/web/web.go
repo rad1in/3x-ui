@@ -41,6 +41,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/email"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/panel"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/tgbot"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/service/webhook"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/websocket"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 
@@ -130,6 +131,7 @@ type Server struct {
 	settingService service.SettingService
 	tgbotService   tgbot.Tgbot
 	discordService *discord.DiscordService
+	webhooks       *webhook.Sender
 	discordGateway *discord.GatewayClient
 
 	wsHub *websocket.Hub
@@ -697,6 +699,14 @@ func (s *Server) start(restartXray bool, startTgBot bool) (err error) {
 	// Wire discord service to controller for test endpoint
 	controller.SetDiscordService(s.discordService)
 
+	settingSvc := s.settingService
+	s.webhooks = webhook.New(func() webhook.Config {
+		enabled, urls, secret, events := settingSvc.WebhookConfig()
+		return webhook.Config{Enabled: enabled, URLs: webhook.ParseURLs(urls), Secret: secret, Events: webhook.ParseEvents(events)}
+	})
+	s.bus.Subscribe("webhook", s.webhooks.HandleEvent)
+	controller.SetTestWebhookFunc(s.webhooks.Test)
+
 	serverService := &service.ServerService{}
 	inboundService := &service.InboundService{}
 	s.discordGateway = discord.NewGatewayClient(s.discordService, s.settingService, serverService, inboundService, &s.xrayService)
@@ -821,6 +831,9 @@ func (s *Server) stop(stopXray bool, stopTgBot bool) error {
 	}
 	if s.bus != nil {
 		s.bus.Stop()
+	}
+	if s.webhooks != nil {
+		s.webhooks.Stop()
 	}
 	if err := service.PersistSystemMetrics(); err != nil {
 		logger.Warning("persist system metrics on shutdown failed:", err)

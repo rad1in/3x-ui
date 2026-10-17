@@ -205,6 +205,10 @@ export const AllSettingSchema = z.object({
   webKeyFile: z.string(),
   webListen: z.string(),
   webPort: z.number().int().min(1).max(65535),
+  webhookEnable: z.boolean(),
+  webhookEvents: z.string(),
+  webhookSecret: z.string(),
+  webhookUrls: z.string(),
 });
 export type AllSetting = z.infer<typeof AllSettingSchema>;
 
@@ -233,6 +237,7 @@ export const AllSettingViewSchema = z.object({
   hasTgBotToken: z.boolean(),
   hasTwoFactorToken: z.boolean(),
   hasWarpSecret: z.boolean(),
+  hasWebhookSecret: z.boolean(),
   ipLimitAllowlist: z.string(),
   ldapAutoCreate: z.boolean(),
   ldapAutoDelete: z.boolean(),
@@ -397,6 +402,10 @@ export const AllSettingViewSchema = z.object({
   webKeyFile: z.string(),
   webListen: z.string(),
   webPort: z.number().int().min(1).max(65535),
+  webhookEnable: z.boolean(),
+  webhookEvents: z.string(),
+  webhookSecret: z.string(),
+  webhookUrls: z.string(),
 });
 export type AllSettingView = z.infer<typeof AllSettingViewSchema>;
 

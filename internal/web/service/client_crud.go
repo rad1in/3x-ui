@@ -153,6 +153,7 @@ func (s *ClientService) Create(inboundSvc *InboundService, payload *ClientCreate
 	if strings.TrimSpace(client.Email) == "" {
 		return false, common.NewError("client email is required")
 	}
+	defer trackClients(client.Email)()
 	if err := validateClientEmail(client.Email); err != nil {
 		return false, err
 	}
@@ -609,6 +610,11 @@ func (s *ClientService) Update(inboundSvc *InboundService, id int, updated model
 	if err != nil {
 		return false, err
 	}
+	// A rename would read as one client deleted and another created; only an
+	// unchanged email reports its enable flip.
+	if updated.Email == "" || updated.Email == existing.Email {
+		defer trackClients(existing.Email)()
+	}
 	inboundIds, err := s.GetInboundIdsForRecord(id)
 	if err != nil {
 		return false, err
@@ -869,6 +875,7 @@ func (s *ClientService) Delete(inboundSvc *InboundService, id int, keepTraffic b
 	if err != nil {
 		return false, err
 	}
+	defer trackClients(existing.Email)()
 	tombstoneClientEmail(existing.Email)
 
 	inboundIds, err := s.GetInboundIdsForRecord(id)

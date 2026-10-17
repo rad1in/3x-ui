@@ -217,6 +217,7 @@ node heartbeat every 5s, periodic traffic resets (hourly/daily/weekly/monthly). 
 │   │   │   │   ├── api_token.go        #   API token CRUD (SHA-256 hashed)
 │   │   │   │   └── websocket.go        #   WS hub / push service
 │   │   │   ├── discord/                # Discord bot client, Gateway v10, and subscriber
+│   │   │   ├── webhook/                # signed HTTP webhook sender (event bus subscriber)
 │   │   │   └── tgbot/                  # Telegram bot command handlers
 │   │   ├── runtime/            # ⭐⭐ The Local/Remote node abstraction (see §5.2)
 │   │   │   ├── runtime.go      #   the Runtime interface (the contract)
@@ -439,10 +440,13 @@ also has protocol schemas under `frontend/src/schemas/protocols/` and `frontend/
 
 `internal/eventbus/` is a minimal buffered-channel pub/sub. Producers call a non-blocking
 `Publish(Event)`; all subscribers receive every event. Event types: `outbound.down|up`,
-`xray.crash`, `node.down|up`, `cpu.high`, `memory.high`, `login.attempt`, with structured
-payloads (OutboundHealthData, NodeHealthData, LoginEventData, SystemMetricData). Producers
-include the CPU/memory jobs, node heartbeat, and login handling; consumers include the
-Telegram bot, the Discord bot (`service/discord/`), and the email notifier (`service/email/`). Use it for cross-cutting
+`xray.crash`, `node.down|up`, `cpu.high`, `memory.high`, `login.attempt`, and the client
+lifecycle `client.*` (created, deleted, enabled, disabled, depleted, expired, renewed,
+traffic_reset), with structured payloads (OutboundHealthData, NodeHealthData,
+LoginEventData, SystemMetricData, ClientEventData). Producers include the CPU/memory jobs,
+node heartbeat, login handling and `service/client_events.go`; consumers include the
+Telegram bot, the Discord bot (`service/discord/`), the email notifier (`service/email/`)
+and the webhook sender (`service/webhook/`). Use it for cross-cutting
 notifications instead of importing notification services into producers.
 
 ### 5.8 Tunnel health monitor
@@ -516,6 +520,7 @@ for AutoMigrate in `internal/database/db.go`.
 | **Telegram bot** commands                                                         | `service/tgbot/`                                                             | `job/stats_notify_job.go`                                                                           |
 | **Discord bot** commands & reports                                                | `service/discord/`                                                           | `job/discord_notify_job.go`                                                                         |
 | **Email notifications**                                                           | `service/email/`                                                             | `internal/eventbus/` (consumers)                                                                    |
+| **Webhook** not delivered / bad signature                                         | `service/webhook/`, `service/client_events.go`                               | `web.go` (subscription), `WebhookConfig` in `service/setting.go`                                    |
 | **CPU / memory alerts** not firing                                                | `job/check_cpu_usage.go`, `job/check_memory_usage.go`                        | `internal/eventbus/`, notifier settings in `service/setting.go`                                     |
 | Xray auto-restart on **dead tunnel**                                              | `internal/tunnelmonitor/`                                                    | `XUI_TUNNEL_HEALTH_*` in `internal/config/`                                                         |
 | **WARP / Nord / PIA** outbound integration                                        | `service/integration/warp.go` / `nord.go` / `pia.go`                         | `internal/pia/`, `frontend/src/pages/xray/overrides/`                                               |

@@ -604,6 +604,19 @@
             "maximum": 65535,
             "minimum": 1,
             "type": "integer"
+          },
+          "webhookEnable": {
+            "description": "Webhooks: signed POSTs of the enabled events to every URL (one per line).",
+            "type": "boolean"
+          },
+          "webhookEvents": {
+            "type": "string"
+          },
+          "webhookSecret": {
+            "type": "string"
+          },
+          "webhookUrls": {
+            "type": "string"
           }
         },
         "required": [
@@ -786,7 +799,11 @@
           "webDomain",
           "webKeyFile",
           "webListen",
-          "webPort"
+          "webPort",
+          "webhookEnable",
+          "webhookEvents",
+          "webhookSecret",
+          "webhookUrls"
         ],
         "type": "object"
       },
@@ -867,6 +884,9 @@
             "type": "boolean"
           },
           "hasWarpSecret": {
+            "type": "boolean"
+          },
+          "hasWebhookSecret": {
             "type": "boolean"
           },
           "ipLimitAllowlist": {
@@ -1392,6 +1412,19 @@
             "maximum": 65535,
             "minimum": 1,
             "type": "integer"
+          },
+          "webhookEnable": {
+            "description": "Webhooks: signed POSTs of the enabled events to every URL (one per line).",
+            "type": "boolean"
+          },
+          "webhookEvents": {
+            "type": "string"
+          },
+          "webhookSecret": {
+            "type": "string"
+          },
+          "webhookUrls": {
+            "type": "string"
           }
         },
         "required": [
@@ -1419,6 +1452,7 @@
           "hasTgBotToken",
           "hasTwoFactorToken",
           "hasWarpSecret",
+          "hasWebhookSecret",
           "ipLimitAllowlist",
           "ldapAutoCreate",
           "ldapAutoDelete",
@@ -1582,7 +1616,11 @@
           "webDomain",
           "webKeyFile",
           "webListen",
-          "webPort"
+          "webPort",
+          "webhookEnable",
+          "webhookEvents",
+          "webhookSecret",
+          "webhookUrls"
         ],
         "type": "object"
       },
@@ -14030,6 +14068,40 @@
                 "example": {
                   "success": true,
                   "msg": "Test notification sent successfully"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/setting/testWebhook": {
+      "post": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Send a signed test event to every configured webhook URL. Fails with the first URL that did not answer 2xx.",
+        "operationId": "post_panel_api_setting_testWebhook",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "msg": "Test event delivered to every webhook URL"
                 }
               }
             }

@@ -6,6 +6,7 @@ import { Drawer, Layout, Menu, Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
 import {
   ApiOutlined,
+  BranchesOutlined,
   ApartmentOutlined,
   AppstoreOutlined,
   CloseOutlined,
@@ -279,6 +280,11 @@ export default function AppSidebar() {
         key: '/settings#discord',
         icon: <DiscordOutlined />,
         label: t('pages.settings.discordSettings'),
+      },
+      {
+        key: '/settings#webhooks',
+        icon: <BranchesOutlined />,
+        label: t('pages.settings.webhookSettings'),
       },
       {
         key: '/settings#subscription',

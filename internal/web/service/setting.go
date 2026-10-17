@@ -267,6 +267,12 @@ var defaultValueMap = map[string]string{
 	"discordMemory":        "80",
 	"discordLang":          "en-US",
 	"discordEnabledEvents": "login.attempt,cpu.high",
+
+	// Webhooks
+	"webhookEnable": "false",
+	"webhookUrls":   "",
+	"webhookSecret": "",
+	"webhookEvents": "client.created,client.deleted,client.depleted,client.expired,client.renewed",
 }
 
 // SettingService provides business logic for application settings management.
@@ -366,6 +372,7 @@ func (s *SettingService) GetAllSettingView() (*entity.AllSettingView, error) {
 	view.HasNordSecret = secretConfigured(mustString(s.GetNord()))
 	view.HasSmtpPassword = secretConfigured(allSetting.SmtpPassword)
 	view.HasDiscordBotToken = secretConfigured(allSetting.DiscordBotToken)
+	view.HasWebhookSecret = secretConfigured(allSetting.WebhookSecret)
 	var apiTokenCount int64
 	if err := database.GetDB().Model(model.ApiToken{}).Where("enabled = ?", true).Count(&apiTokenCount).Error; err == nil {
 		view.HasApiToken = apiTokenCount > 0
@@ -375,6 +382,7 @@ func (s *SettingService) GetAllSettingView() (*entity.AllSettingView, error) {
 	view.LdapPassword = ""
 	view.SmtpPassword = ""
 	view.DiscordBotToken = ""
+	view.WebhookSecret = ""
 	return view, nil
 }
 
@@ -1683,6 +1691,15 @@ func (s *SettingService) SetOutboundDownThreshold(value int) error {
 	return s.setInt("outboundDownThreshold", value)
 }
 
+// WebhookConfig is what the webhook sender needs, read fresh for each event.
+func (s *SettingService) WebhookConfig() (enabled bool, urls, secret, events string) {
+	enabled, _ = s.getBool("webhookEnable")
+	urls, _ = s.getString("webhookUrls")
+	secret, _ = s.getString("webhookSecret")
+	events, _ = s.getString("webhookEvents")
+	return enabled, urls, secret, events
+}
+
 // SecretClears marks redacted secrets the user explicitly emptied. Without a
 // flag, a blank submitted secret means "unchanged" (the field is always served
 // blank to the browser) and the stored value is preserved.
@@ -1691,6 +1708,7 @@ type SecretClears struct {
 	LdapPassword    bool
 	SmtpPassword    bool
 	DiscordBotToken bool
+	WebhookSecret   bool
 }
 
 func (s *SettingService) UpdateAllSetting(allSetting *entity.AllSetting, clears SecretClears) error {
@@ -1841,10 +1859,29 @@ func (s *SettingService) preserveRedactedSecrets(allSetting *entity.AllSetting, 
 		}
 		allSetting.DiscordBotToken = value
 	}
+	if !clears.WebhookSecret && strings.TrimSpace(allSetting.WebhookSecret) == "" {
+		value, err := s.getString("webhookSecret")
+		if err != nil {
+			return err
+		}
+		allSetting.WebhookSecret = value
+	}
 	return nil
 }
 
 func validateSettingsURLs(allSetting *entity.AllSetting) error {
+	var hooks []string
+	for _, raw := range strings.FieldsFunc(allSetting.WebhookUrls, func(r rune) bool { return r == '\n' || r == ',' || r == '\r' }) {
+		if strings.TrimSpace(raw) == "" {
+			continue
+		}
+		u, err := SanitizeHTTPURL(raw)
+		if err != nil {
+			return common.NewError("webhook URL is invalid:", err)
+		}
+		hooks = append(hooks, u)
+	}
+	allSetting.WebhookUrls = strings.Join(hooks, "\n")
 	if allSetting.ExternalTrafficInformURI != "" {
 		u, err := SanitizeHTTPURL(allSetting.ExternalTrafficInformURI)
 		if err != nil {
@@ -2057,6 +2094,7 @@ var factoryDefaultSecretKeys = map[string]bool{
 	"ldapPassword":    true,
 	"smtpPassword":    true,
 	"discordBotToken": true,
+	"webhookSecret":   true,
 }
 
 /*

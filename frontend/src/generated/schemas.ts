@@ -578,6 +578,19 @@ export const SCHEMAS: Record<string, unknown> = {
         "maximum": 65535,
         "minimum": 1,
         "type": "integer"
+      },
+      "webhookEnable": {
+        "description": "Webhooks: signed POSTs of the enabled events to every URL (one per line).",
+        "type": "boolean"
+      },
+      "webhookEvents": {
+        "type": "string"
+      },
+      "webhookSecret": {
+        "type": "string"
+      },
+      "webhookUrls": {
+        "type": "string"
       }
     },
     "required": [
@@ -760,7 +773,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "webDomain",
       "webKeyFile",
       "webListen",
-      "webPort"
+      "webPort",
+      "webhookEnable",
+      "webhookEvents",
+      "webhookSecret",
+      "webhookUrls"
     ],
     "type": "object"
   },
@@ -841,6 +858,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "boolean"
       },
       "hasWarpSecret": {
+        "type": "boolean"
+      },
+      "hasWebhookSecret": {
         "type": "boolean"
       },
       "ipLimitAllowlist": {
@@ -1366,6 +1386,19 @@ export const SCHEMAS: Record<string, unknown> = {
         "maximum": 65535,
         "minimum": 1,
         "type": "integer"
+      },
+      "webhookEnable": {
+        "description": "Webhooks: signed POSTs of the enabled events to every URL (one per line).",
+        "type": "boolean"
+      },
+      "webhookEvents": {
+        "type": "string"
+      },
+      "webhookSecret": {
+        "type": "string"
+      },
+      "webhookUrls": {
+        "type": "string"
       }
     },
     "required": [
@@ -1393,6 +1426,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "hasTgBotToken",
       "hasTwoFactorToken",
       "hasWarpSecret",
+      "hasWebhookSecret",
       "ipLimitAllowlist",
       "ldapAutoCreate",
       "ldapAutoDelete",
@@ -1556,7 +1590,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "webDomain",
       "webKeyFile",
       "webListen",
-      "webPort"
+      "webPort",
+      "webhookEnable",
+      "webhookEvents",
+      "webhookSecret",
+      "webhookUrls"
     ],
     "type": "object"
   },

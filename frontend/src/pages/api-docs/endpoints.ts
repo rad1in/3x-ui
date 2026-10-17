@@ -2043,6 +2043,13 @@ export const sections: readonly Section[] = [
         response: '{\n  "success": true,\n  "msg": "Test notification sent successfully"\n}',
       },
       {
+        method: 'POST',
+        path: '/panel/api/setting/testWebhook',
+        summary:
+          'Send a signed test event to every configured webhook URL. Fails with the first URL that did not answer 2xx.',
+        response: '{\n  "success": true,\n  "msg": "Test event delivered to every webhook URL"\n}',
+      },
+      {
         method: 'GET',
         path: '/panel/api/setting/getDefaultJsonConfig',
         summary:

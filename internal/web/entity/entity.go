@@ -132,6 +132,12 @@ type AllSetting struct {
 	DiscordLang          string `json:"discordLang" form:"discordLang"`
 	DiscordEnabledEvents string `json:"discordEnabledEvents" form:"discordEnabledEvents"`
 
+	// Webhooks: signed POSTs of the enabled events to every URL (one per line).
+	WebhookEnable bool   `json:"webhookEnable" form:"webhookEnable"`
+	WebhookUrls   string `json:"webhookUrls" form:"webhookUrls"`
+	WebhookSecret string `json:"webhookSecret" form:"webhookSecret"`
+	WebhookEvents string `json:"webhookEvents" form:"webhookEvents"`
+
 	OutboundDownThreshold int `json:"outboundDownThreshold" form:"outboundDownThreshold" validate:"gte=1,lte=100"`
 
 	TimeLocation    string `json:"timeLocation" form:"timeLocation"`
@@ -277,6 +283,7 @@ type AllSettingView struct {
 	HasNordSecret      bool `json:"hasNordSecret"`
 	HasSmtpPassword    bool `json:"hasSmtpPassword"`
 	HasDiscordBotToken bool `json:"hasDiscordBotToken"`
+	HasWebhookSecret   bool `json:"hasWebhookSecret"`
 }
 
 func pathHasForbiddenChar(s string) bool {

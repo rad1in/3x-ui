@@ -180,7 +180,11 @@ export const EXAMPLES: Record<string, unknown> = {
     "webDomain": "",
     "webKeyFile": "",
     "webListen": "",
-    "webPort": 1
+    "webPort": 1,
+    "webhookEnable": false,
+    "webhookEvents": "",
+    "webhookSecret": "",
+    "webhookUrls": ""
   },
   "AllSettingView": {
     "datepicker": "",
@@ -207,6 +211,7 @@ export const EXAMPLES: Record<string, unknown> = {
     "hasTgBotToken": false,
     "hasTwoFactorToken": false,
     "hasWarpSecret": false,
+    "hasWebhookSecret": false,
     "ipLimitAllowlist": "",
     "ldapAutoCreate": false,
     "ldapAutoDelete": false,
@@ -370,7 +375,11 @@ export const EXAMPLES: Record<string, unknown> = {
     "webDomain": "",
     "webKeyFile": "",
     "webListen": "",
-    "webPort": 1
+    "webPort": 1,
+    "webhookEnable": false,
+    "webhookEvents": "",
+    "webhookSecret": "",
+    "webhookUrls": ""
   },
   "AmneziaWGLogs": {
     "events": [

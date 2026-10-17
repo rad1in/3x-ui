@@ -108,6 +108,7 @@ func (s *InboundService) addTrafficLocked(inboundTraffics []*xray.Traffic, clien
 		return false, false, nil, nil, nil, nil
 	}
 	needRestart = needRestart || s.applyTrafficMutationBatch(batch)
+	publishTickEvents(batch)
 	return needRestart, clientsDisabled, disabledNodeIDs, batch.remotePlans, batch.renewedEmails, nil
 }
 
@@ -675,6 +676,14 @@ func (s *InboundService) delClientStatsByEmails(tx *gorm.DB, emails []string) er
 }
 
 func (s *InboundService) ResetClientTrafficByEmail(clientEmail string) error {
+	if err := s.resetClientTrafficRows(clientEmail); err != nil {
+		return err
+	}
+	publishTrafficResets([]string{clientEmail})
+	return nil
+}
+
+func (s *InboundService) resetClientTrafficRows(clientEmail string) error {
 	err := submitTrafficWrite(func() error {
 		return database.GetDB().Transaction(func(tx *gorm.DB) error {
 			if err := adjustGroupBaselinesForRemovedTraffic(tx, []string{clientEmail}); err != nil {

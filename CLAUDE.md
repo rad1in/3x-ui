@@ -59,13 +59,13 @@ file locations when it can answer in one hop.
 - `internal/pia/` — PIA WireGuard protocol client (auth, signed server list, `/addKey`).
 - `internal/sub/` — subscription server (raw / JSON / Clash).
 - `internal/eventbus/` — in-process pub/sub (outbound/node health, xray.crash,
-  cpu.high, memory.high, login.attempt).
+  cpu.high, memory.high, login.attempt, client.* lifecycle).
 - `internal/logger/`, `internal/util/` (link, crypto, sys, ldap, …),
   `internal/tunnelmonitor/` — shared infrastructure.
 - `internal/web/` — Gin server (embeds `dist/` + `translation/`).
   - `controller/` — panel + REST API handlers; OpenAPI at /panel/api/openapi.json.
   - `service/` — business logic (InboundService, SettingService, XrayService,
-    node sync); subpackages tgbot/, discord/, email/, outbound/, panel/, integration/.
+    node sync); subpackages tgbot/, discord/, email/, webhook/, outbound/, panel/, integration/.
   - `job/` — 25 cron jobs (traffic, fail2ban IP-limit, node heartbeat/sync, LDAP,
     CPU/memory watchdogs, …); full table in `docs/architecture.md` §5.4.
   - `middleware/`, `entity/`, `global/`, `session/` (CSRF), `network/`,

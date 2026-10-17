@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/eventbus"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 
 	"gorm.io/gorm"
@@ -98,6 +99,15 @@ func (s *InboundService) disableInvalidClients(tx *gorm.DB, mutationBatch *traff
 			continue
 		}
 		depletedEmails = append(depletedEmails, depletedRows[i].Email)
+		row := depletedRows[i]
+		typ := eventbus.EventClientDepleted
+		if row.ExpiryTime > 0 && row.ExpiryTime <= now && (row.Total <= 0 || row.Up+row.Down < row.Total) {
+			typ = eventbus.EventClientExpired
+		}
+		data := clientEventFromTraffic(row)
+		mutationBatch.events = append(mutationBatch.events, eventbus.Event{
+			Type: typ, Source: row.Email, Timestamp: time.Now(), Data: &data,
+		})
 	}
 
 	type target struct {

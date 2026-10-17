@@ -893,6 +893,7 @@ func (s *ClientService) BulkDelete(inboundSvc *InboundService, emails []string, 
 	if len(cleanEmails) == 0 {
 		return result, false, nil
 	}
+	defer trackClients(cleanEmails...)()
 
 	db := database.GetDB()
 
@@ -1269,6 +1270,11 @@ type BulkCreateReport struct {
 }
 
 func (s *ClientService) BulkCreate(inboundSvc *InboundService, payloads []ClientCreatePayload) (BulkCreateResult, bool, error) {
+	emails := make([]string, 0, len(payloads))
+	for _, p := range payloads {
+		emails = append(emails, strings.TrimSpace(p.Client.Email))
+	}
+	defer trackClients(emails...)()
 	result, _, needRestart, err := s.bulkCreate(inboundSvc, payloads)
 	return result, needRestart, err
 }
@@ -1577,6 +1583,7 @@ func (s *ClientService) BulkSetEnable(inboundSvc *InboundService, emails []strin
 	if len(cleanEmails) == 0 {
 		return result, false, nil
 	}
+	defer trackClients(cleanEmails...)()
 
 	db := database.GetDB()
 

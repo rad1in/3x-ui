@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/eventbus"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 
@@ -32,6 +33,8 @@ type trafficMutationBatch struct {
 	nodeIDs     map[int]struct{}
 	// renewedEmails get their MTProto sidecar quota zeroed once the tick commits.
 	renewedEmails []string
+	// events go out once the tick commits, so no listener hears of a rollback.
+	events []eventbus.Event
 }
 
 type trafficInboundUpdatePlan struct{ oldInbound, newInbound model.Inbound }

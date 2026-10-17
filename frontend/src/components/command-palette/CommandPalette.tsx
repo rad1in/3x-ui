@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Tag, Tooltip, message } from 'antd';
 import {
   ApiOutlined,
+  BranchesOutlined,
   ApartmentOutlined,
   CheckCircleFilled,
   ClockCircleOutlined,
@@ -483,6 +484,13 @@ export default function CommandPalette() {
         subtitle: t('pages.settings.discordSettings'),
         keywords: ['discord', 'bot', 'channel', 'notifications', 'alerts'],
         icon: <DiscordOutlined />,
+      },
+      {
+        path: '/settings#webhooks',
+        title: `${t('menu.settings')} · ${t('pages.settings.webhookSettings')}`,
+        subtitle: t('pages.settings.webhookSettings'),
+        keywords: ['webhook', 'n8n', 'zapier', 'http', 'events', 'billing'],
+        icon: <BranchesOutlined />,
       },
       {
         path: '/settings#subscription',

@@ -27,7 +27,7 @@ func (s *ClientService) ResetTrafficByEmail(inboundSvc *InboundService, email st
 
 	needRestart := false
 	if len(inboundIds) == 0 {
-		if rErr := inboundSvc.ResetClientTrafficByEmail(email); rErr != nil {
+		if rErr := inboundSvc.resetClientTrafficRows(email); rErr != nil {
 			return false, rErr
 		}
 	} else {
@@ -57,6 +57,7 @@ func (s *ClientService) ResetTrafficByEmail(inboundSvc *InboundService, email st
 			needRestart = true
 		}
 	}
+	publishTrafficResets([]string{email})
 	return needRestart, nil
 }
 
@@ -121,6 +122,7 @@ func (s *ClientService) BulkResetTraffic(inboundSvc *InboundService, emails []st
 			logger.Warning("Failed to auto-enable client during bulk traffic reset:", uErr)
 		}
 	}
+	publishTrafficResets(cleanEmails)
 	return affected, nil
 }
 
@@ -135,6 +137,7 @@ func (s *ClientService) ResetAllClientTraffics(inboundSvc *InboundService, id in
 	if err == nil {
 		inboundSvc.resetMtprotoClientQuotas(resetEmails)
 		inboundSvc.deliverNodeResetsNow(resetNodes)
+		publishTrafficResets(resetEmails)
 	}
 	return err
 }
@@ -241,5 +244,10 @@ func (s *ClientService) ResetAllTraffics() (bool, error) {
 	inbounds := &InboundService{}
 	inbounds.resetAllMtprotoQuotas()
 	inbounds.deliverNodeResetsNow(resetNodes)
+	if eventBus != nil {
+		var emails []string
+		database.GetDB().Model(&model.ClientRecord{}).Pluck("email", &emails)
+		publishTrafficResets(emails)
+	}
 	return affected > 0, nil
 }
