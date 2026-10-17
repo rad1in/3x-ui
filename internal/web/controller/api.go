@@ -215,6 +215,7 @@ func (a *APIController) initRouter(g *gin.RouterGroup) {
 	NewSubBalancerController(api)
 
 	NewAuditController(api.Group("/audit"))
+	NewSponsorAdminController(api.Group("/sponsors"))
 
 	// Extra routes
 	api.POST("/backuptotgbot", a.BackuptoTgbot)

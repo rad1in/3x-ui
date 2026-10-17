@@ -1060,9 +1060,32 @@ export interface Sponsor {
   until: string;
 }
 
+export interface SponsorAdminView {
+  config: SponsorConfig;
+  records: SponsorRecord[];
+}
+
+export interface SponsorConfig {
+  contact: string;
+  feedUrl: string;
+}
+
 export interface SponsorList {
   contact?: string;
   sponsors: Sponsor[];
+}
+
+export interface SponsorRecord {
+  enable: boolean;
+  from: number;
+  id: number;
+  link: string;
+  logo: string;
+  name: string;
+  slots: string[];
+  text: string;
+  title: string;
+  until: number;
 }
 
 export interface SubBalancer {

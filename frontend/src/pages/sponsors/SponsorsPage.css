@@ -72,3 +72,45 @@
     padding-top: 64px;
   }
 }
+
+.sponsor-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.sponsor-admin-logo {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: contain;
+  border: 1px solid var(--ant-color-border-secondary);
+}
+
+.sponsor-admin-logo-fallback {
+  font-weight: 600;
+  color: var(--ant-color-text-secondary);
+}
+
+.sponsor-admin-name {
+  font-weight: 500;
+}
+
+.sponsor-admin-title,
+.sponsor-admin-note {
+  font-size: 12.5px;
+  color: var(--ant-color-text-tertiary);
+}
+
+.sponsor-admin-note code {
+  word-break: break-all;
+}
+
+.sponsor-admin-window {
+  font-variant-numeric: tabular-nums;
+  font-size: 12.5px;
+}

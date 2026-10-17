@@ -1,5 +1,6 @@
 export const keys = {
   sponsors: () => ['sponsors'] as const,
+  sponsorAdmin: () => ['sponsors', 'admin'] as const,
   audit: {
     list: (params: unknown) => ['audit', 'list', params] as const,
   },

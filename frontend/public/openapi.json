@@ -4649,6 +4649,42 @@
         ],
         "type": "object"
       },
+      "SponsorAdminView": {
+        "description": "SponsorAdminView is what the sponsor manager page loads.",
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/SponsorConfig"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/components/schemas/SponsorRecord"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "config",
+          "records"
+        ],
+        "type": "object"
+      },
+      "SponsorConfig": {
+        "description": "SponsorConfig is the owner-level sponsor setup: where sponsors come from and\nthe \"become a sponsor\" contact link.",
+        "properties": {
+          "contact": {
+            "example": "https://t.me/example",
+            "type": "string"
+          },
+          "feedUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "contact",
+          "feedUrl"
+        ],
+        "type": "object"
+      },
       "SponsorList": {
         "description": "SponsorList is the active sponsor set plus the contact link for new sponsors.",
         "properties": {
@@ -4665,6 +4701,71 @@
         },
         "required": [
           "sponsors"
+        ],
+        "type": "object"
+      },
+      "SponsorRecord": {
+        "description": "SponsorRecord is a sponsor placement the panel owner manages locally. A zero\nFromMs/UntilMs means no start/end bound.",
+        "properties": {
+          "enable": {
+            "example": true,
+            "type": "boolean"
+          },
+          "from": {
+            "example": 0,
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "link": {
+            "example": "https://acme.example/",
+            "type": "string"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "name": {
+            "example": "Acme VPS",
+            "type": "string"
+          },
+          "slots": {
+            "example": [
+              "dashboard",
+              "login"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "text": {
+            "example": "Use code PANEL at checkout.",
+            "type": "string"
+          },
+          "title": {
+            "example": "Acme VPS — 20% off",
+            "type": "string"
+          },
+          "until": {
+            "example": 1790000000000,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "enable",
+          "from",
+          "id",
+          "link",
+          "logo",
+          "name",
+          "slots",
+          "text",
+          "title",
+          "until"
         ],
         "type": "object"
       },
@@ -4947,6 +5048,10 @@
       "description": "Manage scoped Bearer tokens for programmatic auth. Tokens grant admin, monitor, or node-sync access, may expire, and are stored as SHA-256 hashes. The plaintext is returned only once at creation."
     },
     {
+      "name": "Sponsors",
+      "description": "Manage the sponsor placements this panel shows on its login page, dashboard and sponsors page, and optionally read them from another panel's feed instead."
+    },
+    {
       "name": "Activity Log",
       "description": "Who changed what and when. Every state-changing API call is recorded with its actor (panel user or token:<name>), client IP, route template, path parameters and outcome, along with every login attempt. Request bodies are never stored. Rows older than 90 days are pruned daily."
     },
@@ -5129,7 +5234,7 @@
         "tags": [
           "Authentication"
         ],
-        "summary": "Public. Active paid sponsor placements read from the project sponsors.json (cached for 1h); entries outside their from/until window are dropped. Logos are proxied by the panel at /sponsors/logo/{name}. Used by the login page and panel sponsor slots.",
+        "summary": "Public. Active sponsor placements: the panel owner's own sponsors, or another panel's feed when sponsorFeedUrl is set (cached for 1h). Entries outside their from/until window are dropped. Logos are proxied by the panel at /sponsors/logo/{name}. Used by the login page and panel sponsor slots.",
         "operationId": "get_sponsors",
         "responses": {
           "200": {
@@ -5170,6 +5275,101 @@
                         "until": "2026-11-01T00:00:00Z"
                       }
                     ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sponsors/feed/sponsors.json": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Public. This panel's own live sponsors as a feed for other panels: point another panel's sponsor feed setting at this URL. Logo fields are bare file names served from the sibling logos/ path. The body is the bare SponsorList, not wrapped in a Msg envelope.",
+        "operationId": "get_sponsors_feed_sponsors_json",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SponsorList"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "contact": "https://t.me/example",
+                    "sponsors": [
+                      {
+                        "enable": true,
+                        "from": "2026-10-01T00:00:00Z",
+                        "id": "acme-2026-10",
+                        "link": "https://acme.example/?utm_source=3x-ui",
+                        "logo": "/sponsors/logo/acme.png",
+                        "name": "Acme VPS",
+                        "slots": [
+                          ""
+                        ],
+                        "text": {},
+                        "title": {},
+                        "until": "2026-11-01T00:00:00Z"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sponsors/feed/logos/{name}": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Public. Logo image (PNG, JPEG or WebP) of a live sponsor in this panel's feed; 404 for anything else.",
+        "operationId": "get_sponsors_feed_logos_name",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "Logo file name from the feed, e.g. local-1.png.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
                   }
                 }
               }
@@ -13542,6 +13742,228 @@
                 },
                 "example": {
                   "success": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sponsors/list": {
+      "get": {
+        "tags": [
+          "Sponsors"
+        ],
+        "summary": "Every locally stored sponsor record plus the feed URL and contact link.",
+        "operationId": "get_panel_api_sponsors_list",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SponsorAdminView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "config": {
+                      "contact": "https://t.me/example",
+                      "feedUrl": ""
+                    },
+                    "records": [
+                      {
+                        "enable": true,
+                        "from": 0,
+                        "id": 1,
+                        "link": "https://acme.example/",
+                        "logo": "",
+                        "name": "Acme VPS",
+                        "slots": [
+                          "dashboard",
+                          "login"
+                        ],
+                        "text": "Use code PANEL at checkout.",
+                        "title": "Acme VPS — 20% off",
+                        "until": 1790000000000
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sponsors/save": {
+      "post": {
+        "tags": [
+          "Sponsors"
+        ],
+        "summary": "Create (id 0) or replace a sponsor record. The link must be https://; slots are any of dashboard, page and login; from/until are unix ms with 0 meaning unbounded; the logo is an optional PNG, JPEG or WebP data URL of at most 64 KB.",
+        "operationId": "post_panel_api_sponsors_save",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "SponsorRecord."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SponsorRecord"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "enable": true,
+                    "from": 0,
+                    "id": 1,
+                    "link": "https://acme.example/",
+                    "logo": "",
+                    "name": "Acme VPS",
+                    "slots": [
+                      "dashboard",
+                      "login"
+                    ],
+                    "text": "Use code PANEL at checkout.",
+                    "title": "Acme VPS — 20% off",
+                    "until": 1790000000000
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sponsors/del/{id}": {
+      "post": {
+        "tags": [
+          "Sponsors"
+        ],
+        "summary": "Delete a sponsor record.",
+        "operationId": "post_panel_api_sponsors_del_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Sponsor record id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sponsors/config": {
+      "post": {
+        "tags": [
+          "Sponsors"
+        ],
+        "summary": "Set where sponsors come from and the \"become a sponsor\" link. An empty feedUrl shows this panel's own records; otherwise it must be https://, or http:// to a loopback address on this server.",
+        "operationId": "post_panel_api_sponsors_config",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "feedUrl": {
+                    "type": "string",
+                    "description": "Another panel's /sponsors/feed/sponsors.json, or empty."
+                  },
+                  "contact": {
+                    "type": "string",
+                    "description": "https:// contact link, or empty."
+                  }
+                },
+                "required": [
+                  "feedUrl",
+                  "contact"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
                 }
               }
             }

@@ -4623,6 +4623,42 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "SponsorAdminView": {
+    "description": "SponsorAdminView is what the sponsor manager page loads.",
+    "properties": {
+      "config": {
+        "$ref": "#/components/schemas/SponsorConfig"
+      },
+      "records": {
+        "items": {
+          "$ref": "#/components/schemas/SponsorRecord"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "config",
+      "records"
+    ],
+    "type": "object"
+  },
+  "SponsorConfig": {
+    "description": "SponsorConfig is the owner-level sponsor setup: where sponsors come from and\nthe \"become a sponsor\" contact link.",
+    "properties": {
+      "contact": {
+        "example": "https://t.me/example",
+        "type": "string"
+      },
+      "feedUrl": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "contact",
+      "feedUrl"
+    ],
+    "type": "object"
+  },
   "SponsorList": {
     "description": "SponsorList is the active sponsor set plus the contact link for new sponsors.",
     "properties": {
@@ -4639,6 +4675,71 @@ export const SCHEMAS: Record<string, unknown> = {
     },
     "required": [
       "sponsors"
+    ],
+    "type": "object"
+  },
+  "SponsorRecord": {
+    "description": "SponsorRecord is a sponsor placement the panel owner manages locally. A zero\nFromMs/UntilMs means no start/end bound.",
+    "properties": {
+      "enable": {
+        "example": true,
+        "type": "boolean"
+      },
+      "from": {
+        "example": 0,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "link": {
+        "example": "https://acme.example/",
+        "type": "string"
+      },
+      "logo": {
+        "type": "string"
+      },
+      "name": {
+        "example": "Acme VPS",
+        "type": "string"
+      },
+      "slots": {
+        "example": [
+          "dashboard",
+          "login"
+        ],
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "text": {
+        "example": "Use code PANEL at checkout.",
+        "type": "string"
+      },
+      "title": {
+        "example": "Acme VPS — 20% off",
+        "type": "string"
+      },
+      "until": {
+        "example": 1790000000000,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "enable",
+      "from",
+      "id",
+      "link",
+      "logo",
+      "name",
+      "slots",
+      "text",
+      "title",
+      "until"
     ],
     "type": "object"
   },

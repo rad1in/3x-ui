@@ -240,8 +240,29 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/sponsors',
         summary:
-          'Public. Active paid sponsor placements read from the project sponsors.json (cached for 1h); entries outside their from/until window are dropped. Logos are proxied by the panel at /sponsors/logo/{name}. Used by the login page and panel sponsor slots.',
+          "Public. Active sponsor placements: the panel owner's own sponsors, or another panel's feed when sponsorFeedUrl is set (cached for 1h). Entries outside their from/until window are dropped. Logos are proxied by the panel at /sponsors/logo/{name}. Used by the login page and panel sponsor slots.",
         responseSchema: 'SponsorList',
+      },
+      {
+        method: 'GET',
+        path: '/sponsors/feed/sponsors.json',
+        summary:
+          "Public. This panel's own live sponsors as a feed for other panels: point another panel's sponsor feed setting at this URL. Logo fields are bare file names served from the sibling logos/ path. The body is the bare SponsorList, not wrapped in a Msg envelope.",
+        responseSchema: 'SponsorList',
+      },
+      {
+        method: 'GET',
+        path: '/sponsors/feed/logos/:name',
+        summary:
+          "Public. Logo image (PNG, JPEG or WebP) of a live sponsor in this panel's feed; 404 for anything else.",
+        params: [
+          {
+            name: 'name',
+            in: 'path',
+            type: 'string',
+            desc: 'Logo file name from the feed, e.g. local-1.png.',
+          },
+        ],
       },
       {
         method: 'POST',
@@ -2072,6 +2093,55 @@ export const sections: readonly Section[] = [
         ],
         body: '{\n  "enabled": false,\n  "expectedScope": "node-sync"\n}',
         response: '{\n  "success": true\n}',
+      },
+    ],
+  },
+
+  {
+    id: 'sponsors',
+    title: 'Sponsors',
+    description:
+      "Manage the sponsor placements this panel shows on its login page, dashboard and sponsors page, and optionally read them from another panel's feed instead.",
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/sponsors/list',
+        summary: 'Every locally stored sponsor record plus the feed URL and contact link.',
+        responseSchema: 'SponsorAdminView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sponsors/save',
+        summary:
+          'Create (id 0) or replace a sponsor record. The link must be https://; slots are any of dashboard, page and login; from/until are unix ms with 0 meaning unbounded; the logo is an optional PNG, JPEG or WebP data URL of at most 64 KB.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SponsorRecord.' }],
+        responseSchema: 'SponsorRecord',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sponsors/del/:id',
+        summary: 'Delete a sponsor record.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Sponsor record id.' }],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sponsors/config',
+        summary:
+          'Set where sponsors come from and the "become a sponsor" link. An empty feedUrl shows this panel\'s own records; otherwise it must be https://, or http:// to a loopback address on this server.',
+        params: [
+          {
+            name: 'feedUrl',
+            in: 'body (json)',
+            type: 'string',
+            desc: "Another panel's /sponsors/feed/sponsors.json, or empty.",
+          },
+          {
+            name: 'contact',
+            in: 'body (json)',
+            type: 'string',
+            desc: 'https:// contact link, or empty.',
+          },
+        ],
       },
     ],
   },

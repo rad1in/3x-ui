@@ -1126,11 +1126,37 @@ export const SponsorSchema = z.object({
 });
 export type Sponsor = z.infer<typeof SponsorSchema>;
 
+export const SponsorAdminViewSchema = z.object({
+  config: z.lazy(() => SponsorConfigSchema),
+  records: z.array(z.lazy(() => SponsorRecordSchema)),
+});
+export type SponsorAdminView = z.infer<typeof SponsorAdminViewSchema>;
+
+export const SponsorConfigSchema = z.object({
+  contact: z.string(),
+  feedUrl: z.string(),
+});
+export type SponsorConfig = z.infer<typeof SponsorConfigSchema>;
+
 export const SponsorListSchema = z.object({
   contact: z.string().optional(),
   sponsors: z.array(z.lazy(() => SponsorSchema)),
 });
 export type SponsorList = z.infer<typeof SponsorListSchema>;
+
+export const SponsorRecordSchema = z.object({
+  enable: z.boolean(),
+  from: z.number().int(),
+  id: z.number().int(),
+  link: z.string(),
+  logo: z.string(),
+  name: z.string(),
+  slots: z.array(z.string()),
+  text: z.string(),
+  title: z.string(),
+  until: z.number().int(),
+});
+export type SponsorRecord = z.infer<typeof SponsorRecordSchema>;
 
 export const SubBalancerSchema = z.object({
   createdAt: z.number().int(),

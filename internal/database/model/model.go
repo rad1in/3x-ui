@@ -192,6 +192,21 @@ type AuditLog struct {
 	Success   bool   `json:"success" gorm:"not null" example:"true"`
 }
 
+// SponsorRecord is a sponsor placement the panel owner manages locally. A zero
+// FromMs/UntilMs means no start/end bound.
+type SponsorRecord struct {
+	Id      int      `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
+	Name    string   `json:"name" gorm:"not null" example:"Acme VPS"`
+	Enable  bool     `json:"enable" gorm:"not null" example:"true"`
+	Slots   []string `json:"slots" gorm:"serializer:json" example:"[\"dashboard\",\"login\"]"`
+	FromMs  int64    `json:"from" gorm:"not null;default:0" example:"0"`
+	UntilMs int64    `json:"until" gorm:"not null;default:0" example:"1790000000000"`
+	Title   string   `json:"title" gorm:"not null;default:''" example:"Acme VPS — 20% off"`
+	Text    string   `json:"text" gorm:"not null;default:''" example:"Use code PANEL at checkout."`
+	Link    string   `json:"link" gorm:"not null" example:"https://acme.example/"`
+	Logo    string   `json:"logo" gorm:"type:text;not null;default:''" example:""`
+}
+
 // MarshalJSON emits settings, streamSettings, and sniffing as nested JSON
 // objects rather than escaped strings, so API consumers don't need to JSON.parse
 // a string inside a string. Empty fields render as null; fields whose stored

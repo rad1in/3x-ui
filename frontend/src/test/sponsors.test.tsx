@@ -18,6 +18,11 @@ describe('pickLocale', () => {
     expect(pickLocale(map, lang)).toBe(want);
   });
 
+  test('a locally written "*" text shows in every language', () => {
+    expect(pickLocale({ '*': 'تخفیف ویژه' }, 'en-US')).toBe('تخفیف ویژه');
+    expect(pickLocale({ '*': 'any', fa: 'فارسی' }, 'fa-IR')).toBe('فارسی');
+  });
+
   test('missing map yields empty string', () => {
     expect(pickLocale(undefined, 'en-US')).toBe('');
   });

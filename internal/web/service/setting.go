@@ -197,6 +197,8 @@ var defaultValueMap = map[string]string{
 	"panelBrandName":              "",
 	"panelBrandColor":             "",
 	"panelBrandLogo":              "",
+	"sponsorFeedUrl":              "",
+	"sponsorContact":              "",
 	"warp":                        "",
 	"warpUpdateInterval":          "0",
 	"nord":                        "",
@@ -1293,6 +1295,22 @@ func (s *SettingService) GetPanelBrand() (PanelBrand, error) {
 		return PanelBrand{}, err
 	}
 	return b, nil
+}
+
+func (s *SettingService) GetSponsorFeedURL() (string, error) {
+	return s.getString("sponsorFeedUrl")
+}
+
+func (s *SettingService) GetSponsorContact() (string, error) {
+	return s.getString("sponsorContact")
+}
+
+// SetSponsorSettings stores both values; callers validate them first.
+func (s *SettingService) SetSponsorSettings(feedURL, contact string) error {
+	if err := s.setString("sponsorFeedUrl", feedURL); err != nil {
+		return err
+	}
+	return s.setString("sponsorContact", contact)
 }
 
 func (s *SettingService) GetDatepicker() (string, error) {

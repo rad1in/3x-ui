@@ -31,8 +31,7 @@ const panelBrandNameMaxRunes = 32
 
 var (
 	panelBrandColorPattern = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
-	// SVG is refused on purpose: it can carry script, the raster formats cannot.
-	panelBrandLogoPrefixes = []string{"data:image/png;base64,", "data:image/jpeg;base64,", "data:image/webp;base64,"}
+	imageDataURLPrefixes   = []string{"data:image/png;base64,", "data:image/jpeg;base64,", "data:image/webp;base64,"}
 )
 
 func (s *AllSetting) validatePanelBrand() error {
@@ -48,20 +47,26 @@ func (s *AllSetting) validatePanelBrand() error {
 	if s.PanelBrandLogo == "" {
 		return nil
 	}
-	for _, prefix := range panelBrandLogoPrefixes {
-		payload, ok := strings.CutPrefix(s.PanelBrandLogo, prefix)
+	return ValidateImageDataURL(s.PanelBrandLogo, PanelBrandLogoMaxBytes)
+}
+
+// ValidateImageDataURL accepts a base64 PNG, JPEG or WebP data URL of at most
+// maxBytes decoded bytes. SVG is refused on purpose: it can carry script.
+func ValidateImageDataURL(v string, maxBytes int) error {
+	for _, prefix := range imageDataURLPrefixes {
+		payload, ok := strings.CutPrefix(v, prefix)
 		if !ok {
 			continue
 		}
-		if base64.StdEncoding.DecodedLen(len(payload)) > PanelBrandLogoMaxBytes {
-			return common.NewErrorf("panel logo must be at most %d KB", PanelBrandLogoMaxBytes>>10)
+		if base64.StdEncoding.DecodedLen(len(payload)) > maxBytes {
+			return common.NewErrorf("image must be at most %d KB", maxBytes>>10)
 		}
 		if _, err := base64.StdEncoding.DecodeString(payload); err != nil {
-			return common.NewError("panel logo is not valid base64")
+			return common.NewError("image is not valid base64")
 		}
 		return nil
 	}
-	return common.NewError("panel logo must be a PNG, JPEG or WebP image")
+	return common.NewError("image must be a PNG, JPEG or WebP data URL")
 }
 
 type AllSetting struct {

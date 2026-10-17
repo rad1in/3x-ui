@@ -8,6 +8,7 @@ import AppSidebar from '@/layouts/AppSidebar';
 import { useSponsorsQuery } from '@/api/queries/useSponsorsQuery';
 import SponsorCard from '@/components/sponsor/SponsorCard';
 import { sponsorsForSlot } from '@/lib/sponsors';
+import SponsorManager from './SponsorManager';
 import './SponsorsPage.css';
 
 function BecomeButton({ contact, block }: { contact?: string; block?: boolean }) {
@@ -84,6 +85,8 @@ export default function SponsorsPage() {
                   </Row>
                 )}
               </Spin>
+
+              <SponsorManager />
             </div>
           </Layout.Content>
         </Layout>

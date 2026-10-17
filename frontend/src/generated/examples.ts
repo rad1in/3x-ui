@@ -1148,6 +1148,33 @@ export const EXAMPLES: Record<string, unknown> = {
     "title": {},
     "until": "2026-11-01T00:00:00Z"
   },
+  "SponsorAdminView": {
+    "config": {
+      "contact": "https://t.me/example",
+      "feedUrl": ""
+    },
+    "records": [
+      {
+        "enable": true,
+        "from": 0,
+        "id": 1,
+        "link": "https://acme.example/",
+        "logo": "",
+        "name": "Acme VPS",
+        "slots": [
+          "dashboard",
+          "login"
+        ],
+        "text": "Use code PANEL at checkout.",
+        "title": "Acme VPS — 20% off",
+        "until": 1790000000000
+      }
+    ]
+  },
+  "SponsorConfig": {
+    "contact": "https://t.me/example",
+    "feedUrl": ""
+  },
   "SponsorList": {
     "contact": "https://t.me/example",
     "sponsors": [
@@ -1166,6 +1193,21 @@ export const EXAMPLES: Record<string, unknown> = {
         "until": "2026-11-01T00:00:00Z"
       }
     ]
+  },
+  "SponsorRecord": {
+    "enable": true,
+    "from": 0,
+    "id": 1,
+    "link": "https://acme.example/",
+    "logo": "",
+    "name": "Acme VPS",
+    "slots": [
+      "dashboard",
+      "login"
+    ],
+    "text": "Use code PANEL at checkout.",
+    "title": "Acme VPS — 20% off",
+    "until": 1790000000000
   },
   "SubBalancer": {
     "createdAt": 1710000000000,

@@ -6,6 +6,7 @@
     "authentication",
     "api-tokens",
     "activity-log",
+    "sponsors",
     "inbounds",
     "clients",
     "server",
