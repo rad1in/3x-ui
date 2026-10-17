@@ -20,6 +20,12 @@ export const AllSettingSchema = z
     realityScanCandidates: z.string().optional(),
     ipLimitAllowlist: z.string().optional(),
     panelOutbound: z.string().optional(),
+    panelBrandName: z.string().max(32).optional(),
+    panelBrandColor: z
+      .string()
+      .regex(/^(#[0-9a-fA-F]{6})?$/, 'pages.settings.brand.colorInvalid')
+      .optional(),
+    panelBrandLogo: z.string().optional(),
     pageSize: z.number().int().min(0).max(1000).optional(),
     expireDiff: nonNegativeInt.optional(),
     trafficDiff: nonNegativeInt.max(100).optional(),

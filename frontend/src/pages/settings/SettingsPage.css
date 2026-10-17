@@ -7,3 +7,11 @@
   color: var(--ant-color-text-tertiary);
   font-size: 12px;
 }
+
+.brand-logo-preview {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid var(--ant-color-border-secondary);
+  object-fit: contain;
+}

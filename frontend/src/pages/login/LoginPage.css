@@ -209,3 +209,9 @@
 .login-sponsor {
   margin-top: 20px;
 }
+
+.brand-name .brand-mark-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}

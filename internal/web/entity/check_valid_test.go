@@ -103,3 +103,42 @@ func TestCheckValidSchedules(t *testing.T) {
 		}
 	}
 }
+
+func TestCheckValidPanelBrand(t *testing.T) {
+	base := func() *AllSetting {
+		return &AllSetting{WebPort: 2053, SubPort: 2096}
+	}
+	png := "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgYGD4DwABBAEAwS2OUAAAAABJRU5ErkJggg=="
+
+	valid := []AllSetting{
+		{},
+		{PanelBrandName: "Acme VPN", PanelBrandColor: "#0F6fE0", PanelBrandLogo: png},
+		{PanelBrandName: "نکسورا"},
+	}
+	for _, b := range valid {
+		s := base()
+		s.PanelBrandName, s.PanelBrandColor, s.PanelBrandLogo = b.PanelBrandName, b.PanelBrandColor, b.PanelBrandLogo
+		if err := s.CheckValid(); err != nil {
+			t.Errorf("brand %+v: unexpected error %v", b, err)
+		}
+	}
+
+	invalid := map[string]AllSetting{
+		"name too long":       {PanelBrandName: strings.Repeat("x", 33)},
+		"name control char":   {PanelBrandName: "Acme\nVPN"},
+		"color named":         {PanelBrandColor: "red"},
+		"color css injection": {PanelBrandColor: "#000;background:url(x)"},
+		"color short hex":     {PanelBrandColor: "#fff"},
+		"logo svg":            {PanelBrandLogo: "data:image/svg+xml;base64,PHN2Zy8+"},
+		"logo remote url":     {PanelBrandLogo: "https://example.com/logo.png"},
+		"logo bad base64":     {PanelBrandLogo: "data:image/png;base64,***"},
+		"logo too large":      {PanelBrandLogo: "data:image/png;base64," + strings.Repeat("A", PanelBrandLogoMaxBytes*2)},
+	}
+	for name, b := range invalid {
+		s := base()
+		s.PanelBrandName, s.PanelBrandColor, s.PanelBrandLogo = b.PanelBrandName, b.PanelBrandColor, b.PanelBrandLogo
+		if err := s.CheckValid(); err == nil {
+			t.Errorf("%s: want error, got nil", name)
+		}
+	}
+}

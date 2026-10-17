@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 import { theme as antdTheme } from 'antd';
 import type { ThemeConfig } from 'antd';
 
+import { panelBrand } from '@/lib/brand/brand';
+
 const STORAGE_DARK = 'dark-mode';
 const STORAGE_ULTRA = 'isUltraDarkThemeEnabled';
 
@@ -128,21 +130,24 @@ const SHARED_STYLE_CONFIG = {
 } as const;
 
 export function buildAntdThemeConfig(isDark: boolean, isUltra: boolean): ThemeConfig {
+  const brandColor = panelBrand().color;
+  const brandTokens = brandColor ? { colorPrimary: brandColor, colorInfo: brandColor } : {};
   if (!isDark) {
     return {
       ...SHARED_STYLE_CONFIG,
       algorithm: antdTheme.defaultAlgorithm,
-      token: LIGHT_CONTRAST_TOKENS,
+      token: { ...LIGHT_CONTRAST_TOKENS, ...brandTokens },
       components: {
         Statistic: STATISTIC_TOKENS,
-        Button: LIGHT_BUTTON_TOKENS,
+        // The stock-blue contrast fix would paint over a brand colour.
+        Button: brandColor ? {} : LIGHT_BUTTON_TOKENS,
       },
     };
   }
   return {
     ...SHARED_STYLE_CONFIG,
     algorithm: antdTheme.darkAlgorithm,
-    token: isUltra ? ULTRA_DARK_TOKENS : DARK_TOKENS,
+    token: { ...(isUltra ? ULTRA_DARK_TOKENS : DARK_TOKENS), ...brandTokens },
     components: {
       Layout: isUltra ? ULTRA_DARK_LAYOUT_TOKENS : DARK_LAYOUT_TOKENS,
       Menu: isUltra ? ULTRA_DARK_MENU_TOKENS : DARK_MENU_TOKENS,

@@ -44,6 +44,7 @@ import { formatPanelVersion } from '@/lib/panel-version';
 import { pauseAnimationsUntilLeave, useTheme } from '@/hooks/useTheme';
 import { useAllSettings } from '@/api/queries/useAllSettings';
 import { useCommandPalette } from '@/components/command-palette/useCommandPalette';
+import { BrandMark } from '@/components/ui';
 import './AppSidebar.css';
 
 const DONATE_URL = 'https://donate.sanaei.dev/';
@@ -382,7 +383,7 @@ export default function AppSidebar() {
       >
         <div className="sider-brand">
           <div className="brand-block">
-            <span className="brand-text">{railCollapsed ? '3X' : '3X-UI'}</span>
+            <BrandMark className="brand-text" compact={railCollapsed} />
           </div>
           {!railCollapsed && (
             <div className="brand-actions">
@@ -470,7 +471,7 @@ export default function AppSidebar() {
       >
         <div className="drawer-header">
           <div className="brand-block">
-            <span className="drawer-brand">3X-UI</span>
+            <BrandMark className="drawer-brand" />
           </div>
           <div className="drawer-header-actions">
             <DocsButton ariaLabel={t('menu.docs') || 'Documentation'} />

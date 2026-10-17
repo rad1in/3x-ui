@@ -2,12 +2,16 @@ package entity
 
 import (
 	"crypto/tls"
+	"encoding/base64"
 	"math"
 	"net"
 	"net/mail"
 	"net/netip"
+	"regexp"
 	"strings"
 	"time"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/cronspec"
@@ -17,6 +21,47 @@ type Msg struct {
 	Success bool   `json:"success"`
 	Msg     string `json:"msg"`
 	Obj     any    `json:"obj"`
+}
+
+// PanelBrandLogoMaxBytes caps the decoded logo: it is inlined into every
+// panel and login page load, so it has to stay small.
+const PanelBrandLogoMaxBytes = 64 << 10
+
+const panelBrandNameMaxRunes = 32
+
+var (
+	panelBrandColorPattern = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
+	// SVG is refused on purpose: it can carry script, the raster formats cannot.
+	panelBrandLogoPrefixes = []string{"data:image/png;base64,", "data:image/jpeg;base64,", "data:image/webp;base64,"}
+)
+
+func (s *AllSetting) validatePanelBrand() error {
+	if utf8.RuneCountInString(s.PanelBrandName) > panelBrandNameMaxRunes {
+		return common.NewErrorf("panel name must be at most %d characters", panelBrandNameMaxRunes)
+	}
+	if strings.IndexFunc(s.PanelBrandName, unicode.IsControl) >= 0 {
+		return common.NewError("panel name must not contain control characters")
+	}
+	if s.PanelBrandColor != "" && !panelBrandColorPattern.MatchString(s.PanelBrandColor) {
+		return common.NewError("panel color must be a #RRGGBB hex value:", s.PanelBrandColor)
+	}
+	if s.PanelBrandLogo == "" {
+		return nil
+	}
+	for _, prefix := range panelBrandLogoPrefixes {
+		payload, ok := strings.CutPrefix(s.PanelBrandLogo, prefix)
+		if !ok {
+			continue
+		}
+		if base64.StdEncoding.DecodedLen(len(payload)) > PanelBrandLogoMaxBytes {
+			return common.NewErrorf("panel logo must be at most %d KB", PanelBrandLogoMaxBytes>>10)
+		}
+		if _, err := base64.StdEncoding.DecodeString(payload); err != nil {
+			return common.NewError("panel logo is not valid base64")
+		}
+		return nil
+	}
+	return common.NewError("panel logo must be a PNG, JPEG or WebP image")
 }
 
 type AllSetting struct {
@@ -31,6 +76,9 @@ type AllSetting struct {
 	RealityScanCandidates string `json:"realityScanCandidates" form:"realityScanCandidates"`
 	IpLimitAllowlist      string `json:"ipLimitAllowlist" form:"ipLimitAllowlist"`
 	PanelOutbound         string `json:"panelOutbound" form:"panelOutbound"`
+	PanelBrandName        string `json:"panelBrandName" form:"panelBrandName"`
+	PanelBrandColor       string `json:"panelBrandColor" form:"panelBrandColor"`
+	PanelBrandLogo        string `json:"panelBrandLogo" form:"panelBrandLogo"`
 
 	PageSize                   int    `json:"pageSize" form:"pageSize" validate:"gte=0,lte=1000"`
 	ExpireDiff                 int    `json:"expireDiff" form:"expireDiff" validate:"gte=0"`
@@ -379,6 +427,10 @@ func (s *AllSetting) CheckValid() error {
 	_, err := time.LoadLocation(s.TimeLocation)
 	if err != nil {
 		return common.NewError("time location not exist:", s.TimeLocation)
+	}
+
+	if err := s.validatePanelBrand(); err != nil {
+		return err
 	}
 
 	if s.SmtpFrom != "" {

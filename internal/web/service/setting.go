@@ -194,6 +194,9 @@ var defaultValueMap = map[string]string{
 	"subJsonObservatory":          "",
 	"subThemeDir":                 "",
 	"datepicker":                  "gregorian",
+	"panelBrandName":              "",
+	"panelBrandColor":             "",
+	"panelBrandLogo":              "",
 	"warp":                        "",
 	"warpUpdateInterval":          "0",
 	"nord":                        "",
@@ -1267,6 +1270,29 @@ func (s *SettingService) GetSubJsonObservatory() (string, error) {
 
 func (s *SettingService) GetSubThemeDir() (string, error) {
 	return s.getString("subThemeDir")
+}
+
+// PanelBrand is the admin-chosen identity shown on the login page and panel.
+// Empty fields fall back to the stock 3X-UI look.
+type PanelBrand struct {
+	Name  string `json:"name"`
+	Color string `json:"color"`
+	Logo  string `json:"logo"`
+}
+
+func (s *SettingService) GetPanelBrand() (PanelBrand, error) {
+	var b PanelBrand
+	var err error
+	if b.Name, err = s.getString("panelBrandName"); err != nil {
+		return PanelBrand{}, err
+	}
+	if b.Color, err = s.getString("panelBrandColor"); err != nil {
+		return PanelBrand{}, err
+	}
+	if b.Logo, err = s.getString("panelBrandLogo"); err != nil {
+		return PanelBrand{}, err
+	}
+	return b, nil
 }
 
 func (s *SettingService) GetDatepicker() (string, error) {

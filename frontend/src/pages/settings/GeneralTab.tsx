@@ -4,6 +4,7 @@ import { Input, InputNumber, Select, Switch, Tabs } from 'antd';
 import {
   ApartmentOutlined,
   BellOutlined,
+  BgColorsOutlined,
   ClockCircleOutlined,
   GlobalOutlined,
   SafetyCertificateOutlined,
@@ -18,6 +19,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { catTabLabel } from './catTabLabel';
 import { sanitizePath } from './uriPath';
 import SecretInput from './SecretInput';
+import BrandingSettings from './BrandingSettings';
 
 interface ApiMsg<T = unknown> {
   success?: boolean;
@@ -473,6 +475,11 @@ export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProp
               </SettingListItem>
             </>
           ),
+        },
+        {
+          key: 'brand',
+          label: catTabLabel(<BgColorsOutlined />, t('pages.settings.brand.tab'), isMobile),
+          children: <BrandingSettings allSetting={allSetting} updateSetting={updateSetting} />,
         },
         {
           key: '6',

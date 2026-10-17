@@ -49,6 +49,9 @@ export interface AllSetting {
   ldapVlessField: string;
   outboundDownThreshold: number;
   pageSize: number;
+  panelBrandColor: string;
+  panelBrandLogo: string;
+  panelBrandName: string;
   panelOutbound: string;
   realityScanCandidates: string;
   remarkTemplate: string;
@@ -237,6 +240,9 @@ export interface AllSettingView {
   ldapVlessField: string;
   outboundDownThreshold: number;
   pageSize: number;
+  panelBrandColor: string;
+  panelBrandLogo: string;
+  panelBrandName: string;
   panelOutbound: string;
   realityScanCandidates: string;
   remarkTemplate: string;
