@@ -18,10 +18,13 @@ function inboundTransports(
     protocol === 'hysteria' ||
     protocol === 'wireguard' ||
     protocol === 'amneziawg' ||
-    protocol === 'tuic'
+    protocol === 'tuic' ||
+    protocol === 'ikev2' ||
+    protocol === 'l2tp'
   )
     return UDP;
   if (protocol === 'masque') return masqueTransports(streamSettings);
+  if (protocol === 'openvpn') return asString(settings?.proto) === 'tcp' ? TCP : UDP;
 
   let bits: TransportBits = 0;
   const network = asString(streamSettings?.network);

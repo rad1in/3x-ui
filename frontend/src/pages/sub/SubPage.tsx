@@ -7,6 +7,7 @@ import {
   ClockCircleOutlined,
   CustomerServiceOutlined,
   LinkOutlined,
+  SafetyCertificateOutlined,
   UnorderedListOutlined,
 } from '@ant-design/icons';
 
@@ -18,6 +19,7 @@ import SubConfigsTab from './SubConfigsTab';
 import SubHeader from './SubHeader';
 import SubHero from './SubHero';
 import SubLinksTab from './SubLinksTab';
+import SubVPNTab from './SubVPNTab';
 import { buildSubApps, daysUntil, detectPlatform, resolveSubStatus } from './subPageModel';
 import './SubPage.css';
 
@@ -27,18 +29,22 @@ const sId = subData.sId || '';
 const subUrl = subData.subUrl || '';
 const subJsonUrl = subData.subJsonUrl || '';
 const subClashUrl = subData.subClashUrl || '';
+const subSingboxUrl = subData.subSingboxUrl || '';
 const subTitle = subData.subTitle || '';
 const subSupportUrl = subData.subSupportUrl || '';
 const updateHours = Number(subData.subUpdates || 0);
 const announce = subData.announce || '';
 const links: string[] = Array.isArray(subData.links) ? subData.links : [];
 const linkEmails: string[] = Array.isArray(subData.emails) ? subData.emails : [];
+const vpnAccounts = Array.isArray(subData.vpn) ? subData.vpn : [];
 const totalByte = Number(subData.totalByte || 0);
 const usedByte =
   Number(subData.usedByte || 0) ||
   Number(subData.downloadByte || 0) + Number(subData.uploadByte || 0);
 const expireMs = Number(subData.expire || 0) * 1000;
-const clientEmail = [...new Set(linkEmails.filter(Boolean))].join(', ');
+const clientEmail = [
+  ...new Set([...linkEmails, ...vpnAccounts.map((p) => p.username)].filter(Boolean)),
+].join(', ');
 const loadedAt = Date.now();
 
 const heroData = {
@@ -56,7 +62,7 @@ const heroData = {
   datepicker: subData.datepicker || 'gregorian',
 };
 
-const apps = buildSubApps({ subUrl, sId, subTitle });
+const apps = buildSubApps({ subUrl, singboxUrl: subSingboxUrl, sId, subTitle });
 const initialPlatform = detectPlatform(navigator.userAgent);
 const RTL_LANGUAGES = new Set(['fa-IR', 'ar-EG']);
 
@@ -99,6 +105,7 @@ export default function SubPage() {
             subUrl={subUrl}
             subJsonUrl={subJsonUrl}
             subClashUrl={subClashUrl}
+            subSingboxUrl={subSingboxUrl}
             onCopy={copy}
           />
         ),
@@ -123,6 +130,14 @@ export default function SubPage() {
           </>
         ),
         children: <SubConfigsTab links={links} onCopy={copy} />,
+      });
+    }
+    if (vpnAccounts.length > 0 && subUrl) {
+      items.push({
+        key: 'vpn',
+        icon: <SafetyCertificateOutlined />,
+        label: 'VPN',
+        children: <SubVPNTab subUrl={subUrl} accounts={vpnAccounts} onCopy={copy} />,
       });
     }
     return items;

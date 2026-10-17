@@ -1,5 +1,6 @@
 import type { NodeRecord } from '@/api/queries/useNodesQuery';
 import type { HostRecord } from '@/schemas/api/host';
+import type { VPNStatus } from '@/generated/zod';
 
 export interface StreamHints {
   network: string;
@@ -61,6 +62,7 @@ export type RowAction =
   | 'delete'
   | 'resetTraffic'
   | 'delAllClients'
+  | 'openvpnProfile'
   | 'clone';
 
 export type GeneralAction = 'import' | 'export' | 'subs' | 'resetInbounds';
@@ -79,6 +81,7 @@ export interface InboundListProps {
   nodesById: Map<number, NodeRecord>;
   hasActiveNode: boolean;
   hosts: HostRecord[];
+  vpnStatuses: VPNStatus[];
   onAddInbound: () => void;
   onGeneralAction: (key: GeneralAction) => void;
   onRowAction: (action: { key: RowAction; dbInbound: DBInboundRecord }) => void;

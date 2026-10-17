@@ -11,7 +11,10 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/amneziawg"
 	"github.com/mhsanaei/3x-ui/v3/internal/amneziawgnet"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/ipsec"
+	"github.com/mhsanaei/3x-ui/v3/internal/l2tp"
 	"github.com/mhsanaei/3x-ui/v3/internal/mtproto"
+	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
 	"github.com/mhsanaei/3x-ui/v3/internal/tuic"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 )
@@ -49,6 +52,27 @@ func (l *Local) withAPI(fn func(api *xray.XrayAPI) error) error {
 }
 
 func (l *Local) AddInbound(_ context.Context, ib *model.Inbound) error {
+	if ib.Protocol == model.L2TP {
+		inst, ok := l2tp.InstanceFromInbound(ib)
+		if !ok {
+			return nil
+		}
+		return l2tp.GetManager().Ensure(inst)
+	}
+	if ib.Protocol == model.IKEv2 {
+		inst, ok := ipsec.InstanceFromInbound(ib)
+		if !ok {
+			return nil
+		}
+		return ipsec.GetManager().Ensure(inst)
+	}
+	if ib.Protocol == model.OpenVPN {
+		inst, ok := openvpn.InstanceFromInbound(ib)
+		if !ok {
+			return nil
+		}
+		return openvpn.GetManager().Ensure(inst)
+	}
 	if ib.Protocol == model.MTProto {
 		inst, ok := mtproto.InstanceFromInbound(ib)
 		if !ok {
@@ -106,6 +130,18 @@ func (l *Local) AddInbound(_ context.Context, ib *model.Inbound) error {
 }
 
 func (l *Local) DelInbound(_ context.Context, ib *model.Inbound) error {
+	if ib.Protocol == model.L2TP {
+		l2tp.GetManager().Remove(ib.Id)
+		return nil
+	}
+	if ib.Protocol == model.IKEv2 {
+		ipsec.GetManager().Remove(ib.Id)
+		return nil
+	}
+	if ib.Protocol == model.OpenVPN {
+		openvpn.GetManager().Remove(ib.Id)
+		return nil
+	}
 	if ib.Protocol == model.MTProto {
 		mtproto.GetManager().Remove(ib.Id)
 		return nil
@@ -133,6 +169,15 @@ func (l *Local) DelInbound(_ context.Context, ib *model.Inbound) error {
 }
 
 func (l *Local) UpdateInbound(ctx context.Context, oldIb, newIb *model.Inbound) error {
+	if oldIb.Protocol == model.OpenVPN || newIb.Protocol == model.OpenVPN {
+		return l.updateOpenVPNInbound(ctx, oldIb, newIb)
+	}
+	if oldIb.Protocol == model.IKEv2 || newIb.Protocol == model.IKEv2 {
+		return l.updateIKEv2Inbound(ctx, oldIb, newIb)
+	}
+	if oldIb.Protocol == model.L2TP || newIb.Protocol == model.L2TP {
+		return l.updateL2TPInbound(ctx, oldIb, newIb)
+	}
 	if oldIb.Protocol == model.MTProto || newIb.Protocol == model.MTProto {
 		return l.updateMtprotoInbound(ctx, oldIb, newIb)
 	}
@@ -147,6 +192,69 @@ func (l *Local) UpdateInbound(ctx context.Context, oldIb, newIb *model.Inbound) 
 		return nil
 	}
 	return l.AddInbound(ctx, newIb)
+}
+
+// updateOpenVPNInbound lets Ensure apply an account change over the management
+// socket, so a client edit never restarts the server and drops everyone.
+func (l *Local) updateOpenVPNInbound(ctx context.Context, oldIb, newIb *model.Inbound) error {
+	if oldIb.Protocol != model.OpenVPN {
+		_ = l.DelInbound(ctx, oldIb)
+	}
+	if newIb.Protocol != model.OpenVPN {
+		openvpn.GetManager().Remove(oldIb.Id)
+		if !newIb.Enable {
+			return nil
+		}
+		return l.AddInbound(ctx, newIb)
+	}
+	inst, ok := openvpn.InstanceFromInbound(newIb)
+	if !newIb.Enable || !ok {
+		openvpn.GetManager().Remove(newIb.Id)
+		return nil
+	}
+	return openvpn.GetManager().Ensure(inst)
+}
+
+// updateIKEv2Inbound lets Ensure load only what changed into charon, so a
+// client edit never drops the other users' sessions.
+func (l *Local) updateIKEv2Inbound(ctx context.Context, oldIb, newIb *model.Inbound) error {
+	if oldIb.Protocol != model.IKEv2 {
+		_ = l.DelInbound(ctx, oldIb)
+	}
+	if newIb.Protocol != model.IKEv2 {
+		ipsec.GetManager().Remove(oldIb.Id)
+		if !newIb.Enable {
+			return nil
+		}
+		return l.AddInbound(ctx, newIb)
+	}
+	inst, ok := ipsec.InstanceFromInbound(newIb)
+	if !newIb.Enable || !ok {
+		ipsec.GetManager().Remove(newIb.Id)
+		return nil
+	}
+	return ipsec.GetManager().Ensure(inst)
+}
+
+// updateL2TPInbound rewrites the logins and ends revoked links without
+// restarting xl2tpd, so a client edit leaves everyone else connected.
+func (l *Local) updateL2TPInbound(ctx context.Context, oldIb, newIb *model.Inbound) error {
+	if oldIb.Protocol != model.L2TP {
+		_ = l.DelInbound(ctx, oldIb)
+	}
+	if newIb.Protocol != model.L2TP {
+		l2tp.GetManager().Remove(oldIb.Id)
+		if !newIb.Enable {
+			return nil
+		}
+		return l.AddInbound(ctx, newIb)
+	}
+	inst, ok := l2tp.InstanceFromInbound(newIb)
+	if !newIb.Enable || !ok {
+		l2tp.GetManager().Remove(newIb.Id)
+		return nil
+	}
+	return l2tp.GetManager().Ensure(inst)
 }
 
 // updateMtprotoInbound applies an inbound update without the Del+Add sequence
@@ -272,8 +380,14 @@ func (l *Local) updateTuicInbound(ctx context.Context, oldIb, newIb *model.Inbou
 	return tuic.GetManager().Ensure(inst)
 }
 
+// servedBySidecar: these protocols run outside Xray and take client changes by
+// re-applying the whole inbound, so Xray's per-user ops do not apply to them.
+func servedBySidecar(p model.Protocol) bool {
+	return p == model.MTProto || p == model.AmneziaWG || p == model.TUIC || p == model.OpenVPN || p == model.IKEv2 || p == model.L2TP
+}
+
 func (l *Local) AddUser(_ context.Context, ib *model.Inbound, userMap map[string]any) error {
-	if ib.Protocol == model.MTProto || ib.Protocol == model.AmneziaWG || ib.Protocol == model.TUIC {
+	if servedBySidecar(ib.Protocol) {
 		return nil
 	}
 	return l.withAPI(func(api *xray.XrayAPI) error {
@@ -282,7 +396,7 @@ func (l *Local) AddUser(_ context.Context, ib *model.Inbound, userMap map[string
 }
 
 func (l *Local) RemoveUser(_ context.Context, ib *model.Inbound, email string) error {
-	if ib.Protocol == model.MTProto || ib.Protocol == model.AmneziaWG || ib.Protocol == model.TUIC {
+	if servedBySidecar(ib.Protocol) {
 		return nil
 	}
 	return l.withAPI(func(api *xray.XrayAPI) error {

@@ -485,3 +485,156 @@
 .index-page .ip-hidden {
   filter: blur(6px);
 }
+
+/* — clients insight — */
+
+.ov-insight-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ov-pad) var(--ov-pad) 0;
+}
+
+.ov-insight-all {
+  font-size: 12.5px;
+}
+
+.ov-insight-counts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--ov-gap);
+  padding: 12px var(--ov-pad) 0;
+}
+
+.ov-insight-count {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-inline-start: 10px;
+  border-inline-start: 2px solid var(--ov-line);
+}
+
+.ov-insight-count[data-tone='online'] {
+  border-inline-start-color: var(--ant-color-primary);
+}
+
+.ov-insight-count[data-tone='warn'] {
+  border-inline-start-color: var(--ant-color-warning);
+}
+
+.ov-insight-count[data-tone='crit'] {
+  border-inline-start-color: var(--ant-color-error);
+}
+
+.ov-insight-count-label {
+  font-size: 12px;
+  color: var(--ov-label);
+}
+
+.ov-insight-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(var(--ov-gap) * 2);
+  padding: var(--ov-pad);
+}
+
+@media (max-width: 768px) {
+  .ov-insight-counts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ov-insight-cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.ov-insight-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.ov-insight-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  column-gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--ov-line);
+}
+
+.ov-insight-row:first-child {
+  border-top: 0;
+}
+
+.ov-insight-email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--ant-color-text);
+}
+
+.ov-insight-email:hover {
+  color: var(--ant-color-primary);
+}
+
+.ov-insight-meta {
+  font-size: 12px;
+  color: var(--ov-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ov-insight-bar {
+  grid-column: 1 / -1;
+  margin: 2px 0 0 !important;
+}
+
+.ov-insight-empty {
+  padding: 16px 0;
+  color: var(--ov-faint);
+  font-size: 12.5px;
+}
+
+/* — hosted panel limits — */
+
+.ov-hosted {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: var(--ov-pad);
+}
+
+.ov-hosted-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: calc(var(--ov-gap) * 2);
+}
+
+@media (max-width: 768px) {
+  .ov-hosted-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.ov-hosted-row-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--ov-label);
+}
+
+.ov-hosted-row-value {
+  font-variant-numeric: tabular-nums;
+  color: var(--ant-color-text);
+}
+
+.ov-hosted-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 12.5px;
+  color: var(--ov-faint);
+}

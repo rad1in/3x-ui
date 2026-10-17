@@ -7,6 +7,8 @@ import (
 	"slices"
 	"strings"
 
+	"github.com/mhsanaei/3x-ui/v3/internal/config"
+
 	"github.com/mhsanaei/3x-ui/v3/internal/amneziawg"
 	"github.com/mhsanaei/3x-ui/v3/internal/amneziawgnet"
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
@@ -27,10 +29,18 @@ const (
 func inboundTransports(protocol model.Protocol, streamSettings, settings string) transportBits {
 	// protocols that ignore streamSettings entirely.
 	switch protocol {
-	case model.Hysteria, model.WireGuard, model.AmneziaWG, model.TUIC:
+	case model.Hysteria, model.WireGuard, model.AmneziaWG, model.TUIC, model.IKEv2, model.L2TP:
 		return transportUDP
 	case model.MTProto:
 		return transportTCP
+	case model.OpenVPN:
+		var parsed struct {
+			Proto string `json:"proto"`
+		}
+		if json.Unmarshal([]byte(settings), &parsed) == nil && parsed.Proto == "tcp" {
+			return transportTCP
+		}
+		return transportUDP
 	case model.MASQUE:
 		return masqueTransports(streamSettings)
 	}
@@ -123,7 +133,9 @@ type bindAddr struct {
 	v6only bool
 }
 
-var loopbackBind = bindAddr{listen: "127.0.0.1"}
+func loopbackBind() bindAddr {
+	return bindAddr{listen: config.LoopbackIP()}
+}
 
 func inboundBindAddr(ib *model.Inbound) bindAddr {
 	return bindAddr{listen: ib.Listen, v6only: streamV6Only(ib.StreamSettings)}
@@ -196,10 +208,14 @@ type portConflictDetail struct {
 	// reason for the conflict.
 	ForwardedBy string
 	Transports  transportBits
+	HostedPanel string
 }
 
 // String renders the detail as a single-line, user-facing summary.
 func (d *portConflictDetail) String() string {
+	if d.HostedPanel != "" {
+		return fmt.Sprintf("port %d is reserved for hosted panel '%s'", d.Port, d.HostedPanel)
+	}
 	name := d.Remark
 	if name == "" {
 		name = d.Tag
@@ -266,15 +282,25 @@ func (s *InboundService) checkPortConflict(inbound *model.Inbound, ignoreId int)
 func checkPortConflictTx(db *gorm.DB, inbound *model.Inbound, ignoreId int) (*portConflictDetail, error) {
 	newBits := inboundTransports(inbound.Protocol, inbound.StreamSettings, inbound.Settings)
 
+	if inbound.NodeID == nil {
+		owner, err := hostedPanelOwning(db, inbound.Port)
+		if err != nil {
+			return nil, err
+		}
+		if owner != nil {
+			return &portConflictDetail{Port: inbound.Port, HostedPanel: owner.Name}, nil
+		}
+	}
+
 	// The internal Xray API inbound (tag "api", loopback TCP) isn't a DB row,
 	// so a local user inbound reusing its port would leave Xray binding the
 	// port twice (#5304). Nodes run their own Xray, so this only applies to
 	// the local panel.
 	if inbound.NodeID == nil && inbound.Port == reservedAPIPort() &&
-		newBits&transportTCP != 0 && listenOverlaps(loopbackBind, inboundBindAddr(inbound)) {
+		newBits&transportTCP != 0 && listenOverlaps(loopbackBind(), inboundBindAddr(inbound)) {
 		return &portConflictDetail{
 			Tag:        "api",
-			Listen:     "127.0.0.1",
+			Listen:     config.LoopbackIP(),
 			Port:       inbound.Port,
 			Transports: transportTCP,
 		}, nil
@@ -283,10 +309,10 @@ func checkPortConflictTx(db *gorm.DB, inbound *model.Inbound, ignoreId int) (*po
 	// Egress SOCKS server holds loopback EgressPort when AWG outbounds are
 	// active; conflict check prevents inbounds from colliding with it.
 	if inbound.NodeID == nil && inbound.Port == amneziawgnet.EgressPort() &&
-		newBits&transportTCP != 0 && listenOverlaps(loopbackBind, inboundBindAddr(inbound)) {
+		newBits&transportTCP != 0 && listenOverlaps(loopbackBind(), inboundBindAddr(inbound)) {
 		return &portConflictDetail{
 			Tag:        "amneziawg-egress",
-			Listen:     "127.0.0.1",
+			Listen:     config.LoopbackIP(),
 			Port:       inbound.Port,
 			Transports: transportTCP,
 		}, nil
@@ -300,7 +326,7 @@ func checkPortConflictTx(db *gorm.DB, inbound *model.Inbound, ignoreId int) (*po
 	// see it. Without this check, an unrelated inbound saved onto that exact
 	// port silently fails at the next Xray start, taking every other
 	// protocol down with it, not just AmneziaWG.
-	if inbound.NodeID == nil && listenOverlaps(loopbackBind, inboundBindAddr(inbound)) {
+	if inbound.NodeID == nil && listenOverlaps(loopbackBind(), inboundBindAddr(inbound)) {
 		conflict, err := checkAmneziawgnetSocksConflict(db, inbound, ignoreId, newBits)
 		if err != nil {
 			return nil, err
@@ -462,7 +488,7 @@ func checkAmneziawgnetSocksConflict(db *gorm.DB, inbound *model.Inbound, ignoreI
 			InboundID:  c.Id,
 			Remark:     c.Remark,
 			Tag:        c.Tag,
-			Listen:     "127.0.0.1",
+			Listen:     config.LoopbackIP(),
 			Port:       inbound.Port,
 			Transports: newBits,
 		}, nil
@@ -488,7 +514,7 @@ func checkAmneziawgnetSocksRelayCollision(db *gorm.DB, id int) (*portConflictDet
 			InboundID:  c.Id,
 			Remark:     c.Remark,
 			Tag:        c.Tag,
-			Listen:     "127.0.0.1",
+			Listen:     config.LoopbackIP(),
 			Port:       relayPort,
 			Relay:      true,
 			Transports: transportTCP,
@@ -500,7 +526,7 @@ func checkAmneziawgnetSocksRelayCollision(db *gorm.DB, id int) (*portConflictDet
 // amneziawgnetSocksSelfConflict: a row's own WireGuard port vs the relay port its
 // own id derives -- all three checks below exclude that id, so nothing else does.
 func amneziawgnetSocksSelfConflict(inbound *model.Inbound, id int) string {
-	if id <= 0 || inbound.NodeID != nil || !listenOverlaps(loopbackBind, inboundBindAddr(inbound)) {
+	if id <= 0 || inbound.NodeID != nil || !listenOverlaps(loopbackBind(), inboundBindAddr(inbound)) {
 		return ""
 	}
 	relayPort := amneziawgnet.SOCKSPortForInbound(id)
@@ -522,7 +548,7 @@ func checkAmneziawgnetSocksReverseConflict(db *gorm.DB, id int) (*portConflictDe
 		return nil, err
 	}
 	for _, c := range candidates {
-		if !listenOverlaps(loopbackBind, inboundBindAddr(c)) {
+		if !listenOverlaps(loopbackBind(), inboundBindAddr(c)) {
 			continue
 		}
 		return &portConflictDetail{
@@ -558,7 +584,7 @@ func checkTuicSocksConflict(db *gorm.DB, inbound *model.Inbound, ignoreId int, n
 			InboundID:  c.Id,
 			Remark:     c.Remark,
 			Tag:        c.Tag,
-			Listen:     "127.0.0.1",
+			Listen:     config.LoopbackIP(),
 			Port:       inbound.Port,
 			Transports: newBits,
 		}, nil
@@ -582,7 +608,7 @@ func checkTuicSocksRelayCollision(db *gorm.DB, id int) (*portConflictDetail, err
 			InboundID:  c.Id,
 			Remark:     c.Remark,
 			Tag:        c.Tag,
-			Listen:     "127.0.0.1",
+			Listen:     config.LoopbackIP(),
 			Port:       relayPort,
 			Relay:      true,
 			Transports: transportTCP,
@@ -592,7 +618,7 @@ func checkTuicSocksRelayCollision(db *gorm.DB, id int) (*portConflictDetail, err
 }
 
 func tuicSocksSelfConflict(inbound *model.Inbound, id int) string {
-	if id <= 0 || inbound.NodeID != nil || !listenOverlaps(loopbackBind, inboundBindAddr(inbound)) {
+	if id <= 0 || inbound.NodeID != nil || !listenOverlaps(loopbackBind(), inboundBindAddr(inbound)) {
 		return ""
 	}
 	relayPort := tuic.SOCKSPortForInbound(id)
@@ -612,7 +638,7 @@ func checkTuicSocksReverseConflict(db *gorm.DB, id int) (*portConflictDetail, er
 		return nil, err
 	}
 	for _, c := range candidates {
-		if !listenOverlaps(loopbackBind, inboundBindAddr(c)) {
+		if !listenOverlaps(loopbackBind(), inboundBindAddr(c)) {
 			continue
 		}
 		return &portConflictDetail{

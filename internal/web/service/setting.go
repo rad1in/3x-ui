@@ -8,6 +8,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -20,12 +21,14 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/netproxy"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/random"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/reflect_util"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/totp"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/decoy"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray/dnsconf"
@@ -80,6 +83,21 @@ var defaultValueMap = map[string]string{
 	"pageSize":                    "25",
 	"expireDiff":                  "0",
 	"trafficDiff":                 "0",
+	"quotaWarnPercent":            "80",
+	"clientWarningsSeeded":        "false",
+	"autoDeleteDepletedDays":      "0",
+	"decoyMode":                   "",
+	"decoyTarget":                 "",
+	"decoyHtml":                   "",
+	"backupSchedule":              "",
+	"backupKeep":                  "7",
+	"backupLocalDir":              "",
+	"backupS3Endpoint":            "",
+	"backupS3Region":              "",
+	"backupS3Bucket":              "",
+	"backupS3AccessKey":           "",
+	"backupS3SecretKey":           "",
+	"backupS3Prefix":              "",
 	"remarkTemplate":              DefaultRemarkTemplate,
 	"subShowIdentityOnAllLinks":   "false",
 	"subInfoNodeEnable":           "false",
@@ -194,6 +212,13 @@ var defaultValueMap = map[string]string{
 	"subJsonObservatory":          "",
 	"subThemeDir":                 "",
 	"datepicker":                  "gregorian",
+	"panelBrandName":              "",
+	"panelBrandColor":             "",
+	"panelBrandLogo":              "",
+	"sponsorFeedUrl":              "",
+	"sponsorContact":              "",
+	"hostedUsedBytes":             "0",
+	"hostedUsageEpoch":            "0",
 	"warp":                        "",
 	"warpUpdateInterval":          "0",
 	"nord":                        "",
@@ -259,6 +284,12 @@ var defaultValueMap = map[string]string{
 	"discordMemory":        "80",
 	"discordLang":          "en-US",
 	"discordEnabledEvents": "login.attempt,cpu.high",
+
+	// Webhooks
+	"webhookEnable": "false",
+	"webhookUrls":   "",
+	"webhookSecret": "",
+	"webhookEvents": "client.created,client.deleted,client.depleted,client.expired,client.renewed,client.quota_warning,client.expiry_warning",
 }
 
 // SettingService provides business logic for application settings management.
@@ -358,6 +389,8 @@ func (s *SettingService) GetAllSettingView() (*entity.AllSettingView, error) {
 	view.HasNordSecret = secretConfigured(mustString(s.GetNord()))
 	view.HasSmtpPassword = secretConfigured(allSetting.SmtpPassword)
 	view.HasDiscordBotToken = secretConfigured(allSetting.DiscordBotToken)
+	view.HasWebhookSecret = secretConfigured(allSetting.WebhookSecret)
+	view.HasBackupS3Secret = secretConfigured(allSetting.BackupS3SecretKey)
 	var apiTokenCount int64
 	if err := database.GetDB().Model(model.ApiToken{}).Where("enabled = ?", true).Count(&apiTokenCount).Error; err == nil {
 		view.HasApiToken = apiTokenCount > 0
@@ -367,6 +400,8 @@ func (s *SettingService) GetAllSettingView() (*entity.AllSettingView, error) {
 	view.LdapPassword = ""
 	view.SmtpPassword = ""
 	view.DiscordBotToken = ""
+	view.WebhookSecret = ""
+	view.BackupS3SecretKey = ""
 	return view, nil
 }
 
@@ -735,6 +770,18 @@ func (s *SettingService) GetExpireDiff() (int, error) {
 
 func (s *SettingService) GetTrafficDiff() (int, error) {
 	return s.getInt("trafficDiff")
+}
+
+// DecoySite is what requests matching no route, or under a foreign Host, are answered with.
+func (s *SettingService) DecoySite() decoy.Site {
+	mode, _ := s.getString("decoyMode")
+	target, _ := s.getString("decoyTarget")
+	html, _ := s.getString("decoyHtml")
+	return decoy.Site{Mode: mode, Target: target, HTML: html}
+}
+
+func (s *SettingService) GetQuotaWarnPercent() (int, error) {
+	return s.getInt("quotaWarnPercent")
 }
 
 func (s *SettingService) GetSessionMaxAge() (int, error) {
@@ -1269,6 +1316,45 @@ func (s *SettingService) GetSubThemeDir() (string, error) {
 	return s.getString("subThemeDir")
 }
 
+// PanelBrand is the admin-chosen identity shown on the login page and panel.
+// Empty fields fall back to the stock 3X-UI look.
+type PanelBrand struct {
+	Name  string `json:"name"`
+	Color string `json:"color"`
+	Logo  string `json:"logo"`
+}
+
+func (s *SettingService) GetPanelBrand() (PanelBrand, error) {
+	var b PanelBrand
+	var err error
+	if b.Name, err = s.getString("panelBrandName"); err != nil {
+		return PanelBrand{}, err
+	}
+	if b.Color, err = s.getString("panelBrandColor"); err != nil {
+		return PanelBrand{}, err
+	}
+	if b.Logo, err = s.getString("panelBrandLogo"); err != nil {
+		return PanelBrand{}, err
+	}
+	return b, nil
+}
+
+func (s *SettingService) GetSponsorFeedURL() (string, error) {
+	return s.getString("sponsorFeedUrl")
+}
+
+func (s *SettingService) GetSponsorContact() (string, error) {
+	return s.getString("sponsorContact")
+}
+
+// SetSponsorSettings stores both values; callers validate them first.
+func (s *SettingService) SetSponsorSettings(feedURL, contact string) error {
+	if err := s.setString("sponsorFeedUrl", feedURL); err != nil {
+		return err
+	}
+	return s.setString("sponsorContact", contact)
+}
+
 func (s *SettingService) GetDatepicker() (string, error) {
 	return s.getString("datepicker")
 }
@@ -1636,6 +1722,15 @@ func (s *SettingService) SetOutboundDownThreshold(value int) error {
 	return s.setInt("outboundDownThreshold", value)
 }
 
+// WebhookConfig is what the webhook sender needs, read fresh for each event.
+func (s *SettingService) WebhookConfig() (enabled bool, urls, secret, events string) {
+	enabled, _ = s.getBool("webhookEnable")
+	urls, _ = s.getString("webhookUrls")
+	secret, _ = s.getString("webhookSecret")
+	events, _ = s.getString("webhookEvents")
+	return enabled, urls, secret, events
+}
+
 // SecretClears marks redacted secrets the user explicitly emptied. Without a
 // flag, a blank submitted secret means "unchanged" (the field is always served
 // blank to the browser) and the stored value is preserved.
@@ -1644,9 +1739,19 @@ type SecretClears struct {
 	LdapPassword    bool
 	SmtpPassword    bool
 	DiscordBotToken bool
+	WebhookSecret   bool
+	BackupS3Secret  bool
 }
 
 func (s *SettingService) UpdateAllSetting(allSetting *entity.AllSetting, clears SecretClears) error {
+	if hosted.Enabled() {
+		if err := s.keepHostedAddress(allSetting); err != nil {
+			return err
+		}
+	}
+	if err := checkPortsFreeOfHostedPanels(allSetting.WebPort, allSetting.SubPort); err != nil {
+		return err
+	}
 	switch allSetting.SubProfileMode {
 	case "", SubProfileModeNone, SubProfileModeBuiltin, SubProfileModeCustom:
 		allSetting.SubProfileMode = effectiveSubProfileMode(allSetting.SubProfileMode, allSetting.SubProfileUrl)
@@ -1786,10 +1891,61 @@ func (s *SettingService) preserveRedactedSecrets(allSetting *entity.AllSetting, 
 		}
 		allSetting.DiscordBotToken = value
 	}
+	if !clears.WebhookSecret && strings.TrimSpace(allSetting.WebhookSecret) == "" {
+		value, err := s.getString("webhookSecret")
+		if err != nil {
+			return err
+		}
+		allSetting.WebhookSecret = value
+	}
+	if !clears.BackupS3Secret && strings.TrimSpace(allSetting.BackupS3SecretKey) == "" {
+		value, err := s.getString("backupS3SecretKey")
+		if err != nil {
+			return err
+		}
+		allSetting.BackupS3SecretKey = value
+	}
 	return nil
 }
 
 func validateSettingsURLs(allSetting *entity.AllSetting) error {
+	var hooks []string
+	for _, raw := range strings.FieldsFunc(allSetting.WebhookUrls, func(r rune) bool { return r == '\n' || r == ',' || r == '\r' }) {
+		if strings.TrimSpace(raw) == "" {
+			continue
+		}
+		u, err := SanitizeHTTPURL(raw)
+		if err != nil {
+			return common.NewError("webhook URL is invalid:", err)
+		}
+		hooks = append(hooks, u)
+	}
+	allSetting.WebhookUrls = strings.Join(hooks, "\n")
+	if dir := strings.TrimSpace(allSetting.BackupLocalDir); dir != "" {
+		if hosted.Enabled() {
+			return common.NewError("a hosted panel cannot write backups to the server's disk; use S3")
+		}
+		if !filepath.IsAbs(dir) {
+			return common.NewError("backup folder must be an absolute path")
+		}
+		allSetting.BackupLocalDir = filepath.Clean(dir)
+	}
+	if allSetting.BackupS3Endpoint != "" {
+		u, err := SanitizeHTTPURL(allSetting.BackupS3Endpoint)
+		if err != nil {
+			return common.NewError("S3 endpoint is invalid:", err)
+		}
+		allSetting.BackupS3Endpoint = u
+	}
+	switch allSetting.DecoyMode {
+	case decoy.ModeOff, decoy.ModeNginx, decoy.ModeHTML:
+	case decoy.ModeRedirect:
+		if !decoy.ValidTarget(allSetting.DecoyTarget) {
+			return common.NewError("decoy redirect target must be an http(s) URL")
+		}
+	default:
+		return common.NewError("unknown decoy mode:", allSetting.DecoyMode)
+	}
 	if allSetting.ExternalTrafficInformURI != "" {
 		u, err := SanitizeHTTPURL(allSetting.ExternalTrafficInformURI)
 		if err != nil {
@@ -1997,11 +2153,13 @@ func (s *SettingService) GetDefaultSettings(host string) (any, error) {
 }
 
 var factoryDefaultSecretKeys = map[string]bool{
-	"tgBotToken":      true,
-	"twoFactorToken":  true,
-	"ldapPassword":    true,
-	"smtpPassword":    true,
-	"discordBotToken": true,
+	"tgBotToken":        true,
+	"twoFactorToken":    true,
+	"ldapPassword":      true,
+	"smtpPassword":      true,
+	"discordBotToken":   true,
+	"webhookSecret":     true,
+	"backupS3SecretKey": true,
 }
 
 /*
@@ -2025,4 +2183,16 @@ func (s *SettingService) GetFactoryDefaults() map[string]string {
 		}
 	}
 	return result
+}
+
+// keepHostedAddress pins the listen address, ports and path the owner gave a
+// hosted panel; moving them could collide with a sibling or break its link.
+func (s *SettingService) keepHostedAddress(next *entity.AllSetting) error {
+	current, err := s.GetAllSetting()
+	if err != nil {
+		return err
+	}
+	next.WebListen, next.WebPort, next.WebBasePath = current.WebListen, current.WebPort, current.WebBasePath
+	next.SubListen, next.SubPort = current.SubListen, current.SubPort
+	return nil
 }

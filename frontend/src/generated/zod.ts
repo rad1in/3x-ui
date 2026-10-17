@@ -25,7 +25,20 @@ export const transportBitsSchema = z.number().int();
 export type transportBits = z.infer<typeof transportBitsSchema>;
 
 export const AllSettingSchema = z.object({
+  autoDeleteDepletedDays: z.number().int().min(0),
+  backupKeep: z.number().int().min(0),
+  backupLocalDir: z.string(),
+  backupS3AccessKey: z.string(),
+  backupS3Bucket: z.string(),
+  backupS3Endpoint: z.string(),
+  backupS3Prefix: z.string(),
+  backupS3Region: z.string(),
+  backupS3SecretKey: z.string(),
+  backupSchedule: z.string(),
   datepicker: z.string(),
+  decoyHtml: z.string(),
+  decoyMode: z.string(),
+  decoyTarget: z.string(),
   discordAdminIds: z.string(),
   discordBotBackup: z.boolean(),
   discordBotEnable: z.boolean(),
@@ -65,7 +78,11 @@ export const AllSettingSchema = z.object({
   ldapVlessField: z.string(),
   outboundDownThreshold: z.number().int().min(1).max(100),
   pageSize: z.number().int().min(0).max(1000),
+  panelBrandColor: z.string(),
+  panelBrandLogo: z.string(),
+  panelBrandName: z.string(),
   panelOutbound: z.string(),
+  quotaWarnPercent: z.number().int().min(0).max(99),
   realityScanCandidates: z.string(),
   remarkTemplate: z.string(),
   restartXrayOnClientDisable: z.boolean(),
@@ -202,11 +219,28 @@ export const AllSettingSchema = z.object({
   webKeyFile: z.string(),
   webListen: z.string(),
   webPort: z.number().int().min(1).max(65535),
+  webhookEnable: z.boolean(),
+  webhookEvents: z.string(),
+  webhookSecret: z.string(),
+  webhookUrls: z.string(),
 });
 export type AllSetting = z.infer<typeof AllSettingSchema>;
 
 export const AllSettingViewSchema = z.object({
+  autoDeleteDepletedDays: z.number().int().min(0),
+  backupKeep: z.number().int().min(0),
+  backupLocalDir: z.string(),
+  backupS3AccessKey: z.string(),
+  backupS3Bucket: z.string(),
+  backupS3Endpoint: z.string(),
+  backupS3Prefix: z.string(),
+  backupS3Region: z.string(),
+  backupS3SecretKey: z.string(),
+  backupSchedule: z.string(),
   datepicker: z.string(),
+  decoyHtml: z.string(),
+  decoyMode: z.string(),
+  decoyTarget: z.string(),
   discordAdminIds: z.string(),
   discordBotBackup: z.boolean(),
   discordBotEnable: z.boolean(),
@@ -223,6 +257,7 @@ export const AllSettingViewSchema = z.object({
   externalTrafficInformURI: z.string(),
   happLinkEnable: z.boolean(),
   hasApiToken: z.boolean(),
+  hasBackupS3Secret: z.boolean(),
   hasDiscordBotToken: z.boolean(),
   hasLdapPassword: z.boolean(),
   hasNordSecret: z.boolean(),
@@ -230,6 +265,7 @@ export const AllSettingViewSchema = z.object({
   hasTgBotToken: z.boolean(),
   hasTwoFactorToken: z.boolean(),
   hasWarpSecret: z.boolean(),
+  hasWebhookSecret: z.boolean(),
   ipLimitAllowlist: z.string(),
   ldapAutoCreate: z.boolean(),
   ldapAutoDelete: z.boolean(),
@@ -254,7 +290,11 @@ export const AllSettingViewSchema = z.object({
   ldapVlessField: z.string(),
   outboundDownThreshold: z.number().int().min(1).max(100),
   pageSize: z.number().int().min(0).max(1000),
+  panelBrandColor: z.string(),
+  panelBrandLogo: z.string(),
+  panelBrandName: z.string(),
   panelOutbound: z.string(),
+  quotaWarnPercent: z.number().int().min(0).max(99),
   realityScanCandidates: z.string(),
   remarkTemplate: z.string(),
   restartXrayOnClientDisable: z.boolean(),
@@ -391,6 +431,10 @@ export const AllSettingViewSchema = z.object({
   webKeyFile: z.string(),
   webListen: z.string(),
   webPort: z.number().int().min(1).max(65535),
+  webhookEnable: z.boolean(),
+  webhookEvents: z.string(),
+  webhookSecret: z.string(),
+  webhookUrls: z.string(),
 });
 export type AllSettingView = z.infer<typeof AllSettingViewSchema>;
 
@@ -422,6 +466,31 @@ export const ApiTokenViewSchema = z.object({
   token: z.string().optional(),
 });
 export type ApiTokenView = z.infer<typeof ApiTokenViewSchema>;
+
+export const AuditLogSchema = z.object({
+  action: z.string(),
+  actor: z.string(),
+  createdAt: z.number().int(),
+  id: z.number().int(),
+  ip: z.string(),
+  success: z.boolean(),
+  target: z.string(),
+});
+export type AuditLog = z.infer<typeof AuditLogSchema>;
+
+export const AuditLogPageSchema = z.object({
+  items: z.array(z.lazy(() => AuditLogSchema)),
+  total: z.number().int(),
+});
+export type AuditLogPage = z.infer<typeof AuditLogPageSchema>;
+
+export const BackupResultSchema = z.object({
+  destination: z.string(),
+  error: z.string().optional(),
+  name: z.string(),
+  pruned: z.number().int(),
+});
+export type BackupResult = z.infer<typeof BackupResultSchema>;
 
 export const ClientSchema = z.object({
   adTag: z.string().optional(),
@@ -734,6 +803,73 @@ export const HostGroupSchema = z.object({
 });
 export type HostGroup = z.infer<typeof HostGroupSchema>;
 
+export const HostedPanelSchema = z.object({
+  createdAt: z.number().int(),
+  enable: z.boolean(),
+  expiresAt: z.number().int(),
+  id: z.number().int(),
+  maxClients: z.number().int(),
+  maxInbounds: z.number().int(),
+  name: z.string(),
+  portMax: z.number().int(),
+  portMin: z.number().int(),
+  subPort: z.number().int(),
+  trafficBytes: z.number().int(),
+  usageEpoch: z.number().int(),
+  username: z.string(),
+  webBasePath: z.string(),
+  webPort: z.number().int(),
+});
+export type HostedPanel = z.infer<typeof HostedPanelSchema>;
+
+export const HostedPanelInputSchema = z.object({
+  enable: z.boolean(),
+  expiresAt: z.number().int(),
+  maxClients: z.number().int(),
+  maxInbounds: z.number().int(),
+  name: z.string(),
+  password: z.string(),
+  portMax: z.number().int(),
+  portMin: z.number().int(),
+  subPort: z.number().int(),
+  trafficBytes: z.number().int(),
+  username: z.string(),
+  webBasePath: z.string(),
+  webPort: z.number().int(),
+});
+export type HostedPanelInput = z.infer<typeof HostedPanelInputSchema>;
+
+export const HostedPanelViewSchema = z.object({
+  createdAt: z.number().int(),
+  enable: z.boolean(),
+  expiresAt: z.number().int(),
+  id: z.number().int(),
+  maxClients: z.number().int(),
+  maxInbounds: z.number().int(),
+  name: z.string(),
+  portMax: z.number().int(),
+  portMin: z.number().int(),
+  process: z.lazy(() => ProcStateSchema),
+  status: z.lazy(() => PanelStatusSchema),
+  subPort: z.number().int(),
+  trafficBytes: z.number().int(),
+  usageEpoch: z.number().int(),
+  username: z.string(),
+  webBasePath: z.string(),
+  webPort: z.number().int(),
+});
+export type HostedPanelView = z.infer<typeof HostedPanelViewSchema>;
+
+export const HostedViewSchema = z.object({
+  blocked: z.string(),
+  clients: z.number().int(),
+  enabled: z.boolean(),
+  inbounds: z.number().int(),
+  limits: z.lazy(() => LimitsSchema),
+  usedBytes: z.number().int(),
+});
+export type HostedView = z.infer<typeof HostedViewSchema>;
+
 export const HwidSlotStatusSchema = z.object({
   active: z.boolean(),
   full: z.boolean(),
@@ -757,7 +893,7 @@ export const InboundSchema = z.object({
   nodeId: z.number().int().nullable().optional(),
   originNodeGuid: z.string().optional(),
   port: z.number().int().min(0).max(65535),
-  protocol: z.enum(['vmess', 'vless', 'trojan', 'shadowsocks', 'wireguard', 'hysteria', 'http', 'mixed', 'tunnel', 'tun', 'mtproto', 'amneziawg', 'tuic', 'masque']),
+  protocol: z.enum(['vmess', 'vless', 'trojan', 'shadowsocks', 'wireguard', 'hysteria', 'http', 'mixed', 'tunnel', 'tun', 'mtproto', 'amneziawg', 'tuic', 'masque', 'openvpn', 'ikev2', 'l2tp']),
   remark: z.string(),
   settings: z.unknown(),
   shareAddr: z.string(),
@@ -797,6 +933,7 @@ export const InboundOptionSchema = z.object({
   awgServer: z.lazy(() => ServerSettingsSchema).nullable().optional(),
   enable: z.boolean(),
   id: z.number().int(),
+  l2tpPsk: z.string().optional(),
   listen: z.string().optional(),
   mtprotoDomain: z.string().optional(),
   network: z.string().optional(),
@@ -826,6 +963,17 @@ export const InboundTrafficSummarySchema = z.object({
   up: z.number().int(),
 });
 export type InboundTrafficSummary = z.infer<typeof InboundTrafficSummarySchema>;
+
+export const LimitsSchema = z.object({
+  expiresAt: z.number().int(),
+  maxClients: z.number().int(),
+  maxInbounds: z.number().int(),
+  portMax: z.number().int(),
+  portMin: z.number().int(),
+  trafficBytes: z.number().int(),
+  usageEpoch: z.number().int(),
+});
+export type Limits = z.infer<typeof LimitsSchema>;
 
 export const LogEntrySchema = z.object({
   DateTime: z.string(),
@@ -980,6 +1128,17 @@ export const OutboundTrafficsSchema = z.object({
 });
 export type OutboundTraffics = z.infer<typeof OutboundTrafficsSchema>;
 
+export const PanelStatusSchema = z.object({
+  blocked: z.string(),
+  clients: z.number().int(),
+  inbounds: z.number().int(),
+  updatedAt: z.number().int(),
+  usedBytes: z.number().int(),
+  webTls: z.boolean(),
+  xrayRunning: z.boolean(),
+});
+export type PanelStatus = z.infer<typeof PanelStatusSchema>;
+
 export const PanelUpdateStatusSchema = z.object({
   exitCode: z.number().int(),
   finishedAt: z.number().int(),
@@ -1015,6 +1174,15 @@ export const ProbeResultUISchema = z.object({
   xrayVersion: z.string(),
 });
 export type ProbeResultUI = z.infer<typeof ProbeResultUISchema>;
+
+export const ProcStateSchema = z.object({
+  lastError: z.string(),
+  pid: z.number().int(),
+  restarts: z.number().int(),
+  running: z.boolean(),
+  startedAt: z.number().int(),
+});
+export type ProcState = z.infer<typeof ProcStateSchema>;
 
 export const RealityScanResultSchema = z.object({
   alpn: z.string(),
@@ -1103,11 +1271,37 @@ export const SponsorSchema = z.object({
 });
 export type Sponsor = z.infer<typeof SponsorSchema>;
 
+export const SponsorAdminViewSchema = z.object({
+  config: z.lazy(() => SponsorConfigSchema),
+  records: z.array(z.lazy(() => SponsorRecordSchema)),
+});
+export type SponsorAdminView = z.infer<typeof SponsorAdminViewSchema>;
+
+export const SponsorConfigSchema = z.object({
+  contact: z.string(),
+  feedUrl: z.string(),
+});
+export type SponsorConfig = z.infer<typeof SponsorConfigSchema>;
+
 export const SponsorListSchema = z.object({
   contact: z.string().optional(),
   sponsors: z.array(z.lazy(() => SponsorSchema)),
 });
 export type SponsorList = z.infer<typeof SponsorListSchema>;
+
+export const SponsorRecordSchema = z.object({
+  enable: z.boolean(),
+  from: z.number().int(),
+  id: z.number().int(),
+  link: z.string(),
+  logo: z.string(),
+  name: z.string(),
+  slots: z.array(z.string()),
+  text: z.string(),
+  title: z.string(),
+  until: z.number().int(),
+});
+export type SponsorRecord = z.infer<typeof SponsorRecordSchema>;
 
 export const SubBalancerSchema = z.object({
   createdAt: z.number().int(),
@@ -1159,4 +1353,11 @@ export const UserSchema = z.object({
   username: z.string(),
 });
 export type User = z.infer<typeof UserSchema>;
+
+export const VPNStatusSchema = z.object({
+  id: z.number().int(),
+  reason: z.string().optional(),
+  running: z.boolean(),
+});
+export type VPNStatus = z.infer<typeof VPNStatusSchema>;
 

@@ -28,7 +28,48 @@
     "schemas": {
       "AllSetting": {
         "properties": {
+          "autoDeleteDepletedDays": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "backupKeep": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "backupLocalDir": {
+            "type": "string"
+          },
+          "backupS3AccessKey": {
+            "type": "string"
+          },
+          "backupS3Bucket": {
+            "type": "string"
+          },
+          "backupS3Endpoint": {
+            "type": "string"
+          },
+          "backupS3Prefix": {
+            "type": "string"
+          },
+          "backupS3Region": {
+            "type": "string"
+          },
+          "backupS3SecretKey": {
+            "type": "string"
+          },
+          "backupSchedule": {
+            "type": "string"
+          },
           "datepicker": {
+            "type": "string"
+          },
+          "decoyHtml": {
+            "type": "string"
+          },
+          "decoyMode": {
+            "type": "string"
+          },
+          "decoyTarget": {
             "type": "string"
           },
           "discordAdminIds": {
@@ -162,8 +203,22 @@
             "minimum": 0,
             "type": "integer"
           },
+          "panelBrandColor": {
+            "type": "string"
+          },
+          "panelBrandLogo": {
+            "type": "string"
+          },
+          "panelBrandName": {
+            "type": "string"
+          },
           "panelOutbound": {
             "type": "string"
+          },
+          "quotaWarnPercent": {
+            "maximum": 99,
+            "minimum": 0,
+            "type": "integer"
           },
           "realityScanCandidates": {
             "type": "string"
@@ -595,10 +650,36 @@
             "maximum": 65535,
             "minimum": 1,
             "type": "integer"
+          },
+          "webhookEnable": {
+            "description": "Webhooks: signed POSTs of the enabled events to every URL (one per line).",
+            "type": "boolean"
+          },
+          "webhookEvents": {
+            "type": "string"
+          },
+          "webhookSecret": {
+            "type": "string"
+          },
+          "webhookUrls": {
+            "type": "string"
           }
         },
         "required": [
+          "autoDeleteDepletedDays",
+          "backupKeep",
+          "backupLocalDir",
+          "backupS3AccessKey",
+          "backupS3Bucket",
+          "backupS3Endpoint",
+          "backupS3Prefix",
+          "backupS3Region",
+          "backupS3SecretKey",
+          "backupSchedule",
           "datepicker",
+          "decoyHtml",
+          "decoyMode",
+          "decoyTarget",
           "discordAdminIds",
           "discordBotBackup",
           "discordBotEnable",
@@ -638,7 +719,11 @@
           "ldapVlessField",
           "outboundDownThreshold",
           "pageSize",
+          "panelBrandColor",
+          "panelBrandLogo",
+          "panelBrandName",
           "panelOutbound",
+          "quotaWarnPercent",
           "realityScanCandidates",
           "remarkTemplate",
           "restartXrayOnClientDisable",
@@ -774,13 +859,58 @@
           "webDomain",
           "webKeyFile",
           "webListen",
-          "webPort"
+          "webPort",
+          "webhookEnable",
+          "webhookEvents",
+          "webhookSecret",
+          "webhookUrls"
         ],
         "type": "object"
       },
       "AllSettingView": {
         "properties": {
+          "autoDeleteDepletedDays": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "backupKeep": {
+            "minimum": 0,
+            "type": "integer"
+          },
+          "backupLocalDir": {
+            "type": "string"
+          },
+          "backupS3AccessKey": {
+            "type": "string"
+          },
+          "backupS3Bucket": {
+            "type": "string"
+          },
+          "backupS3Endpoint": {
+            "type": "string"
+          },
+          "backupS3Prefix": {
+            "type": "string"
+          },
+          "backupS3Region": {
+            "type": "string"
+          },
+          "backupS3SecretKey": {
+            "type": "string"
+          },
+          "backupSchedule": {
+            "type": "string"
+          },
           "datepicker": {
+            "type": "string"
+          },
+          "decoyHtml": {
+            "type": "string"
+          },
+          "decoyMode": {
+            "type": "string"
+          },
+          "decoyTarget": {
             "type": "string"
           },
           "discordAdminIds": {
@@ -836,6 +966,9 @@
           "hasApiToken": {
             "type": "boolean"
           },
+          "hasBackupS3Secret": {
+            "type": "boolean"
+          },
           "hasDiscordBotToken": {
             "type": "boolean"
           },
@@ -855,6 +988,9 @@
             "type": "boolean"
           },
           "hasWarpSecret": {
+            "type": "boolean"
+          },
+          "hasWebhookSecret": {
             "type": "boolean"
           },
           "ipLimitAllowlist": {
@@ -938,8 +1074,22 @@
             "minimum": 0,
             "type": "integer"
           },
+          "panelBrandColor": {
+            "type": "string"
+          },
+          "panelBrandLogo": {
+            "type": "string"
+          },
+          "panelBrandName": {
+            "type": "string"
+          },
           "panelOutbound": {
             "type": "string"
+          },
+          "quotaWarnPercent": {
+            "maximum": 99,
+            "minimum": 0,
+            "type": "integer"
           },
           "realityScanCandidates": {
             "type": "string"
@@ -1371,10 +1521,36 @@
             "maximum": 65535,
             "minimum": 1,
             "type": "integer"
+          },
+          "webhookEnable": {
+            "description": "Webhooks: signed POSTs of the enabled events to every URL (one per line).",
+            "type": "boolean"
+          },
+          "webhookEvents": {
+            "type": "string"
+          },
+          "webhookSecret": {
+            "type": "string"
+          },
+          "webhookUrls": {
+            "type": "string"
           }
         },
         "required": [
+          "autoDeleteDepletedDays",
+          "backupKeep",
+          "backupLocalDir",
+          "backupS3AccessKey",
+          "backupS3Bucket",
+          "backupS3Endpoint",
+          "backupS3Prefix",
+          "backupS3Region",
+          "backupS3SecretKey",
+          "backupSchedule",
           "datepicker",
+          "decoyHtml",
+          "decoyMode",
+          "decoyTarget",
           "discordAdminIds",
           "discordBotBackup",
           "discordBotEnable",
@@ -1391,6 +1567,7 @@
           "externalTrafficInformURI",
           "happLinkEnable",
           "hasApiToken",
+          "hasBackupS3Secret",
           "hasDiscordBotToken",
           "hasLdapPassword",
           "hasNordSecret",
@@ -1398,6 +1575,7 @@
           "hasTgBotToken",
           "hasTwoFactorToken",
           "hasWarpSecret",
+          "hasWebhookSecret",
           "ipLimitAllowlist",
           "ldapAutoCreate",
           "ldapAutoDelete",
@@ -1422,7 +1600,11 @@
           "ldapVlessField",
           "outboundDownThreshold",
           "pageSize",
+          "panelBrandColor",
+          "panelBrandLogo",
+          "panelBrandName",
           "panelOutbound",
+          "quotaWarnPercent",
           "realityScanCandidates",
           "remarkTemplate",
           "restartXrayOnClientDisable",
@@ -1558,7 +1740,11 @@
           "webDomain",
           "webKeyFile",
           "webListen",
-          "webPort"
+          "webPort",
+          "webhookEnable",
+          "webhookEvents",
+          "webhookSecret",
+          "webhookUrls"
         ],
         "type": "object"
       },
@@ -1670,6 +1856,97 @@
           "id",
           "name",
           "scope"
+        ],
+        "type": "object"
+      },
+      "AuditLog": {
+        "description": "AuditLog is one admin action: a state-changing API call or a login attempt.\nAction is the method plus route template, so rows group by endpoint.",
+        "properties": {
+          "action": {
+            "example": "POST /clients/update/:email",
+            "type": "string"
+          },
+          "actor": {
+            "example": "admin",
+            "type": "string"
+          },
+          "createdAt": {
+            "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 42,
+            "format": "int64",
+            "type": "integer"
+          },
+          "ip": {
+            "example": "203.0.113.5",
+            "type": "string"
+          },
+          "success": {
+            "example": true,
+            "type": "boolean"
+          },
+          "target": {
+            "example": "email=alice@example.com",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "actor",
+          "createdAt",
+          "id",
+          "ip",
+          "success",
+          "target"
+        ],
+        "type": "object"
+      },
+      "AuditLogPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AuditLog"
+            },
+            "type": "array"
+          },
+          "total": {
+            "example": 120,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total"
+        ],
+        "type": "object"
+      },
+      "BackupResult": {
+        "description": "BackupResult is how one destination of a scheduled backup went.",
+        "properties": {
+          "destination": {
+            "example": "s3",
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "name": {
+            "example": "panel.example.com_2026-10-17_030000.db.gz",
+            "type": "string"
+          },
+          "pruned": {
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "destination",
+          "name",
+          "pruned"
         ],
         "type": "object"
       },
@@ -2997,6 +3274,300 @@
         ],
         "type": "object"
       },
+      "HostedPanel": {
+        "description": "HostedPanel is a separate panel process the master runs on this server for\nsomeone else, with its own database, address, port range and limits.",
+        "properties": {
+          "createdAt": {
+            "example": 1760000000000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "enable": {
+            "example": true,
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "example": 0,
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "maxClients": {
+            "example": 100,
+            "type": "integer"
+          },
+          "maxInbounds": {
+            "example": 5,
+            "type": "integer"
+          },
+          "name": {
+            "example": "Reseller A",
+            "type": "string"
+          },
+          "portMax": {
+            "example": 30099,
+            "type": "integer"
+          },
+          "portMin": {
+            "example": 30000,
+            "type": "integer"
+          },
+          "subPort": {
+            "example": 20531,
+            "type": "integer"
+          },
+          "trafficBytes": {
+            "example": 107374182400,
+            "format": "int64",
+            "type": "integer"
+          },
+          "usageEpoch": {
+            "example": 0,
+            "type": "integer"
+          },
+          "username": {
+            "example": "reseller",
+            "type": "string"
+          },
+          "webBasePath": {
+            "example": "/reseller/",
+            "type": "string"
+          },
+          "webPort": {
+            "example": 20530,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "createdAt",
+          "enable",
+          "expiresAt",
+          "id",
+          "maxClients",
+          "maxInbounds",
+          "name",
+          "portMax",
+          "portMin",
+          "subPort",
+          "trafficBytes",
+          "usageEpoch",
+          "username",
+          "webBasePath",
+          "webPort"
+        ],
+        "type": "object"
+      },
+      "HostedPanelInput": {
+        "description": "HostedPanelInput is what the owner submits; an empty password on edit keeps the login.",
+        "properties": {
+          "enable": {
+            "example": true,
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "example": 0,
+            "format": "int64",
+            "type": "integer"
+          },
+          "maxClients": {
+            "example": 100,
+            "type": "integer"
+          },
+          "maxInbounds": {
+            "example": 5,
+            "type": "integer"
+          },
+          "name": {
+            "example": "Reseller A",
+            "type": "string"
+          },
+          "password": {
+            "example": "change-me-please",
+            "type": "string"
+          },
+          "portMax": {
+            "example": 30099,
+            "type": "integer"
+          },
+          "portMin": {
+            "example": 30000,
+            "type": "integer"
+          },
+          "subPort": {
+            "example": 20531,
+            "type": "integer"
+          },
+          "trafficBytes": {
+            "example": 107374182400,
+            "format": "int64",
+            "type": "integer"
+          },
+          "username": {
+            "example": "reseller",
+            "type": "string"
+          },
+          "webBasePath": {
+            "example": "/reseller/",
+            "type": "string"
+          },
+          "webPort": {
+            "example": 20530,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "enable",
+          "expiresAt",
+          "maxClients",
+          "maxInbounds",
+          "name",
+          "password",
+          "portMax",
+          "portMin",
+          "subPort",
+          "trafficBytes",
+          "username",
+          "webBasePath",
+          "webPort"
+        ],
+        "type": "object"
+      },
+      "HostedPanelView": {
+        "description": "HostedPanelView is one row of the Panels page.",
+        "properties": {
+          "createdAt": {
+            "example": 1760000000000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "enable": {
+            "example": true,
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "example": 0,
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "maxClients": {
+            "example": 100,
+            "type": "integer"
+          },
+          "maxInbounds": {
+            "example": 5,
+            "type": "integer"
+          },
+          "name": {
+            "example": "Reseller A",
+            "type": "string"
+          },
+          "portMax": {
+            "example": 30099,
+            "type": "integer"
+          },
+          "portMin": {
+            "example": 30000,
+            "type": "integer"
+          },
+          "process": {
+            "$ref": "#/components/schemas/ProcState"
+          },
+          "status": {
+            "$ref": "#/components/schemas/PanelStatus"
+          },
+          "subPort": {
+            "example": 20531,
+            "type": "integer"
+          },
+          "trafficBytes": {
+            "example": 107374182400,
+            "format": "int64",
+            "type": "integer"
+          },
+          "usageEpoch": {
+            "example": 0,
+            "type": "integer"
+          },
+          "username": {
+            "example": "reseller",
+            "type": "string"
+          },
+          "webBasePath": {
+            "example": "/reseller/",
+            "type": "string"
+          },
+          "webPort": {
+            "example": 20530,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "createdAt",
+          "enable",
+          "expiresAt",
+          "id",
+          "maxClients",
+          "maxInbounds",
+          "name",
+          "portMax",
+          "portMin",
+          "process",
+          "status",
+          "subPort",
+          "trafficBytes",
+          "usageEpoch",
+          "username",
+          "webBasePath",
+          "webPort"
+        ],
+        "type": "object"
+      },
+      "HostedView": {
+        "description": "HostedView is the hosted panel's own view of its limits and usage.",
+        "properties": {
+          "blocked": {
+            "type": "string"
+          },
+          "clients": {
+            "example": 40,
+            "format": "int64",
+            "type": "integer"
+          },
+          "enabled": {
+            "example": true,
+            "type": "boolean"
+          },
+          "inbounds": {
+            "example": 2,
+            "format": "int64",
+            "type": "integer"
+          },
+          "limits": {
+            "$ref": "#/components/schemas/Limits"
+          },
+          "usedBytes": {
+            "example": 1073741824,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "blocked",
+          "clients",
+          "enabled",
+          "inbounds",
+          "limits",
+          "usedBytes"
+        ],
+        "type": "object"
+      },
       "HwidSlotStatus": {
         "description": "HwidSlotStatus is the aggregate device-slot view exposed to subscribers:\ncounters only, no hwid value or hash, no email, no device metadata.",
         "properties": {
@@ -3116,7 +3687,10 @@
               "mtproto",
               "amneziawg",
               "tuic",
-              "masque"
+              "masque",
+              "openvpn",
+              "ikev2",
+              "l2tp"
             ],
             "example": "vless",
             "type": "string"
@@ -3285,6 +3859,10 @@
             "example": 1,
             "type": "integer"
           },
+          "l2tpPsk": {
+            "description": "L2TP clients type the inbound's pre-shared key next to their login.",
+            "type": "string"
+          },
           "listen": {
             "type": "string"
           },
@@ -3397,6 +3975,52 @@
           "id",
           "total",
           "up"
+        ],
+        "type": "object"
+      },
+      "Limits": {
+        "description": "Limits are the owner-set caps for one hosted panel. Zero means unlimited.",
+        "properties": {
+          "expiresAt": {
+            "example": 0,
+            "format": "int64",
+            "type": "integer"
+          },
+          "maxClients": {
+            "example": 100,
+            "type": "integer"
+          },
+          "maxInbounds": {
+            "example": 5,
+            "type": "integer"
+          },
+          "portMax": {
+            "example": 30099,
+            "type": "integer"
+          },
+          "portMin": {
+            "example": 30000,
+            "type": "integer"
+          },
+          "trafficBytes": {
+            "example": 107374182400,
+            "format": "int64",
+            "type": "integer"
+          },
+          "usageEpoch": {
+            "description": "UsageEpoch bumps when the owner resets usage; the child zeroes its counter.",
+            "example": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "expiresAt",
+          "maxClients",
+          "maxInbounds",
+          "portMax",
+          "portMin",
+          "trafficBytes",
+          "usageEpoch"
         ],
         "type": "object"
       },
@@ -4068,6 +4692,50 @@
         ],
         "type": "object"
       },
+      "PanelStatus": {
+        "description": "PanelStatus is what the child reports back for the master's Panels page.",
+        "properties": {
+          "blocked": {
+            "type": "string"
+          },
+          "clients": {
+            "example": 40,
+            "type": "integer"
+          },
+          "inbounds": {
+            "example": 2,
+            "type": "integer"
+          },
+          "updatedAt": {
+            "example": 1760000000000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "usedBytes": {
+            "example": 1073741824,
+            "format": "int64",
+            "type": "integer"
+          },
+          "webTls": {
+            "example": false,
+            "type": "boolean"
+          },
+          "xrayRunning": {
+            "example": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "blocked",
+          "clients",
+          "inbounds",
+          "updatedAt",
+          "usedBytes",
+          "webTls",
+          "xrayRunning"
+        ],
+        "type": "object"
+      },
       "PanelUpdateStatus": {
         "description": "PanelUpdateStatus reports the outcome of the most recently launched panel\nself-update. RunID lets the caller confirm this status belongs to the\nupdate it started rather than a stale result left over from an earlier\nrun; State is one of \"pending\", \"success\", or \"failed\". RunID is a decimal\nstring, not a JSON number: it's a formatted UnixNano timestamp, and\nJavaScript's number type can't represent that precisely (it exceeds\nNumber.MAX_SAFE_INTEGER), which would let two different runs round to the\nsame value on the wire and defeat the whole point of this field.",
         "properties": {
@@ -4212,6 +4880,39 @@
           "xrayError",
           "xrayState",
           "xrayVersion"
+        ],
+        "type": "object"
+      },
+      "ProcState": {
+        "description": "ProcState is the supervisor's view of one panel process.",
+        "properties": {
+          "lastError": {
+            "type": "string"
+          },
+          "pid": {
+            "example": 4242,
+            "type": "integer"
+          },
+          "restarts": {
+            "example": 0,
+            "type": "integer"
+          },
+          "running": {
+            "example": true,
+            "type": "boolean"
+          },
+          "startedAt": {
+            "example": 1760000000000,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "lastError",
+          "pid",
+          "restarts",
+          "running",
+          "startedAt"
         ],
         "type": "object"
       },
@@ -4560,6 +5261,42 @@
         ],
         "type": "object"
       },
+      "SponsorAdminView": {
+        "description": "SponsorAdminView is what the sponsor manager page loads.",
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/SponsorConfig"
+          },
+          "records": {
+            "items": {
+              "$ref": "#/components/schemas/SponsorRecord"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "config",
+          "records"
+        ],
+        "type": "object"
+      },
+      "SponsorConfig": {
+        "description": "SponsorConfig is the owner-level sponsor setup: where sponsors come from and\nthe \"become a sponsor\" contact link.",
+        "properties": {
+          "contact": {
+            "example": "https://t.me/example",
+            "type": "string"
+          },
+          "feedUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "contact",
+          "feedUrl"
+        ],
+        "type": "object"
+      },
       "SponsorList": {
         "description": "SponsorList is the active sponsor set plus the contact link for new sponsors.",
         "properties": {
@@ -4576,6 +5313,71 @@
         },
         "required": [
           "sponsors"
+        ],
+        "type": "object"
+      },
+      "SponsorRecord": {
+        "description": "SponsorRecord is a sponsor placement the panel owner manages locally. A zero\nFromMs/UntilMs means no start/end bound.",
+        "properties": {
+          "enable": {
+            "example": true,
+            "type": "boolean"
+          },
+          "from": {
+            "example": 0,
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "link": {
+            "example": "https://acme.example/",
+            "type": "string"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "name": {
+            "example": "Acme VPS",
+            "type": "string"
+          },
+          "slots": {
+            "example": [
+              "dashboard",
+              "login"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "text": {
+            "example": "Use code PANEL at checkout.",
+            "type": "string"
+          },
+          "title": {
+            "example": "Acme VPS — 20% off",
+            "type": "string"
+          },
+          "until": {
+            "example": 1790000000000,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "enable",
+          "from",
+          "id",
+          "link",
+          "logo",
+          "name",
+          "slots",
+          "text",
+          "title",
+          "until"
         ],
         "type": "object"
       },
@@ -4778,6 +5580,28 @@
         ],
         "type": "object"
       },
+      "VPNStatus": {
+        "description": "VPNStatus is whether a VPN inbound served outside Xray is up and, if not,\nwhy: a missing binary, a kernel without PPP or IPsec, a clashing daemon.",
+        "properties": {
+          "id": {
+            "example": 4,
+            "type": "integer"
+          },
+          "reason": {
+            "example": "this kernel has no PPP support (/dev/ppp is missing), which L2TP needs",
+            "type": "string"
+          },
+          "running": {
+            "example": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "running"
+        ],
+        "type": "object"
+      },
       "WebSocketEnvelope": {
         "type": "object",
         "required": [
@@ -4856,6 +5680,22 @@
     {
       "name": "API Tokens",
       "description": "Manage scoped Bearer tokens for programmatic auth. Tokens grant admin, monitor, or node-sync access, may expire, and are stored as SHA-256 hashes. The plaintext is returned only once at creation."
+    },
+    {
+      "name": "Hosted Panel",
+      "description": "A panel the owner of this server runs for someone else. Its inbound, client, port, traffic and expiry limits are set by the owner and cannot be changed from inside the panel."
+    },
+    {
+      "name": "Hosted Panels",
+      "description": "Separate panels this server runs for other people. Each has its own database, login, address and inbound port range, and enforces the limits set here. Not available from inside a hosted panel."
+    },
+    {
+      "name": "Sponsors",
+      "description": "Manage the sponsor placements this panel shows on its login page, dashboard and sponsors page, and optionally read them from another panel's feed instead."
+    },
+    {
+      "name": "Activity Log",
+      "description": "Who changed what and when. Every state-changing API call is recorded with its actor (panel user or token:<name>), client IP, route template, path parameters and outcome, along with every login attempt. Request bodies are never stored. Rows older than 90 days are pruned daily."
     },
     {
       "name": "Xray Settings",
@@ -5036,7 +5876,7 @@
         "tags": [
           "Authentication"
         ],
-        "summary": "Public. Active paid sponsor placements read from the project sponsors.json (cached for 1h); entries outside their from/until window are dropped. Logos are proxied by the panel at /sponsors/logo/{name}. Used by the login page and panel sponsor slots.",
+        "summary": "Public. Active sponsor placements: the panel owner's own sponsors, or another panel's feed when sponsorFeedUrl is set (cached for 1h). Entries outside their from/until window are dropped. Logos are proxied by the panel at /sponsors/logo/{name}. Used by the login page and panel sponsor slots.",
         "operationId": "get_sponsors",
         "responses": {
           "200": {
@@ -5077,6 +5917,101 @@
                         "until": "2026-11-01T00:00:00Z"
                       }
                     ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sponsors/feed/sponsors.json": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Public. This panel's own live sponsors as a feed for other panels: point another panel's sponsor feed setting at this URL. Logo fields are bare file names served from the sibling logos/ path. The body is the bare SponsorList, not wrapped in a Msg envelope.",
+        "operationId": "get_sponsors_feed_sponsors_json",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SponsorList"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "contact": "https://t.me/example",
+                    "sponsors": [
+                      {
+                        "enable": true,
+                        "from": "2026-10-01T00:00:00Z",
+                        "id": "acme-2026-10",
+                        "link": "https://acme.example/?utm_source=3x-ui",
+                        "logo": "/sponsors/logo/acme.png",
+                        "name": "Acme VPS",
+                        "slots": [
+                          ""
+                        ],
+                        "text": {},
+                        "title": {},
+                        "until": "2026-11-01T00:00:00Z"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sponsors/feed/logos/{name}": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Public. Logo image (PNG, JPEG or WebP) of a live sponsor in this panel's feed; 404 for anything else.",
+        "operationId": "get_sponsors_feed_logos_name",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "description": "Logo file name from the feed, e.g. local-1.png.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
                   }
                 }
               }
@@ -5292,6 +6227,7 @@
                       "awgServer": null,
                       "enable": true,
                       "id": 1,
+                      "l2tpPsk": "",
                       "listen": "",
                       "mtprotoDomain": "",
                       "network": "",
@@ -6022,6 +6958,146 @@
                 },
                 "example": {
                   "success": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/inbounds/{id}/openvpnProfile": {
+      "get": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "Download the .ovpn profile of an OpenVPN inbound. It carries the inbound's CA and tls-crypt key and asks the user for their client email and password. The remote address is the inbound's custom share address, else its listen address, else the host the request reached the panel on.",
+        "operationId": "get_panel_api_inbounds_id_openvpnProfile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "OpenVPN inbound ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/inbounds/vpnStatus": {
+      "get": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "Whether each OpenVPN, IKEv2 and L2TP inbound that should be serving someone is up, and if not, why (a missing binary, a kernel without PPP or IPsec, another strongSwan already running). Inbounds with no live client are left out: nothing runs for them.",
+        "operationId": "get_panel_api_inbounds_vpnStatus",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "id": 4,
+                      "running": false,
+                      "reason": "this kernel has no PPP support (/dev/ppp is missing), which L2TP needs"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/inbounds/{id}/ikev2Profile": {
+      "get": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "Download one client's profile for an IKEv2 inbound. `mobileconfig` is an Apple configuration profile (iOS, iPadOS, macOS) with the login filled in and the inbound's CA trusted; `sswan` is a profile for the strongSwan Android app, which asks for the password; `ca` is the CA certificate (DER) for setting up Windows or other clients by hand. Every format points at the inbound's server address.",
+        "operationId": "get_panel_api_inbounds_id_ikev2Profile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "IKEv2 inbound ID.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "description": "The client whose profile to build.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": true,
+            "description": "mobileconfig (default), sswan or ca.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
                 }
               }
             }
@@ -8529,7 +9605,7 @@
         ],
         "summary": "Create a new client and attach it to one or more inbounds in a single call. Body is JSON. Per-protocol secrets are generated server-side when omitted, so callers can send only the universal fields.",
         "operationId": "post_panel_api_clients_add",
-        "description": "Fields the server fills in when they are omitted — a valid value sent by the caller is never overwritten. Re-adding an email that already exists, with its stored `subId`, reuses the stored `id`, `password`, `auth` and `secret` instead of minting new ones, so the identity stays in sync across its inbounds.\n\n- **VLESS / VMess** — `id`, a fresh UUID\n- **Trojan** — `password`\n- **Shadowsocks** — `password`. On a `2022-blake3-*` inbound a supplied password that does not base64-decode to the key length of the cipher (16 or 32 bytes) is replaced by a generated key and the call still succeeds, so read the client back if you did not let the server pick. Legacy ciphers keep any non-empty password\n- **Hysteria** — `auth`\n- **mtproto** — `secret`, a FakeTLS secret derived from the fronting domain of the inbound, or from `www.cloudflare.com` when it has none\n- **WireGuard** — `privateKey` and `publicKey` when both are blank, or `publicKey` alone when only a `privateKey` was sent, plus `allowedIPs`: one free `/32` taken from the /24 the existing peers of that inbound already sit in, or from `10.0.0.0/24` when it has none\n\nAccepted on the same body but never generated: `preSharedKey` and `keepAlive` (WireGuard), `adTag` (mtproto).\n\nWireGuard is the only one of these that can fail. Allocation widens the search to the containing /16 before giving up with `inbound <id>: wireguard: no free address available in <scope>`, and an `allowedIPs` supplied by the caller is validated instead of allocated: `inbound <id>: wireguard: allowedIPs entry <entry> overlaps <address> used by another client` when its range overlaps an address or prefix a different client of that same inbound holds, or `... used by a client on <inbound>` when the holder sits on another WireGuard or AmneziaWG inbound. Ranges are compared, not strings, so `10.0.0.9/24` collides with `10.0.0.5/32`; a `0.0.0.0/0` or `::/0` default route claims no address. Allocation likewise skips every address inside a prefix another client holds. The same validation runs on POST /panel/api/clients/{email}/attach, where a client that already carries an address brings it along.\n\nAn `inboundIds` entry that names no existing inbound rejects the whole call before anything is written. Past that, the inbounds are applied concurrently and independently: one that fails no longer stops the others, so a `success:false` response can still have created the client on the rest. Every error names the inbound it came from (`inbound 7: <message>`), and several failures are reported together, one per line. `limitHwid` is applied only when every inbound succeeded, so re-run the call after fixing the failure.",
+        "description": "Fields the server fills in when they are omitted — a valid value sent by the caller is never overwritten. Re-adding an email that already exists, with its stored `subId`, reuses the stored `id`, `password`, `auth` and `secret` instead of minting new ones, so the identity stays in sync across its inbounds.\n\n- **VLESS / VMess** — `id`, a fresh UUID\n- **Trojan / OpenVPN** — `password`\n- **Shadowsocks** — `password`. On a `2022-blake3-*` inbound a supplied password that does not base64-decode to the key length of the cipher (16 or 32 bytes) is replaced by a generated key and the call still succeeds, so read the client back if you did not let the server pick. Legacy ciphers keep any non-empty password\n- **Hysteria** — `auth`\n- **mtproto** — `secret`, a FakeTLS secret derived from the fronting domain of the inbound, or from `www.cloudflare.com` when it has none\n- **WireGuard** — `privateKey` and `publicKey` when both are blank, or `publicKey` alone when only a `privateKey` was sent, plus `allowedIPs`: one free `/32` taken from the /24 the existing peers of that inbound already sit in, or from `10.0.0.0/24` when it has none\n\nAccepted on the same body but never generated: `preSharedKey` and `keepAlive` (WireGuard), `adTag` (mtproto).\n\nWireGuard is the only one of these that can fail. Allocation widens the search to the containing /16 before giving up with `inbound <id>: wireguard: no free address available in <scope>`, and an `allowedIPs` supplied by the caller is validated instead of allocated: `inbound <id>: wireguard: allowedIPs entry <entry> overlaps <address> used by another client` when its range overlaps an address or prefix a different client of that same inbound holds, or `... used by a client on <inbound>` when the holder sits on another WireGuard or AmneziaWG inbound. Ranges are compared, not strings, so `10.0.0.9/24` collides with `10.0.0.5/32`; a `0.0.0.0/0` or `::/0` default route claims no address. Allocation likewise skips every address inside a prefix another client holds. The same validation runs on POST /panel/api/clients/{email}/attach, where a client that already carries an address brings it along.\n\nAn `inboundIds` entry that names no existing inbound rejects the whole call before anything is written. Past that, the inbounds are applied concurrently and independently: one that fails no longer stops the others, so a `success:false` response can still have created the client on the rest. Every error names the inbound it came from (`inbound 7: <message>`), and several failures are reported together, one per line. `limitHwid` is applied only when every inbound succeeded, so re-run the call after fixing the failure.",
         "requestBody": {
           "required": true,
           "content": {
@@ -13149,6 +14225,80 @@
         }
       }
     },
+    "/panel/api/setting/testWebhook": {
+      "post": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Send a signed test event to every configured webhook URL. Fails with the first URL that did not answer 2xx.",
+        "operationId": "post_panel_api_setting_testWebhook",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "msg": "Test event delivered to every webhook URL"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/setting/backupNow": {
+      "post": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Run the scheduled backup once with the saved settings: a gzipped database backup to the local folder and/or the S3 bucket, pruning beyond backupKeep. Returns one result per destination.",
+        "operationId": "post_panel_api_setting_backupNow",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "destination": "s3",
+                      "name": "panel.example.com_2026-10-17_030000.db.gz",
+                      "pruned": 1
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/panel/api/setting/getDefaultJsonConfig": {
       "get": {
         "tags": [
@@ -13449,6 +14599,680 @@
                 },
                 "example": {
                   "success": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/hosted/status": {
+      "get": {
+        "tags": [
+          "Hosted Panel"
+        ],
+        "summary": "This panel's limits and usage. enabled is false on an ordinary panel. blocked is expired, traffic or no-limits while Xray is held stopped, otherwise empty. Zero limits mean unlimited.",
+        "operationId": "get_panel_api_hosted_status",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/HostedView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "blocked": "",
+                    "clients": 40,
+                    "enabled": true,
+                    "inbounds": 2,
+                    "limits": {
+                      "expiresAt": 0,
+                      "maxClients": 100,
+                      "maxInbounds": 5,
+                      "portMax": 30099,
+                      "portMin": 30000,
+                      "trafficBytes": 107374182400,
+                      "usageEpoch": 0
+                    },
+                    "usedBytes": 1073741824
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/hostedPanels/list": {
+      "get": {
+        "tags": [
+          "Hosted Panels"
+        ],
+        "summary": "Every hosted panel with its last reported usage (status) and its process state. status.updatedAt is 0 until the panel has reported once.",
+        "operationId": "get_panel_api_hostedPanels_list",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/HostedPanelView"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "createdAt": 1760000000000,
+                      "enable": true,
+                      "expiresAt": 0,
+                      "id": 1,
+                      "maxClients": 100,
+                      "maxInbounds": 5,
+                      "name": "Reseller A",
+                      "portMax": 30099,
+                      "portMin": 30000,
+                      "process": {
+                        "lastError": "",
+                        "pid": 4242,
+                        "restarts": 0,
+                        "running": true,
+                        "startedAt": 1760000000000
+                      },
+                      "status": {
+                        "blocked": "",
+                        "clients": 40,
+                        "inbounds": 2,
+                        "updatedAt": 1760000000000,
+                        "usedBytes": 1073741824,
+                        "webTls": false,
+                        "xrayRunning": true
+                      },
+                      "subPort": 20531,
+                      "trafficBytes": 107374182400,
+                      "usageEpoch": 0,
+                      "username": "reseller",
+                      "webBasePath": "/reseller/",
+                      "webPort": 20530
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/hostedPanels/add": {
+      "post": {
+        "tags": [
+          "Hosted Panels"
+        ],
+        "summary": "Create a hosted panel and start it when enable is true. The password must be at least 8 characters. webPort, subPort and the portMin-portMax inbound range must not collide with this panel, its inbounds or another hosted panel. Zero limits mean unlimited; expiresAt is unix ms.",
+        "operationId": "post_panel_api_hostedPanels_add",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "HostedPanelInput."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/HostedPanel"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "createdAt": 1760000000000,
+                    "enable": true,
+                    "expiresAt": 0,
+                    "id": 1,
+                    "maxClients": 100,
+                    "maxInbounds": 5,
+                    "name": "Reseller A",
+                    "portMax": 30099,
+                    "portMin": 30000,
+                    "subPort": 20531,
+                    "trafficBytes": 107374182400,
+                    "usageEpoch": 0,
+                    "username": "reseller",
+                    "webBasePath": "/reseller/",
+                    "webPort": 20530
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/hostedPanels/update/{id}": {
+      "post": {
+        "tags": [
+          "Hosted Panels"
+        ],
+        "summary": "Replace the settings of a hosted panel. An empty password keeps the current login; a new one also turns off its 2FA. Changing the address restarts the panel; limits apply live.",
+        "operationId": "post_panel_api_hostedPanels_update_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Hosted panel id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "HostedPanelInput."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/HostedPanel"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "createdAt": 1760000000000,
+                    "enable": true,
+                    "expiresAt": 0,
+                    "id": 1,
+                    "maxClients": 100,
+                    "maxInbounds": 5,
+                    "name": "Reseller A",
+                    "portMax": 30099,
+                    "portMin": 30000,
+                    "subPort": 20531,
+                    "trafficBytes": 107374182400,
+                    "usageEpoch": 0,
+                    "username": "reseller",
+                    "webBasePath": "/reseller/",
+                    "webPort": 20530
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/hostedPanels/del/{id}": {
+      "post": {
+        "tags": [
+          "Hosted Panels"
+        ],
+        "summary": "Stop a hosted panel and delete it together with its database and files.",
+        "operationId": "post_panel_api_hostedPanels_del_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Hosted panel id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/hostedPanels/resetUsage/{id}": {
+      "post": {
+        "tags": [
+          "Hosted Panels"
+        ],
+        "summary": "Start a new usage period: the hosted panel zeroes its traffic meter and resumes if traffic was what stopped it.",
+        "operationId": "post_panel_api_hostedPanels_resetUsage_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Hosted panel id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sponsors/list": {
+      "get": {
+        "tags": [
+          "Sponsors"
+        ],
+        "summary": "Every locally stored sponsor record plus the feed URL and contact link.",
+        "operationId": "get_panel_api_sponsors_list",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SponsorAdminView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "config": {
+                      "contact": "https://t.me/example",
+                      "feedUrl": ""
+                    },
+                    "records": [
+                      {
+                        "enable": true,
+                        "from": 0,
+                        "id": 1,
+                        "link": "https://acme.example/",
+                        "logo": "",
+                        "name": "Acme VPS",
+                        "slots": [
+                          "dashboard",
+                          "login"
+                        ],
+                        "text": "Use code PANEL at checkout.",
+                        "title": "Acme VPS — 20% off",
+                        "until": 1790000000000
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sponsors/save": {
+      "post": {
+        "tags": [
+          "Sponsors"
+        ],
+        "summary": "Create (id 0) or replace a sponsor record. The link must be https://; slots are any of dashboard, page and login; from/until are unix ms with 0 meaning unbounded; the logo is an optional PNG, JPEG or WebP data URL of at most 64 KB.",
+        "operationId": "post_panel_api_sponsors_save",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "SponsorRecord."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SponsorRecord"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "enable": true,
+                    "from": 0,
+                    "id": 1,
+                    "link": "https://acme.example/",
+                    "logo": "",
+                    "name": "Acme VPS",
+                    "slots": [
+                      "dashboard",
+                      "login"
+                    ],
+                    "text": "Use code PANEL at checkout.",
+                    "title": "Acme VPS — 20% off",
+                    "until": 1790000000000
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sponsors/del/{id}": {
+      "post": {
+        "tags": [
+          "Sponsors"
+        ],
+        "summary": "Delete a sponsor record.",
+        "operationId": "post_panel_api_sponsors_del_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Sponsor record id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sponsors/config": {
+      "post": {
+        "tags": [
+          "Sponsors"
+        ],
+        "summary": "Set where sponsors come from and the \"become a sponsor\" link. An empty feedUrl shows this panel's own records; otherwise it must be https://, or http:// to a loopback address on this server.",
+        "operationId": "post_panel_api_sponsors_config",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "feedUrl": {
+                    "type": "string",
+                    "description": "Another panel's /sponsors/feed/sponsors.json, or empty."
+                  },
+                  "contact": {
+                    "type": "string",
+                    "description": "https:// contact link, or empty."
+                  }
+                },
+                "required": [
+                  "feedUrl",
+                  "contact"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/audit/list": {
+      "get": {
+        "tags": [
+          "Activity Log"
+        ],
+        "summary": "Page through the activity log, newest first.",
+        "operationId": "get_panel_api_audit_list",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "1-indexed page number. Defaults to 1.",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "description": "Rows per page. Defaults to 50, capped at 200.",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "description": "Case-insensitive substring match on actor, IP, action or target.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "result",
+            "in": "query",
+            "required": false,
+            "description": "ok for successful actions only, fail for failures only; omit for both.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ok",
+                "fail"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/AuditLogPage"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "items": [
+                      {
+                        "action": "POST /clients/update/:email",
+                        "actor": "admin",
+                        "createdAt": 1760684400000,
+                        "id": 42,
+                        "ip": "203.0.113.5",
+                        "success": true,
+                        "target": "email=alice@example.com"
+                      }
+                    ],
+                    "total": 120
+                  }
                 }
               }
             }

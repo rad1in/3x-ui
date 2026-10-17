@@ -93,10 +93,33 @@ export function isInboundMultiUser(record: { protocol: string }): boolean {
     case 'amneziawg':
     case 'tuic':
     case 'masque':
+    case 'openvpn':
+    case 'ikev2':
+    case 'l2tp':
       return true;
     default:
       return false;
   }
+}
+
+// These VPNs hand out profiles to import, not share links.
+export function hasShareLinks(protocol: string): boolean {
+  return protocol !== 'openvpn' && protocol !== 'ikev2' && protocol !== 'l2tp';
+}
+
+export type IKEv2ProfileFormat = 'mobileconfig' | 'sswan' | 'ca';
+
+export function ikev2PanelProfileUrl(
+  inboundId: number,
+  email: string,
+  format: IKEv2ProfileFormat,
+): string {
+  const query = new URLSearchParams({ email, format }).toString();
+  return `${window.X_UI_BASE_PATH || '/'}panel/api/inbounds/${inboundId}/ikev2Profile?${query}`;
+}
+
+export function openvpnPanelProfileUrl(inboundId: number): string {
+  return `${window.X_UI_BASE_PATH || '/'}panel/api/inbounds/${inboundId}/openvpnProfile`;
 }
 
 /** Max host remarks shown inline before truncating with "+N". */

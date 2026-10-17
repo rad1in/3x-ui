@@ -79,3 +79,21 @@ func TestGetPortOverride(t *testing.T) {
 		})
 	}
 }
+
+func TestLoopbackIP(t *testing.T) {
+	cases := map[string]string{
+		"":            "127.0.0.1",
+		"127.0.0.7":   "127.0.0.7",
+		" 127.3.2.1 ": "127.3.2.1",
+		"10.0.0.1":    "127.0.0.1",
+		"::1":         "127.0.0.1",
+		"not-an-ip":   "127.0.0.1",
+		"127.0.0.0/8": "127.0.0.1",
+	}
+	for env, want := range cases {
+		t.Setenv("XUI_LOOPBACK_IP", env)
+		if got := LoopbackIP(); got != want {
+			t.Errorf("XUI_LOOPBACK_IP=%q: LoopbackIP() = %q, want %q", env, got, want)
+		}
+	}
+}

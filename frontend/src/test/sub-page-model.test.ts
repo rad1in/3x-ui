@@ -4,6 +4,7 @@ import {
   buildSubApps,
   daysUntil,
   detectPlatform,
+  vpnProfileUrl,
   resolveSubStatus,
   usagePercent,
 } from '@/pages/sub/subPageModel';
@@ -90,7 +91,9 @@ describe('detectPlatform', () => {
 describe('buildSubApps', () => {
   const subUrl = 'https://sub.example.com/sub/abc';
   const encSub = encodeURIComponent(subUrl);
-  const sub = { subUrl, sId: 'abc', subTitle: 'Nova Net' };
+  const singboxUrl = 'https://sub.example.com/singbox/abc';
+  const encSingbox = encodeURIComponent(singboxUrl);
+  const sub = { subUrl, singboxUrl, sId: 'abc', subTitle: 'Nova Net' };
 
   it('offers Android and iOS app lists only', () => {
     expect(Object.keys(buildSubApps(sub))).toEqual(['android', 'ios']);
@@ -100,11 +103,16 @@ describe('buildSubApps', () => {
     expect(buildSubApps(sub).android).toEqual([
       { name: 'V2Box', url: `v2box://install-sub?url=${encSub}&name=abc` },
       { name: 'V2RayNG', url: `v2rayng://install-config?url=${encSub}` },
-      { name: 'Sing-box', url: `sing-box://import-remote-profile?url=${encSub}#Nova%20Net` },
+      { name: 'Sing-box', url: `sing-box://import-remote-profile?url=${encSingbox}#Nova%20Net` },
       { name: 'V2RayTun', url: `v2raytun://import/${subUrl}` },
       { name: 'Happ', url: `happ://add/${subUrl}` },
       { name: 'Incy', url: `incy://add/${subUrl}` },
     ]);
+  });
+
+  it('offers sing-box only with a sing-box profile, which is all the app imports', () => {
+    const apps = buildSubApps({ ...sub, singboxUrl: '' });
+    expect([...apps.android, ...apps.ios].map((app) => app.name)).not.toContain('Sing-box');
   });
 
   it('gives every iOS app a one-tap import link', () => {
@@ -113,6 +121,7 @@ describe('buildSubApps', () => {
       { name: 'Shadowrocket', url: `shadowrocket://add/sub://${rocket}?remark=Nova%20Net` },
       { name: 'V2Box', url: `v2box://install-sub?url=${encSub}&name=abc` },
       { name: 'Streisand', url: `streisand://import/${encSub}` },
+      { name: 'Sing-box', url: `sing-box://import-remote-profile?url=${encSingbox}#Nova%20Net` },
       { name: 'V2RayTun', url: `v2raytun://import/${subUrl}` },
       { name: 'Happ', url: `happ://add/${subUrl}` },
       { name: 'Incy', url: `incy://add/${subUrl}` },
@@ -121,7 +130,7 @@ describe('buildSubApps', () => {
 
   it('names the sing-box profile after the subscription id when there is no title', () => {
     expect(buildSubApps({ ...sub, subTitle: '' }).android[2].url).toBe(
-      `sing-box://import-remote-profile?url=${encSub}#abc`,
+      `sing-box://import-remote-profile?url=${encSingbox}#abc`,
     );
   });
 
@@ -130,6 +139,17 @@ describe('buildSubApps', () => {
     const rocket = Buffer.from(`${subUrl}?token=1&flag=shadowrocket`).toString('base64');
     expect(buildSubApps(withQuery).ios[0].url).toBe(
       `shadowrocket://add/sub://${rocket}?remark=Nova%20Net`,
+    );
+  });
+});
+
+describe('vpnProfileUrl', () => {
+  it('hangs each profile under the subscription path, dropping any query', () => {
+    expect(vpnProfileUrl('https://vpn.example.com:2096/sub/abc', 'openvpn', 7)).toBe(
+      'https://vpn.example.com:2096/sub/abc/openvpn/7',
+    );
+    expect(vpnProfileUrl('https://vpn.example.com/sub/abc/?name=x', 'ikev2', 7, 'sswan')).toBe(
+      'https://vpn.example.com/sub/abc/ikev2/7/sswan',
     );
   });
 });

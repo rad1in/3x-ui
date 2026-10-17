@@ -40,6 +40,8 @@ type updateSettingForm struct {
 	ClearLdapPassword    bool   `json:"clearLdapPassword" form:"clearLdapPassword"`
 	ClearSmtpPassword    bool   `json:"clearSmtpPassword" form:"clearSmtpPassword"`
 	ClearDiscordBotToken bool   `json:"clearDiscordBotToken" form:"clearDiscordBotToken"`
+	ClearWebhookSecret   bool   `json:"clearWebhookSecret" form:"clearWebhookSecret"`
+	ClearBackupS3Secret  bool   `json:"clearBackupS3Secret" form:"clearBackupS3Secret"`
 }
 
 type validateRegexForm struct {
@@ -81,6 +83,8 @@ func (a *SettingController) initRouter(g *gin.RouterGroup) {
 	g.POST("/testSmtp", a.testSmtp)
 	g.POST("/testTgBot", a.testTgBot)
 	g.POST("/testDiscord", a.testDiscord)
+	g.POST("/testWebhook", a.testWebhook)
+	g.POST("/backupNow", a.backupNow)
 }
 
 func (a *SettingController) validateRegex(c *gin.Context) {
@@ -155,6 +159,8 @@ func (a *SettingController) updateSetting(c *gin.Context) {
 		LdapPassword:    form.ClearLdapPassword,
 		SmtpPassword:    form.ClearSmtpPassword,
 		DiscordBotToken: form.ClearDiscordBotToken,
+		WebhookSecret:   form.ClearWebhookSecret,
+		BackupS3Secret:  form.ClearBackupS3Secret,
 	})
 	if err == nil && twoFactorErr == nil && !oldTwoFactor && allSetting.TwoFactorEnable {
 		if bumpErr := a.userService.BumpLoginEpoch(); bumpErr != nil {
@@ -348,6 +354,23 @@ func (a *SettingController) testTgBot(c *gin.Context) {
 	jsonMsg(c, I18nWeb(c, "pages.settings.tgBotNotRunning"), errors.New("bot not started"))
 }
 
+func (a *SettingController) testWebhook(c *gin.Context) {
+	if testWebhookFunc == nil {
+		jsonMsg(c, I18nWeb(c, "pages.settings.webhookTestFailed"), errors.New("webhooks are not set up"))
+		return
+	}
+	if err := testWebhookFunc(); err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.settings.webhookTestFailed")+": "+err.Error(), err)
+		return
+	}
+	jsonMsg(c, I18nWeb(c, "pages.settings.webhookTestSuccess"), nil)
+}
+
+// testWebhookFunc is wired from the web layer, which owns the webhook sender.
+var testWebhookFunc func() error
+
+func SetTestWebhookFunc(fn func() error) { testWebhookFunc = fn }
+
 // testTgFunc is set from web layer to test Telegram sending without circular imports.
 var testTgFunc func() error
 
@@ -391,4 +414,10 @@ func (a *SettingController) testDiscord(c *gin.Context) {
 		return
 	}
 	jsonMsg(c, I18nWeb(c, "pages.settings.discordTestSuccess"), nil)
+}
+
+// backupNow runs the scheduled backup once, with the saved destinations.
+func (a *SettingController) backupNow(c *gin.Context) {
+	results, err := (&service.ScheduledBackupService{}).Run(c.Request.Context())
+	jsonObj(c, results, err)
 }

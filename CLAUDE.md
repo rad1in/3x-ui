@@ -31,7 +31,9 @@ file locations when it can answer in one hop.
   built into `internal/web/dist/` (gitignored) and embedded via `embed.FS`.
 
 ## Repo map
-- `main.go` — entry point + `x-ui` CLI (run, migrate, migrate-db, encrypt-tokens, setting, cert).
+- `main.go` — entry point + `x-ui` CLI (run, migrate, migrate-db, encrypt-tokens, setting, cert, client).
+- `internal/cliclient/` — `x-ui client`: manages clients through the running panel's API
+  with a short-lived admin token, so changes take the runtime path like the web UI.
 - `internal/config/` — env parsing (XUI_DEBUG, XUI_LOG_LEVEL, XUI_LOG_FOLDER,
   XUI_BIN_FOLDER, XUI_SKIP_HSTS, XUI_PORT, XUI_DB_*).
 - `internal/database/` + `internal/database/model/` — GORM schema (~24 models;
@@ -41,6 +43,13 @@ file locations when it can answer in one hop.
 - `internal/xray/geodata/` — streaming geosite/geoip `.dat` reader (cached
   category index + paged entries) and `geosite:`/`geoip:`/`ext:` token parsing.
 - `internal/mtproto/` — MTProto inbounds via the bundled `mtg-multi` binary.
+- `internal/openvpn/` — OpenVPN inbounds: one `openvpn` process each, logins
+  decided and traffic metered by the panel over the management socket.
+- `internal/ipsec/` — IKEv2 inbounds: one host-wide strongSwan `charon` (UDP
+  500/4500) driven over vici; EAP logins, per-SA metering, Apple/Android profiles.
+- `internal/l2tp/` — L2TP/IPsec inbound: `xl2tpd` + `pppd` (logins in a marked
+  block of `/etc/ppp/chap-secrets`), PSK IPsec on the shared charon.
+- `internal/vpnnat/` — iptables masquerade/forward/MSS clamp for VPN client networks.
 - `internal/tuic/` — TUIC v5 inbounds: `tuic-server` sidecar supervisor, native Go UDP relay traffic metering.
 - `internal/amneziawg/` — AmneziaWG protocol shape: instance/peer derivation
   from an inbound, 3.1 obfuscation param generation + validation, port-forward
@@ -52,14 +61,14 @@ file locations when it can answer in one hop.
 - `internal/pia/` — PIA WireGuard protocol client (auth, signed server list, `/addKey`).
 - `internal/sub/` — subscription server (raw / JSON / Clash).
 - `internal/eventbus/` — in-process pub/sub (outbound/node health, xray.crash,
-  cpu.high, memory.high, login.attempt).
+  cpu.high, memory.high, login.attempt, client.* lifecycle).
 - `internal/logger/`, `internal/util/` (link, crypto, sys, ldap, …),
   `internal/tunnelmonitor/` — shared infrastructure.
 - `internal/web/` — Gin server (embeds `dist/` + `translation/`).
   - `controller/` — panel + REST API handlers; OpenAPI at /panel/api/openapi.json.
   - `service/` — business logic (InboundService, SettingService, XrayService,
-    node sync); subpackages tgbot/, discord/, email/, outbound/, panel/, integration/.
-  - `job/` — 19 cron jobs (traffic, fail2ban IP-limit, node heartbeat/sync, LDAP,
+    node sync); subpackages tgbot/, discord/, email/, webhook/, outbound/, panel/, integration/.
+  - `job/` — 28 cron jobs (traffic, fail2ban IP-limit, node heartbeat/sync, LDAP,
     CPU/memory watchdogs, …); full table in `docs/architecture.md` §5.4.
   - `middleware/`, `entity/`, `global/`, `session/` (CSRF), `network/`,
     `runtime/` (master/sub-node over mTLS), `websocket/`.
@@ -160,9 +169,9 @@ file locations when it can answer in one hop.
   `-race`); `httptest` for HTTP. Keep `database.InitDB` for reopening a file or
   migrating a hand-built legacy DB. `internal/sub`'s `initSubDB(t)` is the template.
 - Code must pass `golangci-lint run` (gofumpt + goimports formatting): `make lint`.
-- Postgres, xray-gRPC-e2e, master+node and scale tests `t.Skip` unless
+- Postgres, xray-gRPC-e2e, master+node, OpenVPN, IKEv2 and scale tests `t.Skip` unless
   `XUI_TEST_PG_DSN`, `XUI_DB_TYPE`+`XUI_DB_DSN`, `XRAY_E2E_BINARY`,
-  `XUI_NODE_E2E_BINARY` or `XUI_SCALE_TEST` is set — a green `go test ./...`
+  `XUI_NODE_E2E_BINARY`, `OPENVPN_E2E_BINARY` (needs root), `IKEV2_E2E=1` (root, charon, ip netns) or `XUI_SCALE_TEST` is set — a green `go test ./...`
   does not mean those paths ran.
 
 ## Frontend conventions (summary; full version in frontend/CLAUDE.md)

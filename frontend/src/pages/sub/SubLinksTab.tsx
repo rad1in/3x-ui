@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button, QRCode, Tag } from 'antd';
-import { CopyOutlined, DownloadOutlined } from '@ant-design/icons';
+import { CopyOutlined, DownloadOutlined, ImportOutlined } from '@ant-design/icons';
 
 import SubQrButton from './SubQrButton';
 
@@ -8,12 +8,23 @@ interface SubLinksTabProps {
   subUrl: string;
   subJsonUrl: string;
   subClashUrl: string;
+  subSingboxUrl?: string;
   onCopy: (value: string) => void;
 }
 
 const appendRawView = (url: string) => `${url}${url.includes('?') ? '&' : '?'}view=raw`;
 
-export default function SubLinksTab({ subUrl, subJsonUrl, subClashUrl, onCopy }: SubLinksTabProps) {
+// sing-box's own deep link; the app fetches and refreshes the profile itself.
+const singboxImportUrl = (url: string) =>
+  `sing-box://import-remote-profile?url=${encodeURIComponent(url)}#${encodeURIComponent(new URL(url).host)}`;
+
+export default function SubLinksTab({
+  subUrl,
+  subJsonUrl,
+  subClashUrl,
+  subSingboxUrl = '',
+  onCopy,
+}: SubLinksTabProps) {
   const { t } = useTranslation();
   const subLabel = t('pages.settings.subSettings');
   const rows = [
@@ -26,6 +37,14 @@ export default function SubLinksTab({ subUrl, subJsonUrl, subClashUrl, onCopy }:
       downloadable: true,
     },
     { kind: 'CLASH', color: 'gold', url: subClashUrl, title: 'Clash / Mihomo', downloadable: true },
+    {
+      kind: 'SING-BOX',
+      color: 'blue',
+      url: subSingboxUrl,
+      title: 'sing-box',
+      downloadable: false,
+      importUrl: subSingboxUrl && singboxImportUrl(subSingboxUrl),
+    },
   ].filter((row) => row.url);
 
   return (
@@ -52,6 +71,14 @@ export default function SubLinksTab({ subUrl, subJsonUrl, subClashUrl, onCopy }:
                 icon={<DownloadOutlined />}
                 aria-label={t('download')}
                 title={t('download')}
+              />
+            )}
+            {'importUrl' in row && row.importUrl && (
+              <Button
+                href={row.importUrl}
+                icon={<ImportOutlined />}
+                aria-label={t('subscription.importToApp')}
+                title={t('subscription.importToApp')}
               />
             )}
             <Button

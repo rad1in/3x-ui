@@ -1,13 +1,13 @@
 .subscription-page {
-  --bg-page: #e6e8ec;
+  --bg-page: #f6f6f7;
   --bg-card: #ffffff;
   min-height: 100vh;
   background: var(--bg-page);
 }
 
 .subscription-page.is-dark {
-  --bg-page: #1a1b1f;
-  --bg-card: #23252b;
+  --bg-page: #0b0b0d;
+  --bg-card: #131316;
 }
 
 .subscription-page.is-dark.is-ultra {
@@ -532,4 +532,43 @@ a.sub-row-title:hover {
   .sub-qr-card {
     display: none;
   }
+
+  .sub-openvpn-row {
+    flex-wrap: wrap;
+  }
+
+  .sub-openvpn-row .sub-row-actions {
+    flex-basis: 100%;
+  }
+
+  .sub-openvpn-row .sub-row-actions .ant-btn {
+    flex: 1;
+  }
+}
+
+.sub-openvpn-hint {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--ant-color-text-secondary);
+}
+
+.sub-openvpn-login {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 12px;
+  margin: 6px 0 0;
+  font-size: 12.5px;
+}
+
+.sub-openvpn-login dt {
+  color: var(--ant-color-text-tertiary);
+}
+
+.sub-openvpn-login dd {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  word-break: break-all;
 }

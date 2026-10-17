@@ -40,6 +40,9 @@ func run(root, outDir string) error {
 				"InboundFallback",
 				"Host",
 				"SubBalancer",
+				"AuditLog",
+				"SponsorRecord",
+				"HostedPanel",
 			),
 			AliasAllow: setOf("Protocol"),
 			Overrides: map[string][]walkOverride{
@@ -91,6 +94,8 @@ func run(root, outDir string) error {
 			Path: resolveRel(root, "internal/web/service"),
 			StructAllow: setOf(
 				"InboundOption",
+				"VPNStatus",
+				"BackupResult",
 				"HappLinkResult",
 				"ClientSlim",
 				"ClientRenewalPreviewRequest",
@@ -110,11 +115,17 @@ func run(root, outDir string) error {
 				"AmneziaWGLogs",
 				"PeerActivity",
 				"HwidSlotStatus",
+				"AuditLogPage",
+				"HostedView",
 			),
 		},
 		{
+			Path:        resolveRel(root, "internal/hosted"),
+			StructAllow: setOf("Limits", "PanelStatus", "ProcState"),
+		},
+		{
 			Path:        resolveRel(root, "internal/web/service/panel"),
-			StructAllow: setOf("ApiTokenView", "PanelUpdateStatus", "Sponsor", "SponsorList"),
+			StructAllow: setOf("ApiTokenView", "PanelUpdateStatus", "Sponsor", "SponsorList", "SponsorConfig", "SponsorAdminView", "HostedPanelInput", "HostedPanelView"),
 		},
 		{
 			Path:        resolveRel(root, "internal/amneziawg"),

@@ -4,12 +4,14 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 	"unicode/utf16"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/eventbus"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
+	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 )
 
@@ -297,6 +299,27 @@ func (s *Subscriber) FormatEmbed(e eventbus.Event) (Embed, bool) {
 			}, true
 		}
 		return Embed{}, false
+
+	case eventbus.EventClientQuotaWarning, eventbus.EventClientExpiryWarning:
+		data, _ := e.Data.(*eventbus.ClientEventData)
+		if data == nil {
+			return Embed{}, false
+		}
+		fields := []EmbedField{cleanField(tr("discord.fields.client"), data.Email, true)}
+		if data.Total > 0 {
+			fields = append(fields, cleanField(tr("usage"), tr("discord.values.usage",
+				"Percent=="+strconv.Itoa(data.Percent), "Used=="+common.FormatTraffic(data.Used()),
+				"Total=="+common.FormatTraffic(data.Total)), true))
+		}
+		if data.ExpiryTime > 0 {
+			fields = append(fields, cleanField(tr("discord.fields.expires"), tr("discord.values.expires",
+				"Date=="+data.ExpiryDate(), "Days=="+strconv.Itoa(data.DaysLeft)), true))
+		}
+		title := tr("discord.alerts.quotaWarning")
+		if e.Type == eventbus.EventClientExpiryWarning {
+			title = tr("discord.alerts.expiryWarning")
+		}
+		return Embed{Title: title, Color: ColorOrange, Timestamp: ts, Fields: fields, Footer: footer}, true
 
 	case eventbus.EventLoginAttempt:
 		var data *eventbus.LoginEventData

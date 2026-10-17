@@ -10,6 +10,9 @@ import (
 )
 
 func (s *InboundService) DesiredTuicInstances() ([]tuic.Instance, error) {
+	if hostedSidecarsHalted() {
+		return nil, nil
+	}
 	db := database.GetDB()
 	var inbounds []*model.Inbound
 	err := db.Model(model.Inbound{}).

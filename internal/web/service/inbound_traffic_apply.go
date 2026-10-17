@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/eventbus"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 
@@ -32,6 +33,8 @@ type trafficMutationBatch struct {
 	nodeIDs     map[int]struct{}
 	// renewedEmails get their MTProto sidecar quota zeroed once the tick commits.
 	renewedEmails []string
+	// events go out once the tick commits, so no listener hears of a rollback.
+	events []eventbus.Event
 }
 
 type trafficInboundUpdatePlan struct{ oldInbound, newInbound model.Inbound }
@@ -92,16 +95,7 @@ func (s *InboundService) applyTrafficMutationBatch(b *trafficMutationBatch) bool
 	needRestart := false
 	for i := range b.localPlans {
 		plan := &b.localPlans[i]
-		if plan.inbound.Protocol == model.MTProto {
-			s.applyLocalMtproto(plan.inbound.Id)
-			continue
-		}
-		if plan.inbound.Protocol == model.AmneziaWG {
-			s.applyLocalAmneziaWG(plan.inbound.Id)
-			continue
-		}
-		if plan.inbound.Protocol == model.TUIC {
-			s.applyLocalTuic(plan.inbound.Id)
+		if s.applyLocalSidecar(plan.inbound.Protocol, plan.inbound.Id) {
 			continue
 		}
 		rt, err := s.runtimeFor(&plan.inbound)

@@ -2,7 +2,48 @@
 export const SCHEMAS: Record<string, unknown> = {
   "AllSetting": {
     "properties": {
+      "autoDeleteDepletedDays": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "backupKeep": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "backupLocalDir": {
+        "type": "string"
+      },
+      "backupS3AccessKey": {
+        "type": "string"
+      },
+      "backupS3Bucket": {
+        "type": "string"
+      },
+      "backupS3Endpoint": {
+        "type": "string"
+      },
+      "backupS3Prefix": {
+        "type": "string"
+      },
+      "backupS3Region": {
+        "type": "string"
+      },
+      "backupS3SecretKey": {
+        "type": "string"
+      },
+      "backupSchedule": {
+        "type": "string"
+      },
       "datepicker": {
+        "type": "string"
+      },
+      "decoyHtml": {
+        "type": "string"
+      },
+      "decoyMode": {
+        "type": "string"
+      },
+      "decoyTarget": {
         "type": "string"
       },
       "discordAdminIds": {
@@ -136,8 +177,22 @@ export const SCHEMAS: Record<string, unknown> = {
         "minimum": 0,
         "type": "integer"
       },
+      "panelBrandColor": {
+        "type": "string"
+      },
+      "panelBrandLogo": {
+        "type": "string"
+      },
+      "panelBrandName": {
+        "type": "string"
+      },
       "panelOutbound": {
         "type": "string"
+      },
+      "quotaWarnPercent": {
+        "maximum": 99,
+        "minimum": 0,
+        "type": "integer"
       },
       "realityScanCandidates": {
         "type": "string"
@@ -569,10 +624,36 @@ export const SCHEMAS: Record<string, unknown> = {
         "maximum": 65535,
         "minimum": 1,
         "type": "integer"
+      },
+      "webhookEnable": {
+        "description": "Webhooks: signed POSTs of the enabled events to every URL (one per line).",
+        "type": "boolean"
+      },
+      "webhookEvents": {
+        "type": "string"
+      },
+      "webhookSecret": {
+        "type": "string"
+      },
+      "webhookUrls": {
+        "type": "string"
       }
     },
     "required": [
+      "autoDeleteDepletedDays",
+      "backupKeep",
+      "backupLocalDir",
+      "backupS3AccessKey",
+      "backupS3Bucket",
+      "backupS3Endpoint",
+      "backupS3Prefix",
+      "backupS3Region",
+      "backupS3SecretKey",
+      "backupSchedule",
       "datepicker",
+      "decoyHtml",
+      "decoyMode",
+      "decoyTarget",
       "discordAdminIds",
       "discordBotBackup",
       "discordBotEnable",
@@ -612,7 +693,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapVlessField",
       "outboundDownThreshold",
       "pageSize",
+      "panelBrandColor",
+      "panelBrandLogo",
+      "panelBrandName",
       "panelOutbound",
+      "quotaWarnPercent",
       "realityScanCandidates",
       "remarkTemplate",
       "restartXrayOnClientDisable",
@@ -748,13 +833,58 @@ export const SCHEMAS: Record<string, unknown> = {
       "webDomain",
       "webKeyFile",
       "webListen",
-      "webPort"
+      "webPort",
+      "webhookEnable",
+      "webhookEvents",
+      "webhookSecret",
+      "webhookUrls"
     ],
     "type": "object"
   },
   "AllSettingView": {
     "properties": {
+      "autoDeleteDepletedDays": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "backupKeep": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "backupLocalDir": {
+        "type": "string"
+      },
+      "backupS3AccessKey": {
+        "type": "string"
+      },
+      "backupS3Bucket": {
+        "type": "string"
+      },
+      "backupS3Endpoint": {
+        "type": "string"
+      },
+      "backupS3Prefix": {
+        "type": "string"
+      },
+      "backupS3Region": {
+        "type": "string"
+      },
+      "backupS3SecretKey": {
+        "type": "string"
+      },
+      "backupSchedule": {
+        "type": "string"
+      },
       "datepicker": {
+        "type": "string"
+      },
+      "decoyHtml": {
+        "type": "string"
+      },
+      "decoyMode": {
+        "type": "string"
+      },
+      "decoyTarget": {
         "type": "string"
       },
       "discordAdminIds": {
@@ -810,6 +940,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "hasApiToken": {
         "type": "boolean"
       },
+      "hasBackupS3Secret": {
+        "type": "boolean"
+      },
       "hasDiscordBotToken": {
         "type": "boolean"
       },
@@ -829,6 +962,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "boolean"
       },
       "hasWarpSecret": {
+        "type": "boolean"
+      },
+      "hasWebhookSecret": {
         "type": "boolean"
       },
       "ipLimitAllowlist": {
@@ -912,8 +1048,22 @@ export const SCHEMAS: Record<string, unknown> = {
         "minimum": 0,
         "type": "integer"
       },
+      "panelBrandColor": {
+        "type": "string"
+      },
+      "panelBrandLogo": {
+        "type": "string"
+      },
+      "panelBrandName": {
+        "type": "string"
+      },
       "panelOutbound": {
         "type": "string"
+      },
+      "quotaWarnPercent": {
+        "maximum": 99,
+        "minimum": 0,
+        "type": "integer"
       },
       "realityScanCandidates": {
         "type": "string"
@@ -1345,10 +1495,36 @@ export const SCHEMAS: Record<string, unknown> = {
         "maximum": 65535,
         "minimum": 1,
         "type": "integer"
+      },
+      "webhookEnable": {
+        "description": "Webhooks: signed POSTs of the enabled events to every URL (one per line).",
+        "type": "boolean"
+      },
+      "webhookEvents": {
+        "type": "string"
+      },
+      "webhookSecret": {
+        "type": "string"
+      },
+      "webhookUrls": {
+        "type": "string"
       }
     },
     "required": [
+      "autoDeleteDepletedDays",
+      "backupKeep",
+      "backupLocalDir",
+      "backupS3AccessKey",
+      "backupS3Bucket",
+      "backupS3Endpoint",
+      "backupS3Prefix",
+      "backupS3Region",
+      "backupS3SecretKey",
+      "backupSchedule",
       "datepicker",
+      "decoyHtml",
+      "decoyMode",
+      "decoyTarget",
       "discordAdminIds",
       "discordBotBackup",
       "discordBotEnable",
@@ -1365,6 +1541,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "externalTrafficInformURI",
       "happLinkEnable",
       "hasApiToken",
+      "hasBackupS3Secret",
       "hasDiscordBotToken",
       "hasLdapPassword",
       "hasNordSecret",
@@ -1372,6 +1549,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "hasTgBotToken",
       "hasTwoFactorToken",
       "hasWarpSecret",
+      "hasWebhookSecret",
       "ipLimitAllowlist",
       "ldapAutoCreate",
       "ldapAutoDelete",
@@ -1396,7 +1574,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapVlessField",
       "outboundDownThreshold",
       "pageSize",
+      "panelBrandColor",
+      "panelBrandLogo",
+      "panelBrandName",
       "panelOutbound",
+      "quotaWarnPercent",
       "realityScanCandidates",
       "remarkTemplate",
       "restartXrayOnClientDisable",
@@ -1532,7 +1714,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "webDomain",
       "webKeyFile",
       "webListen",
-      "webPort"
+      "webPort",
+      "webhookEnable",
+      "webhookEvents",
+      "webhookSecret",
+      "webhookUrls"
     ],
     "type": "object"
   },
@@ -1644,6 +1830,97 @@ export const SCHEMAS: Record<string, unknown> = {
       "id",
       "name",
       "scope"
+    ],
+    "type": "object"
+  },
+  "AuditLog": {
+    "description": "AuditLog is one admin action: a state-changing API call or a login attempt.\nAction is the method plus route template, so rows group by endpoint.",
+    "properties": {
+      "action": {
+        "example": "POST /clients/update/:email",
+        "type": "string"
+      },
+      "actor": {
+        "example": "admin",
+        "type": "string"
+      },
+      "createdAt": {
+        "example": 1760684400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 42,
+        "format": "int64",
+        "type": "integer"
+      },
+      "ip": {
+        "example": "203.0.113.5",
+        "type": "string"
+      },
+      "success": {
+        "example": true,
+        "type": "boolean"
+      },
+      "target": {
+        "example": "email=alice@example.com",
+        "type": "string"
+      }
+    },
+    "required": [
+      "action",
+      "actor",
+      "createdAt",
+      "id",
+      "ip",
+      "success",
+      "target"
+    ],
+    "type": "object"
+  },
+  "AuditLogPage": {
+    "properties": {
+      "items": {
+        "items": {
+          "$ref": "#/components/schemas/AuditLog"
+        },
+        "type": "array"
+      },
+      "total": {
+        "example": 120,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "items",
+      "total"
+    ],
+    "type": "object"
+  },
+  "BackupResult": {
+    "description": "BackupResult is how one destination of a scheduled backup went.",
+    "properties": {
+      "destination": {
+        "example": "s3",
+        "type": "string"
+      },
+      "error": {
+        "type": "string"
+      },
+      "name": {
+        "example": "panel.example.com_2026-10-17_030000.db.gz",
+        "type": "string"
+      },
+      "pruned": {
+        "example": 1,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "destination",
+      "name",
+      "pruned"
     ],
     "type": "object"
   },
@@ -2971,6 +3248,300 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "HostedPanel": {
+    "description": "HostedPanel is a separate panel process the master runs on this server for\nsomeone else, with its own database, address, port range and limits.",
+    "properties": {
+      "createdAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "enable": {
+        "example": true,
+        "type": "boolean"
+      },
+      "expiresAt": {
+        "example": 0,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "maxClients": {
+        "example": 100,
+        "type": "integer"
+      },
+      "maxInbounds": {
+        "example": 5,
+        "type": "integer"
+      },
+      "name": {
+        "example": "Reseller A",
+        "type": "string"
+      },
+      "portMax": {
+        "example": 30099,
+        "type": "integer"
+      },
+      "portMin": {
+        "example": 30000,
+        "type": "integer"
+      },
+      "subPort": {
+        "example": 20531,
+        "type": "integer"
+      },
+      "trafficBytes": {
+        "example": 107374182400,
+        "format": "int64",
+        "type": "integer"
+      },
+      "usageEpoch": {
+        "example": 0,
+        "type": "integer"
+      },
+      "username": {
+        "example": "reseller",
+        "type": "string"
+      },
+      "webBasePath": {
+        "example": "/reseller/",
+        "type": "string"
+      },
+      "webPort": {
+        "example": 20530,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "createdAt",
+      "enable",
+      "expiresAt",
+      "id",
+      "maxClients",
+      "maxInbounds",
+      "name",
+      "portMax",
+      "portMin",
+      "subPort",
+      "trafficBytes",
+      "usageEpoch",
+      "username",
+      "webBasePath",
+      "webPort"
+    ],
+    "type": "object"
+  },
+  "HostedPanelInput": {
+    "description": "HostedPanelInput is what the owner submits; an empty password on edit keeps the login.",
+    "properties": {
+      "enable": {
+        "example": true,
+        "type": "boolean"
+      },
+      "expiresAt": {
+        "example": 0,
+        "format": "int64",
+        "type": "integer"
+      },
+      "maxClients": {
+        "example": 100,
+        "type": "integer"
+      },
+      "maxInbounds": {
+        "example": 5,
+        "type": "integer"
+      },
+      "name": {
+        "example": "Reseller A",
+        "type": "string"
+      },
+      "password": {
+        "example": "change-me-please",
+        "type": "string"
+      },
+      "portMax": {
+        "example": 30099,
+        "type": "integer"
+      },
+      "portMin": {
+        "example": 30000,
+        "type": "integer"
+      },
+      "subPort": {
+        "example": 20531,
+        "type": "integer"
+      },
+      "trafficBytes": {
+        "example": 107374182400,
+        "format": "int64",
+        "type": "integer"
+      },
+      "username": {
+        "example": "reseller",
+        "type": "string"
+      },
+      "webBasePath": {
+        "example": "/reseller/",
+        "type": "string"
+      },
+      "webPort": {
+        "example": 20530,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "enable",
+      "expiresAt",
+      "maxClients",
+      "maxInbounds",
+      "name",
+      "password",
+      "portMax",
+      "portMin",
+      "subPort",
+      "trafficBytes",
+      "username",
+      "webBasePath",
+      "webPort"
+    ],
+    "type": "object"
+  },
+  "HostedPanelView": {
+    "description": "HostedPanelView is one row of the Panels page.",
+    "properties": {
+      "createdAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "enable": {
+        "example": true,
+        "type": "boolean"
+      },
+      "expiresAt": {
+        "example": 0,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "maxClients": {
+        "example": 100,
+        "type": "integer"
+      },
+      "maxInbounds": {
+        "example": 5,
+        "type": "integer"
+      },
+      "name": {
+        "example": "Reseller A",
+        "type": "string"
+      },
+      "portMax": {
+        "example": 30099,
+        "type": "integer"
+      },
+      "portMin": {
+        "example": 30000,
+        "type": "integer"
+      },
+      "process": {
+        "$ref": "#/components/schemas/ProcState"
+      },
+      "status": {
+        "$ref": "#/components/schemas/PanelStatus"
+      },
+      "subPort": {
+        "example": 20531,
+        "type": "integer"
+      },
+      "trafficBytes": {
+        "example": 107374182400,
+        "format": "int64",
+        "type": "integer"
+      },
+      "usageEpoch": {
+        "example": 0,
+        "type": "integer"
+      },
+      "username": {
+        "example": "reseller",
+        "type": "string"
+      },
+      "webBasePath": {
+        "example": "/reseller/",
+        "type": "string"
+      },
+      "webPort": {
+        "example": 20530,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "createdAt",
+      "enable",
+      "expiresAt",
+      "id",
+      "maxClients",
+      "maxInbounds",
+      "name",
+      "portMax",
+      "portMin",
+      "process",
+      "status",
+      "subPort",
+      "trafficBytes",
+      "usageEpoch",
+      "username",
+      "webBasePath",
+      "webPort"
+    ],
+    "type": "object"
+  },
+  "HostedView": {
+    "description": "HostedView is the hosted panel's own view of its limits and usage.",
+    "properties": {
+      "blocked": {
+        "type": "string"
+      },
+      "clients": {
+        "example": 40,
+        "format": "int64",
+        "type": "integer"
+      },
+      "enabled": {
+        "example": true,
+        "type": "boolean"
+      },
+      "inbounds": {
+        "example": 2,
+        "format": "int64",
+        "type": "integer"
+      },
+      "limits": {
+        "$ref": "#/components/schemas/Limits"
+      },
+      "usedBytes": {
+        "example": 1073741824,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "blocked",
+      "clients",
+      "enabled",
+      "inbounds",
+      "limits",
+      "usedBytes"
+    ],
+    "type": "object"
+  },
   "HwidSlotStatus": {
     "description": "HwidSlotStatus is the aggregate device-slot view exposed to subscribers:\ncounters only, no hwid value or hash, no email, no device metadata.",
     "properties": {
@@ -3090,7 +3661,10 @@ export const SCHEMAS: Record<string, unknown> = {
           "mtproto",
           "amneziawg",
           "tuic",
-          "masque"
+          "masque",
+          "openvpn",
+          "ikev2",
+          "l2tp"
         ],
         "example": "vless",
         "type": "string"
@@ -3259,6 +3833,10 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": 1,
         "type": "integer"
       },
+      "l2tpPsk": {
+        "description": "L2TP clients type the inbound's pre-shared key next to their login.",
+        "type": "string"
+      },
       "listen": {
         "type": "string"
       },
@@ -3371,6 +3949,52 @@ export const SCHEMAS: Record<string, unknown> = {
       "id",
       "total",
       "up"
+    ],
+    "type": "object"
+  },
+  "Limits": {
+    "description": "Limits are the owner-set caps for one hosted panel. Zero means unlimited.",
+    "properties": {
+      "expiresAt": {
+        "example": 0,
+        "format": "int64",
+        "type": "integer"
+      },
+      "maxClients": {
+        "example": 100,
+        "type": "integer"
+      },
+      "maxInbounds": {
+        "example": 5,
+        "type": "integer"
+      },
+      "portMax": {
+        "example": 30099,
+        "type": "integer"
+      },
+      "portMin": {
+        "example": 30000,
+        "type": "integer"
+      },
+      "trafficBytes": {
+        "example": 107374182400,
+        "format": "int64",
+        "type": "integer"
+      },
+      "usageEpoch": {
+        "description": "UsageEpoch bumps when the owner resets usage; the child zeroes its counter.",
+        "example": 0,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "expiresAt",
+      "maxClients",
+      "maxInbounds",
+      "portMax",
+      "portMin",
+      "trafficBytes",
+      "usageEpoch"
     ],
     "type": "object"
   },
@@ -4042,6 +4666,50 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "PanelStatus": {
+    "description": "PanelStatus is what the child reports back for the master's Panels page.",
+    "properties": {
+      "blocked": {
+        "type": "string"
+      },
+      "clients": {
+        "example": 40,
+        "type": "integer"
+      },
+      "inbounds": {
+        "example": 2,
+        "type": "integer"
+      },
+      "updatedAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "usedBytes": {
+        "example": 1073741824,
+        "format": "int64",
+        "type": "integer"
+      },
+      "webTls": {
+        "example": false,
+        "type": "boolean"
+      },
+      "xrayRunning": {
+        "example": true,
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "blocked",
+      "clients",
+      "inbounds",
+      "updatedAt",
+      "usedBytes",
+      "webTls",
+      "xrayRunning"
+    ],
+    "type": "object"
+  },
   "PanelUpdateStatus": {
     "description": "PanelUpdateStatus reports the outcome of the most recently launched panel\nself-update. RunID lets the caller confirm this status belongs to the\nupdate it started rather than a stale result left over from an earlier\nrun; State is one of \"pending\", \"success\", or \"failed\". RunID is a decimal\nstring, not a JSON number: it's a formatted UnixNano timestamp, and\nJavaScript's number type can't represent that precisely (it exceeds\nNumber.MAX_SAFE_INTEGER), which would let two different runs round to the\nsame value on the wire and defeat the whole point of this field.",
     "properties": {
@@ -4186,6 +4854,39 @@ export const SCHEMAS: Record<string, unknown> = {
       "xrayError",
       "xrayState",
       "xrayVersion"
+    ],
+    "type": "object"
+  },
+  "ProcState": {
+    "description": "ProcState is the supervisor's view of one panel process.",
+    "properties": {
+      "lastError": {
+        "type": "string"
+      },
+      "pid": {
+        "example": 4242,
+        "type": "integer"
+      },
+      "restarts": {
+        "example": 0,
+        "type": "integer"
+      },
+      "running": {
+        "example": true,
+        "type": "boolean"
+      },
+      "startedAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "lastError",
+      "pid",
+      "restarts",
+      "running",
+      "startedAt"
     ],
     "type": "object"
   },
@@ -4534,6 +5235,42 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "SponsorAdminView": {
+    "description": "SponsorAdminView is what the sponsor manager page loads.",
+    "properties": {
+      "config": {
+        "$ref": "#/components/schemas/SponsorConfig"
+      },
+      "records": {
+        "items": {
+          "$ref": "#/components/schemas/SponsorRecord"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "config",
+      "records"
+    ],
+    "type": "object"
+  },
+  "SponsorConfig": {
+    "description": "SponsorConfig is the owner-level sponsor setup: where sponsors come from and\nthe \"become a sponsor\" contact link.",
+    "properties": {
+      "contact": {
+        "example": "https://t.me/example",
+        "type": "string"
+      },
+      "feedUrl": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "contact",
+      "feedUrl"
+    ],
+    "type": "object"
+  },
   "SponsorList": {
     "description": "SponsorList is the active sponsor set plus the contact link for new sponsors.",
     "properties": {
@@ -4550,6 +5287,71 @@ export const SCHEMAS: Record<string, unknown> = {
     },
     "required": [
       "sponsors"
+    ],
+    "type": "object"
+  },
+  "SponsorRecord": {
+    "description": "SponsorRecord is a sponsor placement the panel owner manages locally. A zero\nFromMs/UntilMs means no start/end bound.",
+    "properties": {
+      "enable": {
+        "example": true,
+        "type": "boolean"
+      },
+      "from": {
+        "example": 0,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "link": {
+        "example": "https://acme.example/",
+        "type": "string"
+      },
+      "logo": {
+        "type": "string"
+      },
+      "name": {
+        "example": "Acme VPS",
+        "type": "string"
+      },
+      "slots": {
+        "example": [
+          "dashboard",
+          "login"
+        ],
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "text": {
+        "example": "Use code PANEL at checkout.",
+        "type": "string"
+      },
+      "title": {
+        "example": "Acme VPS — 20% off",
+        "type": "string"
+      },
+      "until": {
+        "example": 1790000000000,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "enable",
+      "from",
+      "id",
+      "link",
+      "logo",
+      "name",
+      "slots",
+      "text",
+      "title",
+      "until"
     ],
     "type": "object"
   },
@@ -4749,6 +5551,28 @@ export const SCHEMAS: Record<string, unknown> = {
       "id",
       "password",
       "username"
+    ],
+    "type": "object"
+  },
+  "VPNStatus": {
+    "description": "VPNStatus is whether a VPN inbound served outside Xray is up and, if not,\nwhy: a missing binary, a kernel without PPP or IPsec, a clashing daemon.",
+    "properties": {
+      "id": {
+        "example": 4,
+        "type": "integer"
+      },
+      "reason": {
+        "example": "this kernel has no PPP support (/dev/ppp is missing), which L2TP needs",
+        "type": "string"
+      },
+      "running": {
+        "example": false,
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "id",
+      "running"
     ],
     "type": "object"
   }

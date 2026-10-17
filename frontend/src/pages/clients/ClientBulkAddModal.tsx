@@ -40,6 +40,9 @@ const MULTI_CLIENT_PROTOCOLS = new Set([
   'amneziawg',
   'tuic',
   'masque',
+  'openvpn',
+  'ikev2',
+  'l2tp',
 ]);
 
 const EMPTY: ClientBulkAddFormValues = {

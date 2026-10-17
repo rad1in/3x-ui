@@ -14,9 +14,28 @@ export class AllSetting {
     'www.cloudflare.com:443,www.microsoft.com:443,www.amazon.com:443,aws.amazon.com:443,www.samsung.com:443,www.nvidia.com:443,www.amd.com:443,www.intel.com:443,www.sony.com:443,dl.google.com:443';
   ipLimitAllowlist = '';
   panelOutbound = '';
+  panelBrandName = '';
+  panelBrandColor = '';
+  panelBrandLogo = '';
   pageSize = 25;
   expireDiff = 0;
   trafficDiff = 0;
+  quotaWarnPercent = 80;
+  autoDeleteDepletedDays = 0;
+  decoyMode = '';
+  decoyTarget = '';
+  decoyHtml = '';
+  backupSchedule = '';
+  backupKeep = 7;
+  backupLocalDir = '';
+  backupS3Endpoint = '';
+  backupS3Region = '';
+  backupS3Bucket = '';
+  backupS3AccessKey = '';
+  backupS3SecretKey = '';
+  backupS3Prefix = '';
+  hasBackupS3Secret = false;
+  clearBackupS3Secret = false;
   remarkTemplate = '{{INBOUND}}-{{EMAIL}}|📊{{TRAFFIC_LEFT}}|⏳{{DAYS_LEFT}}D';
   subShowIdentityOnAllLinks = false;
   subInfoNodeEnable = false;
@@ -195,6 +214,13 @@ export class AllSetting {
   discordEnabledEvents = 'login.attempt,cpu.high';
   hasDiscordBotToken = false;
   clearDiscordBotToken = false;
+  webhookEnable = false;
+  webhookUrls = '';
+  webhookSecret = '';
+  webhookEvents =
+    'client.created,client.deleted,client.depleted,client.expired,client.renewed,client.quota_warning,client.expiry_warning';
+  hasWebhookSecret = false;
+  clearWebhookSecret = false;
 
   constructor(data?: unknown) {
     if (data != null) {

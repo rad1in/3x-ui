@@ -66,6 +66,9 @@ const MULTI_CLIENT_PROTOCOLS = new Set([
   'amneziawg',
   'tuic',
   'masque',
+  'openvpn',
+  'ikev2',
+  'l2tp',
 ]);
 
 const CLIENT_FORM_MODAL_Z_INDEX = 1000;

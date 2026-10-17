@@ -2,6 +2,7 @@ package discord
 
 import (
 	"context"
+	"crypto/rand"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -227,5 +228,65 @@ func TestSendReport_DeliversEmbedWhenBackupUploadIsRejected(t *testing.T) {
 		}
 	default:
 		t.Fatal("report embed was never delivered: it rode on the rejected backup upload")
+	}
+}
+
+// A backup over Discord's upload cap arrives as gzip parts under the cap, the
+// first one telling how to rejoin them, instead of one rejected upload.
+func TestSendReport_SplitsABackupOverTheUploadCap(t *testing.T) {
+	settingService := setupTestDB(t)
+	_ = settingService.SetDiscordBotToken("test-token")
+	_ = settingService.SetDiscordChannelId("998877")
+	_ = settingService.SetDiscordBotBackup(true)
+	orig := discordUploadLimit
+	discordUploadLimit = 2048
+	t.Cleanup(func() { discordUploadLimit = orig })
+
+	type upload struct {
+		content, name string
+		size          int
+	}
+	var uploads []upload
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/") {
+			if err := r.ParseMultipartForm(1 << 20); err != nil {
+				t.Errorf("parse upload: %v", err)
+			}
+			var p MessagePayload
+			_ = json.Unmarshal([]byte(r.FormValue("payload_json")), &p)
+			for _, fhs := range r.MultipartForm.File {
+				for _, fh := range fhs {
+					uploads = append(uploads, upload{p.Content, fh.Filename, int(fh.Size)})
+				}
+			}
+		}
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+	svc := NewDiscordService(settingService)
+	svc.SetBaseURL(server.URL)
+	svc.SetHTTPClient(server.Client())
+
+	db := make([]byte, 5000)
+	_, _ = rand.Read(db)
+	if err := svc.SendReport(context.Background(), &mockServerProvider{status: &service.Status{}, dbData: db, filename: "x.db"}, nil); err != nil {
+		t.Fatal(err)
+	}
+	var backup []upload
+	for _, u := range uploads {
+		if strings.HasPrefix(u.name, "x.db") {
+			backup = append(backup, u)
+		}
+	}
+	if len(backup) != 3 || backup[0].name != "x.db.gz.part01" || backup[2].name != "x.db.gz.part03" {
+		t.Fatalf("backup uploads = %+v; want three ordered parts", backup)
+	}
+	for _, u := range backup {
+		if u.size > 2048 {
+			t.Fatalf("%s is %d bytes, over the cap", u.name, u.size)
+		}
+	}
+	if !strings.Contains(backup[0].content, "cat x.db.gz.part* | gunzip > x.db") {
+		t.Fatalf("first part says %q; want the rejoin command", backup[0].content)
 	}
 }

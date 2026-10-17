@@ -32,6 +32,10 @@ func (s *InboundService) AddTraffic(inboundTraffics []*xray.Traffic, clientTraff
 	err = submitTrafficWrite(func() error {
 		var inner error
 		needRestart, clientsDisabled, disabledNodeIDs, remotePlans, renewed, inner = s.addTrafficLocked(inboundTraffics, clientTraffics)
+		if inner == nil {
+			// Every protocol's inbound bytes pass here, so the hosted meter sees all of them once.
+			(&HostedService{}).AddUsage(inboundTraffics)
+		}
 		return inner
 	})
 	if err != nil {
@@ -104,6 +108,7 @@ func (s *InboundService) addTrafficLocked(inboundTraffics []*xray.Traffic, clien
 		return false, false, nil, nil, nil, nil
 	}
 	needRestart = needRestart || s.applyTrafficMutationBatch(batch)
+	publishTickEvents(batch)
 	return needRestart, clientsDisabled, disabledNodeIDs, batch.remotePlans, batch.renewedEmails, nil
 }
 
@@ -671,6 +676,14 @@ func (s *InboundService) delClientStatsByEmails(tx *gorm.DB, emails []string) er
 }
 
 func (s *InboundService) ResetClientTrafficByEmail(clientEmail string) error {
+	if err := s.resetClientTrafficRows(clientEmail); err != nil {
+		return err
+	}
+	publishTrafficResets([]string{clientEmail})
+	return nil
+}
+
+func (s *InboundService) resetClientTrafficRows(clientEmail string) error {
 	err := submitTrafficWrite(func() error {
 		return database.GetDB().Transaction(func(tx *gorm.DB) error {
 			if err := adjustGroupBaselinesForRemovedTraffic(tx, []string{clientEmail}); err != nil {
@@ -802,7 +815,9 @@ func (s *InboundService) resetClientTrafficLocked(id int, clientEmail string) (b
 		return false, nil, err
 	}
 
-	if reenablePlan != nil {
+	if reenablePlan != nil && s.applyLocalSidecar(reenablePlan.inbound.Protocol, reenablePlan.inbound.Id) {
+		// The sidecar re-reads its client set, now with the renewed client.
+	} else if reenablePlan != nil {
 		rt, err := s.runtimeFor(&reenablePlan.inbound)
 		if err != nil {
 			needRestart = true

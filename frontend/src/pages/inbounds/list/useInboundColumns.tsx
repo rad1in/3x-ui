@@ -1,7 +1,7 @@
 import { useMemo, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Popover, Switch, Tag, Tooltip, type TableColumnType } from 'antd';
-import { TeamOutlined } from '@ant-design/icons';
+import { TeamOutlined, WarningOutlined } from '@ant-design/icons';
 
 import { SizeFormatter, IntlUtil, ColorUtils } from '@/utils';
 import { InfinityIcon } from '@/components/ui';
@@ -40,6 +40,8 @@ interface UseInboundColumnsParams {
   trafficDiff: number;
   onRowAction: (action: { key: RowAction; dbInbound: DBInboundRecord }) => void;
   onSwitchEnable: (dbInbound: DBInboundRecord, next: boolean) => void;
+  // Ids of VPN inbounds that should be serving but are not, with the reason.
+  vpnDown: Map<number, string>;
 }
 
 export function useInboundColumns({
@@ -55,6 +57,7 @@ export function useInboundColumns({
   trafficDiff,
   onRowAction,
   onSwitchEnable,
+  vpnDown,
 }: UseInboundColumnsParams): TableColumnType<DBInboundRecord>[] {
   const { t } = useTranslation();
   const { datepicker } = useDatepicker();
@@ -217,7 +220,37 @@ export function useInboundColumns({
               {record.protocol}
             </Tag>,
           ];
-          if (record.isWireguard || record.isAmneziawg || record.isHysteria || record.isTuic) {
+          if (vpnDown.has(record.id)) {
+            const reason = vpnDown.get(record.id) || t('pages.inbounds.vpnDown');
+            tags.push(
+              <Tooltip key="down" title={reason}>
+                <Tag
+                  color="error"
+                  icon={<WarningOutlined />}
+                  data-testid="vpn-down"
+                  aria-label={reason}
+                >
+                  {t('pages.inbounds.vpnDownShort')}
+                </Tag>
+              </Tooltip>,
+            );
+          }
+          if (record.protocol === 'openvpn') {
+            const settings = coerceInboundJsonField(record.settings) as { proto?: string } | null;
+            tags.push(
+              <Tag key="n" color="green">
+                {settings?.proto === 'tcp' ? 'TCP' : 'UDP'}
+              </Tag>,
+            );
+          }
+          if (
+            record.isWireguard ||
+            record.isAmneziawg ||
+            record.isHysteria ||
+            record.isTuic ||
+            record.protocol === 'ikev2' ||
+            record.protocol === 'l2tp'
+          ) {
             tags.push(
               <Tag key="n" color="green">
                 UDP
@@ -480,5 +513,6 @@ export function useInboundColumns({
     datepicker,
     onRowAction,
     onSwitchEnable,
+    vpnDown,
   ]);
 }

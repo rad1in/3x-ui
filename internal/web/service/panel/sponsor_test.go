@@ -4,8 +4,6 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
-	"os"
-	"path/filepath"
 	"strings"
 	"sync/atomic"
 	"testing"
@@ -13,6 +11,7 @@ import (
 
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/dbtest"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 )
 
 var sponsorTestNow = time.Date(2026, 10, 15, 0, 0, 0, 0, time.UTC)
@@ -109,15 +108,15 @@ func setupSponsorServer(t *testing.T, body string) *atomic.Int32 {
 	var hits atomic.Int32
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		hits.Add(1)
-		isLogo := strings.HasPrefix(r.URL.Path, "/media/")
+		isLogo := strings.HasPrefix(r.URL.Path, "/logos/")
 		if (isLogo && failSponsorLogos.Load()) || (!isLogo && failSponsorList.Load()) {
 			w.WriteHeader(http.StatusBadGateway)
 			return
 		}
 		switch r.URL.Path {
-		case "/media/acme.png":
+		case "/logos/acme.png":
 			_, _ = w.Write(pngMagic)
-		case "/media/fake.png":
+		case "/logos/fake.png":
 			_, _ = w.Write([]byte("<svg onload=alert(1)>"))
 		default:
 			_, _ = w.Write([]byte(body))
@@ -125,11 +124,13 @@ func setupSponsorServer(t *testing.T, body string) *atomic.Int32 {
 	}))
 	t.Cleanup(srv.Close)
 
-	prevURL, prevBase, prevNow := sponsorsURL, sponsorLogoBase, sponsorNow
-	sponsorsURL, sponsorLogoBase = srv.URL+"/sponsors.json", srv.URL+"/media/"
+	if err := (&service.SettingService{}).SetSponsorSettings(srv.URL+"/sponsors.json", ""); err != nil {
+		t.Fatal(err)
+	}
+	prevNow := sponsorNow
 	resetSponsorCache()
 	t.Cleanup(func() {
-		sponsorsURL, sponsorLogoBase, sponsorNow = prevURL, prevBase, prevNow
+		sponsorNow = prevNow
 		failSponsorList.Store(false)
 		failSponsorLogos.Store(false)
 		resetSponsorCache()
@@ -196,7 +197,7 @@ func TestGetSponsorLogoCachesFailuresAndKeepsLastImage(t *testing.T) {
 func resetSponsorCache() {
 	sponsorsMu.Lock()
 	defer sponsorsMu.Unlock()
-	sponsorsRaw, sponsorsErr, sponsorsRetryAt = nil, nil, time.Time{}
+	sponsorsSource, sponsorsRaw, sponsorsErr, sponsorsRetryAt = "", nil, nil, time.Time{}
 	logosMu.Lock()
 	defer logosMu.Unlock()
 	logos = map[string]sponsorLogo{}
@@ -265,40 +266,9 @@ func TestGetSponsorsCachesAndExpiresWhileCached(t *testing.T) {
 func TestGetSponsorsRejectsOversizeBody(t *testing.T) {
 	setupSponsorServer(t, `{"contact":"`+strings.Repeat("a", maxSponsorsBytes)+`"}`)
 	_, err := (&PanelService{}).GetSponsors()
-	want := sponsorsURL + " exceeds 262144 bytes"
+	feed, _ := sponsorFeedURL()
+	want := feed + " exceeds 262144 bytes"
 	if err == nil || err.Error() != want {
 		t.Fatalf("err = %v, want %q", err, want)
-	}
-}
-
-func TestGetSponsorsDebugReadsLocalCheckout(t *testing.T) {
-	hits := setupSponsorServer(t, `{"sponsors":[]}`)
-	t.Setenv("XUI_DEBUG", "true")
-	root := t.TempDir()
-	local := filepath.Join(root, "sponsors", "3X")
-	if err := os.MkdirAll(local, 0o700); err != nil {
-		t.Fatal(err)
-	}
-	if err := os.Mkdir(filepath.Join(root, "3x-ui"), 0o700); err != nil {
-		t.Fatal(err)
-	}
-	t.Chdir(filepath.Join(root, "3x-ui"))
-	write := func(id string) {
-		t.Helper()
-		body := `{"sponsors":[{"id":"` + id + `","slots":["page"],"until":"2099-01-01T00:00:00Z","link":"https://a.example/"}]}`
-		if err := os.WriteFile(filepath.Join(local, "sponsors.json"), []byte(body), 0o600); err != nil {
-			t.Fatal(err)
-		}
-	}
-	svc := &PanelService{}
-	for _, id := range []string{"first", "edited"} {
-		write(id)
-		got, err := svc.GetSponsors()
-		if err != nil || len(got.Sponsors) != 1 || got.Sponsors[0].ID != id {
-			t.Fatalf("GetSponsors() = %+v, %v; want local sponsor %q", got, err, id)
-		}
-	}
-	if n := hits.Load(); n != 0 {
-		t.Fatalf("remote hits = %d, want 0 in debug mode", n)
 	}
 }

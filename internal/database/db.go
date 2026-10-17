@@ -88,6 +88,11 @@ func allModels() []any {
 		&model.OutboundSubscription{},
 		&model.SubBalancer{},
 		&model.TuicTrafficReceipt{},
+		&model.AuditLog{},
+		&model.SponsorRecord{},
+		&model.HostedPanel{},
+		&model.ClientWarning{},
+		&model.ClientDepletion{},
 	}
 }
 

@@ -9,7 +9,20 @@ export type trafficLocalApplyAction = number;
 export type transportBits = number;
 
 export interface AllSetting {
+  autoDeleteDepletedDays: number;
+  backupKeep: number;
+  backupLocalDir: string;
+  backupS3AccessKey: string;
+  backupS3Bucket: string;
+  backupS3Endpoint: string;
+  backupS3Prefix: string;
+  backupS3Region: string;
+  backupS3SecretKey: string;
+  backupSchedule: string;
   datepicker: string;
+  decoyHtml: string;
+  decoyMode: string;
+  decoyTarget: string;
   discordAdminIds: string;
   discordBotBackup: boolean;
   discordBotEnable: boolean;
@@ -49,7 +62,11 @@ export interface AllSetting {
   ldapVlessField: string;
   outboundDownThreshold: number;
   pageSize: number;
+  panelBrandColor: string;
+  panelBrandLogo: string;
+  panelBrandName: string;
   panelOutbound: string;
+  quotaWarnPercent: number;
   realityScanCandidates: string;
   remarkTemplate: string;
   restartXrayOnClientDisable: boolean;
@@ -186,10 +203,27 @@ export interface AllSetting {
   webKeyFile: string;
   webListen: string;
   webPort: number;
+  webhookEnable: boolean;
+  webhookEvents: string;
+  webhookSecret: string;
+  webhookUrls: string;
 }
 
 export interface AllSettingView {
+  autoDeleteDepletedDays: number;
+  backupKeep: number;
+  backupLocalDir: string;
+  backupS3AccessKey: string;
+  backupS3Bucket: string;
+  backupS3Endpoint: string;
+  backupS3Prefix: string;
+  backupS3Region: string;
+  backupS3SecretKey: string;
+  backupSchedule: string;
   datepicker: string;
+  decoyHtml: string;
+  decoyMode: string;
+  decoyTarget: string;
   discordAdminIds: string;
   discordBotBackup: boolean;
   discordBotEnable: boolean;
@@ -206,6 +240,7 @@ export interface AllSettingView {
   externalTrafficInformURI: string;
   happLinkEnable: boolean;
   hasApiToken: boolean;
+  hasBackupS3Secret: boolean;
   hasDiscordBotToken: boolean;
   hasLdapPassword: boolean;
   hasNordSecret: boolean;
@@ -213,6 +248,7 @@ export interface AllSettingView {
   hasTgBotToken: boolean;
   hasTwoFactorToken: boolean;
   hasWarpSecret: boolean;
+  hasWebhookSecret: boolean;
   ipLimitAllowlist: string;
   ldapAutoCreate: boolean;
   ldapAutoDelete: boolean;
@@ -237,7 +273,11 @@ export interface AllSettingView {
   ldapVlessField: string;
   outboundDownThreshold: number;
   pageSize: number;
+  panelBrandColor: string;
+  panelBrandLogo: string;
+  panelBrandName: string;
   panelOutbound: string;
+  quotaWarnPercent: number;
   realityScanCandidates: string;
   remarkTemplate: string;
   restartXrayOnClientDisable: boolean;
@@ -374,6 +414,10 @@ export interface AllSettingView {
   webKeyFile: string;
   webListen: string;
   webPort: number;
+  webhookEnable: boolean;
+  webhookEvents: string;
+  webhookSecret: string;
+  webhookUrls: string;
 }
 
 export interface AmneziaWGLogs {
@@ -400,6 +444,28 @@ export interface ApiTokenView {
   name: string;
   scope: string;
   token?: string;
+}
+
+export interface AuditLog {
+  action: string;
+  actor: string;
+  createdAt: number;
+  id: number;
+  ip: string;
+  success: boolean;
+  target: string;
+}
+
+export interface AuditLogPage {
+  items: AuditLog[];
+  total: number;
+}
+
+export interface BackupResult {
+  destination: string;
+  error?: string;
+  name: string;
+  pruned: number;
 }
 
 export interface Client {
@@ -692,6 +758,69 @@ export interface HostGroup {
   vlessRoute: string;
 }
 
+export interface HostedPanel {
+  createdAt: number;
+  enable: boolean;
+  expiresAt: number;
+  id: number;
+  maxClients: number;
+  maxInbounds: number;
+  name: string;
+  portMax: number;
+  portMin: number;
+  subPort: number;
+  trafficBytes: number;
+  usageEpoch: number;
+  username: string;
+  webBasePath: string;
+  webPort: number;
+}
+
+export interface HostedPanelInput {
+  enable: boolean;
+  expiresAt: number;
+  maxClients: number;
+  maxInbounds: number;
+  name: string;
+  password: string;
+  portMax: number;
+  portMin: number;
+  subPort: number;
+  trafficBytes: number;
+  username: string;
+  webBasePath: string;
+  webPort: number;
+}
+
+export interface HostedPanelView {
+  createdAt: number;
+  enable: boolean;
+  expiresAt: number;
+  id: number;
+  maxClients: number;
+  maxInbounds: number;
+  name: string;
+  portMax: number;
+  portMin: number;
+  process: ProcState;
+  status: PanelStatus;
+  subPort: number;
+  trafficBytes: number;
+  usageEpoch: number;
+  username: string;
+  webBasePath: string;
+  webPort: number;
+}
+
+export interface HostedView {
+  blocked: string;
+  clients: number;
+  enabled: boolean;
+  inbounds: number;
+  limits: Limits;
+  usedBytes: number;
+}
+
 export interface HwidSlotStatus {
   active: boolean;
   full: boolean;
@@ -751,6 +880,7 @@ export interface InboundOption {
   awgServer?: ServerSettings | null;
   enable: boolean;
   id: number;
+  l2tpPsk?: string;
   listen?: string;
   mtprotoDomain?: string;
   network?: string;
@@ -777,6 +907,16 @@ export interface InboundTrafficSummary {
   id: number;
   total: number;
   up: number;
+}
+
+export interface Limits {
+  expiresAt: number;
+  maxClients: number;
+  maxInbounds: number;
+  portMax: number;
+  portMin: number;
+  trafficBytes: number;
+  usageEpoch: number;
 }
 
 export interface LogEntry {
@@ -923,6 +1063,16 @@ export interface OutboundTraffics {
   up: number;
 }
 
+export interface PanelStatus {
+  blocked: string;
+  clients: number;
+  inbounds: number;
+  updatedAt: number;
+  usedBytes: number;
+  webTls: boolean;
+  xrayRunning: boolean;
+}
+
 export interface PanelUpdateStatus {
   exitCode: number;
   finishedAt: number;
@@ -954,6 +1104,14 @@ export interface ProbeResultUI {
   xrayError: string;
   xrayState: string;
   xrayVersion: string;
+}
+
+export interface ProcState {
+  lastError: string;
+  pid: number;
+  restarts: number;
+  running: boolean;
+  startedAt: number;
 }
 
 export interface RealityScanResult {
@@ -1039,9 +1197,32 @@ export interface Sponsor {
   until: string;
 }
 
+export interface SponsorAdminView {
+  config: SponsorConfig;
+  records: SponsorRecord[];
+}
+
+export interface SponsorConfig {
+  contact: string;
+  feedUrl: string;
+}
+
 export interface SponsorList {
   contact?: string;
   sponsors: Sponsor[];
+}
+
+export interface SponsorRecord {
+  enable: boolean;
+  from: number;
+  id: number;
+  link: string;
+  logo: string;
+  name: string;
+  slots: string[];
+  text: string;
+  title: string;
+  until: number;
 }
 
 export interface SubBalancer {
@@ -1088,5 +1269,11 @@ export interface User {
   id: number;
   password: string;
   username: string;
+}
+
+export interface VPNStatus {
+  id: number;
+  reason?: string;
+  running: boolean;
 }
 

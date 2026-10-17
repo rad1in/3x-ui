@@ -344,6 +344,8 @@ type InboundOption struct {
 	WgMtu          int    `json:"wgMtu,omitempty"`
 	WgDns          string `json:"wgDns,omitempty"`
 	MtprotoDomain  string `json:"mtprotoDomain,omitempty"`
+	// L2TP clients type the inbound's pre-shared key next to their login.
+	L2TPPSK string `json:"l2tpPsk,omitempty"`
 	// AwgServer carries the full AmneziaWG server block (keys, subnet,
 	// obfuscation params) so the clients page can render a downloadable
 	// per-client .conf without a second round trip.
@@ -414,6 +416,7 @@ func (s *InboundService) GetInboundOptions(userId int) ([]InboundOption, error) 
 			WgMtu:             wgMtu,
 			WgDns:             wgDns,
 			MtprotoDomain:     inboundMtprotoDomain(r.Protocol, r.Settings),
+			L2TPPSK:           inboundL2TPPSK(r.Protocol, r.Settings),
 			AwgServer:         inboundAmneziaWGServer(r.Protocol, r.Settings),
 			TuicServer:        inboundTuicServer(r.Protocol, r.Settings),
 			NodeId:            r.NodeId,
@@ -530,6 +533,17 @@ func inboundTuicServer(protocol string, settings string) *tuic.TuicServerSetting
 		MaxUdpRelayPacketSize: inst.MaxUdpRelayPacketSize,
 		SNI:                   inst.SNI,
 	}
+}
+
+func inboundL2TPPSK(protocol, settings string) string {
+	if protocol != string(model.L2TP) {
+		return ""
+	}
+	var s struct {
+		PSK string `json:"psk"`
+	}
+	_ = json.Unmarshal([]byte(settings), &s)
+	return s.PSK
 }
 
 // inboundMtprotoDomain returns the inbound-level FakeTLS default domain, used by
@@ -1264,6 +1278,15 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 	if err := s.normalizeAmneziaWGSettings(inbound, ""); err != nil {
 		return inbound, false, err
 	}
+	if err := s.normalizeOpenVPNSettings(inbound, ""); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeIKEv2Settings(inbound, ""); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeL2TPSettings(inbound, ""); err != nil {
+		return inbound, false, err
+	}
 	if inbound.NodeID != nil {
 		if err := checkNodeCanHostProtocol(database.GetDB(), *inbound.NodeID, inbound.Protocol); err != nil {
 			return inbound, false, err
@@ -1343,7 +1366,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 	// Secure client ID
 	for _, client := range clients {
 		switch inbound.Protocol {
-		case "trojan", "masque":
+		case "trojan", "masque", "openvpn", "ikev2", "l2tp":
 			if client.Password == "" {
 				return inbound, false, common.NewError("empty client ID")
 			}
@@ -1392,6 +1415,9 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 		}
 		if conflict != nil {
 			return common.NewError(conflict.String())
+		}
+		if err := checkHostedInboundCreate(tx, inbound); err != nil {
+			return err
 		}
 		markDirty := false
 		if err := tx.Omit("ClientStats").Save(inbound).Error; err != nil {
@@ -1496,7 +1522,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 				if push {
 					payload := inbound
 					pushable := true
-					if inbound.Protocol == model.MTProto || inbound.Protocol == model.TUIC {
+					if builtForLocalRuntime(inbound.Protocol) {
 						if built, bErr := s.buildInboundForLocalRuntime(tx, inbound); bErr == nil {
 							payload = built
 						} else {
@@ -1510,7 +1536,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 								logger.Debug("New inbound added on", rt.Name(), ":", inbound.Tag)
 							} else {
 								logger.Debug("Unable to add inbound on", rt.Name(), ":", err1)
-								if inbound.Protocol != model.MTProto && inbound.Protocol != model.TUIC {
+								if !builtForLocalRuntime(inbound.Protocol) {
 									needRestart = true
 								}
 							}
@@ -1869,7 +1895,7 @@ func (s *InboundService) validateUpdatedInboundClients(inbound *model.Inbound) e
 			if client.Auth == "" {
 				return common.NewError("empty client ID")
 			}
-		case model.MASQUE:
+		case model.MASQUE, model.OpenVPN, model.IKEv2, model.L2TP:
 			if client.Password == "" {
 				return common.NewError("empty client ID")
 			}
@@ -1917,10 +1943,24 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 	// Restore the stored NodeID before any host-scoped check so a node inbound
 	// stays scoped to its own node (the payload's nodeId is unreliable, often absent).
 	inbound.NodeID = oldInbound.NodeID
+	if inbound.Port != oldInbound.Port {
+		if err := checkHostedInboundPort(inbound); err != nil {
+			return inbound, false, err
+		}
+	}
 	if err := normalizeTuicSettings(inbound); err != nil {
 		return inbound, false, err
 	}
 	if err := s.normalizeAmneziaWGSettings(inbound, oldInbound.Settings); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeOpenVPNSettings(inbound, oldInbound.Settings); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeIKEv2Settings(inbound, oldInbound.Settings); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeL2TPSettings(inbound, oldInbound.Settings); err != nil {
 		return inbound, false, err
 	}
 	inbound.SubSortIndex = normalizeSubSortIndex(inbound.SubSortIndex)
@@ -2230,7 +2270,15 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 // servedOutsideXray: these protocols run under their own manager, whose update
 // reconfigures in place where a Del+Add would drop every live session.
 func servedOutsideXray(protocol model.Protocol) bool {
-	return protocol == model.MTProto || protocol == model.TUIC || protocol == model.AmneziaWG
+	return protocol == model.MTProto || protocol == model.TUIC || protocol == model.AmneziaWG ||
+		protocol == model.OpenVPN || protocol == model.IKEv2 || protocol == model.L2TP
+}
+
+// builtForLocalRuntime: these sidecars take an inbound with depleted clients
+// already removed, and a failed start never calls for an Xray restart.
+func builtForLocalRuntime(protocol model.Protocol) bool {
+	return protocol == model.MTProto || protocol == model.TUIC || protocol == model.OpenVPN ||
+		protocol == model.IKEv2 || protocol == model.L2TP
 }
 
 // applyInboundUserOps reports whether per-user core ops moved running to next, so

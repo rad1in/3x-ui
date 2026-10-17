@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -15,6 +16,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/amneziawgnet"
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/tuic"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/json_util"
@@ -178,6 +180,10 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 	}
 	xrayConfig.LogConfig = resolveXrayLogPaths(xrayConfig.LogConfig)
 	xrayConfig.API = ensureAPIServices(xrayConfig.API)
+	if hosted.Enabled() {
+		xrayConfig.InboundConfigs = onlyAPIInbound(xrayConfig.InboundConfigs)
+	}
+	bindAPIInboundToLoopback(xrayConfig.InboundConfigs)
 	xrayConfig.Policy = ensureStatsPolicy(xrayConfig.Policy)
 	xrayConfig.RouterConfig = stripDisabledRules(xrayConfig.RouterConfig)
 	// A pasted or restored template can carry pre-#6258 XHTTP keys, a pre-26.10.10 xdns mask or a
@@ -206,7 +212,7 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 		if inbound.NodeID != nil {
 			continue
 		}
-		if inbound.Protocol == model.MTProto || inbound.Protocol == model.AmneziaWG || inbound.Protocol == model.TUIC {
+		if servedOutsideXray(inbound.Protocol) {
 			continue
 		}
 		settings := map[string]any{}
@@ -543,7 +549,7 @@ func injectPanelEgress(cfg *xray.Config, outboundTag string) {
 	}
 
 	cfg.InboundConfigs = append(cfg.InboundConfigs, xray.InboundConfig{
-		Listen:   json_util.RawMessage(`"127.0.0.1"`),
+		Listen:   loopbackListen(),
 		Port:     port,
 		Protocol: "socks",
 		Settings: json_util.RawMessage(`{"auth":"noauth","udp":false}`),
@@ -636,7 +642,7 @@ func injectNodeEgresses(cfg *xray.Config, nodes []*model.Node) {
 		used[port] = struct{}{}
 
 		cfg.InboundConfigs = append(cfg.InboundConfigs, xray.InboundConfig{
-			Listen:   json_util.RawMessage(`"127.0.0.1"`),
+			Listen:   loopbackListen(),
 			Port:     port,
 			Protocol: "socks",
 			Settings: json_util.RawMessage(`{"auth":"noauth","udp":false}`),
@@ -742,7 +748,7 @@ func injectMtprotoEgress(cfg *xray.Config, inbound *model.Inbound) {
 	}
 
 	cfg.InboundConfigs = append(cfg.InboundConfigs, xray.InboundConfig{
-		Listen:   json_util.RawMessage(`"127.0.0.1"`),
+		Listen:   loopbackListen(),
 		Port:     parsed.RouteXrayPort,
 		Protocol: "socks",
 		Settings: json_util.RawMessage(mtprotoEgressSocksSettings),
@@ -802,7 +808,7 @@ func injectAmneziawgnetSocks(cfg *xray.Config, inbounds []*model.Inbound) {
 
 		existingTags[inbound.Tag] = struct{}{}
 		cfg.InboundConfigs = append(cfg.InboundConfigs, xray.InboundConfig{
-			Listen:   json_util.RawMessage(`"127.0.0.1"`),
+			Listen:   loopbackListen(),
 			Port:     amneziawgnet.SOCKSPortForInbound(inbound.Id),
 			Protocol: "socks",
 			Settings: json_util.RawMessage(settings),
@@ -836,7 +842,7 @@ func injectTuicSocks(cfg *xray.Config, inbounds []*model.Inbound) {
 
 		existingTags[inbound.Tag] = struct{}{}
 		cfg.InboundConfigs = append(cfg.InboundConfigs, xray.InboundConfig{
-			Listen:   json_util.RawMessage(`"127.0.0.1"`),
+			Listen:   loopbackListen(),
 			Port:     tuic.SOCKSPortForInbound(inbound.Id),
 			Protocol: "socks",
 			Settings: json_util.RawMessage(tuicEgressSocksSettings),
@@ -1383,6 +1389,14 @@ func (s *XrayService) RestartXray(isForce bool) error {
 	lock.Lock()
 	defer lock.Unlock()
 	logger.Debug("restart Xray, force:", isForce)
+	if reason := (&HostedService{}).Blocked(); reason != "" {
+		isManuallyStopped.Store(true)
+		hostedHalted.Store(true)
+		if process := currentXrayProcess(); process != nil && process.IsRunning() {
+			_ = process.Stop()
+		}
+		return fmt.Errorf("%w (%s)", ErrHostedBlocked, reason)
+	}
 	if !isForce && isManuallyStopped.Load() {
 		return nil
 	}
@@ -1753,4 +1767,32 @@ func forceUserspaceWireGuardTun(raw json_util.RawMessage) json_util.RawMessage {
 		return raw
 	}
 	return rewritten
+}
+
+// loopbackListen is the listen address for the panel's own helper inbounds.
+func loopbackListen() json_util.RawMessage {
+	return json_util.RawMessage(strconv.Quote(config.LoopbackIP()))
+}
+
+// bindAPIInboundToLoopback moves the template's API inbound from the stock
+// 127.0.0.1 to this panel's loopback, where the panel dials it.
+func bindAPIInboundToLoopback(inbounds []xray.InboundConfig) {
+	for i := range inbounds {
+		listen := strings.Trim(string(inbounds[i].Listen), `"`)
+		if inbounds[i].Tag == "api" && (listen == "" || listen == "127.0.0.1") {
+			inbounds[i].Listen = loopbackListen()
+		}
+	}
+}
+
+// onlyAPIInbound drops template inbounds on a hosted panel: they would escape
+// its inbound, port and traffic limits.
+func onlyAPIInbound(inbounds []xray.InboundConfig) []xray.InboundConfig {
+	kept := inbounds[:0]
+	for _, ib := range inbounds {
+		if ib.Tag == "api" {
+			kept = append(kept, ib)
+		}
+	}
+	return kept
 }

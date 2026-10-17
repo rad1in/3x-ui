@@ -32,7 +32,7 @@ const LIGHT_THEME = {
 
 const DARK_THEME = {
   primaryColor: '#1677ff',
-  backgroundColor: '#23252b',
+  backgroundColor: '#131316',
   borderColor: 'rgba(255, 255, 255, 0.12)',
   hoverColor: 'rgba(22, 119, 255, 0.18)',
   selectedTextColor: '#ffffff',

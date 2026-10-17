@@ -44,6 +44,8 @@ type SubService struct {
 	// other context — the sub info page, the panel's link/QR displays — renders
 	// the name-only template, like Remnawave.
 	subscriptionBody bool
+	// vpnAccounts is filled by getSubs: these VPNs have profiles, not share links.
+	vpnAccounts []VPNAccount
 	// usageShown emits info once per subscription identity, including twins.
 	// PrepareForRequest resets this per-request state.
 	usageShown                 map[string]bool
@@ -481,9 +483,21 @@ func (s *SubService) getSubs(subId string) ([]string, []string, int64, xray.Clie
 	}
 
 	seenEmails := make(map[string]struct{})
+	s.vpnAccounts = nil
 	for _, inbound := range inbounds {
 		clients := s.matchingClients(inbound, subId)
 		if len(clients) == 0 {
+			continue
+		}
+		if servesVPNAccounts(inbound.Protocol) && !inbound.ExcludeFromSub {
+			s.addVPNAccounts(inbound, clients)
+			for _, client := range clients {
+				hasEnabledClient = hasEnabledClient || client.Enable
+				seenEmails[client.Email] = struct{}{}
+			}
+			if result == nil {
+				result = []string{}
+			}
 			continue
 		}
 		if inbound.ExcludeFromSub {
@@ -686,7 +700,7 @@ func (s *SubService) getInboundsBySubId(subId string) ([]*model.Inbound, error) 
 		JOIN client_inbounds ON client_inbounds.inbound_id = inbounds.id
 		JOIN clients ON clients.id = client_inbounds.client_id
 		WHERE
-			inbounds.protocol in ('vmess','vless','trojan','shadowsocks','hysteria','wireguard','amneziawg','mtproto','tuic','masque')
+			inbounds.protocol in ('vmess','vless','trojan','shadowsocks','hysteria','wireguard','amneziawg','mtproto','tuic','masque','openvpn','ikev2','l2tp')
 			AND clients.sub_id = ? AND inbounds.enable = ?
 	)`, subId, true).Order("sub_sort_index ASC").Order("id ASC").Find(&inbounds).Error
 	if err != nil {
@@ -3084,11 +3098,13 @@ type PageData struct {
 	SubUrl        string
 	SubJsonUrl    string
 	SubClashUrl   string
+	SubSingbox    string
 	SubTitle      string
 	SubSupportUrl string
 	SubAnnounce   string
 	Result        []string
 	Emails        []string
+	VPN           []VPNAccount
 }
 
 // ResolveRequest extracts scheme, host, and header information from an HTTP request.
@@ -3157,22 +3173,28 @@ func (s *SubService) BuildURLs(subPath, subJsonPath, subClashPath, subId string)
 
 	subURL = s.buildSingleURL(configuredSubURI, base, subPath, subId)
 
-	// When subURI is explicitly configured (reverse-proxy setup), use its
-	// scheme+host as the base for JSON and Clash URLs so they match the
-	// reverse-proxy endpoint instead of the raw sub-server port. Fall back
-	// to the request-derived base if subURI is empty or can't be parsed
-	// into a scheme+host (e.g. a malformed value with no scheme).
-	jsonClashBase := base
-	if configuredSubURI != "" {
-		if derived := s.extractBaseFromURI(configuredSubURI); derived != "" {
-			jsonClashBase = derived
-		}
-	}
-
+	jsonClashBase := s.formatsBase(configuredSubURI, base)
 	subJsonURL = s.buildSingleURL(configuredSubJsonURI, jsonClashBase, subJsonPath, subId)
 	subClashURL = s.buildSingleURL(configuredSubClashURI, jsonClashBase, subClashPath, subId)
 
 	return subURL, subJsonURL, subClashURL
+}
+
+// formatsBase is where the JSON, Clash and sing-box URLs live: a configured
+// subURI's scheme+host (a reverse proxy), else the request-derived base.
+func (s *SubService) formatsBase(configuredSubURI, base string) string {
+	if configuredSubURI != "" {
+		if derived := s.extractBaseFromURI(configuredSubURI); derived != "" {
+			return derived
+		}
+	}
+	return base
+}
+
+// SingboxURL is the subscription's /singbox/ alias on the formats base.
+func (s *SubService) SingboxURL(subId string) string {
+	configuredSubURI, _ := s.settingService.GetSubURI()
+	return s.buildSingleURL("", s.formatsBase(configuredSubURI, s.settingService.BuildSubURIBase(s.address)), subSingboxPath, subId)
 }
 
 // extractBaseFromURI extracts scheme://host from a configured URI.
@@ -3240,7 +3262,7 @@ func (s *SubService) BuildPageData(subId string, hostHeader string, traffic xray
 		BasePath:      basePath,
 		SId:           subId,
 		Enabled:       traffic.Enable,
-		IsOnline:      subIsOnline(emails, s.inboundService.GetOnlineClients()),
+		IsOnline:      subIsOnline(append(slices.Clone(emails), s.vpnUsernames()...), s.inboundService.GetOnlineClients()),
 		Download:      download,
 		Upload:        upload,
 		Total:         total,
@@ -3259,6 +3281,7 @@ func (s *SubService) BuildPageData(subId string, hostHeader string, traffic xray
 		SubSupportUrl: subSupportUrl,
 		Result:        pageLinks,
 		Emails:        pageEmails,
+		VPN:           s.vpnAccounts,
 	}
 }
 

@@ -6,8 +6,10 @@ import { CrownOutlined, PlusOutlined } from '@ant-design/icons';
 import { useTheme } from '@/hooks/useTheme';
 import AppSidebar from '@/layouts/AppSidebar';
 import { useSponsorsQuery } from '@/api/queries/useSponsorsQuery';
+import { useHostedStatus } from '@/api/queries/useHostedStatus';
 import SponsorCard from '@/components/sponsor/SponsorCard';
 import { sponsorsForSlot } from '@/lib/sponsors';
+import SponsorManager from './SponsorManager';
 import './SponsorsPage.css';
 
 function BecomeButton({ contact, block }: { contact?: string; block?: boolean }) {
@@ -46,6 +48,9 @@ export default function SponsorsPage() {
   const { isDark, isUltra, antdThemeConfig } = useTheme();
   const { data, fetched } = useSponsorsQuery();
   const sponsors = sponsorsForSlot(data.sponsors, 'page');
+  // A hosted panel shows the owner's sponsors; managing them stays with the owner.
+  const hostedStatus = useHostedStatus();
+  const canManage = hostedStatus.isSuccess && !hostedStatus.data?.enabled;
 
   const pageClass = useMemo(() => {
     const classes = ['sponsors-page'];
@@ -84,6 +89,8 @@ export default function SponsorsPage() {
                   </Row>
                 )}
               </Spin>
+
+              {canManage && <SponsorManager />}
             </div>
           </Layout.Content>
         </Layout>

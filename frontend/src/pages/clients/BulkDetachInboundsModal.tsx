@@ -18,6 +18,9 @@ const MULTI_USER_PROTOCOLS = new Set([
   'amneziawg',
   'tuic',
   'masque',
+  'openvpn',
+  'ikev2',
+  'l2tp',
 ]);
 
 interface BulkDetachInboundsModalProps {

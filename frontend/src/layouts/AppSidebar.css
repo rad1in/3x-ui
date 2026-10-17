@@ -6,6 +6,7 @@
 }
 
 .ant-sidebar > .ant-layout-sider {
+  border-inline-end: 1px solid var(--ant-color-border-secondary);
   position: sticky;
   top: 0;
   height: 100vh;
@@ -337,7 +338,7 @@
 
 body.dark .ant-drawer-content,
 body.dark .ant-drawer-body {
-  background-color: #15161a;
+  background-color: #0b0b0d;
 }
 
 html[data-theme='ultra-dark'] body.dark .ant-drawer-content,

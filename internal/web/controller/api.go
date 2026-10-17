@@ -6,6 +6,7 @@ import (
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/middleware"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/panel"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/tgbot"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/session"
@@ -56,6 +57,7 @@ func (a *APIController) checkAPIAuth(c *gin.Context) {
 			}
 			c.Set("api_authed", true)
 			c.Set("api_token_scope", row.Scope)
+			c.Set(apiTokenNameKey, row.Name)
 			c.Next()
 			return
 		}
@@ -179,6 +181,8 @@ func (a *APIController) initRouter(g *gin.RouterGroup) {
 	// advertise support, before CSRF/handlers read the body.
 	api.Use(middleware.ConfigEnvelopeMiddleware())
 	api.Use(middleware.CSRFMiddleware())
+	api.Use(hostedGuard)
+	api.Use(auditMiddleware(&service.AuditService{}))
 
 	api.GET("/openapi.json", ServeOpenAPISpec)
 
@@ -210,6 +214,11 @@ func (a *APIController) initRouter(g *gin.RouterGroup) {
 
 	// Subscription balancers — client-side balancers for the JSON sub output
 	NewSubBalancerController(api)
+
+	NewAuditController(api.Group("/audit"))
+	NewSponsorAdminController(api.Group("/sponsors"))
+	NewHostedController(api.Group("/hosted"))
+	NewHostedPanelController(api.Group("/hostedPanels"))
 
 	// Extra routes
 	api.POST("/backuptotgbot", a.BackuptoTgbot)

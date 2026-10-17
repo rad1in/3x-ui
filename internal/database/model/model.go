@@ -35,6 +35,9 @@ const (
 	AmneziaWG   Protocol = "amneziawg"
 	TUIC        Protocol = "tuic"
 	MASQUE      Protocol = "masque"
+	OpenVPN     Protocol = "openvpn"
+	IKEv2       Protocol = "ikev2"
+	L2TP        Protocol = "l2tp"
 )
 
 // User represents a user account in the 3x-ui panel.
@@ -65,7 +68,7 @@ type Inbound struct {
 	// Xray configuration fields
 	Listen            string   `json:"listen" form:"listen"`
 	Port              int      `json:"port" form:"port" validate:"gte=0,lte=65535" example:"443"`
-	Protocol          Protocol `json:"protocol" form:"protocol" validate:"required,oneof=vmess vless trojan shadowsocks wireguard hysteria http mixed tunnel tun mtproto amneziawg tuic masque" example:"vless"`
+	Protocol          Protocol `json:"protocol" form:"protocol" validate:"required,oneof=vmess vless trojan shadowsocks wireguard hysteria http mixed tunnel tun mtproto amneziawg tuic masque openvpn ikev2 l2tp" example:"vless"`
 	Settings          string   `json:"settings" form:"settings"`
 	StreamSettings    string   `json:"streamSettings" form:"streamSettings"`
 	Tag               string   `json:"tag" form:"tag" gorm:"unique" example:"in-443-tcp"`
@@ -178,6 +181,53 @@ type ApiToken struct {
 	CreatedAt int64  `json:"createdAt" gorm:"autoCreateTime"`
 	Scope     string `json:"scope" gorm:"not null;default:admin"`
 	ExpiresAt int64  `json:"expiresAt" gorm:"not null;default:0"`
+}
+
+// AuditLog is one admin action: a state-changing API call or a login attempt.
+// Action is the method plus route template, so rows group by endpoint.
+type AuditLog struct {
+	Id        int64  `json:"id" gorm:"primaryKey;autoIncrement" example:"42"`
+	CreatedAt int64  `json:"createdAt" gorm:"index;not null" example:"1760684400000"`
+	Actor     string `json:"actor" gorm:"index;not null;default:''" example:"admin"`
+	Ip        string `json:"ip" gorm:"not null;default:''" example:"203.0.113.5"`
+	Action    string `json:"action" gorm:"index;not null" example:"POST /clients/update/:email"`
+	Target    string `json:"target" gorm:"not null;default:''" example:"email=alice@example.com"`
+	Success   bool   `json:"success" gorm:"not null" example:"true"`
+}
+
+// SponsorRecord is a sponsor placement the panel owner manages locally. A zero
+// FromMs/UntilMs means no start/end bound.
+type SponsorRecord struct {
+	Id      int      `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
+	Name    string   `json:"name" gorm:"not null" example:"Acme VPS"`
+	Enable  bool     `json:"enable" gorm:"not null" example:"true"`
+	Slots   []string `json:"slots" gorm:"serializer:json" example:"[\"dashboard\",\"login\"]"`
+	FromMs  int64    `json:"from" gorm:"not null;default:0" example:"0"`
+	UntilMs int64    `json:"until" gorm:"not null;default:0" example:"1790000000000"`
+	Title   string   `json:"title" gorm:"not null;default:''" example:"Acme VPS — 20% off"`
+	Text    string   `json:"text" gorm:"not null;default:''" example:"Use code PANEL at checkout."`
+	Link    string   `json:"link" gorm:"not null" example:"https://acme.example/"`
+	Logo    string   `json:"logo" gorm:"type:text;not null;default:''" example:""`
+}
+
+// HostedPanel is a separate panel process the master runs on this server for
+// someone else, with its own database, address, port range and limits.
+type HostedPanel struct {
+	Id           int    `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
+	Name         string `json:"name" gorm:"not null" example:"Reseller A"`
+	Enable       bool   `json:"enable" gorm:"not null" example:"true"`
+	Username     string `json:"username" gorm:"not null" example:"reseller"`
+	WebPort      int    `json:"webPort" gorm:"not null" example:"20530"`
+	SubPort      int    `json:"subPort" gorm:"not null" example:"20531"`
+	WebBasePath  string `json:"webBasePath" gorm:"not null" example:"/reseller/"`
+	PortMin      int    `json:"portMin" gorm:"not null" example:"30000"`
+	PortMax      int    `json:"portMax" gorm:"not null" example:"30099"`
+	MaxInbounds  int    `json:"maxInbounds" gorm:"not null;default:0" example:"5"`
+	MaxClients   int    `json:"maxClients" gorm:"not null;default:0" example:"100"`
+	TrafficBytes int64  `json:"trafficBytes" gorm:"not null;default:0" example:"107374182400"`
+	ExpiresAt    int64  `json:"expiresAt" gorm:"not null;default:0" example:"0"`
+	UsageEpoch   int    `json:"usageEpoch" gorm:"not null;default:0" example:"0"`
+	CreatedAt    int64  `json:"createdAt" gorm:"not null;default:0" example:"1760000000000"`
 }
 
 // MarshalJSON emits settings, streamSettings, and sniffing as nested JSON

@@ -30,12 +30,14 @@ server, which this engine does not serve.
 */
 
 var contractExtraRoutes = map[string]bool{
-	"POST /login":              true,
-	"POST /logout":             true,
-	"GET /csrf-token":          true,
-	"GET /sponsors":            true,
-	"POST /getTwoFactorEnable": true,
-	"GET /ws":                  true,
+	"POST /login":                      true,
+	"POST /logout":                     true,
+	"GET /csrf-token":                  true,
+	"GET /sponsors":                    true,
+	"GET /sponsors/feed/sponsors.json": true,
+	"GET /sponsors/feed/logos/:name":   true,
+	"POST /getTwoFactorEnable":         true,
+	"GET /ws":                          true,
 }
 
 func inContractScope(method, path string) bool {

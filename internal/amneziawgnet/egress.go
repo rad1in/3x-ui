@@ -16,6 +16,7 @@ import (
 	"gvisor.dev/gvisor/pkg/tcpip/adapters/gonet"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/amneziawg"
+	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 )
 
@@ -115,10 +116,10 @@ func (s *socks5EgressServer) Listen() error {
 		return nil
 	}
 	lc := &net.ListenConfig{}
-	ln, err := lc.Listen(context.Background(), "tcp", fmt.Sprintf("127.0.0.1:%d", EgressBasePort))
+	ln, err := lc.Listen(context.Background(), "tcp", fmt.Sprintf("%s:%d", config.LoopbackIP(), EgressBasePort))
 	if err != nil {
 		var fallbackErr error
-		if ln, fallbackErr = lc.Listen(context.Background(), "tcp", "127.0.0.1:0"); fallbackErr != nil {
+		if ln, fallbackErr = lc.Listen(context.Background(), "tcp", config.LoopbackIP()+":0"); fallbackErr != nil {
 			return fmt.Errorf("amneziawgnet: egress listen: %w", errors.Join(err, fallbackErr))
 		}
 		logger.Warningf("amneziawgnet: egress port %d unavailable, using a free port: %v", EgressBasePort, err)

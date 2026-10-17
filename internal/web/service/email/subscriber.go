@@ -2,6 +2,7 @@ package email
 
 import (
 	"fmt"
+	"html"
 	"os"
 	"strconv"
 	"strings"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/mhsanaei/3x-ui/v3/internal/eventbus"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
+	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/locale"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 )
@@ -163,6 +165,28 @@ func (s *Subscriber) formatMessage(e eventbus.Event) (subject, body string) {
 			content := kv(i18n("email.labelStatus"), `<span style="color:orange">`+i18n("email.statusHigh")+`</span>`)
 			body = wrap(subject, content)
 		}
+
+	case eventbus.EventClientQuotaWarning, eventbus.EventClientExpiryWarning:
+		data, ok := e.Data.(*eventbus.ClientEventData)
+		if !ok {
+			return
+		}
+		usage := i18n("tgbot.messages.usagePercent", "Percent=="+strconv.Itoa(data.Percent),
+			"Used=="+common.FormatTraffic(data.Used()), "Total=="+common.FormatTraffic(data.Total))
+		expires := i18n("tgbot.messages.expiresOn", "Date=="+data.ExpiryDate(), "Days=="+strconv.Itoa(data.DaysLeft))
+		title := i18n("tgbot.messages.eventQuotaWarning", "Email=="+data.Email, "Usage=="+usage)
+		if e.Type == eventbus.EventClientExpiryWarning {
+			title = i18n("tgbot.messages.eventExpiryWarning", "Email=="+data.Email, "Expires=="+expires)
+		}
+		subject = host + " " + title
+		content := kv(i18n("email.labelClient"), html.EscapeString(data.Email))
+		if data.Total > 0 {
+			content += kv(i18n("email.labelUsage"), usage)
+		}
+		if data.ExpiryTime > 0 {
+			content += kv(i18n("email.labelExpires"), expires)
+		}
+		body = wrap(html.EscapeString(title), content)
 
 	case eventbus.EventLoginAttempt:
 		if data, ok := e.Data.(*eventbus.LoginEventData); ok {

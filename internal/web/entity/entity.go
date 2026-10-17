@@ -2,12 +2,16 @@ package entity
 
 import (
 	"crypto/tls"
+	"encoding/base64"
 	"math"
 	"net"
 	"net/mail"
 	"net/netip"
+	"regexp"
 	"strings"
 	"time"
+	"unicode"
+	"unicode/utf8"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/cronspec"
@@ -17,6 +21,52 @@ type Msg struct {
 	Success bool   `json:"success"`
 	Msg     string `json:"msg"`
 	Obj     any    `json:"obj"`
+}
+
+// PanelBrandLogoMaxBytes caps the decoded logo: it is inlined into every
+// panel and login page load, so it has to stay small.
+const PanelBrandLogoMaxBytes = 64 << 10
+
+const panelBrandNameMaxRunes = 32
+
+var (
+	panelBrandColorPattern = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
+	imageDataURLPrefixes   = []string{"data:image/png;base64,", "data:image/jpeg;base64,", "data:image/webp;base64,"}
+)
+
+func (s *AllSetting) validatePanelBrand() error {
+	if utf8.RuneCountInString(s.PanelBrandName) > panelBrandNameMaxRunes {
+		return common.NewErrorf("panel name must be at most %d characters", panelBrandNameMaxRunes)
+	}
+	if strings.IndexFunc(s.PanelBrandName, unicode.IsControl) >= 0 {
+		return common.NewError("panel name must not contain control characters")
+	}
+	if s.PanelBrandColor != "" && !panelBrandColorPattern.MatchString(s.PanelBrandColor) {
+		return common.NewError("panel color must be a #RRGGBB hex value:", s.PanelBrandColor)
+	}
+	if s.PanelBrandLogo == "" {
+		return nil
+	}
+	return ValidateImageDataURL(s.PanelBrandLogo, PanelBrandLogoMaxBytes)
+}
+
+// ValidateImageDataURL accepts a base64 PNG, JPEG or WebP data URL of at most
+// maxBytes decoded bytes. SVG is refused on purpose: it can carry script.
+func ValidateImageDataURL(v string, maxBytes int) error {
+	for _, prefix := range imageDataURLPrefixes {
+		payload, ok := strings.CutPrefix(v, prefix)
+		if !ok {
+			continue
+		}
+		if base64.StdEncoding.DecodedLen(len(payload)) > maxBytes {
+			return common.NewErrorf("image must be at most %d KB", maxBytes>>10)
+		}
+		if _, err := base64.StdEncoding.DecodeString(payload); err != nil {
+			return common.NewError("image is not valid base64")
+		}
+		return nil
+	}
+	return common.NewError("image must be a PNG, JPEG or WebP data URL")
 }
 
 type AllSetting struct {
@@ -31,10 +81,27 @@ type AllSetting struct {
 	RealityScanCandidates string `json:"realityScanCandidates" form:"realityScanCandidates"`
 	IpLimitAllowlist      string `json:"ipLimitAllowlist" form:"ipLimitAllowlist"`
 	PanelOutbound         string `json:"panelOutbound" form:"panelOutbound"`
+	PanelBrandName        string `json:"panelBrandName" form:"panelBrandName"`
+	PanelBrandColor       string `json:"panelBrandColor" form:"panelBrandColor"`
+	PanelBrandLogo        string `json:"panelBrandLogo" form:"panelBrandLogo"`
 
 	PageSize                   int    `json:"pageSize" form:"pageSize" validate:"gte=0,lte=1000"`
 	ExpireDiff                 int    `json:"expireDiff" form:"expireDiff" validate:"gte=0"`
 	TrafficDiff                int    `json:"trafficDiff" form:"trafficDiff" validate:"gte=0,lte=100"`
+	QuotaWarnPercent           int    `json:"quotaWarnPercent" form:"quotaWarnPercent" validate:"gte=0,lte=99"`
+	AutoDeleteDepletedDays     int    `json:"autoDeleteDepletedDays" form:"autoDeleteDepletedDays" validate:"gte=0"`
+	DecoyMode                  string `json:"decoyMode" form:"decoyMode"`
+	DecoyTarget                string `json:"decoyTarget" form:"decoyTarget"`
+	DecoyHtml                  string `json:"decoyHtml" form:"decoyHtml"`
+	BackupSchedule             string `json:"backupSchedule" form:"backupSchedule"`
+	BackupKeep                 int    `json:"backupKeep" form:"backupKeep" validate:"gte=0"`
+	BackupLocalDir             string `json:"backupLocalDir" form:"backupLocalDir"`
+	BackupS3Endpoint           string `json:"backupS3Endpoint" form:"backupS3Endpoint"`
+	BackupS3Region             string `json:"backupS3Region" form:"backupS3Region"`
+	BackupS3Bucket             string `json:"backupS3Bucket" form:"backupS3Bucket"`
+	BackupS3AccessKey          string `json:"backupS3AccessKey" form:"backupS3AccessKey"`
+	BackupS3SecretKey          string `json:"backupS3SecretKey" form:"backupS3SecretKey"`
+	BackupS3Prefix             string `json:"backupS3Prefix" form:"backupS3Prefix"`
 	RemarkTemplate             string `json:"remarkTemplate" form:"remarkTemplate"`
 	SubShowIdentityOnAllLinks  bool   `json:"subShowIdentityOnAllLinks" form:"subShowIdentityOnAllLinks"`
 	SubInfoNodeEnable          bool   `json:"subInfoNodeEnable" form:"subInfoNodeEnable"`
@@ -78,6 +145,12 @@ type AllSetting struct {
 	DiscordMemory        int    `json:"discordMemory" form:"discordMemory" validate:"gte=0,lte=100"`
 	DiscordLang          string `json:"discordLang" form:"discordLang"`
 	DiscordEnabledEvents string `json:"discordEnabledEvents" form:"discordEnabledEvents"`
+
+	// Webhooks: signed POSTs of the enabled events to every URL (one per line).
+	WebhookEnable bool   `json:"webhookEnable" form:"webhookEnable"`
+	WebhookUrls   string `json:"webhookUrls" form:"webhookUrls"`
+	WebhookSecret string `json:"webhookSecret" form:"webhookSecret"`
+	WebhookEvents string `json:"webhookEvents" form:"webhookEvents"`
 
 	OutboundDownThreshold int `json:"outboundDownThreshold" form:"outboundDownThreshold" validate:"gte=1,lte=100"`
 
@@ -224,6 +297,8 @@ type AllSettingView struct {
 	HasNordSecret      bool `json:"hasNordSecret"`
 	HasSmtpPassword    bool `json:"hasSmtpPassword"`
 	HasDiscordBotToken bool `json:"hasDiscordBotToken"`
+	HasWebhookSecret   bool `json:"hasWebhookSecret"`
+	HasBackupS3Secret  bool `json:"hasBackupS3Secret"`
 }
 
 func pathHasForbiddenChar(s string) bool {
@@ -357,6 +432,7 @@ func (s *AllSetting) CheckValid() error {
 		{"tgRunTime", s.TgRunTime},
 		{"discordRunTime", s.DiscordRunTime},
 		{"ldapSyncCron", s.LdapSyncCron},
+		{"backupSchedule", s.BackupSchedule},
 	} {
 		if strings.TrimSpace(sched.spec) == "" {
 			continue
@@ -379,6 +455,10 @@ func (s *AllSetting) CheckValid() error {
 	_, err := time.LoadLocation(s.TimeLocation)
 	if err != nil {
 		return common.NewError("time location not exist:", s.TimeLocation)
+	}
+
+	if err := s.validatePanelBrand(); err != nil {
+		return err
 	}
 
 	if s.SmtpFrom != "" {

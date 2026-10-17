@@ -20,8 +20,12 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/amneziawgnet"
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/eventbus"
+	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
+	"github.com/mhsanaei/3x-ui/v3/internal/ipsec"
+	"github.com/mhsanaei/3x-ui/v3/internal/l2tp"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/mtproto"
+	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
 	"github.com/mhsanaei/3x-ui/v3/internal/tuic"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/cronspec"
@@ -37,6 +41,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/email"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/panel"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/tgbot"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/service/webhook"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/websocket"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 
@@ -126,6 +131,7 @@ type Server struct {
 	settingService service.SettingService
 	tgbotService   tgbot.Tgbot
 	discordService *discord.DiscordService
+	webhooks       *webhook.Sender
 	discordGateway *discord.GatewayClient
 
 	wsHub *websocket.Hub
@@ -188,7 +194,7 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 	}
 
 	if webDomain != "" {
-		engine.Use(middleware.DomainValidatorMiddleware(webDomain))
+		engine.Use(middleware.DomainValidatorMiddleware(webDomain, s.settingService.DecoySite().Handler()))
 	}
 
 	secret, err := s.settingService.GetSecret()
@@ -278,8 +284,13 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 
 	// Let unknown panel document routes fall back to the SPA shell, while every
 	// non-SPA miss still returns a hard 404.
+	decoySite := s.settingService.DecoySite().Handler()
 	engine.NoRoute(func(c *gin.Context) {
 		if s.panel.HandleNoRoutePanelSPA(c) {
+			return
+		}
+		if decoySite != nil {
+			decoySite(c)
 			return
 		}
 		c.AbortWithStatus(http.StatusNotFound)
@@ -323,6 +334,7 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 		if err != nil {
 			logger.Warning("start xray failed:", err)
 		}
+		go panel.StartHostedPanels()
 	}
 	// Check whether xray is running every second
 	_, _ = s.cron.AddJob(cadenceXrayRunning, job.NewCheckXrayRunningJob())
@@ -341,6 +353,18 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 	mtJob := job.NewMtprotoJob()
 	_, _ = s.cron.AddJob(cadenceMtproto, mtJob)
 	go mtJob.Run()
+
+	ovpnJob := job.NewOpenVPNJob()
+	_, _ = s.cron.AddJob(cadenceMtproto, ovpnJob)
+	go ovpnJob.Run()
+
+	ikeJob := job.NewIKEv2Job()
+	_, _ = s.cron.AddJob(cadenceMtproto, ikeJob)
+	go ikeJob.Run()
+
+	l2tpJob := job.NewL2TPJob()
+	_, _ = s.cron.AddJob(cadenceMtproto, l2tpJob)
+	go l2tpJob.Run()
 
 	// Reconcile embedded AmneziaWG interfaces; traffic rides Xray's own stats
 	awgJob := job.NewAmneziaWGJob()
@@ -371,6 +395,17 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 
 	// check client ips from log file every day
 	_, _ = s.cron.AddJob("@daily", job.NewClearLogsJob())
+	_, _ = s.cron.AddJob("@daily", job.NewPruneAuditLogJob())
+	_, _ = s.cron.AddJob("@every 1m", job.NewClientWarningJob())
+	_, _ = s.cron.AddJob("@hourly", job.NewClientCleanupJob())
+	if spec, _ := s.settingService.GetBackupSchedule(); strings.TrimSpace(spec) != "" {
+		scheduleSettingJob(s.cron, "Scheduled backup", spec, "@daily", job.NewScheduledBackupJob())
+	}
+	if hosted.Enabled() {
+		_, _ = s.cron.AddJob("@every 15s", job.NewHostedStatusJob())
+	} else {
+		_, _ = s.cron.AddJob("@every 1m", job.NewHostedSponsorsJob())
+	}
 	_, _ = s.cron.AddJob(cadenceXrayLogPrune, job.NewPruneXrayLogsJob())
 	_, _ = s.cron.AddJob("@hourly", job.NewWarpIpJob())
 
@@ -646,6 +681,7 @@ func (s *Server) start(restartXray bool, startTgBot bool) (err error) {
 	service.SetEventBus(s.bus)
 	job.EventBus = s.bus
 	tgbot.EventBus = s.bus
+	s.bus.Subscribe("audit-log", (&service.AuditService{}).HandleEvent)
 
 	// Wire xray crash callback BEFORE startTask so it's ready
 	xray.OnCrash = func(err error) {
@@ -672,6 +708,14 @@ func (s *Server) start(restartXray bool, startTgBot bool) (err error) {
 
 	// Wire discord service to controller for test endpoint
 	controller.SetDiscordService(s.discordService)
+
+	settingSvc := s.settingService
+	s.webhooks = webhook.New(func() webhook.Config {
+		enabled, urls, secret, events := settingSvc.WebhookConfig()
+		return webhook.Config{Enabled: enabled, URLs: webhook.ParseURLs(urls), Secret: secret, Events: webhook.ParseEvents(events)}
+	})
+	s.bus.Subscribe("webhook", s.webhooks.HandleEvent)
+	controller.SetTestWebhookFunc(s.webhooks.Test)
 
 	serverService := &service.ServerService{}
 	inboundService := &service.InboundService{}
@@ -783,6 +827,10 @@ func (s *Server) stop(stopXray bool, stopTgBot bool) error {
 			err2 = err
 		}
 		mtproto.GetManager().StopAll()
+		openvpn.GetManager().StopAll()
+		l2tp.GetManager().StopAll()
+		ipsec.GetManager().StopAll()
+		panel.StopHostedPanels()
 		amneziawgnet.GetManager().StopAll()
 		amneziawgnet.GetOutboundManager().StopAll()
 	}
@@ -793,6 +841,9 @@ func (s *Server) stop(stopXray bool, stopTgBot bool) error {
 	}
 	if s.bus != nil {
 		s.bus.Stop()
+	}
+	if s.webhooks != nil {
+		s.webhooks.Stop()
 	}
 	if err := service.PersistSystemMetrics(); err != nil {
 		logger.Warning("persist system metrics on shutdown failed:", err)

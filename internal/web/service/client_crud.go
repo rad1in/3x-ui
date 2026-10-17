@@ -153,6 +153,7 @@ func (s *ClientService) Create(inboundSvc *InboundService, payload *ClientCreate
 	if strings.TrimSpace(client.Email) == "" {
 		return false, common.NewError("client email is required")
 	}
+	defer trackClients(client.Email)()
 	if err := validateClientEmail(client.Email); err != nil {
 		return false, err
 	}
@@ -411,7 +412,7 @@ func (s *ClientService) fillProtocolDefaults(c *model.Client, ib *model.Inbound)
 		if c.ID == "" {
 			c.ID = uuid.NewString()
 		}
-	case model.Trojan, model.MASQUE:
+	case model.Trojan, model.MASQUE, model.OpenVPN, model.IKEv2, model.L2TP:
 		if c.Password == "" {
 			c.Password = strings.ReplaceAll(uuid.NewString(), "-", "")
 		}
@@ -608,6 +609,11 @@ func (s *ClientService) Update(inboundSvc *InboundService, id int, updated model
 	existing, err := s.GetByID(id)
 	if err != nil {
 		return false, err
+	}
+	// A rename would read as one client deleted and another created; only an
+	// unchanged email reports its enable flip.
+	if updated.Email == "" || updated.Email == existing.Email {
+		defer trackClients(existing.Email)()
 	}
 	inboundIds, err := s.GetInboundIdsForRecord(id)
 	if err != nil {
@@ -869,6 +875,7 @@ func (s *ClientService) Delete(inboundSvc *InboundService, id int, keepTraffic b
 	if err != nil {
 		return false, err
 	}
+	defer trackClients(existing.Email)()
 	tombstoneClientEmail(existing.Email)
 
 	inboundIds, err := s.GetInboundIdsForRecord(id)

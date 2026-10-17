@@ -74,6 +74,9 @@ func TestGetAllSettingViewRedactsSecrets(t *testing.T) {
 	if err := s.saveSetting("discordBotToken", "discord-secret"); err != nil {
 		t.Fatal(err)
 	}
+	if err := s.saveSetting("webhookSecret", "webhook-secret"); err != nil {
+		t.Fatal(err)
+	}
 	if err := database.GetDB().Create(&model.ApiToken{Name: "test", Token: "api-secret", Enabled: true}).Error; err != nil {
 		t.Fatal(err)
 	}
@@ -82,10 +85,10 @@ func TestGetAllSettingViewRedactsSecrets(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if view.TgBotToken != "" || view.TwoFactorToken != "" || view.LdapPassword != "" || view.SmtpPassword != "" || view.DiscordBotToken != "" {
+	if view.TgBotToken != "" || view.TwoFactorToken != "" || view.LdapPassword != "" || view.SmtpPassword != "" || view.DiscordBotToken != "" || view.WebhookSecret != "" {
 		t.Fatalf("settings view leaked secrets: %#v", view)
 	}
-	if !view.HasTgBotToken || !view.HasTwoFactorToken || !view.HasLdapPassword || !view.HasApiToken || !view.HasSmtpPassword || !view.HasDiscordBotToken {
+	if !view.HasTgBotToken || !view.HasTwoFactorToken || !view.HasLdapPassword || !view.HasApiToken || !view.HasSmtpPassword || !view.HasDiscordBotToken || !view.HasWebhookSecret {
 		t.Fatalf("settings view did not report configured secret flags: %#v", view)
 	}
 }
@@ -111,6 +114,9 @@ func TestUpdateAllSettingPreservesRedactedSecrets(t *testing.T) {
 	if err := s.saveSetting("discordBotToken", "discord-secret"); err != nil {
 		t.Fatal(err)
 	}
+	if err := s.saveSetting("webhookSecret", "webhook-secret"); err != nil {
+		t.Fatal(err)
+	}
 
 	view, err := s.GetAllSettingView()
 	if err != nil {
@@ -122,6 +128,9 @@ func TestUpdateAllSettingPreservesRedactedSecrets(t *testing.T) {
 	}
 	if got, _ := s.GetTgBotToken(); got != "telegram-secret" {
 		t.Fatalf("tg token = %q, want preserved secret", got)
+	}
+	if _, _, got, _ := s.WebhookConfig(); got != "webhook-secret" {
+		t.Fatalf("webhook secret = %q, want preserved secret", got)
 	}
 	if got, _ := s.GetLdapPassword(); got != "ldap-secret" {
 		t.Fatalf("ldap password = %q, want preserved secret", got)

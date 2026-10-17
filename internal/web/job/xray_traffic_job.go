@@ -19,6 +19,7 @@ type XrayTrafficJob struct {
 	xrayService     service.XrayService
 	inboundService  service.InboundService
 	outboundService outbound.OutboundService
+	hostedService   service.HostedService
 }
 
 // clientStatsSnapshotMaxClients caps how many client_traffics rows the job
@@ -82,6 +83,11 @@ func (j *XrayTrafficJob) Run() {
 	needRestart0, clientsDisabled, err := j.inboundService.AddTraffic(traffics, clientTraffics)
 	if err != nil {
 		logger.Warning("add inbound traffic failed:", err)
+	}
+	if blocked := j.hostedService.Blocked(); blocked != "" {
+		if err := j.xrayService.RestartXray(false); err != nil {
+			logger.Info("hosted panel limit reached:", err)
+		}
 	}
 	err, needRestart1 := j.outboundService.AddTraffic(traffics, clientTraffics)
 	if err != nil {

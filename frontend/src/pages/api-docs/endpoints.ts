@@ -240,8 +240,29 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/sponsors',
         summary:
-          'Public. Active paid sponsor placements read from the project sponsors.json (cached for 1h); entries outside their from/until window are dropped. Logos are proxied by the panel at /sponsors/logo/{name}. Used by the login page and panel sponsor slots.',
+          "Public. Active sponsor placements: the panel owner's own sponsors, or another panel's feed when sponsorFeedUrl is set (cached for 1h). Entries outside their from/until window are dropped. Logos are proxied by the panel at /sponsors/logo/{name}. Used by the login page and panel sponsor slots.",
         responseSchema: 'SponsorList',
+      },
+      {
+        method: 'GET',
+        path: '/sponsors/feed/sponsors.json',
+        summary:
+          "Public. This panel's own live sponsors as a feed for other panels: point another panel's sponsor feed setting at this URL. Logo fields are bare file names served from the sibling logos/ path. The body is the bare SponsorList, not wrapped in a Msg envelope.",
+        responseSchema: 'SponsorList',
+      },
+      {
+        method: 'GET',
+        path: '/sponsors/feed/logos/:name',
+        summary:
+          "Public. Logo image (PNG, JPEG or WebP) of a live sponsor in this panel's feed; 404 for anything else.",
+        params: [
+          {
+            name: 'name',
+            in: 'path',
+            type: 'string',
+            desc: 'Logo file name from the feed, e.g. local-1.png.',
+          },
+        ],
       },
       {
         method: 'POST',
@@ -401,6 +422,44 @@ export const sections: readonly Section[] = [
         ],
         body: '{\n  "masterGuid": "9f6c2d-…",\n  "traffics": [\n    { "email": "alice", "up": 1048576, "down": 2097152 }\n  ]\n}',
         response: '{\n  "success": true\n}',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/inbounds/:id/openvpnProfile',
+        summary:
+          "Download the .ovpn profile of an OpenVPN inbound. It carries the inbound's CA and tls-crypt key and asks the user for their client email and password. The remote address is the inbound's custom share address, else its listen address, else the host the request reached the panel on.",
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'OpenVPN inbound ID.' }],
+        response: 'client\ndev tun\nproto udp\nremote vpn.example.com 1194\n...',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/inbounds/vpnStatus',
+        summary:
+          'Whether each OpenVPN, IKEv2 and L2TP inbound that should be serving someone is up, and if not, why (a missing binary, a kernel without PPP or IPsec, another strongSwan already running). Inbounds with no live client are left out: nothing runs for them.',
+        response:
+          '{\n  "success": true,\n  "obj": [\n    { "id": 4, "running": false, "reason": "this kernel has no PPP support (/dev/ppp is missing), which L2TP needs" }\n  ]\n}',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/inbounds/:id/ikev2Profile',
+        summary:
+          "Download one client's profile for an IKEv2 inbound. `mobileconfig` is an Apple configuration profile (iOS, iPadOS, macOS) with the login filled in and the inbound's CA trusted; `sswan` is a profile for the strongSwan Android app, which asks for the password; `ca` is the CA certificate (DER) for setting up Windows or other clients by hand. Every format points at the inbound's server address.",
+        params: [
+          { name: 'id', in: 'path', type: 'number', desc: 'IKEv2 inbound ID.' },
+          {
+            name: 'email',
+            in: 'query',
+            type: 'string',
+            desc: 'The client whose profile to build.',
+          },
+          {
+            name: 'format',
+            in: 'query',
+            type: 'string',
+            desc: 'mobileconfig (default), sswan or ca.',
+          },
+        ],
+        response: '<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0">...',
       },
       {
         method: 'GET',
@@ -1158,7 +1217,7 @@ export const sections: readonly Section[] = [
         summary:
           'Create a new client and attach it to one or more inbounds in a single call. Body is JSON. Per-protocol secrets are generated server-side when omitted, so callers can send only the universal fields.',
         description:
-          'Fields the server fills in when they are omitted — a valid value sent by the caller is never overwritten. Re-adding an email that already exists, with its stored `subId`, reuses the stored `id`, `password`, `auth` and `secret` instead of minting new ones, so the identity stays in sync across its inbounds.\n\n- **VLESS / VMess** — `id`, a fresh UUID\n- **Trojan** — `password`\n- **Shadowsocks** — `password`. On a `2022-blake3-*` inbound a supplied password that does not base64-decode to the key length of the cipher (16 or 32 bytes) is replaced by a generated key and the call still succeeds, so read the client back if you did not let the server pick. Legacy ciphers keep any non-empty password\n- **Hysteria** — `auth`\n- **mtproto** — `secret`, a FakeTLS secret derived from the fronting domain of the inbound, or from `www.cloudflare.com` when it has none\n- **WireGuard** — `privateKey` and `publicKey` when both are blank, or `publicKey` alone when only a `privateKey` was sent, plus `allowedIPs`: one free `/32` taken from the /24 the existing peers of that inbound already sit in, or from `10.0.0.0/24` when it has none\n\nAccepted on the same body but never generated: `preSharedKey` and `keepAlive` (WireGuard), `adTag` (mtproto).\n\nWireGuard is the only one of these that can fail. Allocation widens the search to the containing /16 before giving up with `inbound <id>: wireguard: no free address available in <scope>`, and an `allowedIPs` supplied by the caller is validated instead of allocated: `inbound <id>: wireguard: allowedIPs entry <entry> overlaps <address> used by another client` when its range overlaps an address or prefix a different client of that same inbound holds, or `... used by a client on <inbound>` when the holder sits on another WireGuard or AmneziaWG inbound. Ranges are compared, not strings, so `10.0.0.9/24` collides with `10.0.0.5/32`; a `0.0.0.0/0` or `::/0` default route claims no address. Allocation likewise skips every address inside a prefix another client holds. The same validation runs on POST /panel/api/clients/{email}/attach, where a client that already carries an address brings it along.\n\nAn `inboundIds` entry that names no existing inbound rejects the whole call before anything is written. Past that, the inbounds are applied concurrently and independently: one that fails no longer stops the others, so a `success:false` response can still have created the client on the rest. Every error names the inbound it came from (`inbound 7: <message>`), and several failures are reported together, one per line. `limitHwid` is applied only when every inbound succeeded, so re-run the call after fixing the failure.',
+          'Fields the server fills in when they are omitted — a valid value sent by the caller is never overwritten. Re-adding an email that already exists, with its stored `subId`, reuses the stored `id`, `password`, `auth` and `secret` instead of minting new ones, so the identity stays in sync across its inbounds.\n\n- **VLESS / VMess** — `id`, a fresh UUID\n- **Trojan / OpenVPN** — `password`\n- **Shadowsocks** — `password`. On a `2022-blake3-*` inbound a supplied password that does not base64-decode to the key length of the cipher (16 or 32 bytes) is replaced by a generated key and the call still succeeds, so read the client back if you did not let the server pick. Legacy ciphers keep any non-empty password\n- **Hysteria** — `auth`\n- **mtproto** — `secret`, a FakeTLS secret derived from the fronting domain of the inbound, or from `www.cloudflare.com` when it has none\n- **WireGuard** — `privateKey` and `publicKey` when both are blank, or `publicKey` alone when only a `privateKey` was sent, plus `allowedIPs`: one free `/32` taken from the /24 the existing peers of that inbound already sit in, or from `10.0.0.0/24` when it has none\n\nAccepted on the same body but never generated: `preSharedKey` and `keepAlive` (WireGuard), `adTag` (mtproto).\n\nWireGuard is the only one of these that can fail. Allocation widens the search to the containing /16 before giving up with `inbound <id>: wireguard: no free address available in <scope>`, and an `allowedIPs` supplied by the caller is validated instead of allocated: `inbound <id>: wireguard: allowedIPs entry <entry> overlaps <address> used by another client` when its range overlaps an address or prefix a different client of that same inbound holds, or `... used by a client on <inbound>` when the holder sits on another WireGuard or AmneziaWG inbound. Ranges are compared, not strings, so `10.0.0.9/24` collides with `10.0.0.5/32`; a `0.0.0.0/0` or `::/0` default route claims no address. Allocation likewise skips every address inside a prefix another client holds. The same validation runs on POST /panel/api/clients/{email}/attach, where a client that already carries an address brings it along.\n\nAn `inboundIds` entry that names no existing inbound rejects the whole call before anything is written. Past that, the inbounds are applied concurrently and independently: one that fails no longer stops the others, so a `success:false` response can still have created the client on the rest. Every error names the inbound it came from (`inbound 7: <message>`), and several failures are reported together, one per line. `limitHwid` is applied only when every inbound succeeded, so re-run the call after fixing the failure.',
         params: [
           {
             name: 'client',
@@ -1984,6 +2043,21 @@ export const sections: readonly Section[] = [
         response: '{\n  "success": true,\n  "msg": "Test notification sent successfully"\n}',
       },
       {
+        method: 'POST',
+        path: '/panel/api/setting/testWebhook',
+        summary:
+          'Send a signed test event to every configured webhook URL. Fails with the first URL that did not answer 2xx.',
+        response: '{\n  "success": true,\n  "msg": "Test event delivered to every webhook URL"\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/setting/backupNow',
+        summary:
+          'Run the scheduled backup once with the saved settings: a gzipped database backup to the local folder and/or the S3 bucket, pruning beyond backupKeep. Returns one result per destination.',
+        response:
+          '{\n  "success": true,\n  "obj": [\n    { "destination": "s3", "name": "panel.example.com_2026-10-17_030000.db.gz", "pruned": 1 }\n  ]\n}',
+      },
+      {
         method: 'GET',
         path: '/panel/api/setting/getDefaultJsonConfig',
         summary:
@@ -2072,6 +2146,168 @@ export const sections: readonly Section[] = [
         ],
         body: '{\n  "enabled": false,\n  "expectedScope": "node-sync"\n}',
         response: '{\n  "success": true\n}',
+      },
+    ],
+  },
+
+  {
+    id: 'hosted',
+    title: 'Hosted Panel',
+    description:
+      'A panel the owner of this server runs for someone else. Its inbound, client, port, traffic and expiry limits are set by the owner and cannot be changed from inside the panel.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/hosted/status',
+        summary:
+          "This panel's limits and usage. enabled is false on an ordinary panel. blocked is expired, traffic or no-limits while Xray is held stopped, otherwise empty. Zero limits mean unlimited.",
+        responseSchema: 'HostedView',
+      },
+    ],
+  },
+
+  {
+    id: 'hosted-panels',
+    title: 'Hosted Panels',
+    description:
+      'Separate panels this server runs for other people. Each has its own database, login, address and inbound port range, and enforces the limits set here. Not available from inside a hosted panel.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/hostedPanels/list',
+        summary:
+          'Every hosted panel with its last reported usage (status) and its process state. status.updatedAt is 0 until the panel has reported once.',
+        responseSchema: 'HostedPanelView',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/hostedPanels/add',
+        summary:
+          'Create a hosted panel and start it when enable is true. The password must be at least 8 characters. webPort, subPort and the portMin-portMax inbound range must not collide with this panel, its inbounds or another hosted panel. Zero limits mean unlimited; expiresAt is unix ms.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'HostedPanelInput.' }],
+        responseSchema: 'HostedPanel',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/hostedPanels/update/:id',
+        summary:
+          'Replace the settings of a hosted panel. An empty password keeps the current login; a new one also turns off its 2FA. Changing the address restarts the panel; limits apply live.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Hosted panel id.' },
+          { name: 'body', in: 'body (json)', type: 'object', desc: 'HostedPanelInput.' },
+        ],
+        responseSchema: 'HostedPanel',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/hostedPanels/del/:id',
+        summary: 'Stop a hosted panel and delete it together with its database and files.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Hosted panel id.' }],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/hostedPanels/resetUsage/:id',
+        summary:
+          'Start a new usage period: the hosted panel zeroes its traffic meter and resumes if traffic was what stopped it.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Hosted panel id.' }],
+      },
+    ],
+  },
+
+  {
+    id: 'sponsors',
+    title: 'Sponsors',
+    description:
+      "Manage the sponsor placements this panel shows on its login page, dashboard and sponsors page, and optionally read them from another panel's feed instead.",
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/sponsors/list',
+        summary: 'Every locally stored sponsor record plus the feed URL and contact link.',
+        responseSchema: 'SponsorAdminView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sponsors/save',
+        summary:
+          'Create (id 0) or replace a sponsor record. The link must be https://; slots are any of dashboard, page and login; from/until are unix ms with 0 meaning unbounded; the logo is an optional PNG, JPEG or WebP data URL of at most 64 KB.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SponsorRecord.' }],
+        responseSchema: 'SponsorRecord',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sponsors/del/:id',
+        summary: 'Delete a sponsor record.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Sponsor record id.' }],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sponsors/config',
+        summary:
+          'Set where sponsors come from and the "become a sponsor" link. An empty feedUrl shows this panel\'s own records; otherwise it must be https://, or http:// to a loopback address on this server.',
+        params: [
+          {
+            name: 'feedUrl',
+            in: 'body (json)',
+            type: 'string',
+            desc: "Another panel's /sponsors/feed/sponsors.json, or empty.",
+          },
+          {
+            name: 'contact',
+            in: 'body (json)',
+            type: 'string',
+            desc: 'https:// contact link, or empty.',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'activity-log',
+    title: 'Activity Log',
+    description:
+      'Who changed what and when. Every state-changing API call is recorded with its actor (panel user or token:<name>), client IP, route template, path parameters and outcome, along with every login attempt. Request bodies are never stored. Rows older than 90 days are pruned daily.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/audit/list',
+        summary: 'Page through the activity log, newest first.',
+        params: [
+          {
+            name: 'page',
+            in: 'query',
+            type: 'number',
+            desc: '1-indexed page number. Defaults to 1.',
+            optional: true,
+            defaultValue: 1,
+          },
+          {
+            name: 'pageSize',
+            in: 'query',
+            type: 'number',
+            desc: 'Rows per page. Defaults to 50, capped at 200.',
+            optional: true,
+            defaultValue: 50,
+          },
+          {
+            name: 'search',
+            in: 'query',
+            type: 'string',
+            desc: 'Case-insensitive substring match on actor, IP, action or target.',
+            optional: true,
+          },
+          {
+            name: 'result',
+            in: 'query',
+            type: 'string',
+            desc: 'ok for successful actions only, fail for failures only; omit for both.',
+            optional: true,
+            enum: ['ok', 'fail'],
+          },
+        ],
+        responseSchema: 'AuditLogPage',
       },
     ],
   },

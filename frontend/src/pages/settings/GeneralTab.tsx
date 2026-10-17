@@ -4,6 +4,7 @@ import { Input, InputNumber, Select, Switch, Tabs } from 'antd';
 import {
   ApartmentOutlined,
   BellOutlined,
+  BgColorsOutlined,
   ClockCircleOutlined,
   GlobalOutlined,
   SafetyCertificateOutlined,
@@ -18,6 +19,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { catTabLabel } from './catTabLabel';
 import { sanitizePath } from './uriPath';
 import SecretInput from './SecretInput';
+import BrandingSettings from './BrandingSettings';
 
 interface ApiMsg<T = unknown> {
   success?: boolean;
@@ -336,6 +338,25 @@ export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProp
                 />
               </SettingListItem>
 
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.autoDeleteDepletedDays')}
+                badge={
+                  <DefaultSettingTag
+                    settingKey="autoDeleteDepletedDays"
+                    value={allSetting.autoDeleteDepletedDays}
+                  />
+                }
+                description={t('pages.settings.autoDeleteDepletedDaysDesc')}
+              >
+                <InputNumber
+                  value={allSetting.autoDeleteDepletedDays}
+                  min={0}
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ autoDeleteDepletedDays: v }))}
+                />
+              </SettingListItem>
+
               <SettingListItem paddings="small" title={t('pages.settings.language')}>
                 <Select
                   value={lang}
@@ -379,6 +400,26 @@ export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProp
                   max={100}
                   style={{ width: '100%' }}
                   onChange={onNumber((v) => updateSetting({ trafficDiff: v }))}
+                />
+              </SettingListItem>
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.quotaWarnPercent')}
+                badge={
+                  <DefaultSettingTag
+                    settingKey="quotaWarnPercent"
+                    value={allSetting.quotaWarnPercent}
+                  />
+                }
+                description={t('pages.settings.quotaWarnPercentDesc')}
+              >
+                <InputNumber
+                  value={allSetting.quotaWarnPercent}
+                  min={0}
+                  max={99}
+                  suffix="%"
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ quotaWarnPercent: v }))}
                 />
               </SettingListItem>
             </>
@@ -473,6 +514,11 @@ export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProp
               </SettingListItem>
             </>
           ),
+        },
+        {
+          key: 'brand',
+          label: catTabLabel(<BgColorsOutlined />, t('pages.settings.brand.tab'), isMobile),
+          children: <BrandingSettings allSetting={allSetting} updateSetting={updateSetting} />,
         },
         {
           key: '6',

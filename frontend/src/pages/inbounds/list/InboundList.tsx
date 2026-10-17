@@ -29,6 +29,8 @@ import {
 
 import { HttpUtil } from '@/utils';
 import { activateOnKey } from '@/utils/a11y';
+import EmptyState from '@/components/feedback/EmptyState';
+import GettingStarted from '@/components/feedback/GettingStarted';
 
 import { buildRowActionsMenu } from './RowActions';
 import { useInboundColumns } from './useInboundColumns';
@@ -60,6 +62,7 @@ export default function InboundList({
   nodesById,
   hasActiveNode,
   hosts,
+  vpnStatuses,
   onAddInbound,
   onGeneralAction,
   onRowAction,
@@ -115,6 +118,37 @@ export default function InboundList({
     });
   }, [dbInbounds, nodeFilter, searchKey, hostRemarksByInboundId]);
 
+  const emptyContent =
+    dbInbounds.length === 0 ? (
+      <EmptyState
+        icon={<ImportOutlined />}
+        title={t('emptyState.inboundsTitle')}
+        description={t('emptyState.inboundsDesc')}
+        action={
+          <Button type="primary" icon={<PlusOutlined />} onClick={onAddInbound}>
+            {t('pages.inbounds.addInbound')}
+          </Button>
+        }
+      >
+        <GettingStarted hasInbound={false} hasClient={false} />
+      </EmptyState>
+    ) : (
+      <EmptyState
+        icon={<SearchOutlined />}
+        title={t('emptyState.noMatches')}
+        action={
+          <Button
+            onClick={() => {
+              setSearchKey('');
+              setNodeFilter('all');
+            }}
+          >
+            {t('clear')}
+          </Button>
+        }
+      />
+    );
+
   const onSwitchEnable = useCallback(async (dbInbound: DBInboundRecord, next: boolean) => {
     const previous = dbInbound.enable;
     dbInbound.enable = next;
@@ -166,6 +200,10 @@ export default function InboundList({
     if (ok) setSelectedRowKeys([]);
   }, [onBulkDelete, selectedRowKeys]);
 
+  const vpnDown = useMemo(
+    () => new Map(vpnStatuses.filter((s) => !s.running).map((s) => [s.id, s.reason ?? ''])),
+    [vpnStatuses],
+  );
   const columns = useInboundColumns({
     hasAnyRemark,
     hasAnySubSortIndex,
@@ -179,6 +217,7 @@ export default function InboundList({
     trafficDiff,
     onRowAction,
     onSwitchEnable,
+    vpnDown,
   });
 
   const tableScrollX = useMemo(
@@ -282,10 +321,7 @@ export default function InboundList({
         {isMobile ? (
           <div className="inbound-cards">
             {visibleInbounds.length === 0 ? (
-              <div className="card-empty">
-                <ImportOutlined style={{ fontSize: 28, opacity: 0.5 }} />
-                <div>{t('noData')}</div>
-              </div>
+              emptyContent
             ) : (
               <>
                 <div className="card-bulk-bar">
@@ -375,12 +411,7 @@ export default function InboundList({
             style={{ marginTop: 10 }}
             size="small"
             locale={{
-              emptyText: (
-                <div className="card-empty">
-                  <ImportOutlined style={{ fontSize: 32, marginBottom: 8 }} />
-                  <div>{t('noData')}</div>
-                </div>
-              ),
+              emptyText: emptyContent,
             }}
           />
         )}

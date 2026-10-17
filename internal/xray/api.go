@@ -94,7 +94,7 @@ func (x *XrayAPI) Init(apiPort int) error {
 		return fmt.Errorf("invalid Xray API port: %d", apiPort)
 	}
 
-	addr := fmt.Sprintf("127.0.0.1:%d", apiPort)
+	addr := fmt.Sprintf("%s:%d", config.LoopbackIP(), apiPort)
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return fmt.Errorf("failed to connect to Xray API: %w", err)

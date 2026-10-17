@@ -3,6 +3,8 @@ package amneziawgnet
 import (
 	"encoding/json"
 	"sync/atomic"
+
+	"github.com/mhsanaei/3x-ui/v3/internal/config"
 )
 
 // bridgedPort is the port the last generated socks bridge dials; 0 before any.
@@ -21,7 +23,7 @@ func BuildSocksBridge(raw []byte) ([]byte, bool) {
 	}
 	port := EgressPort()
 	settings := map[string]any{
-		"address": "127.0.0.1",
+		"address": config.LoopbackIP(),
 		"port":    port,
 		"user":    tag,
 		"pass":    SocksPassword(),

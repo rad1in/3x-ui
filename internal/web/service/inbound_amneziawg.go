@@ -25,6 +25,9 @@ import (
 // so the reconcile job and the push path agree on one fingerprint — see
 // DesiredMtprotoInstances, which this mirrors exactly.
 func (s *InboundService) DesiredAmneziaWGInstances() ([]amneziawg.Instance, error) {
+	if hostedSidecarsHalted() {
+		return nil, nil
+	}
 	db := database.GetDB()
 	var inbounds []*model.Inbound
 	err := db.Model(model.Inbound{}).

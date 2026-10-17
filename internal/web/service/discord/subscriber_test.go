@@ -508,3 +508,36 @@ func TestFormatEmbed_ValueTypes(t *testing.T) {
 		t.Fatalf("expected green embed for Login success value type, got ok=%v", ok)
 	}
 }
+
+func TestFormatEmbed_ClientWarnings(t *testing.T) {
+	settingService := setupTestDB(t)
+	sub := NewSubscriber(settingService, NewDiscordService(settingService))
+	expiry := time.Date(2026, 9, 14, 8, 30, 0, 0, time.Local).UnixMilli()
+
+	quota, ok := sub.FormatEmbed(eventbus.Event{
+		Type:   eventbus.EventClientQuotaWarning,
+		Source: "alice",
+		Data:   &eventbus.ClientEventData{Email: "alice", Up: 600 << 20, Down: 300 << 20, Total: 1 << 30, Percent: 87},
+	})
+	if !ok || quota.Color != ColorOrange || quota.Title != "Traffic Almost Used Up" {
+		t.Fatalf("quota warning embed = %+v, ok = %v", quota, ok)
+	}
+	want := []EmbedField{{Name: "Client", Value: "alice", Inline: true}, {Name: "Usage", Value: "87% (900.00MB / 1.00GB)", Inline: true}}
+	if len(quota.Fields) != len(want) || quota.Fields[0] != want[0] || quota.Fields[1] != want[1] {
+		t.Fatalf("quota warning fields = %+v, want %+v", quota.Fields, want)
+	}
+
+	exp, ok := sub.FormatEmbed(eventbus.Event{
+		Type:   eventbus.EventClientExpiryWarning,
+		Source: "bob",
+		Data:   &eventbus.ClientEventData{Email: "bob", ExpiryTime: expiry, DaysLeft: 2},
+	})
+	if !ok || exp.Title != "Plan Expiring Soon" || len(exp.Fields) != 2 ||
+		exp.Fields[1] != (EmbedField{Name: "Expires", Value: "2026-09-14 08:30 (2 days left)", Inline: true}) {
+		t.Fatalf("expiry warning embed = %+v, ok = %v", exp, ok)
+	}
+
+	if _, ok := sub.FormatEmbed(eventbus.Event{Type: eventbus.EventClientQuotaWarning, Source: "x"}); ok {
+		t.Fatal("a warning without client data must not produce an embed")
+	}
+}

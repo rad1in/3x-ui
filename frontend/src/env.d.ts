@@ -14,6 +14,7 @@ interface SubPageData {
   subUrl?: string;
   subJsonUrl?: string;
   subClashUrl?: string;
+  subSingboxUrl?: string;
   subTitle?: string;
   subSupportUrl?: string;
   subUpdates?: number;
@@ -24,12 +25,22 @@ interface SubPageData {
   downloadByte?: string | number;
   uploadByte?: string | number;
   usedByte?: string | number;
+  vpn?: {
+    inboundId: number;
+    protocol: string;
+    remark: string;
+    server: string;
+    username: string;
+    password: string;
+    psk?: string;
+  }[];
 }
 
 interface Window {
   X_UI_BASE_PATH?: string;
   X_UI_CUR_VER?: string;
   X_UI_DB_TYPE?: string;
+  X_UI_BRAND?: { name?: string; color?: string; logo?: string };
   __SUB_PAGE_DATA__?: SubPageData;
 }
 

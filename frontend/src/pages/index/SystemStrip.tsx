@@ -16,9 +16,15 @@ interface SystemStripProps {
   status: Status;
   showIp: boolean;
   onToggleIp: () => void;
+  showHostUptime?: boolean;
 }
 
-export default function SystemStrip({ status, showIp, onToggleIp }: SystemStripProps) {
+export default function SystemStrip({
+  status,
+  showIp,
+  onToggleIp,
+  showHostUptime = true,
+}: SystemStripProps) {
   const { t } = useTranslation();
 
   return (
@@ -36,11 +42,15 @@ export default function SystemStrip({ status, showIp, onToggleIp }: SystemStripP
                 {TimeFormatter.formatSecond(status.appStats.uptime)}
               </div>
             </div>
-            <span className="ov-strip-split-sep" />
-            <div>
-              <div className="ov-strip-sub">OS</div>
-              <div className="ov-strip-value">{TimeFormatter.formatSecond(status.uptime)}</div>
-            </div>
+            {showHostUptime && (
+              <>
+                <span className="ov-strip-split-sep" />
+                <div>
+                  <div className="ov-strip-sub">OS</div>
+                  <div className="ov-strip-value">{TimeFormatter.formatSecond(status.uptime)}</div>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

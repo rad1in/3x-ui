@@ -13,6 +13,7 @@ import (
 
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/session"
 )
 
@@ -138,6 +139,7 @@ func serveDistPage(c *gin.Context, name string) {
 		script += `;window.X_UI_CUR_VER="` + escapedVer + `"`
 		script += `;window.X_UI_DB_TYPE="` + config.GetDBKind() + `"`
 	}
+	script += panelBrandScript()
 	script += `;</script>`
 	inject := []byte(script)
 	inject = append(inject, csrfMeta...)
@@ -151,4 +153,18 @@ func serveDistPage(c *gin.Context, name string) {
 	c.Header("Expires", "0")
 	c.Header("Last-Modified", distPageBuildTime.UTC().Format(http.TimeFormat))
 	c.Data(http.StatusOK, "text/html; charset=utf-8", out)
+}
+
+// panelBrandScript relies on encoding/json escaping <, > and & so an admin-set
+// name cannot close the inline <script> it is written into.
+func panelBrandScript() string {
+	brand, err := (&service.SettingService{}).GetPanelBrand()
+	if err != nil || brand == (service.PanelBrand{}) {
+		return ""
+	}
+	encoded, err := json.Marshal(brand)
+	if err != nil {
+		return ""
+	}
+	return ";window.X_UI_BRAND=" + string(encoded)
 }

@@ -1,9 +1,22 @@
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { afterEach, expect, test, vi } from 'vitest';
 
 import AppSidebar from '@/layouts/AppSidebar';
+import { HttpUtil, Msg } from '@/utils';
 import { renderWithProviders } from './test-utils';
+
+const limits = {
+  maxInbounds: 0,
+  maxClients: 0,
+  trafficBytes: 0,
+  expiresAt: 0,
+  portMin: 0,
+  portMax: 0,
+  usageEpoch: 0,
+};
+const ordinaryView = { enabled: false, limits, inbounds: 0, clients: 0, usedBytes: 0, blocked: '' };
+const hostedView = { ...ordinaryView, enabled: true };
 
 vi.mock('@/api/queries/useAllSettings', () => ({
   useAllSettings: () => ({ allSetting: {} }),
@@ -73,4 +86,21 @@ test('labels the palette shortcut with the modifier the platform actually uses',
   const view = await renderSidebar();
   const chip = view.container.querySelector('.sidebar-command-kbd');
   expect(chip?.textContent).toBe('CtrlK');
+});
+
+test('hides the Panels page inside a panel that another panel hosts', async () => {
+  const get = vi.spyOn(HttpUtil, 'get');
+  get.mockResolvedValue(new Msg(true, '', ordinaryView));
+  const ordinary = await renderSidebar();
+  expect(await screen.findByRole('menuitem', { name: /Panels/ })).not.toBeNull();
+  ordinary.unmount();
+
+  get.mockResolvedValue(new Msg(true, '', hostedView));
+  await renderSidebar();
+  await waitFor(() =>
+    expect(get).toHaveBeenCalledWith('/panel/api/hosted/status', undefined, { silent: true }),
+  );
+  await act(async () => {});
+  expect(screen.queryByRole('menuitem', { name: /Panels/ })).toBeNull();
+  get.mockRestore();
 });

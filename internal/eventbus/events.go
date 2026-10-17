@@ -23,7 +23,38 @@ const (
 
 	// Security
 	EventLoginAttempt EventType = "login.attempt"
+
+	// Client lifecycle; Source is the client's email, Data a *ClientEventData.
+	EventClientCreated       EventType = "client.created"
+	EventClientDeleted       EventType = "client.deleted"
+	EventClientEnabled       EventType = "client.enabled"
+	EventClientDisabled      EventType = "client.disabled"
+	EventClientDepleted      EventType = "client.depleted"
+	EventClientExpired       EventType = "client.expired"
+	EventClientRenewed       EventType = "client.renewed"
+	EventClientTrafficReset  EventType = "client.traffic_reset"
+	EventClientQuotaWarning  EventType = "client.quota_warning"
+	EventClientExpiryWarning EventType = "client.expiry_warning"
 )
+
+// ClientEventData is the client an event is about, as it stood at the event.
+type ClientEventData struct {
+	Email      string `json:"email"`
+	SubID      string `json:"subId,omitempty"`
+	Up         int64  `json:"up"`
+	Down       int64  `json:"down"`
+	Total      int64  `json:"total"`      // quota in bytes, 0 = unlimited
+	ExpiryTime int64  `json:"expiryTime"` // unix ms, 0 = never
+	Percent    int    `json:"percent,omitempty"`
+	DaysLeft   int    `json:"daysLeft,omitempty"`
+}
+
+func (d ClientEventData) Used() int64 { return d.Up + d.Down }
+
+// ExpiryDate is the expiry in the server's local time, as notifications print it.
+func (d ClientEventData) ExpiryDate() string {
+	return time.UnixMilli(d.ExpiryTime).Format("2006-01-02 15:04")
+}
 
 // Event is the unit of information flowing through the bus.
 type Event struct {

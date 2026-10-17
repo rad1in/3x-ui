@@ -682,6 +682,7 @@ func (t *Tgbot) searchClient(chatId int64, email string, messageID ...int) {
 		),
 		tu.InlineKeyboardRow(
 			tu.InlineKeyboardButton(t.I18nBot("tgbot.buttons.toggle")).WithCallbackData(t.encodeQuery("toggle_enable "+email)),
+			tu.InlineKeyboardButton(t.I18nBot("tgbot.buttons.deleteClient")).WithCallbackData(t.encodeQuery("delete_client "+email)),
 		),
 	)
 	if len(messageID) > 0 {

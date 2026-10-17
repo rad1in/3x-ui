@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 import { theme as antdTheme } from 'antd';
 import type { ThemeConfig } from 'antd';
 
+import { panelBrand } from '@/lib/brand/brand';
+
 const STORAGE_DARK = 'dark-mode';
 const STORAGE_ULTRA = 'isUltraDarkThemeEnabled';
 
@@ -34,25 +36,36 @@ const initialDark = readBool(STORAGE_DARK, true);
 const initialUltra = readBool(STORAGE_ULTRA, false);
 applyDom(initialDark, initialUltra);
 
+const BASE_TOKENS = {
+  borderRadius: 8,
+  borderRadiusLG: 10,
+  borderRadiusSM: 6,
+  fontWeightStrong: 600,
+  controlHeight: 34,
+};
 const DARK_TOKENS = {
-  colorBgBase: '#1a1b1f',
-  colorBgLayout: '#1a1b1f',
-  colorBgContainer: '#23252b',
-  colorBgElevated: '#2d2f37',
+  ...BASE_TOKENS,
+  colorBgBase: '#0b0b0d',
+  colorBgLayout: '#0b0b0d',
+  colorBgContainer: '#131316',
+  colorBgElevated: '#1b1b1f',
+  colorBorder: 'rgba(255, 255, 255, 0.12)',
+  colorBorderSecondary: 'rgba(255, 255, 255, 0.07)',
 };
 const ULTRA_DARK_TOKENS = {
+  ...BASE_TOKENS,
   colorBgBase: '#000',
   colorBgLayout: '#000',
   colorBgContainer: '#101013',
   colorBgElevated: '#1a1a1e',
 };
 const DARK_LAYOUT_TOKENS = {
-  bodyBg: '#1a1b1f',
-  headerBg: '#15161a',
+  bodyBg: '#0b0b0d',
+  headerBg: '#0b0b0d',
   headerColor: '#ffffff',
-  footerBg: '#1a1b1f',
-  siderBg: '#15161a',
-  triggerBg: '#23252b',
+  footerBg: '#0b0b0d',
+  siderBg: '#0b0b0d',
+  triggerBg: '#131316',
   triggerColor: '#ffffff',
 };
 const ULTRA_DARK_LAYOUT_TOKENS = {
@@ -65,9 +78,9 @@ const ULTRA_DARK_LAYOUT_TOKENS = {
   triggerColor: '#ffffff',
 };
 const DARK_MENU_TOKENS = {
-  darkItemBg: '#15161a',
-  darkSubMenuItemBg: '#1a1b1f',
-  darkPopupBg: '#23252b',
+  darkItemBg: '#0b0b0d',
+  darkSubMenuItemBg: '#0b0b0d',
+  darkPopupBg: '#131316',
 };
 const ULTRA_DARK_MENU_TOKENS = {
   darkItemBg: '#050507',
@@ -75,16 +88,20 @@ const ULTRA_DARK_MENU_TOKENS = {
   darkPopupBg: '#101013',
 };
 const DARK_CARD_TOKENS = {
-  colorBorderSecondary: 'rgba(255, 255, 255, 0.06)',
+  colorBorderSecondary: 'rgba(255, 255, 255, 0.07)',
 };
 const ULTRA_DARK_CARD_TOKENS = {
   colorBorderSecondary: 'rgba(255, 255, 255, 0.04)',
 };
 const STATISTIC_TOKENS = {
-  contentFontSize: 17,
+  contentFontSize: 18,
   titleFontSize: 11,
 };
 const LIGHT_CONTRAST_TOKENS = {
+  ...BASE_TOKENS,
+  colorBgLayout: '#f6f6f7',
+  colorBorder: '#dcdce0',
+  colorBorderSecondary: '#e8e8eb',
   colorTextDescription: 'rgba(0, 0, 0, 0.58)',
   colorTextTertiary: 'rgba(0, 0, 0, 0.58)',
   colorTextPlaceholder: '#767676',
@@ -113,21 +130,24 @@ const SHARED_STYLE_CONFIG = {
 } as const;
 
 export function buildAntdThemeConfig(isDark: boolean, isUltra: boolean): ThemeConfig {
+  const brandColor = panelBrand().color;
+  const brandTokens = brandColor ? { colorPrimary: brandColor, colorInfo: brandColor } : {};
   if (!isDark) {
     return {
       ...SHARED_STYLE_CONFIG,
       algorithm: antdTheme.defaultAlgorithm,
-      token: LIGHT_CONTRAST_TOKENS,
+      token: { ...LIGHT_CONTRAST_TOKENS, ...brandTokens },
       components: {
         Statistic: STATISTIC_TOKENS,
-        Button: LIGHT_BUTTON_TOKENS,
+        // The stock-blue contrast fix would paint over a brand colour.
+        Button: brandColor ? {} : LIGHT_BUTTON_TOKENS,
       },
     };
   }
   return {
     ...SHARED_STYLE_CONFIG,
     algorithm: antdTheme.darkAlgorithm,
-    token: isUltra ? ULTRA_DARK_TOKENS : DARK_TOKENS,
+    token: { ...(isUltra ? ULTRA_DARK_TOKENS : DARK_TOKENS), ...brandTokens },
     components: {
       Layout: isUltra ? ULTRA_DARK_LAYOUT_TOKENS : DARK_LAYOUT_TOKENS,
       Menu: isUltra ? ULTRA_DARK_MENU_TOKENS : DARK_MENU_TOKENS,

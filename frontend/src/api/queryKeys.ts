@@ -1,5 +1,15 @@
 export const keys = {
   sponsors: () => ['sponsors'] as const,
+  sponsorAdmin: () => ['sponsors', 'admin'] as const,
+  hosted: {
+    status: () => ['hosted', 'status'] as const,
+  },
+  hostedPanels: {
+    list: () => ['hostedPanels', 'list'] as const,
+  },
+  audit: {
+    list: (params: unknown) => ['audit', 'list', params] as const,
+  },
   server: {
     status: () => ['server', 'status'] as const,
     fail2banStatus: () => ['server', 'fail2banStatus'] as const,
@@ -28,6 +38,7 @@ export const keys = {
     root: () => ['inbounds'] as const,
     slim: () => ['inbounds', 'slim'] as const,
     options: () => ['inbounds', 'options'] as const,
+    vpnStatus: () => ['inbounds', 'vpnStatus'] as const,
   },
   clients: {
     root: () => ['clients'] as const,

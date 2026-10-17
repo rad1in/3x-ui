@@ -23,11 +23,22 @@ _openapi:
         requests.
       url: '#mint-a-csrf-token-for-the-current-session-the-spa-replays-it-in-the-x-csrf-token-header-on-unsafe-requests-bearer-token-callers-can-skip-this--the-middleware-short-circuits-csrf-for-authenticated-api-requests'
     - depth: 2
-      title: Public. Active paid sponsor placements read from the project
-        sponsors.json (cached for 1h); entries outside their from/until window
-        are dropped. Logos are proxied by the panel at /sponsors/logo/{name}.
-        Used by the login page and panel sponsor slots.
-      url: '#public-active-paid-sponsor-placements-read-from-the-project-sponsorsjson-cached-for-1h-entries-outside-their-fromuntil-window-are-dropped-logos-are-proxied-by-the-panel-at-sponsorslogoname-used-by-the-login-page-and-panel-sponsor-slots'
+      title: "Public. Active sponsor placements: the panel owner's own sponsors, or
+        another panel's feed when sponsorFeedUrl is set (cached for 1h). Entries
+        outside their from/until window are dropped. Logos are proxied by the
+        panel at /sponsors/logo/{name}. Used by the login page and panel sponsor
+        slots."
+      url: '#public-active-sponsor-placements-the-panel-owners-own-sponsors-or-another-panels-feed-when-sponsorfeedurl-is-set-cached-for-1h-entries-outside-their-fromuntil-window-are-dropped-logos-are-proxied-by-the-panel-at-sponsorslogoname-used-by-the-login-page-and-panel-sponsor-slots'
+    - depth: 2
+      title: "Public. This panel's own live sponsors as a feed for other panels: point
+        another panel's sponsor feed setting at this URL. Logo fields are bare
+        file names served from the sibling logos/ path. The body is the bare
+        SponsorList, not wrapped in a Msg envelope."
+      url: '#public-this-panels-own-live-sponsors-as-a-feed-for-other-panels-point-another-panels-sponsor-feed-setting-at-this-url-logo-fields-are-bare-file-names-served-from-the-sibling-logos-path-the-body-is-the-bare-sponsorlist-not-wrapped-in-a-msg-envelope'
+    - depth: 2
+      title: Public. Logo image (PNG, JPEG or WebP) of a live sponsor in this panel's
+        feed; 404 for anything else.
+      url: '#public-logo-image-png-jpeg-or-webp-of-a-live-sponsor-in-this-panels-feed-404-for-anything-else'
     - depth: 2
       title: Returns whether 2FA is enabled on the panel — used by the login page to
         decide whether to show the OTP field.
@@ -45,11 +56,20 @@ _openapi:
           this — the middleware short-circuits CSRF for authenticated API
           requests.
         id: mint-a-csrf-token-for-the-current-session-the-spa-replays-it-in-the-x-csrf-token-header-on-unsafe-requests-bearer-token-callers-can-skip-this--the-middleware-short-circuits-csrf-for-authenticated-api-requests
-      - content: Public. Active paid sponsor placements read from the project
-          sponsors.json (cached for 1h); entries outside their from/until window
-          are dropped. Logos are proxied by the panel at /sponsors/logo/{name}.
-          Used by the login page and panel sponsor slots.
-        id: public-active-paid-sponsor-placements-read-from-the-project-sponsorsjson-cached-for-1h-entries-outside-their-fromuntil-window-are-dropped-logos-are-proxied-by-the-panel-at-sponsorslogoname-used-by-the-login-page-and-panel-sponsor-slots
+      - content: "Public. Active sponsor placements: the panel owner's own sponsors, or
+          another panel's feed when sponsorFeedUrl is set (cached for 1h).
+          Entries outside their from/until window are dropped. Logos are proxied
+          by the panel at /sponsors/logo/{name}. Used by the login page and
+          panel sponsor slots."
+        id: public-active-sponsor-placements-the-panel-owners-own-sponsors-or-another-panels-feed-when-sponsorfeedurl-is-set-cached-for-1h-entries-outside-their-fromuntil-window-are-dropped-logos-are-proxied-by-the-panel-at-sponsorslogoname-used-by-the-login-page-and-panel-sponsor-slots
+      - content: "Public. This panel's own live sponsors as a feed for other panels:
+          point another panel's sponsor feed setting at this URL. Logo fields
+          are bare file names served from the sibling logos/ path. The body is
+          the bare SponsorList, not wrapped in a Msg envelope."
+        id: public-this-panels-own-live-sponsors-as-a-feed-for-other-panels-point-another-panels-sponsor-feed-setting-at-this-url-logo-fields-are-bare-file-names-served-from-the-sibling-logos-path-the-body-is-the-bare-sponsorlist-not-wrapped-in-a-msg-envelope
+      - content: Public. Logo image (PNG, JPEG or WebP) of a live sponsor in this
+          panel's feed; 404 for anything else.
+        id: public-logo-image-png-jpeg-or-webp-of-a-live-sponsor-in-this-panels-feed-404-for-anything-else
       - content: Returns whether 2FA is enabled on the panel — used by the login page to
           decide whether to show the OTP field.
         id: returns-whether-2fa-is-enabled-on-the-panel--used-by-the-login-page-to-decide-whether-to-show-the-otp-field
@@ -65,7 +85,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/login","method":"post"},{"path":"/logout","method":"post"},{"path":"/csrf-token","method":"get"},{"path":"/sponsors","method":"get"},{"path":"/getTwoFactorEnable","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/login","method":"post"},{"path":"/logout","method":"post"},{"path":"/csrf-token","method":"get"},{"path":"/sponsors","method":"get"},{"path":"/sponsors/feed/sponsors.json","method":"get"},{"path":"/sponsors/feed/logos/{name}","method":"get"},{"path":"/getTwoFactorEnable","method":"post"}]} showTitle />
     </>
   );
 }

@@ -58,6 +58,26 @@ describe('composeInboundTag transport suffix parity', () => {
       'in-443-udp',
     ],
     [
+      'openvpn defaults to udp',
+      base({ protocol: 'openvpn', streamSettings: { network: 'tcp' }, settings: {} }),
+      'in-443-udp',
+    ],
+    [
+      'ikev2 forced udp',
+      base({ protocol: 'ikev2', streamSettings: { network: 'tcp' } }),
+      'in-443-udp',
+    ],
+    [
+      'l2tp forced udp',
+      base({ protocol: 'l2tp', streamSettings: { network: 'tcp' } }),
+      'in-443-udp',
+    ],
+    [
+      'openvpn tcp transport',
+      base({ protocol: 'openvpn', settings: { proto: 'tcp' } }),
+      'in-443-tcp',
+    ],
+    [
       'shadowsocks tcp,udp',
       base({ protocol: 'shadowsocks', settings: { network: 'tcp,udp' } }),
       'in-443-tcpudp',

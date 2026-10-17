@@ -24,7 +24,10 @@ import {
   formValuesToWirePayload,
   withoutClients,
 } from '@/lib/xray/inbound-form-adapter';
-import { createDefaultInboundSettings } from '@/lib/xray/inbound-defaults';
+import {
+  createDefaultIKEv2InboundSettings,
+  createDefaultInboundSettings,
+} from '@/lib/xray/inbound-defaults';
 import { generateAwgObfuscation } from '@/lib/xray/amneziawg-obfuscation';
 import { composeInboundTag, isAutoInboundTag, type InboundTagInput } from '@/lib/xray/inbound-tag';
 import {
@@ -74,6 +77,9 @@ import {
   MasqueStreamFields,
   MixedFields,
   MtprotoFields,
+  OpenVPNFields,
+  IKEv2Fields,
+  L2TPFields,
   ShadowsocksFields,
   TuicFields,
   TunFields,
@@ -535,8 +541,14 @@ export default function InboundFormModal({
     const sub = methods.watch((_value, { name, type }) => {
       if (name !== 'protocol' || type !== 'change') return;
       const next = getV('protocol') as string;
-      const settings = createDefaultInboundSettings(next) ?? undefined;
+      const settings =
+        next === Protocols.IKEV2
+          ? createDefaultIKEv2InboundSettings(window.location.hostname)
+          : (createDefaultInboundSettings(next) ?? undefined);
       setV('settings', settings);
+      // Native IKEv2 clients only ever dial UDP 500 (4500 behind NAT), L2TP ones 1701.
+      if (next === Protocols.IKEV2) setV('port', 500);
+      if (next === Protocols.L2TP) setV('port', 1701);
       if (!NODE_ELIGIBLE_PROTOCOLS[next]) {
         setV('nodeId', null);
       }
@@ -750,7 +762,11 @@ export default function InboundFormModal({
         label={t('pages.inbounds.port')}
         rules={{ validate: rhfZodValidate(InboundFormBaseSchema.shape.port) }}
       >
-        <InputNumber min={isUdsListen ? 0 : 1} max={65535} />
+        <InputNumber
+          min={isUdsListen ? 0 : 1}
+          max={65535}
+          disabled={protocol === Protocols.IKEV2 || protocol === Protocols.L2TP}
+        />
       </FormField>
 
       <Form.Item
@@ -843,6 +859,12 @@ export default function InboundFormModal({
       {protocol === Protocols.MIXED && <MixedFields mixedUdpOn={mixedUdpOn} />}
 
       {protocol === Protocols.MTPROTO && <MtprotoFields />}
+
+      {protocol === Protocols.OPENVPN && <OpenVPNFields />}
+
+      {protocol === Protocols.IKEV2 && <IKEv2Fields />}
+
+      {protocol === Protocols.L2TP && <L2TPFields />}
 
       {protocol === Protocols.SHADOWSOCKS && <ShadowsocksFields isSSWith2022={isSSWith2022} />}
 
@@ -1197,6 +1219,9 @@ export default function InboundFormModal({
                     Protocols.AMNEZIAWG,
                     Protocols.TUIC,
                     Protocols.MASQUE,
+                    Protocols.OPENVPN,
+                    Protocols.IKEV2,
+                    Protocols.L2TP,
                   ] as string[]
                 ).includes(protocol) || isFallbackHost
                   ? [

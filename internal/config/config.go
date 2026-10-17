@@ -6,6 +6,7 @@ import (
 	_ "embed"
 	"fmt"
 	"io"
+	"net"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -107,6 +108,21 @@ func IsDebug() bool {
 // IsSkipHSTS returns true if skipping HSTS mode is enabled via the XUI_SKIP_HSTS environment variable.
 func IsSkipHSTS() bool {
 	return os.Getenv("XUI_SKIP_HSTS") == "true"
+}
+
+// LoopbackIP is where internal plumbing (Xray API, relay SOCKS) binds; hosted
+// panels each get their own 127.x.y.z so the same fixed ports never collide.
+func LoopbackIP() string {
+	const fallback = "127.0.0.1"
+	raw := strings.TrimSpace(os.Getenv("XUI_LOOPBACK_IP"))
+	if raw == "" {
+		return fallback
+	}
+	ip := net.ParseIP(raw)
+	if ip == nil || ip.To4() == nil || !ip.IsLoopback() {
+		return fallback
+	}
+	return ip.To4().String()
 }
 
 func GetPortOverride() (port int, configured bool, err error) {

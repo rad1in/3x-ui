@@ -164,6 +164,42 @@ install_base() {
     esac
 }
 
+# OpenVPN, IKEv2 and L2TP inbounds run these daemons on the host. A failure
+# here only leaves those protocols unavailable, so it never stops the install.
+install_vpn_deps() {
+    echo -e "${green}Installing VPN packages (OpenVPN, strongSwan, xl2tpd)...${plain}"
+    local ok=0
+    case "${release}" in
+        fedora | amzn | virtuozzo | rhel | almalinux | rocky | ol | centos)
+            local pm=dnf
+            command -v dnf > /dev/null 2>&1 || pm=yum
+            "$pm" install -y epel-release > /dev/null 2>&1 || true
+            "$pm" install -y openvpn strongswan xl2tpd ppp iptables > /dev/null 2>&1 || ok=1
+            ;;
+        arch | manjaro | parch)
+            pacman -S --noconfirm --needed openvpn strongswan xl2tpd ppp iptables > /dev/null 2>&1 || ok=1
+            ;;
+        opensuse-tumbleweed | opensuse-leap)
+            zypper -q install -y openvpn strongswan xl2tpd ppp iptables > /dev/null 2>&1 || ok=1
+            ;;
+        alpine)
+            apk add openvpn strongswan xl2tpd ppp iptables > /dev/null 2>&1 || ok=1
+            ;;
+        *)
+            apt-get install -y -q openvpn strongswan-charon strongswan-swanctl libcharon-extauth-plugins \
+                libstrongswan-standard-plugins xl2tpd ppp iptables > /dev/null 2>&1 || ok=1
+            ;;
+    esac
+    if [[ $ok -ne 0 ]]; then
+        echo -e "${yellow}VPN packages could not be installed; OpenVPN, IKEv2 and L2TP inbounds will not start until they are.${plain}"
+    fi
+    # The panel runs these daemons itself: the distro's own services would hold
+    # UDP 500/4500/1701 and charon's pid file, and the panel's would not start.
+    if command -v systemctl > /dev/null 2>&1; then
+        systemctl disable --now strongswan-starter strongswan strongswan-swanctl ipsec xl2tpd > /dev/null 2>&1 || true
+    fi
+}
+
 config_after_update() {
     local panel_needs_restart=0
 
@@ -803,4 +839,5 @@ update_x-ui() {
 echo -e "${green}Running...${plain}"
 require_writable_update_paths
 install_base
+install_vpn_deps
 update_x-ui $1

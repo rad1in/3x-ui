@@ -28,6 +28,8 @@ import SecurityTab from './SecurityTab';
 import TelegramTab from './TelegramTab';
 import EmailTab from './EmailTab';
 import DiscordTab from './DiscordTab';
+import WebhookTab from './WebhookTab';
+import BackupTab from './BackupTab';
 import SubscriptionGeneralTab from './SubscriptionGeneralTab';
 import SubscriptionFormatsTab from './SubscriptionFormatsTab';
 import SubscriptionBalancersTab from './SubscriptionBalancersTab';
@@ -43,6 +45,8 @@ const tabSlugs = [
   'telegram',
   'email',
   'discord',
+  'webhooks',
+  'backups',
   'subscription',
   'subscription-formats',
   'subscription-balancers',
@@ -221,6 +225,10 @@ export default function SettingsPage() {
         return <EmailTab allSetting={allSetting} updateSetting={updateSetting} />;
       case 'discord':
         return <DiscordTab allSetting={allSetting} updateSetting={updateSetting} />;
+      case 'webhooks':
+        return <WebhookTab allSetting={allSetting} updateSetting={updateSetting} />;
+      case 'backups':
+        return <BackupTab allSetting={allSetting} updateSetting={updateSetting} />;
       case 'subscription':
         return <SubscriptionGeneralTab allSetting={allSetting} updateSetting={updateSetting} />;
       case 'subscription-formats':

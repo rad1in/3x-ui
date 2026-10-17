@@ -198,6 +198,9 @@ func (s *ClientService) syncInboundClients(tx *gorm.DB, inboundId int, clients [
 		}
 	}
 
+	if err := checkHostedNewClients(tx, len(toCreate)); err != nil {
+		return err
+	}
 	if len(toCreate) > 0 {
 		// Capture enable before Create: gorm default:true drops explicit false (#6478).
 		// Restate disabled rows after CreateInBatches.

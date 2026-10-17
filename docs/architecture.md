@@ -217,6 +217,7 @@ node heartbeat every 5s, periodic traffic resets (hourly/daily/weekly/monthly). 
 │   │   │   │   ├── api_token.go        #   API token CRUD (SHA-256 hashed)
 │   │   │   │   └── websocket.go        #   WS hub / push service
 │   │   │   ├── discord/                # Discord bot client, Gateway v10, and subscriber
+│   │   │   ├── webhook/                # signed HTTP webhook sender (event bus subscriber)
 │   │   │   └── tgbot/                  # Telegram bot command handlers
 │   │   ├── runtime/            # ⭐⭐ The Local/Remote node abstraction (see §5.2)
 │   │   │   ├── runtime.go      #   the Runtime interface (the contract)
@@ -383,11 +384,20 @@ All registered in `web.go` → `startTask()`. Each is a struct with a `Run()` me
 | `@every 5s`         | `node_traffic_sync_job`                                                                          | Pull + merge node traffic; push reconciliation                                        |
 | `@every 10s`        | `check_client_ip_job`                                                                            | Enforce per-client IP limits                                                          |
 | `@every 10s`        | `mtproto_job`                                                                                    | Reconcile `mtg` sidecars against enabled MTProto inbounds                             |
+| `@every 10s`        | `openvpn_job`                                                                                    | Reconcile `openvpn` servers against enabled OpenVPN inbounds; meter per-user traffic   |
+| `@every 10s`        | `ikev2_job`                                                                                      | Reconcile charon against enabled IKEv2 inbounds; drop revoked logins; meter per-SA bytes|
+| `@every 10s`        | `l2tp_job`                                                                                       | Reconcile xl2tpd + chap-secrets against the L2TP inbound; end revoked links; meter PPP |
 | `@every 10s`        | `amneziawg_job`                                                                                  | Reconcile embedded AmneziaWG interfaces against enabled local inbounds                |
 | `@every 5m`         | `outbound_subscription_job`                                                                      | Refresh outbound provider configs                                                     |
 | `@every 10m`        | `clear_logs_job` (`PruneXrayLogsJob`)                                                            | Truncate Xray access/error logs once either exceeds 64 MiB                            |
 | `@hourly`           | `warp_ip_job`, `periodic_traffic_reset_job("hourly")`                                            | WARP IP rotation; traffic resets                                                      |
 | `@daily`            | `clear_logs_job`, `periodic_traffic_reset_job("daily")`, `periodic_traffic_reset_job("monthly")` | IP-limit and Xray access/error log cleanup; daily resets and due monthly resets       |
+| `@daily`            | `audit_prune_job`                                                                                | Drop activity-log rows older than 90 days (`service.AuditRetention`)                  |
+| `@every 15s`        | `hosted_status_job`                                                                              | Hosted panels only (`XUI_HOSTED_DIR`): report usage, stop/start Xray against owner limits |
+| `@every 1m`         | `hosted_sponsors_job`                                                                            | Masters only (not hosted): copy the owner's live sponsors into each hosted panel |
+| `@every 1m`         | `client_warning_job`                                                                             | Publishes `client.quota_warning` / `client.expiry_warning` once per crossing |
+| `@hourly`           | `client_cleanup_job`                                                                             | Deletes clients out of quota/time for `autoDeleteDepletedDays` (0 = off) |
+| `backupSchedule`    | `scheduled_backup_job`                                                                             | Only if `backupSchedule` is set; gzipped DB to a local folder and/or S3, keeps `backupKeep` |
 | `@weekly`           | `periodic_traffic_reset_job("weekly")`                                                           | Weekly traffic resets                                                                 |
 | default `@every 1m` | `ldap_sync_job`                                                                                  | Only if LDAP enabled; schedule configurable                                           |
 | default `@daily`    | `stats_notify_job`                                                                               | Only if TG bot enabled; schedule configurable                                         |
@@ -433,10 +443,13 @@ also has protocol schemas under `frontend/src/schemas/protocols/` and `frontend/
 
 `internal/eventbus/` is a minimal buffered-channel pub/sub. Producers call a non-blocking
 `Publish(Event)`; all subscribers receive every event. Event types: `outbound.down|up`,
-`xray.crash`, `node.down|up`, `cpu.high`, `memory.high`, `login.attempt`, with structured
-payloads (OutboundHealthData, NodeHealthData, LoginEventData, SystemMetricData). Producers
-include the CPU/memory jobs, node heartbeat, and login handling; consumers include the
-Telegram bot, the Discord bot (`service/discord/`), and the email notifier (`service/email/`). Use it for cross-cutting
+`xray.crash`, `node.down|up`, `cpu.high`, `memory.high`, `login.attempt`, and the client
+lifecycle `client.*` (created, deleted, enabled, disabled, depleted, expired, renewed,
+traffic_reset), with structured payloads (OutboundHealthData, NodeHealthData,
+LoginEventData, SystemMetricData, ClientEventData). Producers include the CPU/memory jobs,
+node heartbeat, login handling and `service/client_events.go`; consumers include the
+Telegram bot, the Discord bot (`service/discord/`), the email notifier (`service/email/`)
+and the webhook sender (`service/webhook/`). Use it for cross-cutting
 notifications instead of importing notification services into producers.
 
 ### 5.8 Tunnel health monitor
@@ -510,10 +523,14 @@ for AutoMigrate in `internal/database/db.go`.
 | **Telegram bot** commands                                                         | `service/tgbot/`                                                             | `job/stats_notify_job.go`                                                                           |
 | **Discord bot** commands & reports                                                | `service/discord/`                                                           | `job/discord_notify_job.go`                                                                         |
 | **Email notifications**                                                           | `service/email/`                                                             | `internal/eventbus/` (consumers)                                                                    |
+| **Webhook** not delivered / bad signature                                         | `service/webhook/`, `service/client_events.go`                               | `web.go` (subscription), `WebhookConfig` in `service/setting.go`                                    |
 | **CPU / memory alerts** not firing                                                | `job/check_cpu_usage.go`, `job/check_memory_usage.go`                        | `internal/eventbus/`, notifier settings in `service/setting.go`                                     |
 | Xray auto-restart on **dead tunnel**                                              | `internal/tunnelmonitor/`                                                    | `XUI_TUNNEL_HEALTH_*` in `internal/config/`                                                         |
 | **WARP / Nord / PIA** outbound integration                                        | `service/integration/warp.go` / `nord.go` / `pia.go`                         | `internal/pia/`, `frontend/src/pages/xray/overrides/`                                               |
 | **MTProto** proxy issues                                                          | `internal/mtproto/manager.go`, `mtproto/process*.go`                         | `job/mtproto_job.go`                                                                                |
+| **OpenVPN** login/traffic issues                                                  | `internal/openvpn/manager.go`, `openvpn/mgmt.go`                             | `job/openvpn_job.go`, `service/inbound_openvpn.go`                                                  |
+| **IKEv2** login/traffic issues                                                    | `internal/ipsec/manager.go`, `ipsec/accounting.go`                           | `job/ikev2_job.go`, `service/inbound_ikev2.go`                                                    |
+| **L2TP** login/traffic issues                                                     | `internal/l2tp/manager.go`, `l2tp/sessions.go`                              | `job/l2tp_job.go`, `service/inbound_l2tp.go`                                                      |
 | **DB migration** / new column                                                     | `internal/database/db.go` (AutoMigrate list), `migrate_data.go`              | `model/model.go`                                                                                    |
 | **Cron schedule** changes                                                         | `web.go` → `startTask()`                                                     | the specific `job/*.go`                                                                             |
 | **CORS / security headers / HTTPS**                                               | `middleware/`, `web.go` (`initRouter`, TLS setup)                            | `config/` (env)                                                                                     |

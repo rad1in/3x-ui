@@ -6,10 +6,13 @@ import { Drawer, Layout, Menu, Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
 import {
   ApiOutlined,
+  BranchesOutlined,
   ApartmentOutlined,
+  AppstoreOutlined,
   CloseOutlined,
   CloudServerOutlined,
   ClusterOutlined,
+  CloudUploadOutlined,
   CodeOutlined,
   CrownOutlined,
   DashboardOutlined,
@@ -18,6 +21,7 @@ import {
   ExportOutlined,
   GithubOutlined,
   GlobalOutlined,
+  HistoryOutlined,
   HeartOutlined,
   ImportOutlined,
   LogoutOutlined,
@@ -43,7 +47,9 @@ import { HttpUtil } from '@/utils';
 import { formatPanelVersion } from '@/lib/panel-version';
 import { pauseAnimationsUntilLeave, useTheme } from '@/hooks/useTheme';
 import { useAllSettings } from '@/api/queries/useAllSettings';
+import { useHostedStatus } from '@/api/queries/useHostedStatus';
 import { useCommandPalette } from '@/components/command-palette/useCommandPalette';
+import { BrandMark } from '@/components/ui';
 import './AppSidebar.css';
 
 const DONATE_URL = 'https://donate.sanaei.dev/';
@@ -72,7 +78,9 @@ type IconName =
   | 'sponsors'
   | 'apidocs'
   | 'outbound'
-  | 'routing';
+  | 'routing'
+  | 'audit'
+  | 'panels';
 
 const iconByName: Record<IconName, ComponentType> = {
   dashboard: DashboardOutlined,
@@ -88,6 +96,8 @@ const iconByName: Record<IconName, ComponentType> = {
   apidocs: ApiOutlined,
   outbound: ExportOutlined,
   routing: SwapOutlined,
+  audit: HistoryOutlined,
+  panels: AppstoreOutlined,
 };
 
 function DonateButton({ ariaLabel }: { ariaLabel: string }) {
@@ -189,6 +199,7 @@ export default function AppSidebar() {
   const { allSetting } = useAllSettings();
   const showSubFormats = !!(allSetting.subJsonEnable || allSetting.subClashEnable);
   const showSubBalancers = !!allSetting.subJsonEnable;
+  const isHostedPanel = !!useHostedStatus().data?.enabled;
 
   const [hovered, setHovered] = useState(() => hoveredAcrossRemounts);
   const [pinned, setPinned] = useState(readSidebarPinned);
@@ -229,16 +240,20 @@ export default function AppSidebar() {
       { key: '/clients', icon: 'team', title: t('menu.clients') },
       { key: '/groups', icon: 'groups', title: t('menu.groups') },
       { key: '/nodes', icon: 'cluster', title: t('menu.nodes') },
+      ...(isHostedPanel
+        ? []
+        : [{ key: '/panels', icon: 'panels' as const, title: t('menu.panels') }]),
       { key: '/hosts', icon: 'hosts', title: t('menu.hosts') },
       { key: '/outbound', icon: 'outbound', title: t('menu.outbounds') },
       { key: '/routing', icon: 'routing', title: t('menu.routing') },
       { key: '/settings', icon: 'setting', title: t('menu.settings') },
       { key: '/xray', icon: 'tool', title: t('menu.xray') },
+      { key: '/audit', icon: 'audit', title: t('menu.audit') },
       { key: '/api-docs', icon: 'apidocs', title: t('menu.apiDocs') },
       { key: '/sponsors', icon: 'sponsors', title: t('menu.sponsors') },
       { key: LOGOUT_KEY, icon: 'logout', title: t('logout') },
     ],
-    [t],
+    [t, isHostedPanel],
   );
 
   const navItems = useMemo(() => tabs.filter((tab) => tab.icon !== 'logout'), [tabs]);
@@ -266,6 +281,16 @@ export default function AppSidebar() {
         key: '/settings#discord',
         icon: <DiscordOutlined />,
         label: t('pages.settings.discordSettings'),
+      },
+      {
+        key: '/settings#webhooks',
+        icon: <BranchesOutlined />,
+        label: t('pages.settings.webhookSettings'),
+      },
+      {
+        key: '/settings#backups',
+        icon: <CloudUploadOutlined />,
+        label: t('pages.settings.backupSettings'),
       },
       {
         key: '/settings#subscription',
@@ -382,7 +407,7 @@ export default function AppSidebar() {
       >
         <div className="sider-brand">
           <div className="brand-block">
-            <span className="brand-text">{railCollapsed ? '3X' : '3X-UI'}</span>
+            <BrandMark className="brand-text" compact={railCollapsed} />
           </div>
           {!railCollapsed && (
             <div className="brand-actions">
@@ -470,7 +495,7 @@ export default function AppSidebar() {
       >
         <div className="drawer-header">
           <div className="brand-block">
-            <span className="drawer-brand">3X-UI</span>
+            <BrandMark className="drawer-brand" />
           </div>
           <div className="drawer-header-actions">
             <DocsButton ariaLabel={t('menu.docs') || 'Documentation'} />

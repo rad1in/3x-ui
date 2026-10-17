@@ -7,15 +7,13 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os"
-	"path/filepath"
 	"regexp"
 	"slices"
 	"strings"
 	"sync"
 	"time"
 
-	"github.com/mhsanaei/3x-ui/v3/internal/config"
+	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 )
@@ -45,7 +43,6 @@ const (
 	sponsorsErrTTL   = 10 * time.Minute
 	maxSponsorsBytes = 256 << 10
 	maxLogoBytes     = 256 << 10
-	localSponsorsDir = "../sponsors/3X"
 	sponsorLogoPath  = "/sponsors/logo/"
 )
 
@@ -60,15 +57,14 @@ type sponsorLogo struct {
 }
 
 var (
-	sponsorsURL     = "https://raw.githubusercontent.com/MHSanaei/sponsors/refs/heads/main/3X/sponsors.json"
-	sponsorLogoBase = "https://raw.githubusercontent.com/MHSanaei/sponsors/refs/heads/main/3X/logos/"
-	sponsorNow      = time.Now
+	sponsorNow = time.Now
 
-	// The panel proxies logos from sponsorLogoBase: CSP stays 'self' and no third party sees admin IPs.
+	// The panel proxies feed logos: CSP stays 'self' and no third party sees admin IPs.
 	sponsorLogoRe = regexp.MustCompile(`^[A-Za-z0-9_-][A-Za-z0-9._-]*\.(png|webp|jpg)$`)
 	sponsorSlots  = map[string]bool{"dashboard": true, "page": true, "login": true}
 
 	sponsorsMu      sync.Mutex
+	sponsorsSource  string
 	sponsorsRaw     *SponsorList
 	sponsorsErr     error
 	sponsorsRetryAt time.Time
@@ -77,24 +73,47 @@ var (
 	logos   = map[string]sponsorLogo{}
 )
 
-// GetSponsors returns the currently active sponsors. The remote file is cached, but the
-// window is re-checked on every call so a slot starts exactly at From and ends at Until.
+// GetSponsors returns the currently active sponsors: the panel's own records,
+// or another panel's feed when sponsorFeedUrl is set. The window is re-checked
+// on every call so a slot starts exactly at From and ends at Until.
 func (s *PanelService) GetSponsors() (*SponsorList, error) {
-	raw, err := cachedSponsors()
+	if dir := hosted.Dir(); dir != "" {
+		return hostedActiveSponsors(dir), nil
+	}
+	feed, err := sponsorFeedURL()
+	if err != nil {
+		return nil, err
+	}
+	if feed == "" {
+		return s.localSponsors()
+	}
+	raw, err := cachedSponsors(feed)
 	if err != nil {
 		return nil, err
 	}
 	return activeSponsors(raw, sponsorNow()), nil
 }
 
-func cachedSponsors() (*SponsorList, error) {
+func sponsorFeedURL() (string, error) {
+	return (&service.SettingService{}).GetSponsorFeedURL()
+}
+
+// sponsorFeedLogoBase follows the feed layout: sponsors.json beside a logos/ directory.
+func sponsorFeedLogoBase(feed string) string {
+	return feed[:strings.LastIndex(feed, "/")+1] + "logos/"
+}
+
+func cachedSponsors(feed string) (*SponsorList, error) {
 	sponsorsMu.Lock()
 	defer sponsorsMu.Unlock()
 	now := sponsorNow()
-	if !config.IsDebug() && now.Before(sponsorsRetryAt) {
+	if feed != sponsorsSource {
+		sponsorsSource, sponsorsRaw, sponsorsErr, sponsorsRetryAt = feed, nil, nil, time.Time{}
+	}
+	if now.Before(sponsorsRetryAt) {
 		return sponsorsRaw, sponsorsErr
 	}
-	list, err := fetchSponsors()
+	list, err := fetchSponsors(feed)
 	switch {
 	case err == nil:
 		sponsorsRaw, sponsorsErr, sponsorsRetryAt = list, nil, now.Add(sponsorsTTL)
@@ -114,6 +133,16 @@ func (s *PanelService) GetSponsorLogo(name string) ([]byte, string, error) {
 	if !sponsorLogoRe.MatchString(name) {
 		return nil, "", ErrSponsorLogoUnknown
 	}
+	if dir := hosted.Dir(); dir != "" {
+		return hostedSponsorLogo(dir, name)
+	}
+	feed, err := sponsorFeedURL()
+	if err != nil {
+		return nil, "", err
+	}
+	if feed == "" {
+		return s.GetSponsorFeedLogo(name)
+	}
 	sponsors, err := s.GetSponsors()
 	if err != nil {
 		return nil, "", err
@@ -124,12 +153,13 @@ func (s *PanelService) GetSponsorLogo(name string) ([]byte, string, error) {
 	logosMu.Lock()
 	defer logosMu.Unlock()
 	now := sponsorNow()
-	l, ok := logos[name]
-	if ok && !config.IsDebug() && now.Before(l.retryAt) {
+	key := feed + "\x00" + name
+	l, ok := logos[key]
+	if ok && now.Before(l.retryAt) {
 		return l.data, l.contentType, l.err
 	}
 	// Failures are cached too: this route is public and each miss is an outbound fetch.
-	data, contentType, err := fetchSponsorLogo(name)
+	data, contentType, err := fetchSponsorLogo(sponsorFeedLogoBase(feed), name)
 	switch {
 	case err == nil:
 		l = sponsorLogo{data: data, contentType: contentType, retryAt: now.Add(sponsorsTTL)}
@@ -138,15 +168,19 @@ func (s *PanelService) GetSponsorLogo(name string) ([]byte, string, error) {
 	default:
 		l = sponsorLogo{err: err, retryAt: now.Add(sponsorsErrTTL)}
 	}
-	logos[name] = l
+	logos[key] = l
 	return l.data, l.contentType, l.err
 }
 
-func fetchSponsorLogo(name string) ([]byte, string, error) {
-	data, err := readSponsorSource(sponsorLogoBase+name, filepath.Join(localSponsorsDir, "logos", name), maxLogoBytes)
+func fetchSponsorLogo(base, name string) ([]byte, string, error) {
+	data, err := fetchLimited(base+name, maxLogoBytes)
 	if err != nil {
 		return nil, "", err
 	}
+	return sniffSponsorLogo(name, data)
+}
+
+func sniffSponsorLogo(name string, data []byte) ([]byte, string, error) {
 	contentType := http.DetectContentType(data)
 	switch contentType {
 	case "image/png", "image/webp", "image/jpeg":
@@ -154,22 +188,6 @@ func fetchSponsorLogo(name string) ([]byte, string, error) {
 	default:
 		return nil, "", fmt.Errorf("sponsor logo %s has content type %s", name, contentType)
 	}
-}
-
-// readSponsorSource reads a sibling checkout of MHSanaei/sponsors under XUI_DEBUG so
-// sponsor edits can be previewed locally before they are pushed.
-func readSponsorSource(url, localPath string, limit int) ([]byte, error) {
-	if !config.IsDebug() {
-		return fetchLimited(url, limit)
-	}
-	data, err := os.ReadFile(localPath)
-	if err != nil {
-		return nil, err
-	}
-	if len(data) > limit {
-		return nil, fmt.Errorf("%s exceeds %d bytes", localPath, limit)
-	}
-	return data, nil
 }
 
 func fetchLimited(url string, limit int) ([]byte, error) {
@@ -196,8 +214,8 @@ func fetchLimited(url string, limit int) ([]byte, error) {
 	return body, nil
 }
 
-func fetchSponsors() (*SponsorList, error) {
-	body, err := readSponsorSource(sponsorsURL, filepath.Join(localSponsorsDir, "sponsors.json"), maxSponsorsBytes)
+func fetchSponsors(feed string) (*SponsorList, error) {
+	body, err := fetchLimited(feed, maxSponsorsBytes)
 	if err != nil {
 		return nil, err
 	}
