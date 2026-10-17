@@ -29,7 +29,7 @@ const (
 func inboundTransports(protocol model.Protocol, streamSettings, settings string) transportBits {
 	// protocols that ignore streamSettings entirely.
 	switch protocol {
-	case model.Hysteria, model.WireGuard, model.AmneziaWG, model.TUIC:
+	case model.Hysteria, model.WireGuard, model.AmneziaWG, model.TUIC, model.IKEv2:
 		return transportUDP
 	case model.MTProto:
 		return transportTCP

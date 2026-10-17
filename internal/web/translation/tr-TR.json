@@ -119,7 +119,8 @@
     "qrTitle": "Tara. İçe aktar. Bağlan.",
     "qrHint": "İstemci uygulamanızla tarayın. Bu kodu kimseyle paylaşmayın.",
     "saveQr": "QR'ı kaydet",
-    "openvpnHint": "Profili bir OpenVPN uygulamasına aktarın ve aşağıdaki kullanıcı adı ve şifreyle giriş yapın. Önerilen uygulama:"
+    "openvpnHint": "Profili bir OpenVPN uygulamasına aktarın ve aşağıdaki kullanıcı adı ve şifreyle giriş yapın. Önerilen uygulama:",
+    "ikev2Hint": "iPhone ve Mac'te profili yükleyin; giriş bilgileriniz içindedir. Windows'ta CA sertifikasını yükleyin, ardından aşağıdaki sunucu, kullanıcı adı ve şifreyle bir IKEv2 VPN ekleyin. Android'de şu uygulamayı kullanın:"
   },
   "menu": {
     "theme": "Tema",
@@ -766,6 +767,16 @@
           "dns": "DNS sunucuları",
           "profile": "İstemci profili",
           "download": ".ovpn indir"
+        },
+        "ikev2": {
+          "help": "İstemciler e-postalarını kullanıcı adı olarak ve şifreleriyle giriş yapar. IKEv2, UDP 500 ve 4500 portlarında çalışır; bu yüzden bir sunucuda yalnızca bir IKEv2 inbound olabilir. Her istemcinin iPhone, Mac ve Android profilleri bilgilerinde ve abonelik sayfasında bulunur.",
+          "serverAddress": "Sunucu adresi",
+          "serverAddressDesc": "İstemcilerin bağlandığı alan adı veya IP. Sunucu sertifikası bu adres için verilir.",
+          "pool": "İstemci ağı",
+          "poolDesc": "Bağlanan istemcilere verilen özel IPv4 aralığı. Boş bırakılırsa boş bir 10.89.x.0/24 otomatik seçilir.",
+          "apple": "iPhone / Mac",
+          "android": "Android",
+          "ca": "CA sertifikası"
         }
       },
       "info": {

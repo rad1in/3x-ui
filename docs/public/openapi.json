@@ -3500,7 +3500,8 @@
               "amneziawg",
               "tuic",
               "masque",
-              "openvpn"
+              "openvpn",
+              "ikev2"
             ],
             "example": "vless",
             "type": "string"
@@ -6763,6 +6764,65 @@
             "description": "OpenVPN inbound ID.",
             "schema": {
               "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/inbounds/{id}/ikev2Profile": {
+      "get": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "Download one client's profile for an IKEv2 inbound. `mobileconfig` is an Apple configuration profile (iOS, iPadOS, macOS) with the login filled in and the inbound's CA trusted; `sswan` is a profile for the strongSwan Android app, which asks for the password; `ca` is the CA certificate (DER) for setting up Windows or other clients by hand. Every format points at the inbound's server address.",
+        "operationId": "get_panel_api_inbounds_id_ikev2Profile",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "IKEv2 inbound ID.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "description": "The client whose profile to build.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": true,
+            "description": "mobileconfig (default), sswan or ca.",
+            "schema": {
+              "type": "string"
             }
           }
         ],

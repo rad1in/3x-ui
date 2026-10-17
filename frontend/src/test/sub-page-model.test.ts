@@ -4,7 +4,7 @@ import {
   buildSubApps,
   daysUntil,
   detectPlatform,
-  openvpnProfileUrl,
+  vpnProfileUrl,
   resolveSubStatus,
   usagePercent,
 } from '@/pages/sub/subPageModel';
@@ -135,13 +135,13 @@ describe('buildSubApps', () => {
   });
 });
 
-describe('openvpnProfileUrl', () => {
-  it('hangs the profile under the subscription path, dropping any query', () => {
-    expect(openvpnProfileUrl('https://vpn.example.com:2096/sub/abc', 7)).toBe(
+describe('vpnProfileUrl', () => {
+  it('hangs each profile under the subscription path, dropping any query', () => {
+    expect(vpnProfileUrl('https://vpn.example.com:2096/sub/abc', 'openvpn', 7)).toBe(
       'https://vpn.example.com:2096/sub/abc/openvpn/7',
     );
-    expect(openvpnProfileUrl('https://vpn.example.com/sub/abc/?name=x', 7)).toBe(
-      'https://vpn.example.com/sub/abc/openvpn/7',
+    expect(vpnProfileUrl('https://vpn.example.com/sub/abc/?name=x', 'ikev2', 7, 'sswan')).toBe(
+      'https://vpn.example.com/sub/abc/ikev2/7/sswan',
     );
   });
 });

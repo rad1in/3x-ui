@@ -69,6 +69,7 @@ const TRACKED_PROTOCOLS: readonly string[] = [
   Protocols.TUIC,
   Protocols.MASQUE,
   Protocols.OPENVPN,
+  Protocols.IKEV2,
 ];
 
 async function fetchSlimInbounds(): Promise<unknown[]> {

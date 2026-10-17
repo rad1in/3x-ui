@@ -24,7 +24,14 @@ interface SubPageData {
   downloadByte?: string | number;
   uploadByte?: string | number;
   usedByte?: string | number;
-  openvpn?: { inboundId: number; remark: string; username: string; password: string }[];
+  vpn?: {
+    inboundId: number;
+    protocol: string;
+    remark: string;
+    server: string;
+    username: string;
+    password: string;
+  }[];
 }
 
 interface Window {

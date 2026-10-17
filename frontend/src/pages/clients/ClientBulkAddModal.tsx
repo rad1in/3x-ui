@@ -41,6 +41,7 @@ const MULTI_CLIENT_PROTOCOLS = new Set([
   'tuic',
   'masque',
   'openvpn',
+  'ikev2',
 ]);
 
 const EMPTY: ClientBulkAddFormValues = {

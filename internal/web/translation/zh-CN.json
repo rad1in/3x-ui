@@ -119,7 +119,8 @@
     "qrTitle": "扫码。导入。连接。",
     "qrHint": "使用客户端应用扫描。请勿泄露此二维码。",
     "saveQr": "保存二维码",
-    "openvpnHint": "将配置文件导入 OpenVPN 应用，然后使用下面的用户名和密码登录。推荐应用："
+    "openvpnHint": "将配置文件导入 OpenVPN 应用，然后使用下面的用户名和密码登录。推荐应用：",
+    "ikev2Hint": "在 iPhone 和 Mac 上安装配置文件，其中已包含登录信息。在 Windows 上安装 CA 证书，然后使用下面的服务器、用户名和密码添加一个 IKEv2 VPN。在 Android 上使用应用"
   },
   "menu": {
     "theme": "主题",
@@ -766,6 +767,16 @@
           "dns": "DNS 服务器",
           "profile": "客户端配置文件",
           "download": "下载 .ovpn"
+        },
+        "ikev2": {
+          "help": "客户端使用邮箱作为用户名并使用其密码登录。IKEv2 使用 UDP 端口 500 和 4500，因此每台服务器只能有一个 IKEv2 入站。每个客户端的 iPhone、Mac 和 Android 配置文件都在其信息和订阅页面中。",
+          "serverAddress": "服务器地址",
+          "serverAddressDesc": "客户端连接的域名或 IP。服务器证书为此地址签发。",
+          "pool": "客户端网络",
+          "poolDesc": "分配给已连接客户端的私有 IPv4 网段。留空则自动选择一个空闲的 10.89.x.0/24。",
+          "apple": "iPhone / Mac",
+          "android": "Android",
+          "ca": "CA 证书"
         }
       },
       "info": {

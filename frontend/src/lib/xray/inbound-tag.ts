@@ -18,7 +18,8 @@ function inboundTransports(
     protocol === 'hysteria' ||
     protocol === 'wireguard' ||
     protocol === 'amneziawg' ||
-    protocol === 'tuic'
+    protocol === 'tuic' ||
+    protocol === 'ikev2'
   )
     return UDP;
   if (protocol === 'masque') return masqueTransports(streamSettings);

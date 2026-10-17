@@ -119,7 +119,8 @@
     "qrTitle": "掃描。匯入。連線。",
     "qrHint": "使用用戶端應用程式掃描。請勿外洩此 QR 碼。",
     "saveQr": "儲存 QR 碼",
-    "openvpnHint": "將設定檔匯入 OpenVPN 應用程式，然後使用下方的使用者名稱和密碼登入。推薦應用程式："
+    "openvpnHint": "將設定檔匯入 OpenVPN 應用程式，然後使用下方的使用者名稱和密碼登入。推薦應用程式：",
+    "ikev2Hint": "在 iPhone 與 Mac 上安裝設定檔，其中已包含登入資訊。在 Windows 上安裝 CA 憑證，然後使用下方的伺服器、使用者名稱與密碼新增一個 IKEv2 VPN。在 Android 上使用應用程式"
   },
   "menu": {
     "theme": "主題",
@@ -766,6 +767,16 @@
           "dns": "DNS 伺服器",
           "profile": "用戶端設定檔",
           "download": "下載 .ovpn"
+        },
+        "ikev2": {
+          "help": "用戶端以電子郵件作為使用者名稱並使用其密碼登入。IKEv2 使用 UDP 連接埠 500 與 4500，因此每台伺服器只能有一個 IKEv2 入站。每個用戶端的 iPhone、Mac 與 Android 設定檔都在其資訊與訂閱頁面中。",
+          "serverAddress": "伺服器位址",
+          "serverAddressDesc": "用戶端連線的網域或 IP。伺服器憑證為此位址簽發。",
+          "pool": "用戶端網路",
+          "poolDesc": "分配給已連線用戶端的私有 IPv4 網段。留空則自動選擇一個空閒的 10.89.x.0/24。",
+          "apple": "iPhone / Mac",
+          "android": "Android",
+          "ca": "CA 憑證"
         }
       },
       "info": {

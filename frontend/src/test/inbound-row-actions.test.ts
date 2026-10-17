@@ -41,6 +41,13 @@ describe('inbound row actions', () => {
     expect(keys).toContain('subs');
   });
 
+  // IKEv2 has no share links either; its profiles are per client, in the client's info.
+  it('offers no link export for ikev2', () => {
+    const keys = menuKeys('ikev2');
+    expect(keys).not.toContain('export');
+    expect(keys).toContain('subs');
+  });
+
   it('keeps link export for link-based protocols', () => {
     const keys = menuKeys('vless');
     expect(keys).toContain('export');

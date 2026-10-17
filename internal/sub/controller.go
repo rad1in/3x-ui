@@ -336,6 +336,7 @@ func (a *SUBController) initRouter(g *gin.RouterGroup) {
 	gLink.GET(":subid/hwid-status", a.hwidStatus)
 	gLink.HEAD(":subid/hwid-status", a.hwidStatus)
 	gLink.GET(":subid/openvpn/:inbound", a.openvpnProfile)
+	gLink.GET(":subid/ikev2/:inbound/:format", a.ikev2Profile)
 	if a.jsonEnabled {
 		gJson := g.Group(a.subJsonPath)
 		gJson.GET(":subid", a.subJsons)
@@ -700,7 +701,7 @@ func (a *SUBController) subPageContext(page PageData) map[string]any {
 		"emails":        page.Emails,
 		"datepicker":    datepicker,
 		"announce":      page.SubAnnounce,
-		"openvpn":       page.OpenVPN,
+		"vpn":           page.VPN,
 	}
 }
 
@@ -720,6 +721,23 @@ func (a *SUBController) openvpnProfile(c *gin.Context) {
 	setNoCacheHeaders(c)
 	c.Header("Content-Disposition", `attachment; filename="`+name+`"`)
 	c.Data(http.StatusOK, "application/x-openvpn-profile", []byte(body))
+}
+
+// ikev2Profile serves one format of an IKEv2 profile of the subscription.
+func (a *SUBController) ikev2Profile(c *gin.Context) {
+	inboundId, err := strconv.Atoi(c.Param("inbound"))
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	name, mime, body, err := a.subService.IKEv2ProfileFile(c.Param("subid"), inboundId, c.Param("format"))
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	setNoCacheHeaders(c)
+	c.Header("Content-Disposition", `attachment; filename="`+name+`"`)
+	c.Data(http.StatusOK, mime, body)
 }
 
 func (a *SUBController) enforceHwid(c *gin.Context) bool {

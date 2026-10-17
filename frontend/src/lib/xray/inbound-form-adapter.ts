@@ -11,6 +11,7 @@ import {
   MasqueClientSchema,
   MtprotoClientSchema,
   OpenVPNClientSchema,
+  IKEv2ClientSchema,
   ShadowsocksClientSchema,
   TrojanClientSchema,
   TuicClientSchema,
@@ -296,6 +297,8 @@ function clientSchemaForProtocol(protocol: string): z.ZodType | null {
       return MasqueClientSchema;
     case 'openvpn':
       return OpenVPNClientSchema;
+    case 'ikev2':
+      return IKEv2ClientSchema;
     default:
       return null;
   }

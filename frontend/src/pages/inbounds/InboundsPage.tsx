@@ -324,6 +324,7 @@ export default function InboundsPage() {
         case 'shadowsocks':
         case 'masque':
         case 'openvpn':
+        case 'ikev2':
           return c.password === client.password && c.email === client.email;
         default:
           return c.id === client.id && c.email === client.email;

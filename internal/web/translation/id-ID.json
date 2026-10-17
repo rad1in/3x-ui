@@ -119,7 +119,8 @@
     "qrTitle": "Pindai. Impor. Terhubung.",
     "qrHint": "Pindai dengan aplikasi klien Anda. Jaga kerahasiaan kode ini.",
     "saveQr": "Simpan QR",
-    "openvpnHint": "Impor profil ke aplikasi OpenVPN, lalu masuk dengan nama pengguna dan kata sandi di bawah. Aplikasi yang disarankan:"
+    "openvpnHint": "Impor profil ke aplikasi OpenVPN, lalu masuk dengan nama pengguna dan kata sandi di bawah. Aplikasi yang disarankan:",
+    "ikev2Hint": "Di iPhone dan Mac, pasang profilnya; login Anda sudah ada di dalamnya. Di Windows, pasang sertifikat CA lalu tambahkan VPN IKEv2 dengan server, nama pengguna, dan kata sandi di bawah. Di Android, gunakan aplikasi"
   },
   "menu": {
     "theme": "Tema",
@@ -766,6 +767,16 @@
           "dns": "Server DNS",
           "profile": "Profil klien",
           "download": "Unduh .ovpn"
+        },
+        "ikev2": {
+          "help": "Klien masuk dengan email sebagai nama pengguna dan kata sandinya. IKEv2 berjalan di port UDP 500 dan 4500, jadi satu server hanya bisa punya satu inbound IKEv2. Profil iPhone, Mac, dan Android setiap klien ada di info klien dan halaman langganannya.",
+          "serverAddress": "Alamat server",
+          "serverAddressDesc": "Domain atau IP yang dituju klien. Sertifikat server diterbitkan untuk alamat ini.",
+          "pool": "Jaringan klien",
+          "poolDesc": "Rentang IPv4 privat yang diberikan ke klien yang terhubung. Kosongkan untuk memilih 10.89.x.0/24 yang bebas secara otomatis.",
+          "apple": "iPhone / Mac",
+          "android": "Android",
+          "ca": "Sertifikat CA"
         }
       },
       "info": {

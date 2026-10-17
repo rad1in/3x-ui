@@ -5,6 +5,7 @@ import { HttpInboundSettingsSchema } from './http';
 import { HysteriaInboundSettingsSchema } from './hysteria';
 import { MasqueInboundSettingsSchema } from './masque';
 import { OpenVPNInboundSettingsSchema } from './openvpn';
+import { IKEv2InboundSettingsSchema } from './ikev2';
 import { MixedInboundSettingsSchema } from './mixed';
 import { MtprotoInboundSettingsSchema } from './mtproto';
 import { ShadowsocksInboundSettingsSchema } from './shadowsocks';
@@ -21,6 +22,7 @@ export * from './http';
 export * from './hysteria';
 export * from './masque';
 export * from './openvpn';
+export * from './ikev2';
 export * from './mixed';
 export * from './mtproto';
 export * from './shadowsocks';
@@ -53,5 +55,6 @@ export const InboundSettingsSchema = z.discriminatedUnion('protocol', [
   z.object({ protocol: z.literal('tuic'), settings: TuicInboundSettingsSchema }),
   z.object({ protocol: z.literal('masque'), settings: MasqueInboundSettingsSchema }),
   z.object({ protocol: z.literal('openvpn'), settings: OpenVPNInboundSettingsSchema }),
+  z.object({ protocol: z.literal('ikev2'), settings: IKEv2InboundSettingsSchema }),
 ]);
 export type InboundSettings = z.infer<typeof InboundSettingsSchema>;

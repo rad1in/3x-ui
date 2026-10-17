@@ -76,6 +76,7 @@ func TestInboundTransports(t *testing.T) {
 		{"wireguard forced udp", model.WireGuard, ``, ``, transportUDP},
 		{"openvpn defaults to udp", model.OpenVPN, `{"network":"tcp"}`, `{}`, transportUDP},
 		{"openvpn tcp transport", model.OpenVPN, ``, `{"proto":"tcp"}`, transportTCP},
+		{"ikev2 forced udp", model.IKEv2, `{"network":"tcp"}`, `{}`, transportUDP},
 
 		// MASQUE serves HTTP/3 on UDP unless the TLS ALPN offers only h2, and adds an
 		// HTTP/2 listener on TCP whenever h2 is offered.

@@ -4,7 +4,6 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
-	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 )
 
 // OpenVPNJob keeps the openvpn servers in line with the database (restarting
@@ -30,27 +29,10 @@ func (j *OpenVPNJob) Run() {
 	mgr := openvpn.GetManager()
 	mgr.Reconcile(desired)
 
-	deltas, online := mgr.CollectTraffic()
-	clientTraffics := make([]*xray.ClientTraffic, 0, len(deltas))
-	byTag := map[string]*xray.Traffic{}
-	for _, d := range deltas {
-		clientTraffics = append(clientTraffics, &xray.ClientTraffic{Email: d.Email, Up: d.Up, Down: d.Down})
-		t := byTag[d.Tag]
-		if t == nil {
-			t = &xray.Traffic{IsInbound: true, Tag: d.Tag}
-			byTag[d.Tag] = t
-		}
-		t.Up += d.Up
-		t.Down += d.Down
+	traffic, online := mgr.CollectTraffic()
+	deltas := make([]sidecarDelta, 0, len(traffic))
+	for _, t := range traffic {
+		deltas = append(deltas, sidecarDelta{Tag: t.Tag, Email: t.Email, Up: t.Up, Down: t.Down})
 	}
-	traffics := make([]*xray.Traffic, 0, len(byTag))
-	for _, t := range byTag {
-		traffics = append(traffics, t)
-	}
-	if len(traffics) > 0 {
-		if _, _, err := j.inboundService.AddTraffic(traffics, clientTraffics); err != nil {
-			logger.Warning("openvpn job: add traffic:", err)
-		}
-	}
-	j.inboundService.RefreshLocalOnlineClients(online, activeTags)
+	bookSidecarTraffic(&j.inboundService, "openvpn", deltas, online, activeTags)
 }

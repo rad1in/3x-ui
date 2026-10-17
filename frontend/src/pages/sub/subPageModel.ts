@@ -92,8 +92,15 @@ export function buildSubApps({
   };
 }
 
-// The profile route hangs under the subscription path: <sub>/<subid>/openvpn/<inbound>.
-export function openvpnProfileUrl(subUrl: string, inboundId: number): string {
+// Profile routes hang under the subscription path: <sub>/<subid>/openvpn/<inbound>
+// and <sub>/<subid>/ikev2/<inbound>/<format>.
+export function vpnProfileUrl(
+  subUrl: string,
+  protocol: string,
+  inboundId: number,
+  format?: string,
+): string {
   const base = subUrl.split('?')[0].replace(/\/+$/, '');
-  return `${base}/openvpn/${inboundId}`;
+  const tail = format ? `/${format}` : '';
+  return `${base}/${protocol}/${inboundId}${tail}`;
 }

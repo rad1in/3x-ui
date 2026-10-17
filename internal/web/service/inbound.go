@@ -1267,6 +1267,9 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 	if err := s.normalizeOpenVPNSettings(inbound, ""); err != nil {
 		return inbound, false, err
 	}
+	if err := s.normalizeIKEv2Settings(inbound, ""); err != nil {
+		return inbound, false, err
+	}
 	if inbound.NodeID != nil {
 		if err := checkNodeCanHostProtocol(database.GetDB(), *inbound.NodeID, inbound.Protocol); err != nil {
 			return inbound, false, err
@@ -1346,7 +1349,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 	// Secure client ID
 	for _, client := range clients {
 		switch inbound.Protocol {
-		case "trojan", "masque", "openvpn":
+		case "trojan", "masque", "openvpn", "ikev2":
 			if client.Password == "" {
 				return inbound, false, common.NewError("empty client ID")
 			}
@@ -1502,7 +1505,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 				if push {
 					payload := inbound
 					pushable := true
-					if inbound.Protocol == model.MTProto || inbound.Protocol == model.TUIC || inbound.Protocol == model.OpenVPN {
+					if builtForLocalRuntime(inbound.Protocol) {
 						if built, bErr := s.buildInboundForLocalRuntime(tx, inbound); bErr == nil {
 							payload = built
 						} else {
@@ -1516,7 +1519,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 								logger.Debug("New inbound added on", rt.Name(), ":", inbound.Tag)
 							} else {
 								logger.Debug("Unable to add inbound on", rt.Name(), ":", err1)
-								if inbound.Protocol != model.MTProto && inbound.Protocol != model.TUIC && inbound.Protocol != model.OpenVPN {
+								if !builtForLocalRuntime(inbound.Protocol) {
 									needRestart = true
 								}
 							}
@@ -1875,7 +1878,7 @@ func (s *InboundService) validateUpdatedInboundClients(inbound *model.Inbound) e
 			if client.Auth == "" {
 				return common.NewError("empty client ID")
 			}
-		case model.MASQUE, model.OpenVPN:
+		case model.MASQUE, model.OpenVPN, model.IKEv2:
 			if client.Password == "" {
 				return common.NewError("empty client ID")
 			}
@@ -1935,6 +1938,9 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 		return inbound, false, err
 	}
 	if err := s.normalizeOpenVPNSettings(inbound, oldInbound.Settings); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeIKEv2Settings(inbound, oldInbound.Settings); err != nil {
 		return inbound, false, err
 	}
 	inbound.SubSortIndex = normalizeSubSortIndex(inbound.SubSortIndex)
@@ -2244,7 +2250,14 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 // servedOutsideXray: these protocols run under their own manager, whose update
 // reconfigures in place where a Del+Add would drop every live session.
 func servedOutsideXray(protocol model.Protocol) bool {
-	return protocol == model.MTProto || protocol == model.TUIC || protocol == model.AmneziaWG || protocol == model.OpenVPN
+	return protocol == model.MTProto || protocol == model.TUIC || protocol == model.AmneziaWG ||
+		protocol == model.OpenVPN || protocol == model.IKEv2
+}
+
+// builtForLocalRuntime: these sidecars take an inbound with depleted clients
+// already removed, and a failed start never calls for an Xray restart.
+func builtForLocalRuntime(protocol model.Protocol) bool {
+	return protocol == model.MTProto || protocol == model.TUIC || protocol == model.OpenVPN || protocol == model.IKEv2
 }
 
 // applyInboundUserOps reports whether per-user core ops moved running to next, so

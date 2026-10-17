@@ -119,7 +119,8 @@
     "qrTitle": "Quét. Nhập. Kết nối.",
     "qrHint": "Quét bằng ứng dụng khách. Không chia sẻ mã này cho người khác.",
     "saveQr": "Lưu QR",
-    "openvpnHint": "Nhập hồ sơ vào ứng dụng OpenVPN, sau đó đăng nhập bằng tên người dùng và mật khẩu bên dưới. Ứng dụng đề xuất:"
+    "openvpnHint": "Nhập hồ sơ vào ứng dụng OpenVPN, sau đó đăng nhập bằng tên người dùng và mật khẩu bên dưới. Ứng dụng đề xuất:",
+    "ikev2Hint": "Trên iPhone và Mac, hãy cài hồ sơ; thông tin đăng nhập đã có sẵn trong đó. Trên Windows, cài chứng chỉ CA rồi thêm VPN IKEv2 với máy chủ, tên người dùng và mật khẩu bên dưới. Trên Android, dùng ứng dụng"
   },
   "menu": {
     "theme": "Chủ đề",
@@ -766,6 +767,16 @@
           "dns": "Máy chủ DNS",
           "profile": "Hồ sơ khách hàng",
           "download": "Tải .ovpn"
+        },
+        "ikev2": {
+          "help": "Khách hàng đăng nhập bằng email làm tên người dùng và mật khẩu của họ. IKEv2 chạy trên cổng UDP 500 và 4500, nên mỗi máy chủ chỉ có thể có một inbound IKEv2. Hồ sơ iPhone, Mac và Android của từng khách hàng nằm trong thông tin của họ và trang đăng ký.",
+          "serverAddress": "Địa chỉ máy chủ",
+          "serverAddressDesc": "Tên miền hoặc IP mà khách hàng kết nối tới. Chứng chỉ máy chủ được cấp cho địa chỉ này.",
+          "pool": "Mạng khách hàng",
+          "poolDesc": "Dải IPv4 riêng cấp cho khách hàng đã kết nối. Để trống để tự động chọn một dải 10.89.x.0/24 còn trống.",
+          "apple": "iPhone / Mac",
+          "android": "Android",
+          "ca": "Chứng chỉ CA"
         }
       },
       "info": {

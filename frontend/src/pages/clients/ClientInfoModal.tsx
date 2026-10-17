@@ -18,7 +18,11 @@ import type { ClientRecord, InboundOption } from '@/hooks/useClients';
 import { isPostQuantumLink } from '@/lib/xray/inbound-link';
 import { LinkTags, linkMetaText, parseLinkParts } from '@/lib/xray/link-label';
 import { QrPanel } from '@/pages/inbounds/qr';
-import { openvpnPanelProfileUrl } from '@/pages/inbounds/list/helpers';
+import {
+  ikev2PanelProfileUrl,
+  openvpnPanelProfileUrl,
+  type IKEv2ProfileFormat,
+} from '@/pages/inbounds/list/helpers';
 import ClientHwidListModal from '@/components/clients/ClientHwidList';
 import ConfigBlock from '@/components/clients/ConfigBlock';
 import {
@@ -49,9 +53,16 @@ const INBOUND_PROTOCOL_COLORS: Record<string, string> = {
   tunnel: 'orange',
   tuic: 'orange',
   openvpn: 'green',
+  ikev2: 'blue',
 };
 
 const INBOUND_CHIP_LIMIT = 1;
+
+const IKEV2_DOWNLOADS: { format: IKEv2ProfileFormat; labelKey: string }[] = [
+  { format: 'mobileconfig', labelKey: 'pages.inbounds.form.ikev2.apple' },
+  { format: 'sswan', labelKey: 'pages.inbounds.form.ikev2.android' },
+  { format: 'ca', labelKey: 'pages.inbounds.form.ikev2.ca' },
+];
 
 interface SubSettings {
   enable: boolean;
@@ -229,11 +240,13 @@ export default function ClientInfoModal({
       .filter((c) => !!c.text);
   }, [client, awgInbounds, tunnelAllowedIPs, subSettings?.publicHost, hosts]);
 
-  const openvpnInbounds = useMemo(
+  const vpnInbounds = useMemo(
     () =>
       (client?.inboundIds ?? [])
         .map((id) => inboundsById[id])
-        .filter((ib): ib is InboundOption => ib?.protocol === 'openvpn'),
+        .filter(
+          (ib): ib is InboundOption => ib?.protocol === 'openvpn' || ib?.protocol === 'ikev2',
+        ),
     [client, inboundsById],
   );
 
@@ -854,23 +867,39 @@ export default function ClientInfoModal({
               </>
             )}
 
-            {openvpnInbounds.length > 0 && (
+            {vpnInbounds.length > 0 && client && (
               <>
                 <Divider>{t('pages.inbounds.form.openvpn.profile')}</Divider>
-                {openvpnInbounds.map((ib) => (
-                  <div key={`ovpn-${ib.id}`} className="link-row">
-                    <Tag color="green" className="link-row-tag">
-                      OpenVPN
+                {vpnInbounds.map((ib) => (
+                  <div key={`vpn-${ib.id}`} className="link-row">
+                    <Tag
+                      color={ib.protocol === 'ikev2' ? 'blue' : 'green'}
+                      className="link-row-tag"
+                    >
+                      {ib.protocol === 'ikev2' ? 'IKEv2' : 'OpenVPN'}
                     </Tag>
                     <span className="link-row-title">{formatInboundLabel(ib.tag, ib.remark)}</span>
                     <div className="link-row-actions">
-                      <Button
-                        size="small"
-                        icon={<DownloadOutlined />}
-                        href={openvpnPanelProfileUrl(ib.id)}
-                      >
-                        {t('pages.inbounds.form.openvpn.download')}
-                      </Button>
+                      {ib.protocol === 'ikev2' ? (
+                        IKEV2_DOWNLOADS.map(({ format, labelKey }) => (
+                          <Button
+                            key={format}
+                            size="small"
+                            icon={<DownloadOutlined />}
+                            href={ikev2PanelProfileUrl(ib.id, client.email, format)}
+                          >
+                            {t(labelKey)}
+                          </Button>
+                        ))
+                      ) : (
+                        <Button
+                          size="small"
+                          icon={<DownloadOutlined />}
+                          href={openvpnPanelProfileUrl(ib.id)}
+                        >
+                          {t('pages.inbounds.form.openvpn.download')}
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ))}

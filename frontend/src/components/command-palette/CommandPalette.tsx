@@ -365,6 +365,7 @@ export default function CommandPalette() {
           'hysteria',
           'masque',
           'openvpn',
+          'ikev2',
         ],
         icon: <ImportOutlined />,
       },

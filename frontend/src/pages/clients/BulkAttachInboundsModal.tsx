@@ -19,6 +19,7 @@ const MULTI_USER_PROTOCOLS = new Set([
   'tuic',
   'masque',
   'openvpn',
+  'ikev2',
 ]);
 
 interface BulkAttachInboundsModalProps {

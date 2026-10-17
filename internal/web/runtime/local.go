@@ -11,6 +11,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/amneziawg"
 	"github.com/mhsanaei/3x-ui/v3/internal/amneziawgnet"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/ipsec"
 	"github.com/mhsanaei/3x-ui/v3/internal/mtproto"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
 	"github.com/mhsanaei/3x-ui/v3/internal/tuic"
@@ -50,6 +51,13 @@ func (l *Local) withAPI(fn func(api *xray.XrayAPI) error) error {
 }
 
 func (l *Local) AddInbound(_ context.Context, ib *model.Inbound) error {
+	if ib.Protocol == model.IKEv2 {
+		inst, ok := ipsec.InstanceFromInbound(ib)
+		if !ok {
+			return nil
+		}
+		return ipsec.GetManager().Ensure(inst)
+	}
 	if ib.Protocol == model.OpenVPN {
 		inst, ok := openvpn.InstanceFromInbound(ib)
 		if !ok {
@@ -114,6 +122,10 @@ func (l *Local) AddInbound(_ context.Context, ib *model.Inbound) error {
 }
 
 func (l *Local) DelInbound(_ context.Context, ib *model.Inbound) error {
+	if ib.Protocol == model.IKEv2 {
+		ipsec.GetManager().Remove(ib.Id)
+		return nil
+	}
 	if ib.Protocol == model.OpenVPN {
 		openvpn.GetManager().Remove(ib.Id)
 		return nil
@@ -147,6 +159,9 @@ func (l *Local) DelInbound(_ context.Context, ib *model.Inbound) error {
 func (l *Local) UpdateInbound(ctx context.Context, oldIb, newIb *model.Inbound) error {
 	if oldIb.Protocol == model.OpenVPN || newIb.Protocol == model.OpenVPN {
 		return l.updateOpenVPNInbound(ctx, oldIb, newIb)
+	}
+	if oldIb.Protocol == model.IKEv2 || newIb.Protocol == model.IKEv2 {
+		return l.updateIKEv2Inbound(ctx, oldIb, newIb)
 	}
 	if oldIb.Protocol == model.MTProto || newIb.Protocol == model.MTProto {
 		return l.updateMtprotoInbound(ctx, oldIb, newIb)
@@ -183,6 +198,27 @@ func (l *Local) updateOpenVPNInbound(ctx context.Context, oldIb, newIb *model.In
 		return nil
 	}
 	return openvpn.GetManager().Ensure(inst)
+}
+
+// updateIKEv2Inbound lets Ensure load only what changed into charon, so a
+// client edit never drops the other users' sessions.
+func (l *Local) updateIKEv2Inbound(ctx context.Context, oldIb, newIb *model.Inbound) error {
+	if oldIb.Protocol != model.IKEv2 {
+		_ = l.DelInbound(ctx, oldIb)
+	}
+	if newIb.Protocol != model.IKEv2 {
+		ipsec.GetManager().Remove(oldIb.Id)
+		if !newIb.Enable {
+			return nil
+		}
+		return l.AddInbound(ctx, newIb)
+	}
+	inst, ok := ipsec.InstanceFromInbound(newIb)
+	if !newIb.Enable || !ok {
+		ipsec.GetManager().Remove(newIb.Id)
+		return nil
+	}
+	return ipsec.GetManager().Ensure(inst)
 }
 
 // updateMtprotoInbound applies an inbound update without the Del+Add sequence

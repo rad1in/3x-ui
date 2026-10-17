@@ -3474,7 +3474,8 @@ export const SCHEMAS: Record<string, unknown> = {
           "amneziawg",
           "tuic",
           "masque",
-          "openvpn"
+          "openvpn",
+          "ikev2"
         ],
         "example": "vless",
         "type": "string"

@@ -15,7 +15,7 @@ import {
   UsergroupDeleteOutlined,
 } from '@ant-design/icons';
 
-import { isInboundMultiUser } from './helpers';
+import { hasShareLinks, isInboundMultiUser } from './helpers';
 import type { DBInboundRecord, RowAction } from './types';
 
 interface RowActionsMenuProps {
@@ -51,7 +51,7 @@ export function buildRowActionsMenu({
     });
   }
   if (isInboundMultiUser(record)) {
-    if (record.protocol !== 'openvpn') {
+    if (hasShareLinks(record.protocol)) {
       items.push({ key: 'export', icon: <ExportOutlined />, label: t('pages.inbounds.export') });
     }
     if (subEnable) {

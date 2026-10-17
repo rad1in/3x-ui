@@ -119,7 +119,8 @@
     "qrTitle": "Scan. Import. Connect.",
     "qrHint": "Scan with your client app. Keep this code private.",
     "saveQr": "Save QR",
-    "openvpnHint": "Import the profile into an OpenVPN app, then sign in with the username and password below. Recommended app:"
+    "openvpnHint": "Import the profile into an OpenVPN app, then sign in with the username and password below. Recommended app:",
+    "ikev2Hint": "On iPhone and Mac, install the profile; it carries your login. On Windows, install the CA certificate, then add an IKEv2 VPN with the server, username and password below. On Android, use the app"
   },
   "menu": {
     "theme": "Theme",
@@ -767,6 +768,16 @@
           "dns": "DNS servers",
           "profile": "Client profile",
           "download": "Download .ovpn"
+        },
+        "ikev2": {
+          "help": "Clients sign in with their email as the username and their password. IKEv2 runs on UDP ports 500 and 4500, so a server can have only one IKEv2 inbound. Each client's iPhone, Mac and Android profiles are in their info and on their subscription page.",
+          "serverAddress": "Server address",
+          "serverAddressDesc": "The domain or IP clients connect to. The server certificate is issued for this address.",
+          "pool": "Client network",
+          "poolDesc": "Private IPv4 range handed to connected clients. Leave empty to pick a free 10.89.x.0/24 automatically.",
+          "apple": "iPhone / Mac",
+          "android": "Android",
+          "ca": "CA certificate"
         }
       },
       "info": {

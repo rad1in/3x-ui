@@ -433,6 +433,28 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/inbounds/:id/ikev2Profile',
+        summary:
+          "Download one client's profile for an IKEv2 inbound. `mobileconfig` is an Apple configuration profile (iOS, iPadOS, macOS) with the login filled in and the inbound's CA trusted; `sswan` is a profile for the strongSwan Android app, which asks for the password; `ca` is the CA certificate (DER) for setting up Windows or other clients by hand. Every format points at the inbound's server address.",
+        params: [
+          { name: 'id', in: 'path', type: 'number', desc: 'IKEv2 inbound ID.' },
+          {
+            name: 'email',
+            in: 'query',
+            type: 'string',
+            desc: 'The client whose profile to build.',
+          },
+          {
+            name: 'format',
+            in: 'query',
+            type: 'string',
+            desc: 'mobileconfig (default), sswan or ca.',
+          },
+        ],
+        response: '<?xml version="1.0" encoding="UTF-8"?>\n<plist version="1.0">...',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/inbounds/:id/fallbacks',
         summary:
           "List the fallback rules attached to a master VLESS/Trojan TCP-TLS inbound. Each rule links one child inbound (the dest) to optional SNI/ALPN/path/dest/xver match criteria. When dest is empty the child inbound's listen+port is used.",

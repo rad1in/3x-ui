@@ -81,6 +81,7 @@ func (a *InboundController) initRouter(g *gin.RouterGroup) {
 	g.GET("/get/:id", a.getInbound)
 	g.GET("/:id/fallbacks", a.getFallbacks)
 	g.GET("/:id/openvpnProfile", a.openvpnProfile)
+	g.GET("/:id/ikev2Profile", a.ikev2Profile)
 
 	g.POST("/add", a.addInbound)
 	g.POST("/del/:id", a.delInbound)
@@ -177,6 +178,21 @@ func (a *InboundController) openvpnProfile(c *gin.Context) {
 	}
 	c.Header("Content-Disposition", `attachment; filename="`+name+`"`)
 	c.Data(http.StatusOK, "application/x-openvpn-profile", []byte(body))
+}
+
+func (a *InboundController) ikev2Profile(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "get"), err)
+		return
+	}
+	name, mime, body, err := a.inboundService.IKEv2Profile(id, c.Query("email"), c.DefaultQuery("format", service.IKEv2ProfileApple))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "get"), err)
+		return
+	}
+	c.Header("Content-Disposition", `attachment; filename="`+name+`"`)
+	c.Data(http.StatusOK, mime, body)
 }
 
 // addInbound creates a new inbound configuration.

@@ -19,8 +19,8 @@ import (
 var openvpnDefaultDNS = []any{"1.1.1.1", "8.8.8.8"}
 
 // normalizeOpenVPNSettings gives an openvpn inbound everything it needs to start:
-// a transport, its own certificates (kept across edits), a client network that
-// no other openvpn inbound uses, DNS servers and a password for every client.
+// a transport, its own certificates (kept across edits), a client network no
+// other VPN inbound routes, DNS servers and a password for every client.
 func (s *InboundService) normalizeOpenVPNSettings(inbound *model.Inbound, oldSettings string) error {
 	if inbound.Protocol != model.OpenVPN {
 		return nil
@@ -54,7 +54,7 @@ func (s *InboundService) normalizeOpenVPNSettings(inbound *model.Inbound, oldSet
 	}
 	parsed["pki"] = pki
 
-	network, err := s.openvpnNetwork(inbound.Id, fmt.Sprint(parsed["network"]))
+	network, err := s.vpnClientNetwork("openvpn", inbound.Id, fmt.Sprint(parsed["network"]), 88)
 	if err != nil {
 		return err
 	}
@@ -98,53 +98,6 @@ func openvpnPKIOf(v any) openvpn.PKI {
 		_ = json.Unmarshal(bs, &pki)
 	}
 	return pki
-}
-
-// openvpnNetwork validates the requested client network, or picks the first
-// free 10.88.N.0/24; two inbounds on one network would fight over its routes.
-func (s *InboundService) openvpnNetwork(selfID int, requested string) (netip.Prefix, error) {
-	var others []model.Inbound
-	if err := database.GetDB().Where("protocol = ? AND id <> ?", model.OpenVPN, selfID).Find(&others).Error; err != nil {
-		return netip.Prefix{}, err
-	}
-	taken := make([]netip.Prefix, 0, len(others))
-	for _, ib := range others {
-		var parsed struct {
-			Network string `json:"network"`
-		}
-		if json.Unmarshal([]byte(ib.Settings), &parsed) == nil {
-			if p, err := netip.ParsePrefix(parsed.Network); err == nil {
-				taken = append(taken, p.Masked())
-			}
-		}
-	}
-	overlaps := func(p netip.Prefix) bool {
-		for _, t := range taken {
-			if t.Overlaps(p) {
-				return true
-			}
-		}
-		return false
-	}
-
-	requested = strings.TrimSpace(requested)
-	if requested == "" || requested == "<nil>" {
-		for n := 0; n < 256; n++ {
-			p := netip.PrefixFrom(netip.AddrFrom4([4]byte{10, 88, byte(n), 0}), 24)
-			if !overlaps(p) {
-				return p, nil
-			}
-		}
-		return netip.Prefix{}, fmt.Errorf("openvpn: no free client network left in 10.88.0.0/16")
-	}
-	p, err := netip.ParsePrefix(requested)
-	if err != nil || !p.Addr().Is4() || !p.Addr().IsPrivate() || p.Bits() < 16 || p.Bits() > 29 {
-		return netip.Prefix{}, fmt.Errorf("openvpn: client network %q must be a private IPv4 range from /16 to /29", requested)
-	}
-	if overlaps(p.Masked()) {
-		return netip.Prefix{}, fmt.Errorf("openvpn: client network %s overlaps another openvpn inbound", p.Masked())
-	}
-	return p.Masked(), nil
 }
 
 // DesiredOpenVPNInstances is every local openvpn inbound with the clients it
@@ -220,6 +173,8 @@ func (s *InboundService) applyLocalSidecar(protocol model.Protocol, inboundId in
 		s.applyLocalTuic(inboundId)
 	case model.OpenVPN:
 		s.applyLocalOpenVPN(inboundId)
+	case model.IKEv2:
+		s.applyLocalIKEv2(inboundId)
 	default:
 		return false
 	}

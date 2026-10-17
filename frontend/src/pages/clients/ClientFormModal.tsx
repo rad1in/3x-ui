@@ -67,6 +67,7 @@ const MULTI_CLIENT_PROTOCOLS = new Set([
   'tuic',
   'masque',
   'openvpn',
+  'ikev2',
 ]);
 
 const CLIENT_FORM_MODAL_Z_INDEX = 1000;

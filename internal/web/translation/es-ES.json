@@ -119,7 +119,8 @@
     "qrTitle": "Escanea. Importa. Conéctate.",
     "qrHint": "Escanéalo con tu aplicación cliente. Mantén este código en privado.",
     "saveQr": "Guardar QR",
-    "openvpnHint": "Importa el perfil en una app de OpenVPN y luego inicia sesión con el usuario y la contraseña de abajo. App recomendada:"
+    "openvpnHint": "Importa el perfil en una app de OpenVPN y luego inicia sesión con el usuario y la contraseña de abajo. App recomendada:",
+    "ikev2Hint": "En iPhone y Mac, instala el perfil; incluye tu acceso. En Windows, instala el certificado CA y añade una VPN IKEv2 con el servidor, usuario y contraseña de abajo. En Android, usa la app"
   },
   "menu": {
     "theme": "Tema",
@@ -766,6 +767,16 @@
           "dns": "Servidores DNS",
           "profile": "Perfil del cliente",
           "download": "Descargar .ovpn"
+        },
+        "ikev2": {
+          "help": "Los clientes inician sesión con su email como usuario y su contraseña. IKEv2 usa los puertos UDP 500 y 4500, así que un servidor solo puede tener un inbound IKEv2. Los perfiles de iPhone, Mac y Android de cada cliente están en su información y en su página de suscripción.",
+          "serverAddress": "Dirección del servidor",
+          "serverAddressDesc": "El dominio o IP al que se conectan los clientes. El certificado del servidor se emite para esta dirección.",
+          "pool": "Red de clientes",
+          "poolDesc": "Rango IPv4 privado asignado a los clientes conectados. Déjalo vacío para elegir automáticamente un 10.89.x.0/24 libre.",
+          "apple": "iPhone / Mac",
+          "android": "Android",
+          "ca": "Certificado CA"
         }
       },
       "info": {

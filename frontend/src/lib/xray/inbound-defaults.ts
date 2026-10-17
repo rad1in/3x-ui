@@ -20,6 +20,7 @@ import {
   OPENVPN_DEFAULT_DNS,
   type OpenVPNInboundSettings,
 } from '@/schemas/protocols/inbound/openvpn';
+import type { IKEv2InboundSettings } from '@/schemas/protocols/inbound/ikev2';
 import type { TunInboundSettings } from '@/schemas/protocols/inbound/tun';
 import type { TunnelInboundSettings } from '@/schemas/protocols/inbound/tunnel';
 import type { VlessClient, VlessInboundSettings } from '@/schemas/protocols/inbound/vless';
@@ -354,6 +355,10 @@ export function createDefaultOpenVPNInboundSettings(): OpenVPNInboundSettings {
   return { proto: 'udp', network: '', dns: [...OPENVPN_DEFAULT_DNS], clients: [] };
 }
 
+export function createDefaultIKEv2InboundSettings(serverAddress = ''): IKEv2InboundSettings {
+  return { serverAddress, pool: '', dns: [...OPENVPN_DEFAULT_DNS], clients: [] };
+}
+
 export function createDefaultTuicInboundSettings(): TuicInboundSettings {
   return {
     server: {
@@ -393,7 +398,8 @@ export type AnyInboundSettings =
   | AmneziawgInboundSettings
   | TuicInboundSettings
   | MasqueInboundSettings
-  | OpenVPNInboundSettings;
+  | OpenVPNInboundSettings
+  | IKEv2InboundSettings;
 
 export function createDefaultInboundSettings(protocol: string): AnyInboundSettings | null {
   switch (protocol) {
@@ -427,6 +433,8 @@ export function createDefaultInboundSettings(protocol: string): AnyInboundSettin
       return createDefaultMasqueInboundSettings();
     case 'openvpn':
       return createDefaultOpenVPNInboundSettings();
+    case 'ikev2':
+      return createDefaultIKEv2InboundSettings();
     default:
       return null;
   }
