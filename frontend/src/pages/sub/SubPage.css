@@ -1,13 +1,13 @@
 .subscription-page {
-  --bg-page: #e6e8ec;
+  --bg-page: #f6f6f7;
   --bg-card: #ffffff;
   min-height: 100vh;
   background: var(--bg-page);
 }
 
 .subscription-page.is-dark {
-  --bg-page: #1a1b1f;
-  --bg-card: #23252b;
+  --bg-page: #0b0b0d;
+  --bg-card: #131316;
 }
 
 .subscription-page.is-dark.is-ultra {
