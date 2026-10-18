@@ -199,6 +199,18 @@
           "externalTrafficInformURI": {
             "type": "string"
           },
+          "gotifyEnable": {
+            "type": "boolean"
+          },
+          "gotifyEvents": {
+            "type": "string"
+          },
+          "gotifyToken": {
+            "type": "string"
+          },
+          "gotifyUrl": {
+            "type": "string"
+          },
           "happLinkEnable": {
             "type": "boolean"
           },
@@ -289,6 +301,22 @@
           "metricsToken": {
             "type": "string"
           },
+          "ntfyEnable": {
+            "description": "Push channels: each posts the events it has ticked to ntfy, Gotify or a Slack incoming webhook.",
+            "type": "boolean"
+          },
+          "ntfyEvents": {
+            "type": "string"
+          },
+          "ntfyServer": {
+            "type": "string"
+          },
+          "ntfyToken": {
+            "type": "string"
+          },
+          "ntfyTopic": {
+            "type": "string"
+          },
           "outboundDownThreshold": {
             "maximum": 100,
             "minimum": 1,
@@ -332,6 +360,15 @@
             "maximum": 525600,
             "minimum": 1,
             "type": "integer"
+          },
+          "slackEnable": {
+            "type": "boolean"
+          },
+          "slackEvents": {
+            "type": "string"
+          },
+          "slackWebhookUrl": {
+            "type": "string"
           },
           "smtpCpu": {
             "maximum": 100,
@@ -696,6 +733,10 @@
           "tgBotEnable": {
             "type": "boolean"
           },
+          "tgBotMessageOverrides": {
+            "description": "TgBotMessageOverrides is {language: {message key: text}} JSON replacing selected bot texts.",
+            "type": "string"
+          },
           "tgBotProxy": {
             "type": "string"
           },
@@ -781,6 +822,20 @@
           },
           "webhookUrls": {
             "type": "string"
+          },
+          "weeklyReportDay": {
+            "maximum": 6,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "weeklyReportEnable": {
+            "description": "Weekly summary: published as report.weekly on that weekday (0 = Sunday) and hour, panel time.",
+            "type": "boolean"
+          },
+          "weeklyReportHour": {
+            "maximum": 23,
+            "minimum": 0,
+            "type": "integer"
           }
         },
         "required": [
@@ -812,6 +867,10 @@
           "externalSubUserAgent",
           "externalTrafficInformEnable",
           "externalTrafficInformURI",
+          "gotifyEnable",
+          "gotifyEvents",
+          "gotifyToken",
+          "gotifyUrl",
           "happLinkEnable",
           "ipLimitAllowlist",
           "ldapAutoCreate",
@@ -839,6 +898,11 @@
           "loginMaxFailures",
           "metricsEnable",
           "metricsToken",
+          "ntfyEnable",
+          "ntfyEvents",
+          "ntfyServer",
+          "ntfyToken",
+          "ntfyTopic",
           "outboundDownThreshold",
           "pageSize",
           "panelAllowedCidrs",
@@ -851,6 +915,9 @@
           "remarkTemplate",
           "restartXrayOnClientDisable",
           "sessionMaxAge",
+          "slackEnable",
+          "slackEvents",
+          "slackWebhookUrl",
           "smtpCpu",
           "smtpEnable",
           "smtpEnabledEvents",
@@ -968,6 +1035,7 @@
           "tgBotBackup",
           "tgBotChatId",
           "tgBotEnable",
+          "tgBotMessageOverrides",
           "tgBotProxy",
           "tgBotToken",
           "tgCpu",
@@ -992,7 +1060,10 @@
           "webhookEnable",
           "webhookEvents",
           "webhookSecret",
-          "webhookUrls"
+          "webhookUrls",
+          "weeklyReportDay",
+          "weeklyReportEnable",
+          "weeklyReportHour"
         ],
         "type": "object"
       },
@@ -1089,6 +1160,18 @@
           "externalTrafficInformURI": {
             "type": "string"
           },
+          "gotifyEnable": {
+            "type": "boolean"
+          },
+          "gotifyEvents": {
+            "type": "string"
+          },
+          "gotifyToken": {
+            "type": "string"
+          },
+          "gotifyUrl": {
+            "type": "string"
+          },
           "happLinkEnable": {
             "type": "boolean"
           },
@@ -1101,10 +1184,19 @@
           "hasDiscordBotToken": {
             "type": "boolean"
           },
+          "hasGotifyToken": {
+            "type": "boolean"
+          },
           "hasLdapPassword": {
             "type": "boolean"
           },
           "hasNordSecret": {
+            "type": "boolean"
+          },
+          "hasNtfyToken": {
+            "type": "boolean"
+          },
+          "hasSlackWebhookUrl": {
             "type": "boolean"
           },
           "hasSmtpPassword": {
@@ -1209,6 +1301,22 @@
           "metricsToken": {
             "type": "string"
           },
+          "ntfyEnable": {
+            "description": "Push channels: each posts the events it has ticked to ntfy, Gotify or a Slack incoming webhook.",
+            "type": "boolean"
+          },
+          "ntfyEvents": {
+            "type": "string"
+          },
+          "ntfyServer": {
+            "type": "string"
+          },
+          "ntfyToken": {
+            "type": "string"
+          },
+          "ntfyTopic": {
+            "type": "string"
+          },
           "outboundDownThreshold": {
             "maximum": 100,
             "minimum": 1,
@@ -1252,6 +1360,15 @@
             "maximum": 525600,
             "minimum": 1,
             "type": "integer"
+          },
+          "slackEnable": {
+            "type": "boolean"
+          },
+          "slackEvents": {
+            "type": "string"
+          },
+          "slackWebhookUrl": {
+            "type": "string"
           },
           "smtpCpu": {
             "maximum": 100,
@@ -1616,6 +1733,10 @@
           "tgBotEnable": {
             "type": "boolean"
           },
+          "tgBotMessageOverrides": {
+            "description": "TgBotMessageOverrides is {language: {message key: text}} JSON replacing selected bot texts.",
+            "type": "string"
+          },
           "tgBotProxy": {
             "type": "string"
           },
@@ -1701,6 +1822,20 @@
           },
           "webhookUrls": {
             "type": "string"
+          },
+          "weeklyReportDay": {
+            "maximum": 6,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "weeklyReportEnable": {
+            "description": "Weekly summary: published as report.weekly on that weekday (0 = Sunday) and hour, panel time.",
+            "type": "boolean"
+          },
+          "weeklyReportHour": {
+            "maximum": 23,
+            "minimum": 0,
+            "type": "integer"
           }
         },
         "required": [
@@ -1732,12 +1867,19 @@
           "externalSubUserAgent",
           "externalTrafficInformEnable",
           "externalTrafficInformURI",
+          "gotifyEnable",
+          "gotifyEvents",
+          "gotifyToken",
+          "gotifyUrl",
           "happLinkEnable",
           "hasApiToken",
           "hasBackupS3Secret",
           "hasDiscordBotToken",
+          "hasGotifyToken",
           "hasLdapPassword",
           "hasNordSecret",
+          "hasNtfyToken",
+          "hasSlackWebhookUrl",
           "hasSmtpPassword",
           "hasTgBotToken",
           "hasTwoFactorToken",
@@ -1769,6 +1911,11 @@
           "loginMaxFailures",
           "metricsEnable",
           "metricsToken",
+          "ntfyEnable",
+          "ntfyEvents",
+          "ntfyServer",
+          "ntfyToken",
+          "ntfyTopic",
           "outboundDownThreshold",
           "pageSize",
           "panelAllowedCidrs",
@@ -1781,6 +1928,9 @@
           "remarkTemplate",
           "restartXrayOnClientDisable",
           "sessionMaxAge",
+          "slackEnable",
+          "slackEvents",
+          "slackWebhookUrl",
           "smtpCpu",
           "smtpEnable",
           "smtpEnabledEvents",
@@ -1898,6 +2048,7 @@
           "tgBotBackup",
           "tgBotChatId",
           "tgBotEnable",
+          "tgBotMessageOverrides",
           "tgBotProxy",
           "tgBotToken",
           "tgCpu",
@@ -1922,7 +2073,10 @@
           "webhookEnable",
           "webhookEvents",
           "webhookSecret",
-          "webhookUrls"
+          "webhookUrls",
+          "weeklyReportDay",
+          "weeklyReportEnable",
+          "weeklyReportHour"
         ],
         "type": "object"
       },
@@ -15638,6 +15792,102 @@
                 "example": {
                   "success": true,
                   "msg": "Test event delivered to every webhook URL"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/setting/botMessages": {
+      "post": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Shipped text of every customisable Telegram bot message in a language, placeholders unrendered. Used by the bot message editor.",
+        "operationId": "post_panel_api_setting_botMessages",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "lang": "en-US"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "tgbot.commands.start": "Hello {{ .Firstname }}."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/setting/testPush": {
+      "post": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Send one test message to a push channel (ntfy, Gotify or Slack) using the saved settings. Works while the channel is switched off.",
+        "operationId": "post_panel_api_setting_testPush",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "channel": "ntfy"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "msg": "Test notification sent"
                 }
               }
             }

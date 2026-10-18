@@ -54,6 +54,10 @@ export interface AllSetting {
   externalSubUserAgent: string;
   externalTrafficInformEnable: boolean;
   externalTrafficInformURI: string;
+  gotifyEnable: boolean;
+  gotifyEvents: string;
+  gotifyToken: string;
+  gotifyUrl: string;
   happLinkEnable: boolean;
   ipLimitAllowlist: string;
   ldapAutoCreate: boolean;
@@ -81,6 +85,11 @@ export interface AllSetting {
   loginMaxFailures: number;
   metricsEnable: boolean;
   metricsToken: string;
+  ntfyEnable: boolean;
+  ntfyEvents: string;
+  ntfyServer: string;
+  ntfyToken: string;
+  ntfyTopic: string;
   outboundDownThreshold: number;
   pageSize: number;
   panelAllowedCidrs: string;
@@ -93,6 +102,9 @@ export interface AllSetting {
   remarkTemplate: string;
   restartXrayOnClientDisable: boolean;
   sessionMaxAge: number;
+  slackEnable: boolean;
+  slackEvents: string;
+  slackWebhookUrl: string;
   smtpCpu: number;
   smtpEnable: boolean;
   smtpEnabledEvents: string;
@@ -210,6 +222,7 @@ export interface AllSetting {
   tgBotBackup: boolean;
   tgBotChatId: string;
   tgBotEnable: boolean;
+  tgBotMessageOverrides: string;
   tgBotProxy: string;
   tgBotToken: string;
   tgCpu: number;
@@ -235,6 +248,9 @@ export interface AllSetting {
   webhookEvents: string;
   webhookSecret: string;
   webhookUrls: string;
+  weeklyReportDay: number;
+  weeklyReportEnable: boolean;
+  weeklyReportHour: number;
 }
 
 export interface AllSettingView {
@@ -266,12 +282,19 @@ export interface AllSettingView {
   externalSubUserAgent: string;
   externalTrafficInformEnable: boolean;
   externalTrafficInformURI: string;
+  gotifyEnable: boolean;
+  gotifyEvents: string;
+  gotifyToken: string;
+  gotifyUrl: string;
   happLinkEnable: boolean;
   hasApiToken: boolean;
   hasBackupS3Secret: boolean;
   hasDiscordBotToken: boolean;
+  hasGotifyToken: boolean;
   hasLdapPassword: boolean;
   hasNordSecret: boolean;
+  hasNtfyToken: boolean;
+  hasSlackWebhookUrl: boolean;
   hasSmtpPassword: boolean;
   hasTgBotToken: boolean;
   hasTwoFactorToken: boolean;
@@ -303,6 +326,11 @@ export interface AllSettingView {
   loginMaxFailures: number;
   metricsEnable: boolean;
   metricsToken: string;
+  ntfyEnable: boolean;
+  ntfyEvents: string;
+  ntfyServer: string;
+  ntfyToken: string;
+  ntfyTopic: string;
   outboundDownThreshold: number;
   pageSize: number;
   panelAllowedCidrs: string;
@@ -315,6 +343,9 @@ export interface AllSettingView {
   remarkTemplate: string;
   restartXrayOnClientDisable: boolean;
   sessionMaxAge: number;
+  slackEnable: boolean;
+  slackEvents: string;
+  slackWebhookUrl: string;
   smtpCpu: number;
   smtpEnable: boolean;
   smtpEnabledEvents: string;
@@ -432,6 +463,7 @@ export interface AllSettingView {
   tgBotBackup: boolean;
   tgBotChatId: string;
   tgBotEnable: boolean;
+  tgBotMessageOverrides: string;
   tgBotProxy: string;
   tgBotToken: string;
   tgCpu: number;
@@ -457,6 +489,9 @@ export interface AllSettingView {
   webhookEvents: string;
   webhookSecret: string;
   webhookUrls: string;
+  weeklyReportDay: number;
+  weeklyReportEnable: boolean;
+  weeklyReportHour: number;
 }
 
 export interface AmneziaWGLogs {

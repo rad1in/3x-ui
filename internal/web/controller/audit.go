@@ -53,6 +53,7 @@ var auditSkipRoutes = map[string]bool{
 	"POST /setting/testTgBot":           true,
 	"POST /setting/testDiscord":         true,
 	"POST /setting/testWebhook":         true,
+	"POST /setting/testPush":            true,
 	"POST /xray/":                       true,
 	"POST /xray/testOutbound":           true,
 	"POST /xray/testOutbounds":          true,

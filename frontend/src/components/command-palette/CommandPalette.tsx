@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Tag, Tooltip, message } from 'antd';
 import {
   ApiOutlined,
+  BellOutlined,
   BranchesOutlined,
   ApartmentOutlined,
   CheckCircleFilled,
@@ -492,6 +493,13 @@ export default function CommandPalette() {
         subtitle: t('pages.settings.webhookSettings'),
         keywords: ['webhook', 'n8n', 'zapier', 'http', 'events', 'billing'],
         icon: <BranchesOutlined />,
+      },
+      {
+        path: '/settings#push',
+        title: `${t('menu.settings')} · ${t('pages.settings.pushSettings')}`,
+        subtitle: t('pages.settings.pushSettings'),
+        keywords: ['ntfy', 'gotify', 'slack', 'push', 'notifications', 'alerts'],
+        icon: <BellOutlined />,
       },
       {
         path: '/settings#backups',

@@ -11,6 +11,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/crypto"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/locale"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/middleware"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/discord"
@@ -43,6 +44,9 @@ type updateSettingForm struct {
 	ClearDiscordBotToken bool   `json:"clearDiscordBotToken" form:"clearDiscordBotToken"`
 	ClearWebhookSecret   bool   `json:"clearWebhookSecret" form:"clearWebhookSecret"`
 	ClearBackupS3Secret  bool   `json:"clearBackupS3Secret" form:"clearBackupS3Secret"`
+	ClearNtfyToken       bool   `json:"clearNtfyToken" form:"clearNtfyToken"`
+	ClearGotifyToken     bool   `json:"clearGotifyToken" form:"clearGotifyToken"`
+	ClearSlackWebhookUrl bool   `json:"clearSlackWebhookUrl" form:"clearSlackWebhookUrl"`
 }
 
 type validateRegexForm struct {
@@ -86,6 +90,8 @@ func (a *SettingController) initRouter(g *gin.RouterGroup) {
 	g.POST("/testTgBot", a.testTgBot)
 	g.POST("/testDiscord", a.testDiscord)
 	g.POST("/testWebhook", a.testWebhook)
+	g.POST("/testPush", a.testPush)
+	g.POST("/botMessages", a.botMessages)
 	g.POST("/backupNow", a.backupNow)
 }
 
@@ -178,6 +184,9 @@ func (a *SettingController) updateSetting(c *gin.Context) {
 		DiscordBotToken: form.ClearDiscordBotToken,
 		WebhookSecret:   form.ClearWebhookSecret,
 		BackupS3Secret:  form.ClearBackupS3Secret,
+		NtfyToken:       form.ClearNtfyToken,
+		GotifyToken:     form.ClearGotifyToken,
+		SlackWebhookUrl: form.ClearSlackWebhookUrl,
 	})
 	if err == nil {
 		middleware.InvalidateIPAllowlist()
@@ -193,6 +202,11 @@ func (a *SettingController) updateSetting(c *gin.Context) {
 		// hot-appliable, so this normally does not restart Xray.
 		if applyErr := a.xrayService.RestartXray(false); applyErr != nil {
 			logger.Warning("apply panel outbound change failed:", applyErr)
+		}
+	}
+	if err == nil {
+		if applyErr := locale.SetBotOverrides(allSetting.TgBotMessageOverrides); applyErr != nil {
+			logger.Warning("apply bot message texts failed:", applyErr)
 		}
 	}
 	// UpdateAllSetting already restored a redacted-blank token, so allSetting.TgBotToken is the effective value to compare.
@@ -406,6 +420,47 @@ func (a *SettingController) testWebhook(c *gin.Context) {
 	}
 	jsonMsg(c, I18nWeb(c, "pages.settings.webhookTestSuccess"), nil)
 }
+
+type botMessagesForm struct {
+	Lang string `json:"lang" form:"lang" validate:"required"`
+}
+
+// botMessages lists the shipped text of every customisable bot message in a language.
+func (a *SettingController) botMessages(c *gin.Context) {
+	form, ok := middleware.BindAndValidate[botMessagesForm](c)
+	if !ok {
+		return
+	}
+	if err := locale.ValidBotLang(form.Lang); err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.getSettings"), err)
+		return
+	}
+	jsonObj(c, locale.BotMessageDefaults(form.Lang), nil)
+}
+
+type testPushForm struct {
+	Channel string `json:"channel" form:"channel" validate:"required,oneof=ntfy gotify slack"`
+}
+
+func (a *SettingController) testPush(c *gin.Context) {
+	form, ok := middleware.BindAndValidate[testPushForm](c)
+	if !ok {
+		return
+	}
+	if testPushFunc == nil {
+		jsonMsg(c, I18nWeb(c, "pages.settings.pushTestFailed"), errors.New("push channels are not set up"))
+		return
+	}
+	if err := testPushFunc(form.Channel); err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.settings.pushTestFailed")+": "+err.Error(), err)
+		return
+	}
+	jsonMsg(c, I18nWeb(c, "pages.settings.pushTestSuccess"), nil)
+}
+
+var testPushFunc func(channel string) error
+
+func SetTestPushFunc(fn func(channel string) error) { testPushFunc = fn }
 
 // testWebhookFunc is wired from the web layer, which owns the webhook sender.
 var testWebhookFunc func() error

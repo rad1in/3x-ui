@@ -317,6 +317,17 @@ func (s *Subscriber) FormatEmbed(e eventbus.Event) (Embed, bool) {
 		}
 		return Embed{}, false
 
+	case eventbus.EventWeeklyReport:
+		data, _ := e.Data.(*eventbus.WeeklySummaryData)
+		if data == nil {
+			return Embed{}, false
+		}
+		return Embed{
+			Title:       "Weekly summary",
+			Description: truncateUnits(strings.Join(data.Lines(), "\n"), 4000),
+			Color:       ColorBlue, Timestamp: ts, Footer: footer,
+		}, true
+
 	case eventbus.EventClientQuotaWarning, eventbus.EventClientExpiryWarning:
 		data, _ := e.Data.(*eventbus.ClientEventData)
 		if data == nil {

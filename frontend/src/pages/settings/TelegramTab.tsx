@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Button, Input, Select, Space, Switch, Tabs } from 'antd';
-import { BellOutlined, SendOutlined, SettingOutlined } from '@ant-design/icons';
+import { BellOutlined, EditOutlined, SendOutlined, SettingOutlined } from '@ant-design/icons';
 import { HttpUtil, LanguageManager } from '@/utils';
 import type { AllSetting } from '@/models/setting';
 import { SettingListItem } from '@/components/ui';
@@ -11,6 +11,8 @@ import { catTabLabel } from './catTabLabel';
 import { NotifyTimeField } from './NotifyTimeField';
 import SecretInput from './SecretInput';
 import { useClientTemplates } from '@/api/queries/useClientTemplates';
+import BotMessagesEditor from './BotMessagesEditor';
+import { BALE_API_SERVER, botPlatformOf, type BotPlatform } from './telegramPlatform';
 
 interface TelegramTabProps {
   allSetting: AllSetting;
@@ -21,6 +23,9 @@ export default function TelegramTab({ allSetting, updateSetting }: TelegramTabPr
   const { t } = useTranslation();
   const { templates: trialTemplates } = useClientTemplates();
   const { isMobile } = useMediaQuery();
+  const [customMode, setCustomMode] = useState(false);
+  const detected = botPlatformOf(allSetting.tgBotAPIServer);
+  const platform: BotPlatform = detected === 'telegram' && customMode ? 'custom' : detected;
   const [testLoading, setTestLoading] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; msg: string } | null>(null);
 
@@ -122,13 +127,25 @@ export default function TelegramTab({ allSetting, updateSetting }: TelegramTabPr
 
               <SettingListItem
                 paddings="small"
-                title={t('pages.settings.telegramAPIServer')}
-                description={t('pages.settings.telegramAPIServerDesc')}
+                title={t('pages.settings.telegramPlatform')}
+                description={
+                  platform === 'bale' ? t('pages.settings.telegramPlatformBaleHint') : undefined
+                }
               >
-                <Input
-                  value={allSetting.tgBotAPIServer}
-                  placeholder="https://api.example.com"
-                  onChange={(e) => updateSetting({ tgBotAPIServer: e.target.value })}
+                <Select<BotPlatform>
+                  value={platform}
+                  style={{ width: '100%' }}
+                  onChange={(v) => {
+                    setCustomMode(v === 'custom');
+                    updateSetting({
+                      tgBotAPIServer: v === 'telegram' ? '' : v === 'bale' ? BALE_API_SERVER : '',
+                    });
+                  }}
+                  options={[
+                    { value: 'telegram', label: t('pages.settings.telegramPlatformTelegram') },
+                    { value: 'bale', label: t('pages.settings.telegramPlatformBale') },
+                    { value: 'custom', label: t('pages.settings.telegramPlatformCustom') },
+                  ]}
                 />
               </SettingListItem>
 
@@ -156,6 +173,19 @@ export default function TelegramTab({ allSetting, updateSetting }: TelegramTabPr
                   />
                 </SettingListItem>
               )}
+              {platform === 'custom' && (
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.telegramAPIServer')}
+                  description={t('pages.settings.telegramAPIServerDesc')}
+                >
+                  <Input
+                    value={allSetting.tgBotAPIServer}
+                    placeholder="https://api.example.com"
+                    onChange={(e) => updateSetting({ tgBotAPIServer: e.target.value })}
+                  />
+                </SettingListItem>
+              )}
 
               <Space orientation="vertical" size={8} style={{ width: '100%', marginTop: 16 }}>
                 <Button
@@ -177,6 +207,11 @@ export default function TelegramTab({ allSetting, updateSetting }: TelegramTabPr
               </Space>
             </>
           ),
+        },
+        {
+          key: '3',
+          label: catTabLabel(<EditOutlined />, t('pages.settings.botMessages'), isMobile),
+          children: <BotMessagesEditor allSetting={allSetting} updateSetting={updateSetting} />,
         },
         {
           key: '2',

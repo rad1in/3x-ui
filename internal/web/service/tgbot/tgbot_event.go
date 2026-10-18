@@ -181,6 +181,16 @@ func (t *Tgbot) formatEventMessage(e eventbus.Event) string {
 		}
 		return ""
 
+	case eventbus.EventWeeklyReport:
+		if data, ok := e.Data.(*eventbus.WeeklySummaryData); ok {
+			lines := data.Lines()
+			for i := range lines {
+				lines[i] = html.EscapeString(lines[i])
+			}
+			return header + "<b>Weekly summary</b>\n" + strings.Join(lines, "\n")
+		}
+		return ""
+
 	case eventbus.EventClientQuotaWarning, eventbus.EventClientExpiryWarning:
 		if data, ok := e.Data.(*eventbus.ClientEventData); ok {
 			return header + t.clientWarningText(e.Type, data, false)

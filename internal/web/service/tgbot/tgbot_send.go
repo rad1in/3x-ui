@@ -132,10 +132,11 @@ func (t *Tgbot) SendMsgToTgbot(chatId int64, msg string, replyMarkup ...telego.R
 
 	allMessages := pageMessage(msg, telegramPageLimit)
 	for n, message := range allMessages {
+		text, parseMode := platformText(message)
 		params := telego.SendMessageParams{
 			ChatID:    tu.ID(chatId),
-			Text:      message,
-			ParseMode: "HTML",
+			Text:      text,
+			ParseMode: parseMode,
 		}
 		// only add replyMarkup to last message
 		if len(replyMarkup) > 0 && n == (len(allMessages)-1) {
@@ -221,11 +222,12 @@ func (t *Tgbot) editMessageCallbackTgBot(chatId int64, messageID int, inlineKeyb
 
 // editMessageTgBot edits the text and reply markup of a message.
 func (t *Tgbot) editMessageTgBot(chatId int64, messageID int, text string, inlineKeyboard ...*telego.InlineKeyboardMarkup) {
+	text, parseMode := platformText(text)
 	params := telego.EditMessageTextParams{
 		ChatID:    tu.ID(chatId),
 		MessageID: messageID,
 		Text:      text,
-		ParseMode: "HTML",
+		ParseMode: parseMode,
 	}
 	if len(inlineKeyboard) > 0 {
 		params.ReplyMarkup = inlineKeyboard[0]

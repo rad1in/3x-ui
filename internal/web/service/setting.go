@@ -30,6 +30,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/util/totp"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/decoy"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/locale"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray/dnsconf"
 )
@@ -122,6 +123,7 @@ var defaultValueMap = map[string]string{
 	"tgCpu":                       "80",
 	"tgMemory":                    "80",
 	"tgLang":                      "en-US",
+	"tgBotMessageOverrides":       "",
 	"twoFactorEnable":             "false",
 	"twoFactorToken":              "",
 	"happLinkEnable":              "false",
@@ -301,6 +303,27 @@ var defaultValueMap = map[string]string{
 	"webhookUrls":   "",
 	"webhookSecret": "",
 	"webhookEvents": "client.created,client.deleted,client.depleted,client.expired,client.renewed,client.quota_warning,client.expiry_warning",
+
+	// Weekly summary
+	"weeklyReportEnable":   "false",
+	"weeklyReportDay":      "1",
+	"weeklyReportHour":     "9",
+	"weeklyReportBaseline": "",
+	"weeklyReportLastSent": "0",
+
+	// Push channels
+	"ntfyEnable":      "false",
+	"ntfyServer":      "https://ntfy.sh",
+	"ntfyTopic":       "",
+	"ntfyToken":       "",
+	"ntfyEvents":      "client.depleted,client.expired,xray.crash,node.down,outbound.down",
+	"gotifyEnable":    "false",
+	"gotifyUrl":       "",
+	"gotifyToken":     "",
+	"gotifyEvents":    "client.depleted,client.expired,xray.crash,node.down,outbound.down",
+	"slackEnable":     "false",
+	"slackWebhookUrl": "",
+	"slackEvents":     "client.depleted,client.expired,xray.crash,node.down,outbound.down",
 }
 
 // SettingService provides business logic for application settings management.
@@ -402,6 +425,9 @@ func (s *SettingService) GetAllSettingView() (*entity.AllSettingView, error) {
 	view.HasDiscordBotToken = secretConfigured(allSetting.DiscordBotToken)
 	view.HasWebhookSecret = secretConfigured(allSetting.WebhookSecret)
 	view.HasBackupS3Secret = secretConfigured(allSetting.BackupS3SecretKey)
+	view.HasNtfyToken = secretConfigured(allSetting.NtfyToken)
+	view.HasGotifyToken = secretConfigured(allSetting.GotifyToken)
+	view.HasSlackWebhookUrl = secretConfigured(allSetting.SlackWebhookUrl)
 	var apiTokenCount int64
 	if err := database.GetDB().Model(model.ApiToken{}).Where("enabled = ?", true).Count(&apiTokenCount).Error; err == nil {
 		view.HasApiToken = apiTokenCount > 0
@@ -413,6 +439,9 @@ func (s *SettingService) GetAllSettingView() (*entity.AllSettingView, error) {
 	view.DiscordBotToken = ""
 	view.WebhookSecret = ""
 	view.BackupS3SecretKey = ""
+	view.NtfyToken = ""
+	view.GotifyToken = ""
+	view.SlackWebhookUrl = ""
 	return view, nil
 }
 
@@ -723,6 +752,10 @@ func (s *SettingService) SetTgMemory(value int) error {
 
 func (s *SettingService) GetTgLang() (string, error) {
 	return s.getString("tgLang")
+}
+
+func (s *SettingService) GetTgBotMessageOverrides() (string, error) {
+	return s.getString("tgBotMessageOverrides")
 }
 
 func (s *SettingService) GetTwoFactorEnable() (bool, error) {
@@ -1766,6 +1799,33 @@ func (s *SettingService) WebhookConfig() (enabled bool, urls, secret, events str
 	return enabled, urls, secret, events
 }
 
+// PushConfig is the raw settings of the ntfy, Gotify and Slack channels, read fresh for each event.
+type PushConfig struct {
+	NtfyEnable                                   bool
+	NtfyServer, NtfyTopic, NtfyToken, NtfyEvents string
+	GotifyEnable                                 bool
+	GotifyUrl, GotifyToken, GotifyEvents         string
+	SlackEnable                                  bool
+	SlackWebhookUrl, SlackEvents                 string
+}
+
+func (s *SettingService) PushConfig() PushConfig {
+	var c PushConfig
+	c.NtfyEnable, _ = s.getBool("ntfyEnable")
+	c.NtfyServer, _ = s.getString("ntfyServer")
+	c.NtfyTopic, _ = s.getString("ntfyTopic")
+	c.NtfyToken, _ = s.getString("ntfyToken")
+	c.NtfyEvents, _ = s.getString("ntfyEvents")
+	c.GotifyEnable, _ = s.getBool("gotifyEnable")
+	c.GotifyUrl, _ = s.getString("gotifyUrl")
+	c.GotifyToken, _ = s.getString("gotifyToken")
+	c.GotifyEvents, _ = s.getString("gotifyEvents")
+	c.SlackEnable, _ = s.getBool("slackEnable")
+	c.SlackWebhookUrl, _ = s.getString("slackWebhookUrl")
+	c.SlackEvents, _ = s.getString("slackEvents")
+	return c
+}
+
 // SecretClears marks redacted secrets the user explicitly emptied. Without a
 // flag, a blank submitted secret means "unchanged" (the field is always served
 // blank to the browser) and the stored value is preserved.
@@ -1776,6 +1836,9 @@ type SecretClears struct {
 	DiscordBotToken bool
 	WebhookSecret   bool
 	BackupS3Secret  bool
+	NtfyToken       bool
+	GotifyToken     bool
+	SlackWebhookUrl bool
 }
 
 func (s *SettingService) UpdateAllSetting(allSetting *entity.AllSetting, clears SecretClears) error {
@@ -1945,10 +2008,31 @@ func (s *SettingService) preserveRedactedSecrets(allSetting *entity.AllSetting, 
 		}
 		allSetting.BackupS3SecretKey = value
 	}
+	for _, c := range []struct {
+		clear bool
+		field *string
+		key   string
+	}{
+		{clears.NtfyToken, &allSetting.NtfyToken, "ntfyToken"},
+		{clears.GotifyToken, &allSetting.GotifyToken, "gotifyToken"},
+		{clears.SlackWebhookUrl, &allSetting.SlackWebhookUrl, "slackWebhookUrl"},
+	} {
+		if c.clear || strings.TrimSpace(*c.field) != "" {
+			continue
+		}
+		value, err := s.getString(c.key)
+		if err != nil {
+			return err
+		}
+		*c.field = value
+	}
 	return nil
 }
 
 func validateSettingsURLs(allSetting *entity.AllSetting) error {
+	if err := locale.ValidateBotOverrides(allSetting.TgBotMessageOverrides); err != nil {
+		return common.NewError("bot message texts:", err)
+	}
 	var hooks []string
 	for _, raw := range strings.FieldsFunc(allSetting.WebhookUrls, func(r rune) bool { return r == '\n' || r == ',' || r == '\r' }) {
 		if strings.TrimSpace(raw) == "" {
@@ -1961,6 +2045,24 @@ func validateSettingsURLs(allSetting *entity.AllSetting) error {
 		hooks = append(hooks, u)
 	}
 	allSetting.WebhookUrls = strings.Join(hooks, "\n")
+	for _, f := range []struct {
+		name  string
+		value *string
+	}{
+		{"ntfy server", &allSetting.NtfyServer},
+		{"Gotify URL", &allSetting.GotifyUrl},
+		{"Slack webhook URL", &allSetting.SlackWebhookUrl},
+	} {
+		if strings.TrimSpace(*f.value) == "" {
+			*f.value = ""
+			continue
+		}
+		u, err := SanitizeHTTPURL(*f.value)
+		if err != nil {
+			return common.NewError(f.name+" is invalid:", err)
+		}
+		*f.value = u
+	}
 	if dir := strings.TrimSpace(allSetting.BackupLocalDir); dir != "" {
 		if hosted.Enabled() {
 			return common.NewError("a hosted panel cannot write backups to the server's disk; use S3")
@@ -2201,6 +2303,9 @@ var factoryDefaultSecretKeys = map[string]bool{
 	"discordBotToken":   true,
 	"webhookSecret":     true,
 	"backupS3SecretKey": true,
+	"ntfyToken":         true,
+	"gotifyToken":       true,
+	"slackWebhookUrl":   true,
 }
 
 /*

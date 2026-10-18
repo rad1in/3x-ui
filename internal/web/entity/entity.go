@@ -127,7 +127,9 @@ type AllSetting struct {
 	TgCpu             int    `json:"tgCpu" form:"tgCpu" validate:"gte=0,lte=100"`
 	TgMemory          int    `json:"tgMemory" form:"tgMemory" validate:"gte=0,lte=100"`
 	TgLang            string `json:"tgLang" form:"tgLang"`
-	TgEnabledEvents   string `json:"tgEnabledEvents" form:"tgEnabledEvents"`
+	// TgBotMessageOverrides is {language: {message key: text}} JSON replacing selected bot texts.
+	TgBotMessageOverrides string `json:"tgBotMessageOverrides" form:"tgBotMessageOverrides"`
+	TgEnabledEvents       string `json:"tgEnabledEvents" form:"tgEnabledEvents"`
 
 	SmtpEnable         bool   `json:"smtpEnable" form:"smtpEnable"`
 	SmtpHost           string `json:"smtpHost" form:"smtpHost"`
@@ -158,6 +160,25 @@ type AllSetting struct {
 	WebhookUrls   string `json:"webhookUrls" form:"webhookUrls"`
 	WebhookSecret string `json:"webhookSecret" form:"webhookSecret"`
 	WebhookEvents string `json:"webhookEvents" form:"webhookEvents"`
+
+	// Weekly summary: published as report.weekly on that weekday (0 = Sunday) and hour, panel time.
+	WeeklyReportEnable bool `json:"weeklyReportEnable" form:"weeklyReportEnable"`
+	WeeklyReportDay    int  `json:"weeklyReportDay" form:"weeklyReportDay" validate:"gte=0,lte=6"`
+	WeeklyReportHour   int  `json:"weeklyReportHour" form:"weeklyReportHour" validate:"gte=0,lte=23"`
+
+	// Push channels: each posts the events it has ticked to ntfy, Gotify or a Slack incoming webhook.
+	NtfyEnable      bool   `json:"ntfyEnable" form:"ntfyEnable"`
+	NtfyServer      string `json:"ntfyServer" form:"ntfyServer"`
+	NtfyTopic       string `json:"ntfyTopic" form:"ntfyTopic"`
+	NtfyToken       string `json:"ntfyToken" form:"ntfyToken"`
+	NtfyEvents      string `json:"ntfyEvents" form:"ntfyEvents"`
+	GotifyEnable    bool   `json:"gotifyEnable" form:"gotifyEnable"`
+	GotifyUrl       string `json:"gotifyUrl" form:"gotifyUrl"`
+	GotifyToken     string `json:"gotifyToken" form:"gotifyToken"`
+	GotifyEvents    string `json:"gotifyEvents" form:"gotifyEvents"`
+	SlackEnable     bool   `json:"slackEnable" form:"slackEnable"`
+	SlackWebhookUrl string `json:"slackWebhookUrl" form:"slackWebhookUrl"`
+	SlackEvents     string `json:"slackEvents" form:"slackEvents"`
 
 	OutboundDownThreshold int `json:"outboundDownThreshold" form:"outboundDownThreshold" validate:"gte=1,lte=100"`
 
@@ -310,6 +331,9 @@ type AllSettingView struct {
 	HasDiscordBotToken bool `json:"hasDiscordBotToken"`
 	HasWebhookSecret   bool `json:"hasWebhookSecret"`
 	HasBackupS3Secret  bool `json:"hasBackupS3Secret"`
+	HasNtfyToken       bool `json:"hasNtfyToken"`
+	HasGotifyToken     bool `json:"hasGotifyToken"`
+	HasSlackWebhookUrl bool `json:"hasSlackWebhookUrl"`
 }
 
 func pathHasForbiddenChar(s string) bool {

@@ -38,7 +38,30 @@ const (
 	EventClientTrafficReset  EventType = "client.traffic_reset"
 	EventClientQuotaWarning  EventType = "client.quota_warning"
 	EventClientExpiryWarning EventType = "client.expiry_warning"
+
+	// Weekly summary; Data is a *WeeklySummaryData.
+	EventWeeklyReport EventType = "report.weekly"
 )
+
+// TopUser is one client's traffic over the report window.
+type TopUser struct {
+	Email string `json:"email"`
+	Bytes int64  `json:"bytes"`
+}
+
+// WeeklySummaryData is the week the panel reports on. FirstReport means no
+// earlier snapshot existed, so the traffic figures are totals since the start.
+type WeeklySummaryData struct {
+	SinceMs         int64     `json:"sinceMs"`
+	UntilMs         int64     `json:"untilMs"`
+	Bytes           int64     `json:"bytes"`
+	TotalClients    int       `json:"totalClients"`
+	NewClients      int       `json:"newClients"`
+	ExpiredClients  int       `json:"expiredClients"`
+	DepletedClients int       `json:"depletedClients"`
+	FirstReport     bool      `json:"firstReport"`
+	TopUsers        []TopUser `json:"topUsers"`
+}
 
 // ClientEventData is the client an event is about, as it stood at the event.
 type ClientEventData struct {
