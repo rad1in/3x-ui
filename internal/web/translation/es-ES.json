@@ -2165,6 +2165,15 @@
       "seconds": "segundos",
       "importRules": "Importar reglas",
       "exportRules": "Exportar reglas",
+      "iranTemplate": {
+        "apply": "Añadir plantilla de enrutamiento de Irán",
+        "reapply": "Actualizar plantilla de enrutamiento de Irán",
+        "remove": "Quitar plantilla de enrutamiento de Irán",
+        "confirmTitle": "¿Añadir la plantilla de enrutamiento de Irán?",
+        "confirmBody": "Añade reglas que bloquean anuncios y envían los dominios iraníes (.ir, geosite:category-ir) y las IP iraníes (geoip:ir) directamente por la salida direct. Van después de la regla de la API y de los bloqueos por defecto, y antes de las tuyas. Guarda la configuración de Xray para aplicarla; hacen falta archivos geoip y geosite con estas listas.",
+        "applied": "Plantilla de Irán añadida. Guarda para aplicarla.",
+        "missing": "La plantilla necesita estas salidas, que faltan: {tags}"
+      },
       "importOutbounds": "Importar salidas",
       "exportOutbounds": "Exportar salidas",
       "importInvalidJson": "JSON no válido — se esperaba un array o un objeto con una clave coincidente.",

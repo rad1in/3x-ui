@@ -2291,6 +2291,15 @@
       "Routings": "Routing Rules",
       "importRules": "Import Rules",
       "exportRules": "Export Rules",
+      "iranTemplate": {
+        "apply": "Add Iran routing template",
+        "reapply": "Refresh Iran routing template",
+        "remove": "Remove Iran routing template",
+        "confirmTitle": "Add the Iran routing template?",
+        "confirmBody": "Adds rules that block ads and send Iranian domains (.ir, geosite:category-ir) and Iranian IP addresses (geoip:ir) straight out through the direct outbound. They go after the API and default block rules and before your own. Save the Xray config to apply it; it needs geoip and geosite files that contain these lists.",
+        "applied": "Iran routing template added. Save to apply it.",
+        "missing": "The template needs these outbounds, which are missing: {tags}"
+      },
       "importOutbounds": "Import Outbounds",
       "exportOutbounds": "Export Outbounds",
       "importInvalidJson": "Invalid JSON — expected an array or an object with a matching key.",

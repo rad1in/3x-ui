@@ -2119,6 +2119,15 @@
       "outboundTestUrlDesc": "Giden bağlantı bağlantı testinde kullanılan URL.",
       "importRules": "Kuralları İçe Aktar",
       "exportRules": "Kuralları Dışa Aktar",
+      "iranTemplate": {
+        "apply": "İran yönlendirme şablonunu ekle",
+        "reapply": "İran yönlendirme şablonunu yenile",
+        "remove": "İran yönlendirme şablonunu kaldır",
+        "confirmTitle": "İran yönlendirme şablonu eklensin mi?",
+        "confirmBody": "Reklamları engelleyen ve İran alan adlarını (.ir, geosite:category-ir) ile İran IP adreslerini (geoip:ir) doğrudan direct çıkışından gönderen kurallar ekler. API kuralından ve varsayılan engel kurallarından sonra, sizin kurallarınızdan önce yer alır. Uygulamak için Xray yapılandırmasını kaydedin; bu listeleri içeren geoip ve geosite dosyaları gerekir.",
+        "applied": "İran şablonu eklendi. Uygulamak için kaydedin.",
+        "missing": "Şablonun gerek duyduğu şu çıkışlar yok: {tags}"
+      },
       "importOutbounds": "Giden Bağlantıları İçe Aktar",
       "exportOutbounds": "Giden Bağlantıları Dışa Aktar",
       "importInvalidJson": "Geçersiz JSON — bir dizi veya eşleşen anahtara sahip bir nesne bekleniyordu.",

@@ -2088,6 +2088,15 @@
     "xray": {
       "importRules": "ルールをインポート",
       "exportRules": "ルールをエクスポート",
+      "iranTemplate": {
+        "apply": "イラン向けルーティングテンプレートを追加",
+        "reapply": "イラン向けルーティングテンプレートを更新",
+        "remove": "イラン向けルーティングテンプレートを削除",
+        "confirmTitle": "イラン向けルーティングテンプレートを追加しますか?",
+        "confirmBody": "広告をブロックし、イランのドメイン (.ir、geosite:category-ir) とイランの IP アドレス (geoip:ir) を direct アウトバウンドへ直接送るルールを追加します。API ルールと既定のブロックルールの後、独自ルールの前に入ります。適用するには Xray 設定を保存してください。これらのリストを含む geoip / geosite ファイルが必要です。",
+        "applied": "イラン向けルーティングテンプレートを追加しました。保存すると適用されます。",
+        "missing": "テンプレートに必要なアウトバウンドがありません: {tags}"
+      },
       "importOutbounds": "アウトバウンドをインポート",
       "exportOutbounds": "アウトバウンドをエクスポート",
       "importInvalidJson": "無効な JSON — 配列、または一致するキーを持つオブジェクトが必要です。",

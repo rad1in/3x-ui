@@ -2088,6 +2088,15 @@
     "xray": {
       "importRules": "Nhập quy tắc",
       "exportRules": "Xuất quy tắc",
+      "iranTemplate": {
+        "apply": "Thêm mẫu định tuyến Iran",
+        "reapply": "Làm mới mẫu định tuyến Iran",
+        "remove": "Gỡ mẫu định tuyến Iran",
+        "confirmTitle": "Thêm mẫu định tuyến Iran?",
+        "confirmBody": "Thêm các quy tắc chặn quảng cáo và cho tên miền Iran (.ir, geosite:category-ir) cùng địa chỉ IP Iran (geoip:ir) đi thẳng qua outbound direct. Chúng nằm sau quy tắc API và các quy tắc chặn mặc định, trước quy tắc của bạn. Lưu cấu hình Xray để áp dụng; cần các tệp geoip và geosite có những danh sách này.",
+        "applied": "Đã thêm mẫu Iran. Hãy lưu để áp dụng.",
+        "missing": "Mẫu cần các outbound này nhưng chưa có: {tags}"
+      },
       "importOutbounds": "Nhập outbound",
       "exportOutbounds": "Xuất outbound",
       "importInvalidJson": "JSON không hợp lệ — cần một mảng hoặc một đối tượng có khóa khớp.",

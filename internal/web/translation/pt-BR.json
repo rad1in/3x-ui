@@ -2088,6 +2088,15 @@
     "xray": {
       "importRules": "Importar regras",
       "exportRules": "Exportar regras",
+      "iranTemplate": {
+        "apply": "Adicionar modelo de roteamento do Irã",
+        "reapply": "Atualizar modelo de roteamento do Irã",
+        "remove": "Remover modelo de roteamento do Irã",
+        "confirmTitle": "Adicionar o modelo de roteamento do Irã?",
+        "confirmBody": "Adiciona regras que bloqueiam anúncios e enviam os domínios iranianos (.ir, geosite:category-ir) e os IPs iranianos (geoip:ir) direto pela saída direct. Ficam depois da regra da API e dos bloqueios padrão e antes das suas. Salve a configuração do Xray para aplicar; são necessários arquivos geoip e geosite com essas listas.",
+        "applied": "Modelo do Irã adicionado. Salve para aplicar.",
+        "missing": "O modelo precisa destas saídas, que não existem: {tags}"
+      },
       "importOutbounds": "Importar saídas",
       "exportOutbounds": "Exportar saídas",
       "importInvalidJson": "JSON inválido — esperava-se um array ou um objeto com uma chave correspondente.",

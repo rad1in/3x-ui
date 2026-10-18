@@ -2093,6 +2093,15 @@
       "stopError": "停止 Xray 時發生錯誤。",
       "importRules": "匯入規則",
       "exportRules": "匯出規則",
+      "iranTemplate": {
+        "apply": "新增伊朗路由範本",
+        "reapply": "重新整理伊朗路由範本",
+        "remove": "移除伊朗路由範本",
+        "confirmTitle": "要新增伊朗路由範本嗎?",
+        "confirmBody": "新增封鎖廣告的規則,並讓伊朗網域(.ir、geosite:category-ir)與伊朗 IP(geoip:ir)直接經 direct 出站。它們位於 API 規則與預設封鎖規則之後、你自己的規則之前。儲存 Xray 設定後生效;需要包含這些清單的 geoip 與 geosite 檔案。",
+        "applied": "已新增伊朗路由範本。儲存後生效。",
+        "missing": "範本需要這些出站,但目前缺少:{tags}"
+      },
       "importOutbounds": "匯入出站",
       "exportOutbounds": "匯出出站",
       "importInvalidJson": "無效的 JSON——預期為陣列或含有相符鍵的物件。",

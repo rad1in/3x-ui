@@ -2122,6 +2122,15 @@
       "Outbounds": "Outbound",
       "importRules": "Impor aturan",
       "exportRules": "Ekspor aturan",
+      "iranTemplate": {
+        "apply": "Tambah templat routing Iran",
+        "reapply": "Segarkan templat routing Iran",
+        "remove": "Hapus templat routing Iran",
+        "confirmTitle": "Tambah templat routing Iran?",
+        "confirmBody": "Menambah aturan yang memblokir iklan dan mengirim domain Iran (.ir, geosite:category-ir) serta alamat IP Iran (geoip:ir) langsung lewat outbound direct. Aturan ini berada setelah aturan API dan blokir bawaan, sebelum aturan Anda. Simpan konfigurasi Xray untuk menerapkannya; diperlukan berkas geoip dan geosite yang berisi daftar ini.",
+        "applied": "Templat routing Iran ditambahkan. Simpan untuk menerapkan.",
+        "missing": "Templat membutuhkan outbound ini yang tidak ada: {tags}"
+      },
       "importOutbounds": "Impor outbound",
       "exportOutbounds": "Ekspor outbound",
       "importInvalidJson": "JSON tidak valid — diharapkan berupa array atau objek dengan kunci yang sesuai.",

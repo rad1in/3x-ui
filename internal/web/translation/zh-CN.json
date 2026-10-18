@@ -2088,6 +2088,15 @@
     "xray": {
       "importRules": "导入规则",
       "exportRules": "导出规则",
+      "iranTemplate": {
+        "apply": "添加伊朗路由模板",
+        "reapply": "刷新伊朗路由模板",
+        "remove": "移除伊朗路由模板",
+        "confirmTitle": "添加伊朗路由模板?",
+        "confirmBody": "添加屏蔽广告的规则,并让伊朗域名(.ir、geosite:category-ir)和伊朗 IP(geoip:ir)直接经 direct 出站。它们位于 API 规则和默认屏蔽规则之后、你自己的规则之前。保存 Xray 配置后生效;需要包含这些列表的 geoip 和 geosite 文件。",
+        "applied": "已添加伊朗路由模板。保存后生效。",
+        "missing": "模板需要这些出站,但当前缺失:{tags}"
+      },
       "importOutbounds": "导入出站",
       "exportOutbounds": "导出出站",
       "importInvalidJson": "无效的 JSON——应为数组或包含匹配键的对象。",
