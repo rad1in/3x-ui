@@ -130,6 +130,9 @@ export const AllSettingSchema = z.object({
   remarkTemplate: z.string(),
   restartXrayOnClientDisable: z.boolean(),
   sessionMaxAge: z.number().int().min(1).max(525600),
+  sharedAccountMinCountries: z.number().int().min(0).max(250),
+  sharedAccountMinIPs: z.number().int().min(0).max(1000),
+  sharedAccountWindowHours: z.number().int().min(1).max(168),
   slackEnable: z.boolean(),
   slackEvents: z.string(),
   slackWebhookUrl: z.string(),
@@ -377,6 +380,9 @@ export const AllSettingViewSchema = z.object({
   remarkTemplate: z.string(),
   restartXrayOnClientDisable: z.boolean(),
   sessionMaxAge: z.number().int().min(1).max(525600),
+  sharedAccountMinCountries: z.number().int().min(0).max(250),
+  sharedAccountMinIPs: z.number().int().min(0).max(1000),
+  sharedAccountWindowHours: z.number().int().min(1).max(168),
   slackEnable: z.boolean(),
   slackEvents: z.string(),
   slackWebhookUrl: z.string(),
@@ -1721,6 +1727,16 @@ export const SettingSchema = z.object({
   value: z.string(),
 });
 export type Setting = z.infer<typeof SettingSchema>;
+
+export const SharedAccountFlagSchema = z.object({
+  countries: z.string(),
+  countryCount: z.number().int(),
+  email: z.string(),
+  firstFlagged: z.number().int(),
+  ipCount: z.number().int(),
+  lastSeen: z.number().int(),
+});
+export type SharedAccountFlag = z.infer<typeof SharedAccountFlagSchema>;
 
 export const ShopCatalogSchema = z.object({
   methods: z.array(z.string()),

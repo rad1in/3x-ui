@@ -451,6 +451,7 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 	_, _ = s.cron.AddJob("@daily", job.NewPruneAuditLogJob())
 	_, _ = s.cron.AddJob("@daily", job.NewClientUsagePruneJob())
 	_, _ = s.cron.AddJob("@every 1m", job.NewClientWarningJob())
+	_, _ = s.cron.AddJob("@every 1m", job.NewSharedAccountJob())
 	_, _ = s.cron.AddJob("@hourly", job.NewClientCleanupJob())
 	_, _ = s.cron.AddJob("@hourly", job.NewWeeklySummaryJob(loc))
 	_, _ = s.cron.AddJob(cadenceShopReconcile, job.NewShopReconcileJob())

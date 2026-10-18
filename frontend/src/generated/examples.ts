@@ -110,6 +110,9 @@ export const EXAMPLES: Record<string, unknown> = {
     "remarkTemplate": "",
     "restartXrayOnClientDisable": false,
     "sessionMaxAge": 1,
+    "sharedAccountMinCountries": 0,
+    "sharedAccountMinIPs": 0,
+    "sharedAccountWindowHours": 1,
     "slackEnable": false,
     "slackEvents": "",
     "slackWebhookUrl": "",
@@ -355,6 +358,9 @@ export const EXAMPLES: Record<string, unknown> = {
     "remarkTemplate": "",
     "restartXrayOnClientDisable": false,
     "sessionMaxAge": 1,
+    "sharedAccountMinCountries": 0,
+    "sharedAccountMinIPs": 0,
+    "sharedAccountWindowHours": 1,
     "slackEnable": false,
     "slackEvents": "",
     "slackWebhookUrl": "",
@@ -1811,6 +1817,14 @@ export const EXAMPLES: Record<string, unknown> = {
     "id": 0,
     "key": "",
     "value": ""
+  },
+  "SharedAccountFlag": {
+    "countries": "DE,US,BR",
+    "countryCount": 3,
+    "email": "alice",
+    "firstFlagged": 1760000000000,
+    "ipCount": 7,
+    "lastSeen": 1760003600000
   },
   "ShopCatalog": {
     "methods": [

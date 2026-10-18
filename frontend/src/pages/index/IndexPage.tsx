@@ -30,6 +30,7 @@ import VitalTile from './VitalTile';
 import ThroughputCard from './ThroughputCard';
 import ConnectionsCard from './ConnectionsCard';
 import ClientsInsightCard from './ClientsInsightCard';
+import SharedAccountsCard from './SharedAccountsCard';
 import HostedUsageCard from './HostedUsageCard';
 import SystemStrip from './SystemStrip';
 import { mean, peak, useOverviewHistory } from './useOverviewHistory';
@@ -317,6 +318,8 @@ export default function IndexPage() {
                   )}
 
                   <ClientsInsightCard />
+
+                  <SharedAccountsCard />
 
                   <SystemStrip
                     status={status}

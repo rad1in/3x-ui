@@ -215,6 +215,18 @@ func TestNewLoginLocationIsFormattedForPush(t *testing.T) {
 	}
 }
 
+func TestSharedAccountAlertIsFormattedForPush(t *testing.T) {
+	msg, ok := Format(eventbus.Event{Type: eventbus.EventClientSharedAccount, Source: "alice", Data: &eventbus.SharedAccountData{
+		Email: "alice", IPCount: 7, CountryCount: 3, Countries: "BR,DE,US", WindowHours: 24,
+	}}, "h")
+	if !ok || msg.Title != "[h] Shared account suspected" {
+		t.Fatalf("msg = %+v ok=%v", msg, ok)
+	}
+	if want := "alice was seen from 7 addresses in 24 hours across 3 countries (BR,DE,US)"; msg.Body != want {
+		t.Fatalf("body = %q, want %q", msg.Body, want)
+	}
+}
+
 // The test button reports the provider's refusal and works while the channel is switched off.
 func TestTestReportsProviderErrorAndIgnoresEnabled(t *testing.T) {
 	ok := &recorder{}

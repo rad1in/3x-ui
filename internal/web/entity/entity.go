@@ -93,6 +93,9 @@ type AllSetting struct {
 	TrafficDiff                int    `json:"trafficDiff" form:"trafficDiff" validate:"gte=0,lte=100"`
 	QuotaWarnPercent           int    `json:"quotaWarnPercent" form:"quotaWarnPercent" validate:"gte=0,lte=99"`
 	AutoDeleteDepletedDays     int    `json:"autoDeleteDepletedDays" form:"autoDeleteDepletedDays" validate:"gte=0"`
+	SharedAccountWindowHours   int    `json:"sharedAccountWindowHours" form:"sharedAccountWindowHours" validate:"gte=1,lte=168"`
+	SharedAccountMinIPs        int    `json:"sharedAccountMinIPs" form:"sharedAccountMinIPs" validate:"gte=0,lte=1000"`
+	SharedAccountMinCountries  int    `json:"sharedAccountMinCountries" form:"sharedAccountMinCountries" validate:"gte=0,lte=250"`
 	DecoyMode                  string `json:"decoyMode" form:"decoyMode"`
 	DecoyTarget                string `json:"decoyTarget" form:"decoyTarget"`
 	DecoyHtml                  string `json:"decoyHtml" form:"decoyHtml"`

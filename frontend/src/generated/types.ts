@@ -112,6 +112,9 @@ export interface AllSetting {
   remarkTemplate: string;
   restartXrayOnClientDisable: boolean;
   sessionMaxAge: number;
+  sharedAccountMinCountries: number;
+  sharedAccountMinIPs: number;
+  sharedAccountWindowHours: number;
   slackEnable: boolean;
   slackEvents: string;
   slackWebhookUrl: string;
@@ -358,6 +361,9 @@ export interface AllSettingView {
   remarkTemplate: string;
   restartXrayOnClientDisable: boolean;
   sessionMaxAge: number;
+  sharedAccountMinCountries: number;
+  sharedAccountMinIPs: number;
+  sharedAccountWindowHours: number;
   slackEnable: boolean;
   slackEvents: string;
   slackWebhookUrl: string;
@@ -1614,6 +1620,15 @@ export interface Setting {
   id: number;
   key: string;
   value: string;
+}
+
+export interface SharedAccountFlag {
+  countries: string;
+  countryCount: number;
+  email: string;
+  firstFlagged: number;
+  ipCount: number;
+  lastSeen: number;
 }
 
 export interface ShopCatalog {

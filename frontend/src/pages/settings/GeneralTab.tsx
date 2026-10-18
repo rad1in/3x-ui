@@ -359,6 +359,66 @@ export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProp
                 />
               </SettingListItem>
 
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.sharedAccountMinIPs')}
+                badge={
+                  <DefaultSettingTag
+                    settingKey="sharedAccountMinIPs"
+                    value={allSetting.sharedAccountMinIPs}
+                  />
+                }
+                description={t('pages.settings.sharedAccountMinIPsDesc')}
+              >
+                <InputNumber
+                  value={allSetting.sharedAccountMinIPs}
+                  min={0}
+                  max={1000}
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ sharedAccountMinIPs: v }))}
+                />
+              </SettingListItem>
+
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.sharedAccountMinCountries')}
+                badge={
+                  <DefaultSettingTag
+                    settingKey="sharedAccountMinCountries"
+                    value={allSetting.sharedAccountMinCountries}
+                  />
+                }
+                description={t('pages.settings.sharedAccountMinCountriesDesc')}
+              >
+                <InputNumber
+                  value={allSetting.sharedAccountMinCountries}
+                  min={0}
+                  max={250}
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ sharedAccountMinCountries: v }))}
+                />
+              </SettingListItem>
+
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.sharedAccountWindowHours')}
+                badge={
+                  <DefaultSettingTag
+                    settingKey="sharedAccountWindowHours"
+                    value={allSetting.sharedAccountWindowHours}
+                  />
+                }
+                description={t('pages.settings.sharedAccountWindowHoursDesc')}
+              >
+                <InputNumber
+                  value={allSetting.sharedAccountWindowHours}
+                  min={1}
+                  max={168}
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ sharedAccountWindowHours: v }))}
+                />
+              </SettingListItem>
+
               <SettingListItem paddings="small" title={t('pages.settings.language')}>
                 <Select
                   value={lang}

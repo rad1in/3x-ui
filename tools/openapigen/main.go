@@ -45,6 +45,7 @@ func run(root, outDir string) error {
 				"HostedPanel",
 				"ClientTemplate",
 				"ClientDailyUsage",
+				"SharedAccountFlag",
 				"Plan",
 				"Order",
 				"DiscountCode",

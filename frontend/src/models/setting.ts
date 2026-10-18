@@ -25,6 +25,9 @@ export class AllSetting {
   trafficDiff = 0;
   quotaWarnPercent = 80;
   autoDeleteDepletedDays = 0;
+  sharedAccountWindowHours = 24;
+  sharedAccountMinIPs = 0;
+  sharedAccountMinCountries = 0;
   decoyMode = '';
   decoyTarget = '';
   decoyHtml = '';

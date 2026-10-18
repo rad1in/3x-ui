@@ -27,6 +27,15 @@ func (d NewLoginLocationData) Lines() []string {
 	return []string{line}
 }
 
+// Lines renders the alert as plain text for channels without their own layout.
+func (d SharedAccountData) Lines() []string {
+	line := fmt.Sprintf("%s was seen from %d addresses in %d hours", d.Email, d.IPCount, d.WindowHours)
+	if d.Countries != "" {
+		line += fmt.Sprintf(" across %d countries (%s)", d.CountryCount, d.Countries)
+	}
+	return []string{line}
+}
+
 // Lines renders the summary as plain text, one fact per line, for channels without their own layout.
 func (d WeeklySummaryData) Lines() []string {
 	from := time.UnixMilli(d.SinceMs).Format("2006-01-02")

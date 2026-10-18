@@ -54,7 +54,20 @@ const (
 	// An admin signed in from an address or country not seen before; Source is
 	// the username, Data a *NewLoginLocationData.
 	EventLoginNewLocation EventType = "login.new_location"
+
+	// A client is being used from more addresses or countries than the shared-account
+	// thresholds allow; Source is the client's email, Data a *SharedAccountData.
+	EventClientSharedAccount EventType = "client.shared_account"
 )
+
+// SharedAccountData describes a client that looks shared between several people.
+type SharedAccountData struct {
+	Email        string `json:"email"`
+	IPCount      int    `json:"ipCount"`
+	CountryCount int    `json:"countryCount"`
+	Countries    string `json:"countries,omitempty"`
+	WindowHours  int    `json:"windowHours"`
+}
 
 // NewLoginLocationData describes a sign-in from an unfamiliar place. Country is
 // empty when no geoip database could place the address.

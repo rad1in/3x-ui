@@ -410,6 +410,21 @@
             "minimum": 1,
             "type": "integer"
           },
+          "sharedAccountMinCountries": {
+            "maximum": 250,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "sharedAccountMinIPs": {
+            "maximum": 1000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "sharedAccountWindowHours": {
+            "maximum": 168,
+            "minimum": 1,
+            "type": "integer"
+          },
           "slackEnable": {
             "type": "boolean"
           },
@@ -969,6 +984,9 @@
           "remarkTemplate",
           "restartXrayOnClientDisable",
           "sessionMaxAge",
+          "sharedAccountMinCountries",
+          "sharedAccountMinIPs",
+          "sharedAccountWindowHours",
           "slackEnable",
           "slackEvents",
           "slackWebhookUrl",
@@ -1430,6 +1448,21 @@
           },
           "sessionMaxAge": {
             "maximum": 525600,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "sharedAccountMinCountries": {
+            "maximum": 250,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "sharedAccountMinIPs": {
+            "maximum": 1000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "sharedAccountWindowHours": {
+            "maximum": 168,
             "minimum": 1,
             "type": "integer"
           },
@@ -2005,6 +2038,9 @@
           "remarkTemplate",
           "restartXrayOnClientDisable",
           "sessionMaxAge",
+          "sharedAccountMinCountries",
+          "sharedAccountMinIPs",
+          "sharedAccountWindowHours",
           "slackEnable",
           "slackEvents",
           "slackWebhookUrl",
@@ -7130,6 +7166,46 @@
           "id",
           "key",
           "value"
+        ],
+        "type": "object"
+      },
+      "SharedAccountFlag": {
+        "description": "SharedAccountFlag marks a client seen from more addresses or countries than the\nthresholds allow. It is dropped once the client falls back under them.",
+        "properties": {
+          "countries": {
+            "example": "DE,US,BR",
+            "type": "string"
+          },
+          "countryCount": {
+            "example": 3,
+            "type": "integer"
+          },
+          "email": {
+            "example": "alice",
+            "type": "string"
+          },
+          "firstFlagged": {
+            "example": 1760000000000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "ipCount": {
+            "example": 7,
+            "type": "integer"
+          },
+          "lastSeen": {
+            "example": 1760003600000,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "countries",
+          "countryCount",
+          "email",
+          "firstFlagged",
+          "ipCount",
+          "lastSeen"
         ],
         "type": "object"
       },
@@ -13998,6 +14074,49 @@
                       }
                     ]
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/sharedAccounts": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Clients currently flagged as shared: seen from at least sharedAccountMinIPs addresses or sharedAccountMinCountries countries inside the sharedAccountWindowHours window. Most addresses first; empty while both thresholds are 0.",
+        "operationId": "get_panel_api_clients_sharedAccounts",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "email": "alice",
+                      "ipCount": 7,
+                      "countryCount": 3,
+                      "countries": "BR,DE,US",
+                      "firstFlagged": 1760000000000,
+                      "lastSeen": 1760003600000
+                    }
+                  ]
                 }
               }
             }

@@ -35,16 +35,17 @@ func parseInboundIdsQuery(raw string) []int {
 }
 
 type ClientController struct {
-	clientService   service.ClientService
-	inboundService  service.InboundService
-	xrayService     service.XrayService
-	settingService  service.SettingService
-	happGenerator   service.HappLinkGenerator
-	shortLinks      service.SubShortLinkService
-	subFetches      service.SubFetchService
-	reseller        service.ResellerService
-	transferService service.ClientTransferService
-	subSigning      service.SubSigningService
+	clientService        service.ClientService
+	inboundService       service.InboundService
+	xrayService          service.XrayService
+	settingService       service.SettingService
+	happGenerator        service.HappLinkGenerator
+	shortLinks           service.SubShortLinkService
+	subFetches           service.SubFetchService
+	reseller             service.ResellerService
+	transferService      service.ClientTransferService
+	subSigning           service.SubSigningService
+	sharedAccountService service.SharedAccountService
 }
 
 func NewClientController(g *gin.RouterGroup) *ClientController {
@@ -57,6 +58,7 @@ func NewClientController(g *gin.RouterGroup) *ClientController {
 func (a *ClientController) initRouter(g *gin.RouterGroup) {
 	a.initTemplateRouter(g)
 	a.initUsageRouter(g)
+	a.initSharedRouter(g)
 	a.initDisconnectRouter(g)
 	a.initForeignImportRouter(g)
 	g.GET("/list", a.list)

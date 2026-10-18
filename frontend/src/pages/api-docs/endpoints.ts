@@ -1643,6 +1643,14 @@ export const sections: readonly Section[] = [
           '{\n  "success": true,\n  "obj": {\n    "created": 4,\n    "skipped": [{ "email": "bob", "reason": "email already in use: bob" }],\n    "warnings": [{ "email": "erin", "message": "reset strategy year has no 3x-ui equivalent; the quota is not reset automatically" }]\n  }\n}',
       },
       {
+        method: 'GET',
+        path: '/panel/api/clients/sharedAccounts',
+        summary:
+          'Clients currently flagged as shared: seen from at least sharedAccountMinIPs addresses or sharedAccountMinCountries countries inside the sharedAccountWindowHours window. Most addresses first; empty while both thresholds are 0.',
+        response:
+          '{\n  "success": true,\n  "obj": [\n    {\n      "email": "alice",\n      "ipCount": 7,\n      "countryCount": 3,\n      "countries": "BR,DE,US",\n      "firstFlagged": 1760000000000,\n      "lastSeen": 1760003600000\n    }\n  ]\n}',
+      },
+      {
         method: 'POST',
         path: '/panel/api/clients/bulkAttach',
         summary:

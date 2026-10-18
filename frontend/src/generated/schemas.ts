@@ -384,6 +384,21 @@ export const SCHEMAS: Record<string, unknown> = {
         "minimum": 1,
         "type": "integer"
       },
+      "sharedAccountMinCountries": {
+        "maximum": 250,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "sharedAccountMinIPs": {
+        "maximum": 1000,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "sharedAccountWindowHours": {
+        "maximum": 168,
+        "minimum": 1,
+        "type": "integer"
+      },
       "slackEnable": {
         "type": "boolean"
       },
@@ -943,6 +958,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "remarkTemplate",
       "restartXrayOnClientDisable",
       "sessionMaxAge",
+      "sharedAccountMinCountries",
+      "sharedAccountMinIPs",
+      "sharedAccountWindowHours",
       "slackEnable",
       "slackEvents",
       "slackWebhookUrl",
@@ -1404,6 +1422,21 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "sessionMaxAge": {
         "maximum": 525600,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "sharedAccountMinCountries": {
+        "maximum": 250,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "sharedAccountMinIPs": {
+        "maximum": 1000,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "sharedAccountWindowHours": {
+        "maximum": 168,
         "minimum": 1,
         "type": "integer"
       },
@@ -1979,6 +2012,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "remarkTemplate",
       "restartXrayOnClientDisable",
       "sessionMaxAge",
+      "sharedAccountMinCountries",
+      "sharedAccountMinIPs",
+      "sharedAccountWindowHours",
       "slackEnable",
       "slackEvents",
       "slackWebhookUrl",
@@ -7104,6 +7140,46 @@ export const SCHEMAS: Record<string, unknown> = {
       "id",
       "key",
       "value"
+    ],
+    "type": "object"
+  },
+  "SharedAccountFlag": {
+    "description": "SharedAccountFlag marks a client seen from more addresses or countries than the\nthresholds allow. It is dropped once the client falls back under them.",
+    "properties": {
+      "countries": {
+        "example": "DE,US,BR",
+        "type": "string"
+      },
+      "countryCount": {
+        "example": 3,
+        "type": "integer"
+      },
+      "email": {
+        "example": "alice",
+        "type": "string"
+      },
+      "firstFlagged": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "ipCount": {
+        "example": 7,
+        "type": "integer"
+      },
+      "lastSeen": {
+        "example": 1760003600000,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "countries",
+      "countryCount",
+      "email",
+      "firstFlagged",
+      "ipCount",
+      "lastSeen"
     ],
     "type": "object"
   },

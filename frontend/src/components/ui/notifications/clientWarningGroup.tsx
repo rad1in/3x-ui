@@ -11,5 +11,6 @@ export const CLIENT_WARNING_GROUP: NotificationGroupConfig = {
     { key: 'report.weekly', label: 'eventWeeklyReport', settingKey: '' },
     { key: 'reseller.credit_low', label: 'eventResellerCreditLow', settingKey: '' },
     { key: 'login.new_location', label: 'eventLoginNewLocation', settingKey: '' },
+    { key: 'client.shared_account', label: 'eventClientSharedAccount', settingKey: '' },
   ],
 };
