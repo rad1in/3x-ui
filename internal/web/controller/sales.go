@@ -32,6 +32,16 @@ func NewSalesController(g *gin.RouterGroup) *SalesController {
 	return a
 }
 
+// respondDone answers with the success message, or with a failure that does
+// not carry it: jsonMsg would prefix the error with the success text.
+func respondDone(c *gin.Context, okKey string, obj any, err error) {
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	jsonMsgObj(c, I18nWeb(c, okKey), obj, nil)
+}
+
 func (a *SalesController) listPlans(c *gin.Context) {
 	rows, err := a.planService.ListPlans(false)
 	jsonObj(c, rows, err)
@@ -44,7 +54,7 @@ func (a *SalesController) savePlan(c *gin.Context) {
 		return
 	}
 	saved, err := a.planService.SavePlan(&plan)
-	jsonMsgObj(c, I18nWeb(c, "pages.sales.plans.saved"), saved, err)
+	respondDone(c, "pages.sales.plans.saved", saved, err)
 }
 
 func (a *SalesController) deletePlan(c *gin.Context) {
@@ -53,7 +63,7 @@ func (a *SalesController) deletePlan(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return
 	}
-	jsonMsg(c, I18nWeb(c, "pages.sales.plans.deleted"), a.planService.DeletePlan(id))
+	respondDone(c, "pages.sales.plans.deleted", nil, a.planService.DeletePlan(id))
 }
 
 func (a *SalesController) listOrders(c *gin.Context) {
@@ -79,7 +89,7 @@ func (a *SalesController) approveOrder(c *gin.Context) {
 	}
 	notifyClientsChanged()
 	order, err := a.orderService.GetOrder(id)
-	jsonMsgObj(c, I18nWeb(c, "pages.sales.orders.approved"), order, err)
+	respondDone(c, "pages.sales.orders.approved", order, err)
 }
 
 type rejectOrderBody struct {
@@ -98,12 +108,12 @@ func (a *SalesController) rejectOrder(c *gin.Context) {
 		return
 	}
 	order, err := a.orderService.RejectOrder(id, body.Reason)
-	jsonMsgObj(c, I18nWeb(c, "pages.sales.orders.rejected"), order, err)
+	respondDone(c, "pages.sales.orders.rejected", order, err)
 }
 
 func (a *SalesController) getConfig(c *gin.Context) {
-	cfg, err := a.configService.Get()
-	jsonObj(c, cfg, err)
+	view, err := a.configService.GetView()
+	jsonObj(c, view, err)
 }
 
 func (a *SalesController) saveConfig(c *gin.Context) {
@@ -112,5 +122,5 @@ func (a *SalesController) saveConfig(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return
 	}
-	jsonMsg(c, I18nWeb(c, "pages.sales.config.saved"), a.configService.Save(&cfg))
+	respondDone(c, "pages.sales.config.saved", nil, a.configService.Save(&cfg))
 }

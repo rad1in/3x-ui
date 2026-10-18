@@ -42,6 +42,8 @@ var contractExtraRoutes = map[string]bool{
 	"POST /shop/api/orders":                true,
 	"GET /shop/api/orders/:token":          true,
 	"POST /shop/api/orders/:token/receipt": true,
+	"GET /shop/api/callback/:gateway":      true,
+	"POST /shop/api/callback/:gateway":     true,
 }
 
 func inContractScope(method, path string) bool {

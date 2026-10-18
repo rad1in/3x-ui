@@ -6,8 +6,9 @@ description: 'The customer-facing purchase API. It needs no panel session: a
   in the sales configuration. Refusals come back as success false with a stable
   code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken,
   email_unknown, gateway_unavailable, order_not_found, order_state,
-  receipt_invalid); rate_limited arrives with HTTP 429 and internal_error with
-  500. Writes are limited to 30 per 10 minutes per address.'
+  receipt_invalid, currency_unsupported, gateway_failed); rate_limited arrives
+  with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10
+  minutes per address.'
 full: true
 _openapi:
   preload:
@@ -34,6 +35,19 @@ _openapi:
         last numbers (up to 64 characters), note is free text (up to 500). Moves
         the order to review; allowed while it is pending or already in review.'
       url: '#tell-the-shop-a-card-transfer-was-made-ref-is-the-tracking-number-or-last-numbers-up-to-64-characters-note-is-free-text-up-to-500-moves-the-order-to-review-allowed-while-it-is-pending-or-already-in-review'
+    - depth: 2
+      title: 'Where Zarinpal (Status and Authority in the query) and IDPay (a form
+        POST, see the POST entry) send the customer back. The order is named by
+        the order query parameter. The redirect is only a hint: the shop asks
+        the gateway to verify the payment server to server before it delivers
+        anything, and a verification that fails or does not match the order
+        amount fails the order. Answers 303 to the shop order page, or 404 for
+        an unknown gateway or order. Needs the shop to be on.'
+      url: '#where-zarinpal-status-and-authority-in-the-query-and-idpay-a-form-post-see-the-post-entry-send-the-customer-back-the-order-is-named-by-the-order-query-parameter-the-redirect-is-only-a-hint-the-shop-asks-the-gateway-to-verify-the-payment-server-to-server-before-it-delivers-anything-and-a-verification-that-fails-or-does-not-match-the-order-amount-fails-the-order-answers-303-to-the-shop-order-page-or-404-for-an-unknown-gateway-or-order-needs-the-shop-to-be-on'
+    - depth: 2
+      title: The same callback for gateways that return the customer with a form POST
+        (IDPay sends status 10 when the customer paid).
+      url: '#the-same-callback-for-gateways-that-return-the-customer-with-a-form-post-idpay-sends-status-10-when-the-customer-paid'
   structuredData:
     headings:
       - content: Plans on sale, by sort order, and the payment methods that are switched
@@ -54,6 +68,17 @@ _openapi:
           Moves the order to review; allowed while it is pending or already in
           review.'
         id: tell-the-shop-a-card-transfer-was-made-ref-is-the-tracking-number-or-last-numbers-up-to-64-characters-note-is-free-text-up-to-500-moves-the-order-to-review-allowed-while-it-is-pending-or-already-in-review
+      - content: 'Where Zarinpal (Status and Authority in the query) and IDPay (a form
+          POST, see the POST entry) send the customer back. The order is named
+          by the order query parameter. The redirect is only a hint: the shop
+          asks the gateway to verify the payment server to server before it
+          delivers anything, and a verification that fails or does not match the
+          order amount fails the order. Answers 303 to the shop order page, or
+          404 for an unknown gateway or order. Needs the shop to be on.'
+        id: where-zarinpal-status-and-authority-in-the-query-and-idpay-a-form-post-see-the-post-entry-send-the-customer-back-the-order-is-named-by-the-order-query-parameter-the-redirect-is-only-a-hint-the-shop-asks-the-gateway-to-verify-the-payment-server-to-server-before-it-delivers-anything-and-a-verification-that-fails-or-does-not-match-the-order-amount-fails-the-order-answers-303-to-the-shop-order-page-or-404-for-an-unknown-gateway-or-order-needs-the-shop-to-be-on
+      - content: The same callback for gateways that return the customer with a form
+          POST (IDPay sends status 10 when the customer paid).
+        id: the-same-callback-for-gateways-that-return-the-customer-with-a-form-post-idpay-sends-status-10-when-the-customer-paid
     contents: []
 ---
 
@@ -66,7 +91,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/shop/api/plans","method":"get"},{"path":"/shop/api/orders","method":"post"},{"path":"/shop/api/orders/{token}","method":"get"},{"path":"/shop/api/orders/{token}/receipt","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/shop/api/plans","method":"get"},{"path":"/shop/api/orders","method":"post"},{"path":"/shop/api/orders/{token}","method":"get"},{"path":"/shop/api/orders/{token}/receipt","method":"post"},{"path":"/shop/api/callback/{gateway}","method":"get"},{"path":"/shop/api/callback/{gateway}","method":"post"}]} showTitle />
     </>
   );
 }

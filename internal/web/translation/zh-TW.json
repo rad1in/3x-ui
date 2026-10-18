@@ -2827,7 +2827,21 @@
         "cardNumber": "卡號（16 位）",
         "holderName": "持卡人",
         "bankName": "銀行",
-        "instructions": "給客戶的說明"
+        "instructions": "給客戶的說明",
+        "zarinpalTitle": "Zarinpal",
+        "idpayTitle": "IDPay",
+        "gatewayEnabled": "啟用",
+        "gatewayHint": "僅適用於以 IRT 或 IRR 定價的方案，並需要填寫公開基礎網址。",
+        "merchantId": "商戶號（Merchant ID）",
+        "apiKey": "API 金鑰",
+        "sandbox": "沙盒（測試）模式",
+        "secretKept": "已儲存，留空則保持不變",
+        "removeSecret": "清除已儲存的值"
+      },
+      "gateways": {
+        "card": "銀行卡轉帳",
+        "zarinpal": "Zarinpal",
+        "idpay": "IDPay"
       }
     },
     "sessions": {

@@ -56,7 +56,11 @@ export default function OrdersTab() {
       ),
     },
     { title: t('pages.sales.orders.amount'), render: (_, o) => formatMoney(o.amount, o.currency) },
-    { title: t('pages.sales.orders.gateway'), dataIndex: 'gateway' },
+    {
+      title: t('pages.sales.orders.gateway'),
+      dataIndex: 'gateway',
+      render: (g: string) => t(`pages.sales.gateways.${g}`, { defaultValue: g }),
+    },
     {
       title: t('pages.sales.orders.status'),
       dataIndex: 'status',

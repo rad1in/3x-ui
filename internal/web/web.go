@@ -339,6 +339,7 @@ const (
 	cadenceRemoteRouting = "@every 5m"
 	cadenceXrayLogPrune  = "@every 10m"
 	cadenceCheckHash     = "@every 2m"
+	cadenceShopReconcile = "@every 2m"
 	// cpu.Percent samples over a full minute (blocking), so a finer cadence just
 	// stacks overlapping samplers; subscribers rate-limit alerts to 1/min anyway.
 	cadenceCPUAlarm    = "@every 1m"
@@ -420,6 +421,7 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 	_, _ = s.cron.AddJob("@daily", job.NewClientUsagePruneJob())
 	_, _ = s.cron.AddJob("@every 1m", job.NewClientWarningJob())
 	_, _ = s.cron.AddJob("@hourly", job.NewClientCleanupJob())
+	_, _ = s.cron.AddJob(cadenceShopReconcile, job.NewShopReconcileJob())
 	if spec, _ := s.settingService.GetBackupSchedule(); strings.TrimSpace(spec) != "" {
 		scheduleSettingJob(s.cron, "Scheduled backup", spec, "@daily", job.NewScheduledBackupJob())
 	}

@@ -2827,7 +2827,21 @@
         "cardNumber": "Kart numarası (16 hane)",
         "holderName": "Kart sahibi",
         "bankName": "Banka",
-        "instructions": "Müşteri için talimatlar"
+        "instructions": "Müşteri için talimatlar",
+        "zarinpalTitle": "Zarinpal",
+        "idpayTitle": "IDPay",
+        "gatewayEnabled": "Etkin",
+        "gatewayHint": "Yalnızca IRT veya IRR fiyatlı paketlerle çalışır ve herkese açık temel URL gerektirir.",
+        "merchantId": "Merchant ID",
+        "apiKey": "API anahtarı",
+        "sandbox": "Test modu (sandbox)",
+        "secretKept": "Kayıtlı. Korumak için boş bırakın",
+        "removeSecret": "Kayıtlı değeri kaldır"
+      },
+      "gateways": {
+        "card": "Karttan karta",
+        "zarinpal": "Zarinpal",
+        "idpay": "IDPay"
       }
     },
     "sessions": {

@@ -12,6 +12,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/service/payment"
 
 	"gorm.io/gorm"
 )
@@ -26,15 +27,17 @@ const (
 // Error codes of SalesError. They double as the keys the public shop page
 // translates, so they must stay stable.
 const (
-	ErrPlanUnavailable    = "plan_unavailable"
-	ErrInvalidEmail       = "invalid_email"
-	ErrInvalidKind        = "invalid_kind"
-	ErrEmailTaken         = "email_taken"
-	ErrEmailUnknown       = "email_unknown"
-	ErrGatewayUnavailable = "gateway_unavailable"
-	ErrOrderNotFound      = "order_not_found"
-	ErrOrderState         = "order_state"
-	ErrReceiptInvalid     = "receipt_invalid"
+	ErrPlanUnavailable     = "plan_unavailable"
+	ErrInvalidEmail        = "invalid_email"
+	ErrInvalidKind         = "invalid_kind"
+	ErrEmailTaken          = "email_taken"
+	ErrEmailUnknown        = "email_unknown"
+	ErrGatewayUnavailable  = "gateway_unavailable"
+	ErrOrderNotFound       = "order_not_found"
+	ErrOrderState          = "order_state"
+	ErrReceiptInvalid      = "receipt_invalid"
+	ErrCurrencyUnsupported = "currency_unsupported"
+	ErrGatewayFailed       = "gateway_failed"
 )
 
 // SalesError is a refusal that is safe to show a customer verbatim by code.
@@ -75,6 +78,8 @@ type OrderService struct {
 	plans   PlanService
 	config  SalesConfigService
 	clients ClientService
+	// gatewayFactory replaces the real payment clients in tests.
+	gatewayFactory func(name string, cfg *SalesConfig) payment.Gateway
 }
 
 // fulfilMu serialises approvals so one order never provisions twice; the
@@ -129,6 +134,10 @@ func gatewayEnabled(cfg *SalesConfig, gateway string) bool {
 	switch gateway {
 	case GatewayCard:
 		return cfg.Card.Enabled
+	case GatewayZarinpal:
+		return cfg.Zarinpal.Enabled && cfg.Zarinpal.MerchantId != "" && cfg.PublicBaseURL != ""
+	case GatewayIDPay:
+		return cfg.IDPay.Enabled && cfg.IDPay.ApiKey != "" && cfg.PublicBaseURL != ""
 	default:
 		return false
 	}
@@ -150,6 +159,9 @@ func (s *OrderService) CreateOrder(in CreateOrderInput) (*model.Order, error) {
 	plan, err := s.plans.GetPlan(in.PlanId)
 	if err != nil || !plan.Enabled {
 		return nil, salesErr(ErrPlanUnavailable)
+	}
+	if _, payable := payment.RialAmount(plan.Price, plan.Currency); isOnline(in.Gateway) && !payable {
+		return nil, salesErr(ErrCurrencyUnsupported)
 	}
 	email := strings.TrimSpace(in.Email)
 	if in.Kind == model.OrderKindNew {

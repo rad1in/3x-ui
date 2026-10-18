@@ -2827,7 +2827,21 @@
         "cardNumber": "Номер картки (16 цифр)",
         "holderName": "Власник картки",
         "bankName": "Банк",
-        "instructions": "Інструкція для клієнта"
+        "instructions": "Інструкція для клієнта",
+        "zarinpalTitle": "Zarinpal",
+        "idpayTitle": "IDPay",
+        "gatewayEnabled": "Увімкнено",
+        "gatewayHint": "Працює лише з тарифами в IRT або IRR і потребує публічної базової URL.",
+        "merchantId": "Merchant ID",
+        "apiKey": "API-ключ",
+        "sandbox": "Тестовий режим (sandbox)",
+        "secretKept": "Збережено. Залиште порожнім, щоб не змінювати",
+        "removeSecret": "Видалити збережене значення"
+      },
+      "gateways": {
+        "card": "Переказ на картку",
+        "zarinpal": "Zarinpal",
+        "idpay": "IDPay"
       }
     },
     "sessions": {

@@ -9,6 +9,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/service/payment"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,22 +26,30 @@ const (
 // ShopController is the public side of selling: no panel session, only the
 // order token a customer was given. Errors travel as stable codes in msg.
 type ShopController struct {
-	orderService  service.OrderService
-	configService service.SalesConfigService
-	limiter       *windowLimiter
-	notFound      gin.HandlerFunc
+	orderService   *service.OrderService
+	configService  service.SalesConfigService
+	inboundService service.InboundService
+	xrayService    service.XrayService
+	limiter        *windowLimiter
+	notFound       gin.HandlerFunc
 }
 
 // NewShopController mounts the public shop API on g; while the shop is switched
 // off every route answers through notFound (the decoy site or a bare 404).
 func NewShopController(g *gin.RouterGroup, notFound gin.HandlerFunc) *ShopController {
-	a := &ShopController{limiter: newWindowLimiter(shopWriteLimit, shopWriteWindow), notFound: notFound}
+	return newShopController(g, notFound, &service.OrderService{})
+}
+
+func newShopController(g *gin.RouterGroup, notFound gin.HandlerFunc, orders *service.OrderService) *ShopController {
+	a := &ShopController{orderService: orders, limiter: newWindowLimiter(shopWriteLimit, shopWriteWindow), notFound: notFound}
 	api := g.Group("/api")
 	api.Use(a.gate)
 	api.GET("/plans", a.catalog)
 	api.GET("/orders/:token", a.getOrder)
 	api.POST("/orders", a.rateLimited, a.createOrder)
 	api.POST("/orders/:token/receipt", a.rateLimited, a.submitReceipt)
+	api.GET("/callback/:gateway", a.rateLimited, a.callback)
+	api.POST("/callback/:gateway", a.rateLimited, a.callback)
 	return a
 }
 
@@ -120,11 +129,53 @@ func (a *ShopController) createOrder(c *gin.Context) {
 		return
 	}
 	order, err := a.orderService.CreateOrder(in)
+	if err == nil && service.IsOnlineGateway(order.Gateway) {
+		order, err = a.orderService.StartPayment(order)
+	}
 	if err != nil {
 		a.reply(c, nil, err)
 		return
 	}
 	a.view(c, order.Token)
+}
+
+// callback is where a payment gateway sends the customer back. The redirect
+// only says whether to look; the order is settled by asking the gateway.
+func (a *ShopController) callback(c *gin.Context) {
+	gateway, token := c.Param("gateway"), c.Query("order")
+	_ = c.Request.ParseForm()
+	var claimsPaid bool
+	switch gateway {
+	case service.GatewayZarinpal:
+		claimsPaid = payment.ZarinpalCallbackPaid(c.Request.URL.Query())
+	case service.GatewayIDPay:
+		claimsPaid = payment.IDPayCallbackPaid(c.Request.Form)
+	default:
+		a.deny(c)
+		return
+	}
+	order, needRestart, err := a.orderService.CompleteGatewayPayment(&a.inboundService, token, claimsPaid)
+	if needRestart {
+		a.xrayService.SetToNeedRestart()
+	}
+	if order != nil && order.FulfilledAt > 0 {
+		notifyClientsChanged()
+	}
+	var salesErr *service.SalesError
+	known := errors.As(err, &salesErr)
+	if err != nil && !known && !errors.Is(err, payment.ErrGateway) {
+		logger.Warningf("shop callback %s: %v", gateway, err)
+	}
+	if known && salesErr.Code == service.ErrOrderNotFound {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	cfg, cfgErr := a.configService.Get()
+	if cfgErr != nil {
+		c.Status(http.StatusInternalServerError)
+		return
+	}
+	c.Redirect(http.StatusSeeOther, service.ShopOrderURL(cfg, token))
 }
 
 type shopReceiptBody struct {

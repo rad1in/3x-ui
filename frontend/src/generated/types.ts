@@ -903,6 +903,12 @@ export interface HwidSlotStatus {
   remaining: number;
 }
 
+export interface IDPayConfig {
+  apiKey: string;
+  enabled: boolean;
+  sandbox: boolean;
+}
+
 export interface Inbound {
   clientStats: ClientTraffic[];
   disableFlow: boolean;
@@ -1177,6 +1183,7 @@ export interface Order {
   kind: string;
   limitIp: number;
   paidAt: number;
+  payUrl: string;
   planId: number;
   planName: string;
   receiptNote: string;
@@ -1294,8 +1301,22 @@ export interface RealityScanResult {
 
 export interface SalesConfig {
   card: CardPayConfig;
+  clearSecrets?: string[];
+  idpay: IDPayConfig;
   publicBaseUrl: string;
   publicEnabled: boolean;
+  zarinpal: ZarinpalConfig;
+}
+
+export interface SalesConfigView {
+  card: CardPayConfig;
+  clearSecrets?: string[];
+  hasIdpayApiKey: boolean;
+  hasZarinpalMerchantId: boolean;
+  idpay: IDPayConfig;
+  publicBaseUrl: string;
+  publicEnabled: boolean;
+  zarinpal: ZarinpalConfig;
 }
 
 export interface ServerSettings {
@@ -1369,6 +1390,7 @@ export interface ShopOrderView {
   fulfilled: boolean;
   gateway: string;
   kind: string;
+  payUrl?: string;
   planName: string;
   rejectReason: string;
   status: string;
@@ -1494,5 +1516,11 @@ export interface VPNStatus {
   id: number;
   reason?: string;
   running: boolean;
+}
+
+export interface ZarinpalConfig {
+  enabled: boolean;
+  merchantId: string;
+  sandbox: boolean;
 }
 

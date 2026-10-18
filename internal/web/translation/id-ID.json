@@ -2827,7 +2827,21 @@
         "cardNumber": "Nomor kartu (16 digit)",
         "holderName": "Pemegang kartu",
         "bankName": "Bank",
-        "instructions": "Petunjuk untuk pelanggan"
+        "instructions": "Petunjuk untuk pelanggan",
+        "zarinpalTitle": "Zarinpal",
+        "idpayTitle": "IDPay",
+        "gatewayEnabled": "Aktif",
+        "gatewayHint": "Hanya untuk paket berharga IRT atau IRR dan memerlukan URL dasar publik.",
+        "merchantId": "ID merchant",
+        "apiKey": "Kunci API",
+        "sandbox": "Mode uji (sandbox)",
+        "secretKept": "Tersimpan. Biarkan kosong untuk mempertahankan",
+        "removeSecret": "Hapus nilai tersimpan"
+      },
+      "gateways": {
+        "card": "Kartu ke kartu",
+        "zarinpal": "Zarinpal",
+        "idpay": "IDPay"
       }
     },
     "sessions": {

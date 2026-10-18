@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Form, Input, Switch } from 'antd';
-import { FormProvider } from 'react-hook-form';
+import { Button, Checkbox, Form, Input, Switch } from 'antd';
+import { FormProvider, useWatch } from 'react-hook-form';
 
 import { useSalesConfig } from '@/api/queries/useSales';
 import { FormField, useZodForm } from '@/components/form/rhf';
@@ -11,16 +11,39 @@ const EMPTY: SalesConfigValues = {
   publicEnabled: false,
   publicBaseUrl: '',
   card: { enabled: false, cardNumber: '', holderName: '', bankName: '', instructions: '' },
+  zarinpal: { enabled: false, merchantId: '', sandbox: false },
+  idpay: { enabled: false, apiKey: '', sandbox: false },
+  clearSecrets: [],
 };
+
+const SECRET_MERCHANT = 'zarinpal.merchantId';
+const SECRET_IDPAY = 'idpay.apiKey';
 
 export default function SalesSettingsTab() {
   const { t } = useTranslation();
   const { config, save, saving } = useSalesConfig();
   const methods = useZodForm<SalesConfigValues>(salesConfigSchema, { defaultValues: EMPTY });
+  const clearSecrets = useWatch({ control: methods.control, name: 'clearSecrets' }) ?? [];
 
   useEffect(() => {
-    if (config) methods.reset(config);
+    if (config) methods.reset({ ...config, clearSecrets: [] });
   }, [config, methods]);
+
+  const toggleClear = (name: string, on: boolean) =>
+    methods.setValue(
+      'clearSecrets',
+      on ? [...clearSecrets, name] : clearSecrets.filter((n) => n !== name),
+    );
+
+  const secretField = (name: string, isSet: boolean | undefined) =>
+    isSet ? (
+      <Checkbox
+        checked={clearSecrets.includes(name)}
+        onChange={(e) => toggleClear(name, e.target.checked)}
+      >
+        {t('pages.sales.config.removeSecret')}
+      </Checkbox>
+    ) : null;
 
   return (
     <FormProvider {...methods}>
@@ -40,6 +63,7 @@ export default function SalesSettingsTab() {
         >
           <Input placeholder="https://shop.example.com" dir="ltr" />
         </FormField>
+
         <h4>{t('pages.sales.config.cardTitle')}</h4>
         <FormField
           label={t('pages.sales.config.cardEnabled')}
@@ -60,6 +84,59 @@ export default function SalesSettingsTab() {
         <FormField label={t('pages.sales.config.instructions')} name="card.instructions">
           <Input.TextArea dir="auto" rows={3} maxLength={500} />
         </FormField>
+
+        <h4>{t('pages.sales.config.zarinpalTitle')}</h4>
+        <FormField
+          label={t('pages.sales.config.gatewayEnabled')}
+          name="zarinpal.enabled"
+          valueProp="checked"
+          extra={t('pages.sales.config.gatewayHint')}
+        >
+          <Switch />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.merchantId')}
+          name="zarinpal.merchantId"
+          extra={secretField(SECRET_MERCHANT, config?.hasZarinpalMerchantId)}
+        >
+          <Input.Password
+            dir="ltr"
+            autoComplete="off"
+            placeholder={config?.hasZarinpalMerchantId ? t('pages.sales.config.secretKept') : ''}
+          />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.sandbox')}
+          name="zarinpal.sandbox"
+          valueProp="checked"
+        >
+          <Switch />
+        </FormField>
+
+        <h4>{t('pages.sales.config.idpayTitle')}</h4>
+        <FormField
+          label={t('pages.sales.config.gatewayEnabled')}
+          name="idpay.enabled"
+          valueProp="checked"
+          extra={t('pages.sales.config.gatewayHint')}
+        >
+          <Switch />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.apiKey')}
+          name="idpay.apiKey"
+          extra={secretField(SECRET_IDPAY, config?.hasIdpayApiKey)}
+        >
+          <Input.Password
+            dir="ltr"
+            autoComplete="off"
+            placeholder={config?.hasIdpayApiKey ? t('pages.sales.config.secretKept') : ''}
+          />
+        </FormField>
+        <FormField label={t('pages.sales.config.sandbox')} name="idpay.sandbox" valueProp="checked">
+          <Switch />
+        </FormField>
+
         <Button
           type="primary"
           loading={saving}

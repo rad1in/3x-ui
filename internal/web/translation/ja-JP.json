@@ -2827,7 +2827,21 @@
         "cardNumber": "カード番号（16 桁）",
         "holderName": "カード名義",
         "bankName": "銀行名",
-        "instructions": "お客様への案内"
+        "instructions": "お客様への案内",
+        "zarinpalTitle": "Zarinpal",
+        "idpayTitle": "IDPay",
+        "gatewayEnabled": "有効",
+        "gatewayHint": "IRT または IRR 建てのプランでのみ利用でき、公開ベース URL が必要です。",
+        "merchantId": "マーチャント ID",
+        "apiKey": "API キー",
+        "sandbox": "サンドボックスモード",
+        "secretKept": "保存済み。空欄のままにすると保持されます",
+        "removeSecret": "保存済みの値を削除"
+      },
+      "gateways": {
+        "card": "カード間振込",
+        "zarinpal": "Zarinpal",
+        "idpay": "IDPay"
       }
     },
     "sessions": {

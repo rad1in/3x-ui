@@ -5,11 +5,12 @@ import { keys } from '@/api/queryKeys';
 import {
   OrderPageSchema,
   PlanSchema,
-  SalesConfigSchema,
+  SalesConfigViewSchema,
   type OrderPage,
   type Plan,
-  type SalesConfig,
+  type SalesConfigView,
 } from '@/generated/zod';
+import type { SalesConfigValues } from '@/schemas/sales';
 import { HttpUtil } from '@/utils';
 import { parseMsg } from '@/utils/zodValidate';
 
@@ -83,17 +84,18 @@ export function useOrderActions() {
   return { approve: approve.mutateAsync, reject: reject.mutateAsync };
 }
 
-async function fetchSalesConfig(): Promise<SalesConfig> {
+async function fetchSalesConfig(): Promise<SalesConfigView> {
   const msg = await HttpUtil.get('/panel/api/sales/config', undefined, { silent: true });
   if (!msg?.success) throw new Error(msg?.msg || 'Failed to load sales settings');
-  return parseMsg(msg, SalesConfigSchema, 'sales/config', { strict: true }).obj as SalesConfig;
+  return parseMsg(msg, SalesConfigViewSchema, 'sales/config', { strict: true })
+    .obj as SalesConfigView;
 }
 
 export function useSalesConfig() {
   const queryClient = useQueryClient();
   const query = useQuery({ queryKey: keys.sales.config(), queryFn: fetchSalesConfig });
   const save = useMutation({
-    mutationFn: (cfg: SalesConfig) =>
+    mutationFn: (cfg: SalesConfigValues) =>
       HttpUtil.post('/panel/api/sales/config/save', cfg, JSON_HEADERS),
     onSuccess: (msg) => {
       if (msg?.success) void queryClient.invalidateQueries({ queryKey: keys.sales.config() });

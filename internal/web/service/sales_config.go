@@ -2,8 +2,11 @@ package service
 
 import (
 	"encoding/json"
+	"net/url"
+	"slices"
 	"strings"
 
+	"github.com/mhsanaei/3x-ui/v3/internal/crypto/nodetoken"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 )
 
@@ -16,12 +19,44 @@ type CardPayConfig struct {
 	Instructions string `json:"instructions"`
 }
 
+// ZarinpalConfig is the Zarinpal merchant account. MerchantId is a secret.
+type ZarinpalConfig struct {
+	Enabled    bool   `json:"enabled"`
+	MerchantId string `json:"merchantId"`
+	Sandbox    bool   `json:"sandbox"`
+}
+
+// IDPayConfig is the IDPay account. ApiKey is a secret.
+type IDPayConfig struct {
+	Enabled bool   `json:"enabled"`
+	ApiKey  string `json:"apiKey"`
+	Sandbox bool   `json:"sandbox"`
+}
+
+// Names of the secret fields, as ClearSecrets takes them.
+const (
+	secretZarinpalMerchant = "zarinpal.merchantId"
+	secretIDPayKey         = "idpay.apiKey"
+)
+
 // SalesConfig is everything the operator configures about selling. It is one
-// JSON setting; later payment methods add their own sections.
+// JSON setting. Secrets are served blank and kept when a save leaves them
+// blank; ClearSecrets names the ones to empty on purpose.
 type SalesConfig struct {
-	PublicEnabled bool          `json:"publicEnabled"`
-	PublicBaseURL string        `json:"publicBaseUrl" example:"https://shop.example.com"`
-	Card          CardPayConfig `json:"card"`
+	PublicEnabled bool           `json:"publicEnabled"`
+	PublicBaseURL string         `json:"publicBaseUrl" example:"https://shop.example.com"`
+	Card          CardPayConfig  `json:"card"`
+	Zarinpal      ZarinpalConfig `json:"zarinpal"`
+	IDPay         IDPayConfig    `json:"idpay"`
+	ClearSecrets  []string       `json:"clearSecrets,omitempty"`
+}
+
+// SalesConfigView is the configuration as the admin API serves it: secrets are
+// blank and the Has flags say which are set.
+type SalesConfigView struct {
+	SalesConfig
+	HasZarinpalMerchantId bool `json:"hasZarinpalMerchantId"`
+	HasIdpayApiKey        bool `json:"hasIdpayApiKey"`
 }
 
 const salesConfigKey = "salesConfig"
@@ -31,7 +66,18 @@ type SalesConfigService struct {
 	settings SettingService
 }
 
-func (s *SalesConfigService) Get() (*SalesConfig, error) {
+// secrets lists the secret fields of cfg by name.
+func (c *SalesConfig) secrets() map[string]*string {
+	return map[string]*string{
+		secretZarinpalMerchant: &c.Zarinpal.MerchantId,
+		secretIDPayKey:         &c.IDPay.ApiKey,
+	}
+}
+
+func secretAAD(name string) []byte { return []byte("settings/salesConfig/" + name) }
+
+// load reads the stored configuration with its secrets decrypted.
+func (s *SalesConfigService) load() (*SalesConfig, error) {
 	raw, err := s.settings.getString(salesConfigKey)
 	if err != nil {
 		return nil, err
@@ -43,17 +89,79 @@ func (s *SalesConfigService) Get() (*SalesConfig, error) {
 	if err := json.Unmarshal([]byte(raw), cfg); err != nil {
 		return nil, err
 	}
+	for name, field := range cfg.secrets() {
+		plain, err := nodetoken.DecryptBound(secretAAD(name), *field)
+		if err != nil {
+			return nil, err
+		}
+		*field = plain
+	}
 	return cfg, nil
 }
 
-// Save validates and stores cfg; only an enabled section is validated, so a
+// Get returns the configuration with secrets in the clear, for the server's
+// own use. Never hand this to a response.
+func (s *SalesConfigService) Get() (*SalesConfig, error) { return s.load() }
+
+// GetView returns the configuration safe to serve to the admin UI.
+func (s *SalesConfigService) GetView() (*SalesConfigView, error) {
+	cfg, err := s.load()
+	if err != nil {
+		return nil, err
+	}
+	view := &SalesConfigView{
+		HasZarinpalMerchantId: cfg.Zarinpal.MerchantId != "",
+		HasIdpayApiKey:        cfg.IDPay.ApiKey != "",
+	}
+	for _, field := range cfg.secrets() {
+		*field = ""
+	}
+	view.SalesConfig = *cfg
+	return view, nil
+}
+
+// Save validates and stores cfg. Only an enabled section is validated, so a
 // half-filled form can be parked disabled.
 func (s *SalesConfigService) Save(cfg *SalesConfig) error {
 	if cfg == nil {
 		return common.NewError("empty sales config")
 	}
-	cfg.PublicBaseURL = strings.TrimRight(strings.TrimSpace(cfg.PublicBaseURL), "/")
-	card := &cfg.Card
+	existing, err := s.load()
+	if err != nil {
+		return err
+	}
+	stored := *cfg
+	stored.ClearSecrets = nil
+	for name, field := range stored.secrets() {
+		*field = strings.TrimSpace(*field)
+		switch {
+		case slices.Contains(cfg.ClearSecrets, name):
+			*field = ""
+		case *field == "":
+			*field = *existing.secrets()[name]
+		}
+	}
+	if err := stored.normalize(); err != nil {
+		return err
+	}
+	for name, field := range stored.secrets() {
+		enc, err := nodetoken.EncryptBound(secretAAD(name), *field)
+		if err != nil {
+			return err
+		}
+		*field = enc
+	}
+	raw, err := json.Marshal(&stored)
+	if err != nil {
+		return err
+	}
+	return s.settings.saveSetting(salesConfigKey, string(raw))
+}
+
+// normalize trims fields and rejects an enabled method that cannot work.
+func (c *SalesConfig) normalize() error {
+	c.PublicBaseURL = strings.TrimRight(strings.TrimSpace(c.PublicBaseURL), "/")
+	card := &c.Card
 	card.HolderName = strings.TrimSpace(card.HolderName)
 	card.BankName = strings.TrimSpace(card.BankName)
 	card.Instructions = strings.TrimSpace(card.Instructions)
@@ -61,11 +169,22 @@ func (s *SalesConfigService) Save(cfg *SalesConfig) error {
 	if card.Enabled && len(card.CardNumber) != 16 {
 		return common.NewError("card number must be 16 digits")
 	}
-	raw, err := json.Marshal(cfg)
-	if err != nil {
-		return err
+	online := c.Zarinpal.Enabled || c.IDPay.Enabled
+	if online && !validBaseURL(c.PublicBaseURL) {
+		return common.NewError("an online payment method needs the public base URL (http or https)")
 	}
-	return s.settings.saveSetting(salesConfigKey, string(raw))
+	if c.Zarinpal.Enabled && c.Zarinpal.MerchantId == "" {
+		return common.NewError("zarinpal needs a merchant id")
+	}
+	if c.IDPay.Enabled && c.IDPay.ApiKey == "" {
+		return common.NewError("idpay needs an API key")
+	}
+	return nil
+}
+
+func validBaseURL(raw string) bool {
+	u, err := url.Parse(raw)
+	return err == nil && (u.Scheme == "http" || u.Scheme == "https") && u.Host != "" && u.RawQuery == "" && u.Fragment == ""
 }
 
 // digitsOnly keeps the digits of s, folding Persian and Arabic-Indic digits
@@ -76,10 +195,10 @@ func digitsOnly(s string) string {
 		switch {
 		case r >= '0' && r <= '9':
 			b.WriteRune(r)
-		case r >= '\u06F0' && r <= '\u06F9':
-			b.WriteRune('0' + r - '\u06F0')
-		case r >= '\u0660' && r <= '\u0669':
-			b.WriteRune('0' + r - '\u0660')
+		case r >= '۰' && r <= '۹':
+			b.WriteRune('0' + r - '۰')
+		case r >= '٠' && r <= '٩':
+			b.WriteRune('0' + r - '٠')
 		}
 	}
 	return b.String()

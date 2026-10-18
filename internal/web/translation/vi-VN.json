@@ -2827,7 +2827,21 @@
         "cardNumber": "Số thẻ (16 chữ số)",
         "holderName": "Chủ thẻ",
         "bankName": "Ngân hàng",
-        "instructions": "Hướng dẫn cho khách"
+        "instructions": "Hướng dẫn cho khách",
+        "zarinpalTitle": "Zarinpal",
+        "idpayTitle": "IDPay",
+        "gatewayEnabled": "Bật",
+        "gatewayHint": "Chỉ dùng với gói định giá bằng IRT hoặc IRR và cần URL công khai.",
+        "merchantId": "Merchant ID",
+        "apiKey": "Khóa API",
+        "sandbox": "Chế độ thử nghiệm (sandbox)",
+        "secretKept": "Đã lưu. Để trống để giữ nguyên",
+        "removeSecret": "Xóa giá trị đã lưu"
+      },
+      "gateways": {
+        "card": "Chuyển khoản thẻ",
+        "zarinpal": "Zarinpal",
+        "idpay": "IDPay"
       }
     },
     "sessions": {

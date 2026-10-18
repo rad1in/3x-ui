@@ -60,6 +60,7 @@ type Order struct {
 	Gateway      string `json:"gateway" gorm:"default:''" example:"card"`
 	Status       string `json:"status" gorm:"not null;index" example:"pending"`
 	GatewayRef   string `json:"gatewayRef" gorm:"column:gateway_ref;index;default:''"`
+	PayURL       string `json:"payUrl" gorm:"column:pay_url;default:''"`
 	ReceiptRef   string `json:"receiptRef" gorm:"column:receipt_ref;default:''" example:"482913"`
 	ReceiptNote  string `json:"receiptNote" gorm:"column:receipt_note;default:''"`
 	RejectReason string `json:"rejectReason" gorm:"column:reject_reason;default:''"`

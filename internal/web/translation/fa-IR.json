@@ -2827,7 +2827,21 @@
         "cardNumber": "شماره کارت (۱۶ رقم)",
         "holderName": "نام صاحب کارت",
         "bankName": "نام بانک",
-        "instructions": "توضیح برای مشتری"
+        "instructions": "توضیح برای مشتری",
+        "zarinpalTitle": "زرین‌پال",
+        "idpayTitle": "آی‌دی‌پی",
+        "gatewayEnabled": "فعال",
+        "gatewayHint": "فقط برای پلن‌هایی با قیمت تومان یا ریال کار می‌کند و به نشانی عمومی فروشگاه نیاز دارد.",
+        "merchantId": "مرچنت کد",
+        "apiKey": "کلید API",
+        "sandbox": "حالت آزمایشی (سندباکس)",
+        "secretKept": "ذخیره شده است. برای نگه‌داشتن خالی بگذارید",
+        "removeSecret": "حذف مقدار ذخیره‌شده"
+      },
+      "gateways": {
+        "card": "کارت‌به‌کارت",
+        "zarinpal": "زرین‌پال",
+        "idpay": "آی‌دی‌پی"
       }
     },
     "sessions": {

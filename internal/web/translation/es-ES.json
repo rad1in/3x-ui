@@ -2827,7 +2827,21 @@
         "cardNumber": "Número de tarjeta (16 dígitos)",
         "holderName": "Titular de la tarjeta",
         "bankName": "Banco",
-        "instructions": "Instrucciones para el cliente"
+        "instructions": "Instrucciones para el cliente",
+        "zarinpalTitle": "Zarinpal",
+        "idpayTitle": "IDPay",
+        "gatewayEnabled": "Activado",
+        "gatewayHint": "Solo funciona con planes en IRT o IRR y necesita la URL pública base.",
+        "merchantId": "ID de comercio",
+        "apiKey": "Clave API",
+        "sandbox": "Modo de pruebas (sandbox)",
+        "secretKept": "Guardada. Déjala en blanco para conservarla",
+        "removeSecret": "Eliminar el valor guardado"
+      },
+      "gateways": {
+        "card": "Tarjeta a tarjeta",
+        "zarinpal": "Zarinpal",
+        "idpay": "IDPay"
       }
     },
     "sessions": {

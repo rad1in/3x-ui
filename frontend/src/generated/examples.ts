@@ -1005,6 +1005,11 @@ export const EXAMPLES: Record<string, unknown> = {
     "registered": 1,
     "remaining": 1
   },
+  "IDPayConfig": {
+    "apiKey": "",
+    "enabled": false,
+    "sandbox": false
+  },
   "Inbound": {
     "clientStats": [
       {
@@ -1290,6 +1295,7 @@ export const EXAMPLES: Record<string, unknown> = {
     "kind": "new",
     "limitIp": 2,
     "paidAt": 0,
+    "payUrl": "",
     "planId": 1,
     "planName": "Monthly 50 GB",
     "receiptNote": "",
@@ -1316,6 +1322,7 @@ export const EXAMPLES: Record<string, unknown> = {
         "kind": "new",
         "limitIp": 2,
         "paidAt": 0,
+        "payUrl": "",
         "planId": 1,
         "planName": "Monthly 50 GB",
         "receiptNote": "",
@@ -1430,8 +1437,47 @@ export const EXAMPLES: Record<string, unknown> = {
       "holderName": "Ali Rezaei",
       "instructions": ""
     },
+    "clearSecrets": [
+      ""
+    ],
+    "idpay": {
+      "apiKey": "",
+      "enabled": false,
+      "sandbox": false
+    },
     "publicBaseUrl": "https://shop.example.com",
-    "publicEnabled": false
+    "publicEnabled": false,
+    "zarinpal": {
+      "enabled": false,
+      "merchantId": "",
+      "sandbox": false
+    }
+  },
+  "SalesConfigView": {
+    "card": {
+      "bankName": "Melli",
+      "cardNumber": "6037991812345678",
+      "enabled": false,
+      "holderName": "Ali Rezaei",
+      "instructions": ""
+    },
+    "clearSecrets": [
+      ""
+    ],
+    "hasIdpayApiKey": false,
+    "hasZarinpalMerchantId": false,
+    "idpay": {
+      "apiKey": "",
+      "enabled": false,
+      "sandbox": false
+    },
+    "publicBaseUrl": "https://shop.example.com",
+    "publicEnabled": false,
+    "zarinpal": {
+      "enabled": false,
+      "merchantId": "",
+      "sandbox": false
+    }
   },
   "ServerSettings": {
     "contentPaddingAddition": "",
@@ -1513,6 +1559,7 @@ export const EXAMPLES: Record<string, unknown> = {
     "fulfilled": false,
     "gateway": "card",
     "kind": "new",
+    "payUrl": "",
     "planName": "Monthly 50 GB",
     "rejectReason": "",
     "status": "pending",
@@ -1668,5 +1715,10 @@ export const EXAMPLES: Record<string, unknown> = {
     "id": 4,
     "reason": "this kernel has no PPP support (/dev/ppp is missing), which L2TP needs",
     "running": false
+  },
+  "ZarinpalConfig": {
+    "enabled": false,
+    "merchantId": "",
+    "sandbox": false
   }
 };

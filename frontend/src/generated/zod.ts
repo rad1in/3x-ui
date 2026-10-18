@@ -958,6 +958,13 @@ export const HwidSlotStatusSchema = z.object({
 });
 export type HwidSlotStatus = z.infer<typeof HwidSlotStatusSchema>;
 
+export const IDPayConfigSchema = z.object({
+  apiKey: z.string(),
+  enabled: z.boolean(),
+  sandbox: z.boolean(),
+});
+export type IDPayConfig = z.infer<typeof IDPayConfigSchema>;
+
 export const InboundSchema = z.object({
   clientStats: z.array(z.lazy(() => ClientTrafficSchema)),
   disableFlow: z.boolean(),
@@ -1247,6 +1254,7 @@ export const OrderSchema = z.object({
   kind: z.string(),
   limitIp: z.number().int(),
   paidAt: z.number().int(),
+  payUrl: z.string(),
   planId: z.number().int(),
   planName: z.string(),
   receiptNote: z.string(),
@@ -1374,10 +1382,25 @@ export type RealityScanResult = z.infer<typeof RealityScanResultSchema>;
 
 export const SalesConfigSchema = z.object({
   card: z.lazy(() => CardPayConfigSchema),
+  clearSecrets: z.array(z.string()).optional(),
+  idpay: z.lazy(() => IDPayConfigSchema),
   publicBaseUrl: z.string(),
   publicEnabled: z.boolean(),
+  zarinpal: z.lazy(() => ZarinpalConfigSchema),
 });
 export type SalesConfig = z.infer<typeof SalesConfigSchema>;
+
+export const SalesConfigViewSchema = z.object({
+  card: z.lazy(() => CardPayConfigSchema),
+  clearSecrets: z.array(z.string()).optional(),
+  hasIdpayApiKey: z.boolean(),
+  hasZarinpalMerchantId: z.boolean(),
+  idpay: z.lazy(() => IDPayConfigSchema),
+  publicBaseUrl: z.string(),
+  publicEnabled: z.boolean(),
+  zarinpal: z.lazy(() => ZarinpalConfigSchema),
+});
+export type SalesConfigView = z.infer<typeof SalesConfigViewSchema>;
 
 export const ServerSettingsSchema = z.object({
   contentPaddingAddition: z.string().optional(),
@@ -1454,6 +1477,7 @@ export const ShopOrderViewSchema = z.object({
   fulfilled: z.boolean(),
   gateway: z.string(),
   kind: z.string(),
+  payUrl: z.string().optional(),
   planName: z.string(),
   rejectReason: z.string(),
   status: z.string(),
@@ -1595,4 +1619,11 @@ export const VPNStatusSchema = z.object({
   running: z.boolean(),
 });
 export type VPNStatus = z.infer<typeof VPNStatusSchema>;
+
+export const ZarinpalConfigSchema = z.object({
+  enabled: z.boolean(),
+  merchantId: z.string(),
+  sandbox: z.boolean(),
+});
+export type ZarinpalConfig = z.infer<typeof ZarinpalConfigSchema>;
 

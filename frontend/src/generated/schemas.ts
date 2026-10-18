@@ -3910,6 +3910,26 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "IDPayConfig": {
+    "description": "IDPayConfig is the IDPay account. ApiKey is a secret.",
+    "properties": {
+      "apiKey": {
+        "type": "string"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "sandbox": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "apiKey",
+      "enabled",
+      "sandbox"
+    ],
+    "type": "object"
+  },
   "Inbound": {
     "description": "Inbound represents an Xray inbound configuration with traffic statistics and settings.",
     "properties": {
@@ -5204,6 +5224,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "format": "int64",
         "type": "integer"
       },
+      "payUrl": {
+        "type": "string"
+      },
       "planId": {
         "example": 1,
         "type": "integer"
@@ -5254,6 +5277,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "kind",
       "limitIp",
       "paidAt",
+      "payUrl",
       "planId",
       "planName",
       "receiptNote",
@@ -5733,10 +5757,19 @@ export const SCHEMAS: Record<string, unknown> = {
     "type": "object"
   },
   "SalesConfig": {
-    "description": "SalesConfig is everything the operator configures about selling. It is one\nJSON setting; later payment methods add their own sections.",
+    "description": "SalesConfig is everything the operator configures about selling. It is one\nJSON setting. Secrets are served blank and kept when a save leaves them\nblank; ClearSecrets names the ones to empty on purpose.",
     "properties": {
       "card": {
         "$ref": "#/components/schemas/CardPayConfig"
+      },
+      "clearSecrets": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "idpay": {
+        "$ref": "#/components/schemas/IDPayConfig"
       },
       "publicBaseUrl": {
         "example": "https://shop.example.com",
@@ -5744,12 +5777,60 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "publicEnabled": {
         "type": "boolean"
+      },
+      "zarinpal": {
+        "$ref": "#/components/schemas/ZarinpalConfig"
       }
     },
     "required": [
       "card",
+      "idpay",
       "publicBaseUrl",
-      "publicEnabled"
+      "publicEnabled",
+      "zarinpal"
+    ],
+    "type": "object"
+  },
+  "SalesConfigView": {
+    "description": "SalesConfigView is the configuration as the admin API serves it: secrets are\nblank and the Has flags say which are set.",
+    "properties": {
+      "card": {
+        "$ref": "#/components/schemas/CardPayConfig"
+      },
+      "clearSecrets": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "hasIdpayApiKey": {
+        "type": "boolean"
+      },
+      "hasZarinpalMerchantId": {
+        "type": "boolean"
+      },
+      "idpay": {
+        "$ref": "#/components/schemas/IDPayConfig"
+      },
+      "publicBaseUrl": {
+        "example": "https://shop.example.com",
+        "type": "string"
+      },
+      "publicEnabled": {
+        "type": "boolean"
+      },
+      "zarinpal": {
+        "$ref": "#/components/schemas/ZarinpalConfig"
+      }
+    },
+    "required": [
+      "card",
+      "hasIdpayApiKey",
+      "hasZarinpalMerchantId",
+      "idpay",
+      "publicBaseUrl",
+      "publicEnabled",
+      "zarinpal"
     ],
     "type": "object"
   },
@@ -6026,6 +6107,9 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "kind": {
         "example": "new",
+        "type": "string"
+      },
+      "payUrl": {
         "type": "string"
       },
       "planName": {
@@ -6583,6 +6667,26 @@ export const SCHEMAS: Record<string, unknown> = {
     "required": [
       "id",
       "running"
+    ],
+    "type": "object"
+  },
+  "ZarinpalConfig": {
+    "description": "ZarinpalConfig is the Zarinpal merchant account. MerchantId is a secret.",
+    "properties": {
+      "enabled": {
+        "type": "boolean"
+      },
+      "merchantId": {
+        "type": "string"
+      },
+      "sandbox": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "enabled",
+      "merchantId",
+      "sandbox"
     ],
     "type": "object"
   }

@@ -2827,7 +2827,21 @@
         "cardNumber": "Card number (16 digits)",
         "holderName": "Card holder",
         "bankName": "Bank",
-        "instructions": "Instructions for the customer"
+        "instructions": "Instructions for the customer",
+        "zarinpalTitle": "Zarinpal",
+        "idpayTitle": "IDPay",
+        "gatewayEnabled": "Enabled",
+        "gatewayHint": "Works with plans priced in IRT or IRR only, and needs the public base URL.",
+        "merchantId": "Merchant ID",
+        "apiKey": "API key",
+        "sandbox": "Sandbox mode",
+        "secretKept": "Saved. Leave blank to keep it",
+        "removeSecret": "Remove the saved value"
+      },
+      "gateways": {
+        "card": "Card to card",
+        "zarinpal": "Zarinpal",
+        "idpay": "IDPay"
       }
     },
     "sessions": {

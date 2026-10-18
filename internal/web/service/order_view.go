@@ -41,12 +41,15 @@ type ShopOrderView struct {
 	Fulfilled       bool           `json:"fulfilled"`
 	SubscriptionURL string         `json:"subscriptionUrl"`
 	Card            *CardPayConfig `json:"card,omitempty"`
+	PayURL          string         `json:"payUrl,omitempty"`
 }
 
 func enabledMethods(cfg *SalesConfig) []string {
 	methods := []string{}
-	if cfg.Card.Enabled {
-		methods = append(methods, GatewayCard)
+	for _, gateway := range []string{GatewayCard, GatewayZarinpal, GatewayIDPay} {
+		if gatewayEnabled(cfg, gateway) {
+			methods = append(methods, gateway)
+		}
 	}
 	return methods
 }
@@ -87,6 +90,9 @@ func (s *OrderService) PublicView(order *model.Order, host string) (*ShopOrderVi
 	if order.Gateway == GatewayCard && awaitingTransfer && cfg.Card.Enabled {
 		card := cfg.Card
 		view.Card = &card
+	}
+	if isOnline(order.Gateway) && order.Status == model.OrderStatusPending {
+		view.PayURL = order.PayURL
 	}
 	if view.Fulfilled {
 		view.SubscriptionURL = s.subscriptionURL(order.ClientEmail, host)

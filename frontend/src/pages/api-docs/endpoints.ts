@@ -2527,14 +2527,14 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/panel/api/sales/config',
         summary:
-          'Selling configuration: whether the public shop is on, its public base URL and the card-to-card destination. Owner only.',
-        responseSchema: 'SalesConfig',
+          'Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay). Secrets (the Zarinpal merchant id and the IDPay API key) are never returned: they come back blank and hasZarinpalMerchantId / hasIdpayApiKey say whether they are set. Owner only.',
+        responseSchema: 'SalesConfigView',
       },
       {
         method: 'POST',
         path: '/panel/api/sales/config/save',
         summary:
-          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); a disabled section is stored as is. Owner only.',
+          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal or IDPay section needs its secret and the public base URL (http or https), because the gateway sends the customer back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.',
         params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SalesConfig.' }],
       },
     ],
@@ -2544,7 +2544,7 @@ export const sections: readonly Section[] = [
     id: 'shop',
     title: 'Public Shop',
     description:
-      'The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address.',
+      'The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address.',
     endpoints: [
       {
         method: 'GET',
@@ -2596,6 +2596,26 @@ export const sections: readonly Section[] = [
           { name: 'note', in: 'body (json)', type: 'string', optional: true },
         ],
         responseSchema: 'ShopOrderView',
+      },
+      {
+        method: 'GET',
+        path: '/shop/api/callback/:gateway',
+        summary:
+          'Where Zarinpal (Status and Authority in the query) and IDPay (a form POST, see the POST entry) send the customer back. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.',
+        params: [
+          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay'] },
+          { name: 'order', in: 'query', type: 'string', desc: 'Order token.' },
+        ],
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/callback/:gateway',
+        summary:
+          'The same callback for gateways that return the customer with a form POST (IDPay sends status 10 when the customer paid).',
+        params: [
+          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay'] },
+          { name: 'order', in: 'query', type: 'string', desc: 'Order token.' },
+        ],
       },
     ],
   },

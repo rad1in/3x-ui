@@ -2827,7 +2827,21 @@
         "cardNumber": "رقم البطاقة (16 رقمًا)",
         "holderName": "اسم صاحب البطاقة",
         "bankName": "اسم البنك",
-        "instructions": "تعليمات للعميل"
+        "instructions": "تعليمات للعميل",
+        "zarinpalTitle": "زرين بال",
+        "idpayTitle": "IDPay",
+        "gatewayEnabled": "تفعيل",
+        "gatewayHint": "تعمل مع الخطط المسعّرة بالتومان أو الريال فقط، وتحتاج إلى العنوان العام للمتجر.",
+        "merchantId": "معرّف التاجر",
+        "apiKey": "مفتاح API",
+        "sandbox": "وضع الاختبار (Sandbox)",
+        "secretKept": "محفوظ. اتركه فارغًا للإبقاء عليه",
+        "removeSecret": "حذف القيمة المحفوظة"
+      },
+      "gateways": {
+        "card": "بطاقة إلى بطاقة",
+        "zarinpal": "زرين بال",
+        "idpay": "IDPay"
       }
     },
     "sessions": {
