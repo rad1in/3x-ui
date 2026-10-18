@@ -633,6 +633,25 @@ export const ClientSlimSchema = z.object({
 });
 export type ClientSlim = z.infer<typeof ClientSlimSchema>;
 
+export const ClientTemplateSchema = z.object({
+  comment: z.string(),
+  createdAt: z.number().int(),
+  delayedStart: z.boolean(),
+  expiryDays: z.number().int(),
+  flow: z.string(),
+  group: z.string(),
+  id: z.number().int(),
+  inboundIds: z.array(z.number().int()),
+  limitIp: z.number().int(),
+  name: z.string(),
+  reset: z.number().int(),
+  totalGB: z.number().int(),
+  trafficReset: z.string(),
+  trafficResetDay: z.number().int(),
+  updatedAt: z.number().int(),
+});
+export type ClientTemplate = z.infer<typeof ClientTemplateSchema>;
+
 export const ClientTrafficSchema = z.object({
   down: z.number().int(),
   email: z.string(),

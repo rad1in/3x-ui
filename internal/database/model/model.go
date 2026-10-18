@@ -1063,6 +1063,28 @@ type ClientGroup struct {
 
 func (ClientGroup) TableName() string { return "client_groups" }
 
+// ClientTemplate is a saved preset for creating clients. TotalGB is in bytes
+// like Client.TotalGB; ExpiryDays 0 means no expiry.
+type ClientTemplate struct {
+	Id              int    `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
+	Name            string `json:"name" gorm:"uniqueIndex;not null" example:"30 days 50 GB"`
+	TotalGB         int64  `json:"totalGB" gorm:"column:total_gb;default:0" example:"53687091200"`
+	ExpiryDays      int    `json:"expiryDays" gorm:"column:expiry_days;default:0" example:"30"`
+	DelayedStart    bool   `json:"delayedStart" gorm:"column:delayed_start;default:false"`
+	LimitIP         int    `json:"limitIp" gorm:"column:limit_ip;default:0" example:"2"`
+	Flow            string `json:"flow" gorm:"default:''" example:"xtls-rprx-vision"`
+	Group           string `json:"group" gorm:"column:group_name;default:''" example:"trial"`
+	Comment         string `json:"comment" gorm:"default:''"`
+	Reset           int    `json:"reset" gorm:"default:0"`
+	TrafficReset    string `json:"trafficReset" gorm:"column:traffic_reset;default:never" example:"never"`
+	TrafficResetDay int    `json:"trafficResetDay" gorm:"column:traffic_reset_day;default:1"`
+	InboundIds      []int  `json:"inboundIds" gorm:"column:inbound_ids;serializer:json" example:"[1,2]"`
+	CreatedAt       int64  `json:"createdAt" gorm:"autoCreateTime:milli"`
+	UpdatedAt       int64  `json:"updatedAt" gorm:"autoUpdateTime:milli"`
+}
+
+func (ClientTemplate) TableName() string { return "client_templates" }
+
 // MarshalJSON emits the reverse column as a nested JSON object rather than an
 // escaped JSON-text string, matching the same convention Inbound uses for its
 // JSON-text columns. Empty storage renders as null.

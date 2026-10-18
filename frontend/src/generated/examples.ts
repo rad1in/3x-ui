@@ -648,6 +648,26 @@ export const EXAMPLES: Record<string, unknown> = {
     "traffic": null,
     "updatedAt": 1735100000000
   },
+  "ClientTemplate": {
+    "comment": "",
+    "createdAt": 0,
+    "delayedStart": false,
+    "expiryDays": 30,
+    "flow": "xtls-rprx-vision",
+    "group": "trial",
+    "id": 1,
+    "inboundIds": [
+      1,
+      2
+    ],
+    "limitIp": 2,
+    "name": "30 days 50 GB",
+    "reset": 0,
+    "totalGB": 53687091200,
+    "trafficReset": "never",
+    "trafficResetDay": 0,
+    "updatedAt": 0
+  },
   "ClientTraffic": {
     "down": 2097152,
     "email": "user1",

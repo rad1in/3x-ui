@@ -159,6 +159,25 @@ _openapi:
         JSON. Groups become empty if all their members are removed.
       url: '#clear-the-group-label-on-many-clients-in-one-call-inverse-of-groupsbulkadd-clients-themselves-are-kept--only-the-group-label-is-cleared-from-clientsgroup_name-and-from-each-owning-inbounds-settings-json-groups-become-empty-if-all-their-members-are-removed'
     - depth: 2
+      title: List the saved client templates (presets for quota, duration, IP limit,
+        flow, group and target inbounds), sorted by name. totalGB is in bytes;
+        expiryDays 0 means no expiry.
+      url: '#list-the-saved-client-templates-presets-for-quota-duration-ip-limit-flow-group-and-target-inbounds-sorted-by-name-totalgb-is-in-bytes-expirydays-0-means-no-expiry'
+    - depth: 2
+      title: Create a client template, or replace the one whose id is given. Names are
+        unique and at least one inbound is required. Returns the saved template.
+      url: '#create-a-client-template-or-replace-the-one-whose-id-is-given-names-are-unique-and-at-least-one-inbound-is-required-returns-the-saved-template'
+    - depth: 2
+      title: Delete a client template. Clients already created from it are not
+        touched.
+      url: '#delete-a-client-template-clients-already-created-from-it-are-not-touched'
+    - depth: 2
+      title: Create one client per email from a template. With delayedStart the expiry
+        is stored as a negative duration that starts counting at first use.
+        Emails that cannot be created (for example duplicates) are reported
+        under failed while the rest are still created.
+      url: '#create-one-client-per-email-from-a-template-with-delayedstart-the-expiry-is-stored-as-a-negative-duration-that-starts-counting-at-first-use-emails-that-cannot-be-created-for-example-duplicates-are-reported-under-failed-while-the-rest-are-still-created'
+    - depth: 2
       title: Attach many existing clients to many inbounds in one call. Each client
         keeps its identity (email/UUID/password/subId) and a shared traffic row;
         all clients are added to a target inbound in a single AddInboundClient
@@ -433,6 +452,22 @@ _openapi:
           cleared from clients.group_name and from each owning inbound's
           settings JSON. Groups become empty if all their members are removed.
         id: clear-the-group-label-on-many-clients-in-one-call-inverse-of-groupsbulkadd-clients-themselves-are-kept--only-the-group-label-is-cleared-from-clientsgroup_name-and-from-each-owning-inbounds-settings-json-groups-become-empty-if-all-their-members-are-removed
+      - content: List the saved client templates (presets for quota, duration, IP limit,
+          flow, group and target inbounds), sorted by name. totalGB is in bytes;
+          expiryDays 0 means no expiry.
+        id: list-the-saved-client-templates-presets-for-quota-duration-ip-limit-flow-group-and-target-inbounds-sorted-by-name-totalgb-is-in-bytes-expirydays-0-means-no-expiry
+      - content: Create a client template, or replace the one whose id is given. Names
+          are unique and at least one inbound is required. Returns the saved
+          template.
+        id: create-a-client-template-or-replace-the-one-whose-id-is-given-names-are-unique-and-at-least-one-inbound-is-required-returns-the-saved-template
+      - content: Delete a client template. Clients already created from it are not
+          touched.
+        id: delete-a-client-template-clients-already-created-from-it-are-not-touched
+      - content: Create one client per email from a template. With delayedStart the
+          expiry is stored as a negative duration that starts counting at first
+          use. Emails that cannot be created (for example duplicates) are
+          reported under failed while the rest are still created.
+        id: create-one-client-per-email-from-a-template-with-delayedstart-the-expiry-is-stored-as-a-negative-duration-that-starts-counting-at-first-use-emails-that-cannot-be-created-for-example-duplicates-are-reported-under-failed-while-the-rest-are-still-created
       - content: Attach many existing clients to many inbounds in one call. Each client
           keeps its identity (email/UUID/password/subId) and a shared traffic
           row; all clients are added to a target inbound in a single
@@ -669,7 +704,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/clients/list","method":"get"},{"path":"/panel/api/clients/list/paged","method":"get"},{"path":"/panel/api/clients/get/{email}","method":"get"},{"path":"/panel/api/clients/get/tgId/{tgId}","method":"get"},{"path":"/panel/api/clients/add","method":"post"},{"path":"/panel/api/clients/renewalPreview","method":"post"},{"path":"/panel/api/clients/update/{email}","method":"post"},{"path":"/panel/api/clients/del/{email}","method":"post"},{"path":"/panel/api/clients/{email}/attach","method":"post"},{"path":"/panel/api/clients/{email}/detach","method":"post"},{"path":"/panel/api/clients/{email}/externalLinks","method":"post"},{"path":"/panel/api/clients/resetAllTraffics","method":"post"},{"path":"/panel/api/clients/delDepleted","method":"post"},{"path":"/panel/api/clients/delOrphans","method":"post"},{"path":"/panel/api/clients/export","method":"get"},{"path":"/panel/api/clients/import","method":"post"},{"path":"/panel/api/clients/bulkAdjust","method":"post"},{"path":"/panel/api/clients/bulkEnable","method":"post"},{"path":"/panel/api/clients/bulkDisable","method":"post"},{"path":"/panel/api/clients/bulkDel","method":"post"},{"path":"/panel/api/clients/bulkCreate","method":"post"},{"path":"/panel/api/clients/groups/bulkAdd","method":"post"},{"path":"/panel/api/clients/groups/bulkRemove","method":"post"},{"path":"/panel/api/clients/bulkAttach","method":"post"},{"path":"/panel/api/clients/bulkDetach","method":"post"},{"path":"/panel/api/clients/bulkResetTraffic","method":"post"},{"path":"/panel/api/clients/groups","method":"get"},{"path":"/panel/api/clients/groups/{name}/emails","method":"get"},{"path":"/panel/api/clients/groups/create","method":"post"},{"path":"/panel/api/clients/groups/rename","method":"post"},{"path":"/panel/api/clients/groups/delete","method":"post"},{"path":"/panel/api/clients/groups/resetTraffic","method":"post"},{"path":"/panel/api/clients/resetTraffic/{email}","method":"post"},{"path":"/panel/api/clients/updateTraffic/{email}","method":"post"},{"path":"/panel/api/clients/ips/{email}","method":"post"},{"path":"/panel/api/clients/clearIps/{email}","method":"post"},{"path":"/panel/api/clients/hwids/{email}","method":"post"},{"path":"/panel/api/clients/hwids/{email}","method":"delete"},{"path":"/panel/api/clients/hwids/{email}/{id}","method":"delete"},{"path":"/panel/api/clients/onlines","method":"post"},{"path":"/panel/api/clients/onlinesByGuid","method":"post"},{"path":"/panel/api/clients/clientIpsByGuid","method":"post"},{"path":"/panel/api/clients/activeInbounds","method":"post"},{"path":"/panel/api/clients/lastOnline","method":"post"},{"path":"/panel/api/clients/traffic/{email}","method":"get"},{"path":"/panel/api/clients/subLinks/{subId}","method":"get"},{"path":"/panel/api/clients/happLink/{id}","method":"post"},{"path":"/panel/api/clients/links/{email}","method":"get"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/clients/list","method":"get"},{"path":"/panel/api/clients/list/paged","method":"get"},{"path":"/panel/api/clients/get/{email}","method":"get"},{"path":"/panel/api/clients/get/tgId/{tgId}","method":"get"},{"path":"/panel/api/clients/add","method":"post"},{"path":"/panel/api/clients/renewalPreview","method":"post"},{"path":"/panel/api/clients/update/{email}","method":"post"},{"path":"/panel/api/clients/del/{email}","method":"post"},{"path":"/panel/api/clients/{email}/attach","method":"post"},{"path":"/panel/api/clients/{email}/detach","method":"post"},{"path":"/panel/api/clients/{email}/externalLinks","method":"post"},{"path":"/panel/api/clients/resetAllTraffics","method":"post"},{"path":"/panel/api/clients/delDepleted","method":"post"},{"path":"/panel/api/clients/delOrphans","method":"post"},{"path":"/panel/api/clients/export","method":"get"},{"path":"/panel/api/clients/import","method":"post"},{"path":"/panel/api/clients/bulkAdjust","method":"post"},{"path":"/panel/api/clients/bulkEnable","method":"post"},{"path":"/panel/api/clients/bulkDisable","method":"post"},{"path":"/panel/api/clients/bulkDel","method":"post"},{"path":"/panel/api/clients/bulkCreate","method":"post"},{"path":"/panel/api/clients/groups/bulkAdd","method":"post"},{"path":"/panel/api/clients/groups/bulkRemove","method":"post"},{"path":"/panel/api/clients/templates","method":"get"},{"path":"/panel/api/clients/templates/save","method":"post"},{"path":"/panel/api/clients/templates/del/{id}","method":"post"},{"path":"/panel/api/clients/templates/apply","method":"post"},{"path":"/panel/api/clients/bulkAttach","method":"post"},{"path":"/panel/api/clients/bulkDetach","method":"post"},{"path":"/panel/api/clients/bulkResetTraffic","method":"post"},{"path":"/panel/api/clients/groups","method":"get"},{"path":"/panel/api/clients/groups/{name}/emails","method":"get"},{"path":"/panel/api/clients/groups/create","method":"post"},{"path":"/panel/api/clients/groups/rename","method":"post"},{"path":"/panel/api/clients/groups/delete","method":"post"},{"path":"/panel/api/clients/groups/resetTraffic","method":"post"},{"path":"/panel/api/clients/resetTraffic/{email}","method":"post"},{"path":"/panel/api/clients/updateTraffic/{email}","method":"post"},{"path":"/panel/api/clients/ips/{email}","method":"post"},{"path":"/panel/api/clients/clearIps/{email}","method":"post"},{"path":"/panel/api/clients/hwids/{email}","method":"post"},{"path":"/panel/api/clients/hwids/{email}","method":"delete"},{"path":"/panel/api/clients/hwids/{email}/{id}","method":"delete"},{"path":"/panel/api/clients/onlines","method":"post"},{"path":"/panel/api/clients/onlinesByGuid","method":"post"},{"path":"/panel/api/clients/clientIpsByGuid","method":"post"},{"path":"/panel/api/clients/activeInbounds","method":"post"},{"path":"/panel/api/clients/lastOnline","method":"post"},{"path":"/panel/api/clients/traffic/{email}","method":"get"},{"path":"/panel/api/clients/subLinks/{subId}","method":"get"},{"path":"/panel/api/clients/happLink/{id}","method":"post"},{"path":"/panel/api/clients/links/{email}","method":"get"}]} showTitle />
     </>
   );
 }

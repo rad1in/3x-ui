@@ -2519,6 +2519,92 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "ClientTemplate": {
+    "description": "ClientTemplate is a saved preset for creating clients. TotalGB is in bytes\nlike Client.TotalGB; ExpiryDays 0 means no expiry.",
+    "properties": {
+      "comment": {
+        "type": "string"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "delayedStart": {
+        "type": "boolean"
+      },
+      "expiryDays": {
+        "example": 30,
+        "type": "integer"
+      },
+      "flow": {
+        "example": "xtls-rprx-vision",
+        "type": "string"
+      },
+      "group": {
+        "example": "trial",
+        "type": "string"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "inboundIds": {
+        "example": [
+          1,
+          2
+        ],
+        "items": {
+          "type": "integer"
+        },
+        "type": "array"
+      },
+      "limitIp": {
+        "example": 2,
+        "type": "integer"
+      },
+      "name": {
+        "example": "30 days 50 GB",
+        "type": "string"
+      },
+      "reset": {
+        "type": "integer"
+      },
+      "totalGB": {
+        "example": 53687091200,
+        "format": "int64",
+        "type": "integer"
+      },
+      "trafficReset": {
+        "example": "never",
+        "type": "string"
+      },
+      "trafficResetDay": {
+        "type": "integer"
+      },
+      "updatedAt": {
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "comment",
+      "createdAt",
+      "delayedStart",
+      "expiryDays",
+      "flow",
+      "group",
+      "id",
+      "inboundIds",
+      "limitIp",
+      "name",
+      "reset",
+      "totalGB",
+      "trafficReset",
+      "trafficResetDay",
+      "updatedAt"
+    ],
+    "type": "object"
+  },
   "ClientTraffic": {
     "description": "ClientTraffic represents traffic statistics and limits for a specific client.\nIt tracks upload/download usage, expiry times, and online status for inbound clients.",
     "properties": {

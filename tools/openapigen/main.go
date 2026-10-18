@@ -43,6 +43,7 @@ func run(root, outDir string) error {
 				"AuditLog",
 				"SponsorRecord",
 				"HostedPanel",
+				"ClientTemplate",
 			),
 			AliasAllow: setOf("Protocol"),
 			Overrides: map[string][]walkOverride{

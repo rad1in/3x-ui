@@ -49,6 +49,7 @@ import {
   TagsOutlined,
   TeamOutlined,
   UploadOutlined,
+  SnippetsOutlined,
   UsergroupAddOutlined,
   UsergroupDeleteOutlined,
 } from '@ant-design/icons';
@@ -84,6 +85,7 @@ const ClientFormModal = lazy(() => import('./ClientFormModal'));
 const ClientInfoModal = lazy(() => import('./ClientInfoModal'));
 const ClientQrModal = lazy(() => import('./ClientQrModal'));
 const ClientBulkAddModal = lazy(() => import('./ClientBulkAddModal'));
+const ClientTemplatesModal = lazy(() => import('./ClientTemplatesModal'));
 const ClientBulkAdjustModal = lazy(() => import('./ClientBulkAdjustModal'));
 import ClientsEmptyState from './ClientsEmptyState';
 const FilterDrawer = lazy(() => import('./FilterDrawer'));
@@ -410,6 +412,7 @@ export default function ClientsPage() {
     {},
   );
   const [bulkAddOpen, setBulkAddOpen] = useState(false);
+  const [templatesOpen, setTemplatesOpen] = useState(false);
   const [bulkAdjustOpen, setBulkAdjustOpen] = useState(false);
   const [subLinksOpen, setSubLinksOpen] = useState(false);
   const [bulkGroupOpen, setBulkGroupOpen] = useState(false);
@@ -1491,6 +1494,12 @@ export default function ClientsPage() {
                                         onClick: () => setBulkAddOpen(true),
                                       },
                                       {
+                                        key: 'templates',
+                                        icon: <SnippetsOutlined />,
+                                        label: t('pages.clients.templates.menu'),
+                                        onClick: () => setTemplatesOpen(true),
+                                      },
+                                      {
                                         key: 'export',
                                         icon: <DownloadOutlined />,
                                         label: t('pages.clients.exportClients'),
@@ -1939,6 +1948,14 @@ export default function ClientsPage() {
             groups={allGroups}
             onOpenChange={setBulkAddOpen}
             onSaved={() => setBulkAddOpen(false)}
+          />
+        </LazyMount>
+        <LazyMount when={templatesOpen}>
+          <ClientTemplatesModal
+            open={templatesOpen}
+            inbounds={inbounds}
+            groups={allGroups}
+            onOpenChange={setTemplatesOpen}
           />
         </LazyMount>
         <LazyMount when={bulkAdjustOpen}>

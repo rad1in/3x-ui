@@ -65,6 +65,7 @@ func migrationModels() []any {
 		&model.HostedPanel{},
 		&model.ClientWarning{},
 		&model.ClientDepletion{},
+		&model.ClientTemplate{},
 	}
 }
 

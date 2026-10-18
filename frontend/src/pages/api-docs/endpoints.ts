@@ -1470,6 +1470,39 @@ export const sections: readonly Section[] = [
         response: '{\n  "success": true,\n  "obj": {\n    "affected": 2\n  }\n}',
       },
       {
+        method: 'GET',
+        path: '/panel/api/clients/templates',
+        summary:
+          'List the saved client templates (presets for quota, duration, IP limit, flow, group and target inbounds), sorted by name. totalGB is in bytes; expiryDays 0 means no expiry.',
+        response:
+          '{\n  "success": true,\n  "obj": [\n    {\n      "id": 1,\n      "name": "30 days 50 GB",\n      "totalGB": 53687091200,\n      "expiryDays": 30,\n      "delayedStart": false,\n      "limitIp": 2,\n      "flow": "",\n      "group": "trial",\n      "inboundIds": [1]\n    }\n  ]\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/templates/save',
+        summary:
+          'Create a client template, or replace the one whose id is given. Names are unique and at least one inbound is required. Returns the saved template.',
+        body: '{\n  "name": "30 days 50 GB",\n  "totalGB": 53687091200,\n  "expiryDays": 30,\n  "delayedStart": false,\n  "limitIp": 2,\n  "group": "trial",\n  "inboundIds": [1]\n}',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "id": 1,\n    "name": "30 days 50 GB",\n    "inboundIds": [1]\n  }\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/templates/del/:id',
+        summary: 'Delete a client template. Clients already created from it are not touched.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Template id.' }],
+        response: '{\n  "success": true,\n  "msg": "Template deleted"\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/templates/apply',
+        summary:
+          'Create one client per email from a template. With delayedStart the expiry is stored as a negative duration that starts counting at first use. Emails that cannot be created (for example duplicates) are reported under failed while the rest are still created.',
+        body: '{\n  "templateId": 1,\n  "emails": ["alice", "bob"]\n}',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "created": ["alice"],\n    "failed": { "bob": "email already in use: bob" },\n    "needRestart": false\n  }\n}',
+      },
+      {
         method: 'POST',
         path: '/panel/api/clients/bulkAttach',
         summary:

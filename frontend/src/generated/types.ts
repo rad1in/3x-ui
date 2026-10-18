@@ -601,6 +601,24 @@ export interface ClientSlim {
   updatedAt: number;
 }
 
+export interface ClientTemplate {
+  comment: string;
+  createdAt: number;
+  delayedStart: boolean;
+  expiryDays: number;
+  flow: string;
+  group: string;
+  id: number;
+  inboundIds: number[];
+  limitIp: number;
+  name: string;
+  reset: number;
+  totalGB: number;
+  trafficReset: string;
+  trafficResetDay: number;
+  updatedAt: number;
+}
+
 export interface ClientTraffic {
   down: number;
   email: string;
