@@ -1343,6 +1343,13 @@
         "expires": "Valid until {time}; it works once.",
         "note": "The new server must be able to reach this panel at the address in the command, and this panel must be able to reach the new server's panel. Private and loopback addresses are refused."
       },
+      "failover": {
+        "title": "Failover",
+        "node": "Backup node",
+        "nodeHint": "While this node is offline longer than the delay, subscription links for its inbounds point at the backup node's address, for each inbound the backup also has on the same protocol and port. Needs an enabled, online backup with matching inbounds; an inbound with a custom share address keeps it.",
+        "none": "No failover",
+        "after": "Offline for (seconds)"
+      },
       "totalNodes": "Total Nodes",
       "onlineNodes": "Online",
       "offlineNodes": "Offline",

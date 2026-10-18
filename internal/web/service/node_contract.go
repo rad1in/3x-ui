@@ -30,6 +30,8 @@ type NodeView struct {
 	BillingDay          int      `json:"billingDay" example:"1"`
 	MonthlyCost         float64  `json:"monthlyCost" example:"5"`
 	CostCurrency        string   `json:"costCurrency" example:"USD"`
+	FailoverNodeId      int      `json:"failoverNodeId" example:"2"`
+	FailoverAfterSec    int      `json:"failoverAfterSec" example:"120"`
 	PeriodStart         int64    `json:"periodStart" example:"1772323200"`
 	PeriodBytes         int64    `json:"periodBytes" example:"1073741824"`
 	CapState            string   `json:"capState" example:""`
@@ -86,6 +88,8 @@ func toNodeView(n *model.Node) *NodeView {
 		BillingDay:          n.BillingDay,
 		MonthlyCost:         n.MonthlyCost,
 		CostCurrency:        n.CostCurrency,
+		FailoverNodeId:      n.FailoverNodeId,
+		FailoverAfterSec:    n.FailoverAfterSec,
 		PeriodStart:         n.PeriodStart,
 		PeriodBytes:         n.PeriodBytes,
 		CapState:            n.CapState,
@@ -151,6 +155,8 @@ type NodeMutationRequest struct {
 	BillingDay          int      `json:"billingDay" form:"billingDay" validate:"gte=0,lte=28"`
 	MonthlyCost         float64  `json:"monthlyCost" form:"monthlyCost" validate:"gte=0"`
 	CostCurrency        string   `json:"costCurrency" form:"costCurrency"`
+	FailoverNodeId      int      `json:"failoverNodeId" form:"failoverNodeId" validate:"gte=0"`
+	FailoverAfterSec    int      `json:"failoverAfterSec" form:"failoverAfterSec" validate:"gte=0,lte=86400"`
 }
 
 func (r *NodeMutationRequest) validateCredentials(create bool) error {
@@ -204,6 +210,8 @@ func (r *NodeMutationRequest) toNode() *model.Node {
 		BillingDay:          r.BillingDay,
 		MonthlyCost:         r.MonthlyCost,
 		CostCurrency:        r.CostCurrency,
+		FailoverNodeId:      r.FailoverNodeId,
+		FailoverAfterSec:    r.FailoverAfterSec,
 	}
 	if r.ApiToken != nil {
 		n.ApiToken = *r.ApiToken

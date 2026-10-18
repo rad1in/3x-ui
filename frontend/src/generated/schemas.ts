@@ -4996,6 +4996,17 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": true,
         "type": "boolean"
       },
+      "failoverAfterSec": {
+        "example": 120,
+        "maximum": 86400,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "failoverNodeId": {
+        "description": "FailoverNodeId is the node whose address subscriptions advertise for this\nnode's inbounds once it has been offline FailoverAfterSec. 0 means none.",
+        "example": 2,
+        "type": "integer"
+      },
       "guid": {
         "description": "Guid is the remote panel's stable self-identifier (its panelGuid),\nlearned from each heartbeat. It is the globally stable node identity used\nto attribute online clients/inbounds to the physical node across a chain\nof nodes (#4983); panel-local autoincrement ids don't survive a hop.\nObserved-state only — never user-edited.",
         "type": "string"
@@ -5165,6 +5176,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "depletedCount",
       "disabledCount",
       "enable",
+      "failoverAfterSec",
+      "failoverNodeId",
       "guid",
       "id",
       "inboundCount",
@@ -5259,6 +5272,15 @@ export const SCHEMAS: Record<string, unknown> = {
       "enable": {
         "type": "boolean"
       },
+      "failoverAfterSec": {
+        "maximum": 86400,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "failoverNodeId": {
+        "minimum": 0,
+        "type": "integer"
+      },
       "id": {
         "type": "integer"
       },
@@ -5325,6 +5347,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "capAction",
       "costCurrency",
       "enable",
+      "failoverAfterSec",
+      "failoverNodeId",
       "id",
       "inboundSyncMode",
       "inboundTags",
@@ -5466,6 +5490,14 @@ export const SCHEMAS: Record<string, unknown> = {
       "enable": {
         "example": true,
         "type": "boolean"
+      },
+      "failoverAfterSec": {
+        "example": 120,
+        "type": "integer"
+      },
+      "failoverNodeId": {
+        "example": 2,
+        "type": "integer"
       },
       "guid": {
         "example": "node-guid",
@@ -5625,6 +5657,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "depletedCount",
       "disabledCount",
       "enable",
+      "failoverAfterSec",
+      "failoverNodeId",
       "guid",
       "hasApiToken",
       "id",

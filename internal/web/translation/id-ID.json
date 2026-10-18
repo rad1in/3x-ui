@@ -1193,6 +1193,13 @@
         "expires": "Berlaku sampai {time}; hanya bisa dipakai sekali.",
         "note": "Server baru harus bisa menjangkau panel ini lewat alamat di perintah, dan panel ini harus bisa menjangkau panel server baru. Alamat privat dan loopback ditolak."
       },
+      "failover": {
+        "title": "Failover",
+        "node": "Node cadangan",
+        "nodeHint": "Selama node ini offline lebih lama dari jeda, tautan langganan inbound-nya menunjuk ke alamat node cadangan, untuk setiap inbound yang juga dimiliki cadangan dengan protokol dan port sama. Membutuhkan node cadangan aktif dan online dengan inbound yang cocok; inbound dengan alamat bagikan kustom tetap memakainya.",
+        "none": "Tanpa failover",
+        "after": "Offline selama (detik)"
+      },
       "totalNodes": "Total Node",
       "onlineNodes": "Online",
       "offlineNodes": "Offline",

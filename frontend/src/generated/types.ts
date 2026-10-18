@@ -1149,6 +1149,8 @@ export interface Node {
   depletedCount: number;
   disabledCount: number;
   enable: boolean;
+  failoverAfterSec: number;
+  failoverNodeId: number;
   guid: string;
   id: number;
   inboundCount: number;
@@ -1199,6 +1201,8 @@ export interface NodeMutationRequest {
   clearApiToken?: boolean;
   costCurrency: string;
   enable: boolean;
+  failoverAfterSec: number;
+  failoverNodeId: number;
   id: number;
   inboundSyncMode: string;
   inboundTags: string[];
@@ -1243,6 +1247,8 @@ export interface NodeView {
   depletedCount: number;
   disabledCount: number;
   enable: boolean;
+  failoverAfterSec: number;
+  failoverNodeId: number;
   guid: string;
   hasApiToken: boolean;
   id: number;

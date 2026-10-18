@@ -1193,6 +1193,13 @@
         "expires": "Có hiệu lực đến {time}; chỉ dùng được một lần.",
         "note": "Máy chủ mới phải truy cập được bảng điều khiển này qua địa chỉ trong lệnh, và bảng điều khiển này phải truy cập được bảng của máy chủ mới. Địa chỉ riêng và loopback bị từ chối."
       },
+      "failover": {
+        "title": "Chuyển dự phòng",
+        "node": "Node dự phòng",
+        "nodeHint": "Khi node này ngoại tuyến lâu hơn độ trễ, liên kết đăng ký của các inbound sẽ trỏ tới địa chỉ node dự phòng, cho mỗi inbound mà node dự phòng cũng có cùng giao thức và cổng. Cần node dự phòng đang bật, trực tuyến và có inbound tương ứng; inbound có địa chỉ chia sẻ tùy chỉnh vẫn giữ địa chỉ đó.",
+        "none": "Không chuyển dự phòng",
+        "after": "Ngoại tuyến trong (giây)"
+      },
       "totalNodes": "Tổng số nút",
       "onlineNodes": "Trực tuyến",
       "offlineNodes": "Ngoại tuyến",

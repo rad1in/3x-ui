@@ -21,6 +21,7 @@ import type { Msg } from '@/utils';
 import { NodeFormSchema, type NodeFormValues, type ProbeResult } from '@/schemas/node';
 import { FormField, rhfZodValidate } from '@/components/form/rhf';
 import { useOutboundTagGroups } from '@/api/queries/useOutboundTags';
+import { useNodesQuery } from '@/api/queries/useNodesQuery';
 import './NodeFormModal.css';
 
 type Mode = 'add' | 'edit';
@@ -59,6 +60,8 @@ function defaultValues(): NodeFormValues {
     billingDay: 1,
     monthlyCost: 0,
     costCurrency: '',
+    failoverNodeId: 0,
+    failoverAfterSec: 120,
   };
 }
 
@@ -108,6 +111,15 @@ export default function NodeFormModal({
       },
     ];
   }, [outboundGroups, t]);
+
+  const { nodes: allNodes } = useNodesQuery();
+  const failoverOptions = useMemo(
+    () =>
+      allNodes
+        .filter((n) => n.id !== node?.id && !n.transitive)
+        .map((n) => ({ value: n.id, label: n.name ?? `#${n.id}` })),
+    [allNodes, node?.id],
+  );
 
   // Reset during render, not in an effect, so the first frame is already clean.
   const [synced, setSynced] = useState<{ mode: string; node: NodeRecord | null } | null>(null);
@@ -164,6 +176,8 @@ export default function NodeFormModal({
       billingDay: values.billingDay || 1,
       monthlyCost: values.monthlyCost || 0,
       costCurrency: values.costCurrency.trim(),
+      failoverNodeId: values.failoverNodeId || 0,
+      failoverAfterSec: values.failoverAfterSec || 120,
     };
     if (token) payload.apiToken = token;
     return payload;
@@ -461,6 +475,31 @@ export default function NodeFormModal({
               <Col xs={24} md={8}>
                 <FormField label={t('pages.nodes.metered.currency')} name="costCurrency">
                   <Input placeholder="USD" maxLength={8} style={{ direction: 'ltr' }} />
+                </FormField>
+              </Col>
+            </Row>
+
+            <Divider titlePlacement="start" plain>
+              {t('pages.nodes.failover.title')}
+            </Divider>
+            <Row gutter={16}>
+              <Col xs={24} md={14}>
+                <FormField
+                  label={t('pages.nodes.failover.node')}
+                  name="failoverNodeId"
+                  tooltip={t('pages.nodes.failover.nodeHint')}
+                  transform={{ input: (v) => (v as number) || undefined }}
+                >
+                  <Select
+                    allowClear
+                    placeholder={t('pages.nodes.failover.none')}
+                    options={failoverOptions}
+                  />
+                </FormField>
+              </Col>
+              <Col xs={24} md={10}>
+                <FormField label={t('pages.nodes.failover.after')} name="failoverAfterSec">
+                  <InputNumber min={30} max={86400} style={{ width: '100%' }} addonAfter="s" />
                 </FormField>
               </Col>
             </Row>

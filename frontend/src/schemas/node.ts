@@ -44,6 +44,8 @@ export const NodeRecordSchema = z
     billingDay: z.number().optional(),
     monthlyCost: z.number().optional(),
     costCurrency: z.string().optional(),
+    failoverNodeId: z.number().optional(),
+    failoverAfterSec: z.number().optional(),
     periodStart: z.number().optional(),
     periodBytes: z.number().optional(),
     capState: z.string().optional(),
@@ -114,6 +116,8 @@ export const NodeFormSchema = z
     billingDay: z.number().int().min(1).max(28).optional().default(1),
     monthlyCost: z.number().min(0).optional().default(0),
     costCurrency: z.string().trim().max(8).optional().default(''),
+    failoverNodeId: z.number().int().min(0).optional().default(0),
+    failoverAfterSec: z.number().int().min(30).max(86400).optional().default(120),
   })
   .superRefine((val, ctx) => {
     if (val.tlsVerifyMode !== 'mtls' && val.apiToken.length === 0 && !val.hasStoredToken) {

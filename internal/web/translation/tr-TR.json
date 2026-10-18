@@ -1193,6 +1193,13 @@
         "expires": "{time} saatine kadar geçerli; yalnızca bir kez çalışır.",
         "note": "Yeni sunucu bu panele komuttaki adresten ulaşabilmeli, bu panel de yeni sunucunun paneline ulaşabilmelidir. Özel ve loopback adresler reddedilir."
       },
+      "failover": {
+        "title": "Yedeğe geçiş",
+        "node": "Yedek düğüm",
+        "nodeHint": "Bu düğüm gecikmeden uzun süre çevrimdışı kaldığında, girişlerinin abonelik bağlantıları, yedeğin de aynı protokol ve portla sahip olduğu her giriş için yedek düğümün adresini gösterir. Etkin, çevrimiçi ve eşleşen girişleri olan bir yedek gerekir; özel paylaşım adresi olan giriş onu korur.",
+        "none": "Yedeğe geçiş yok",
+        "after": "Çevrimdışı süresi (saniye)"
+      },
       "totalNodes": "Toplam Düğüm",
       "onlineNodes": "Çevrimiçi",
       "offlineNodes": "Çevrimdışı",

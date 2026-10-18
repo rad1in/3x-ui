@@ -120,6 +120,21 @@ cost per terabyte used so far this period (withheld until 10 GB have flowed) and
 the total cost per currency. The panel does not know what your clients pay, so
 it shows costs and traffic only and calculates no profit.
 
+### Failover to a backup node
+
+A node's **Failover** section names a **backup node** and a delay (default 120 s).
+While the node has been offline longer than the delay, the subscription links of
+its inbounds (raw, JSON and Clash, and VPN profiles) advertise the backup node's
+address instead. The moment the node is back online its own address returns.
+
+Failover only moves an address, so the backup has to be ready to serve the same
+clients: a link is moved only for an inbound that the backup also has, enabled,
+with the same protocol and port (create it with **Clone** to another node, keeping
+the same keys and clients). The backup must be enabled and online. Inbounds with a
+custom share address, and managed hosts with their own address, keep it. Clients
+already connected are not moved; they pick the new address when they refresh their
+subscription, so a short subscription update interval makes failover faster.
+
 ### Speed test
 
 The dashboard icon on a node row runs an on-demand test of the path between the

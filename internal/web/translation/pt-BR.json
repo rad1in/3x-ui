@@ -1193,6 +1193,13 @@
         "expires": "Válido até {time}; funciona uma única vez.",
         "note": "O servidor novo precisa alcançar este painel pelo endereço do comando, e este painel precisa alcançar o painel do servidor novo. Endereços privados e de loopback são recusados."
       },
+      "failover": {
+        "title": "Failover",
+        "node": "Nó de backup",
+        "nodeHint": "Enquanto este nó ficar offline por mais que o atraso, os links de assinatura das suas entradas apontam para o endereço do nó de backup, para cada entrada que o backup também tenha com o mesmo protocolo e porta. Exige um backup ativo e online com entradas equivalentes; uma entrada com endereço de compartilhamento personalizado o mantém.",
+        "none": "Sem failover",
+        "after": "Offline por (segundos)"
+      },
       "totalNodes": "Total de nós",
       "onlineNodes": "Online",
       "offlineNodes": "Offline",

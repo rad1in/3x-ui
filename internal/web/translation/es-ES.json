@@ -1193,6 +1193,13 @@
         "expires": "Válido hasta {time}; funciona una sola vez.",
         "note": "El servidor nuevo debe poder llegar a este panel por la dirección del comando, y este panel debe poder llegar al panel del servidor nuevo. Se rechazan las direcciones privadas y de loopback."
       },
+      "failover": {
+        "title": "Conmutación por error",
+        "node": "Nodo de respaldo",
+        "nodeHint": "Mientras este nodo lleve desconectado más que el retraso, los enlaces de suscripción de sus entradas apuntan a la dirección del nodo de respaldo, para cada entrada que el respaldo también tenga con el mismo protocolo y puerto. Requiere un respaldo activo y en línea con entradas equivalentes; una entrada con dirección de uso compartido personalizada la conserva.",
+        "none": "Sin conmutación",
+        "after": "Desconectado durante (segundos)"
+      },
       "totalNodes": "Total de nodos",
       "onlineNodes": "En línea",
       "offlineNodes": "Sin conexión",
