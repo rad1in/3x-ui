@@ -1,0 +1,64 @@
+---
+title: Monitoring
+description: Scrape the panel with Prometheus and graph it in Grafana — panel and Xray health, traffic, online clients and node status.
+icon: Activity
+---
+
+The panel can expose its state as Prometheus metrics. The endpoint is **off by
+default** and protected by a token.
+
+## Enable the endpoint
+
+1. Open **Settings → General → Metrics**.
+2. Turn on **Prometheus metrics endpoint**. A scrape token is generated; copy it.
+3. Save and restart the panel if prompted.
+
+The metrics are served at `<panel base path>metrics`, for example
+`https://panel.example.com:2053/secret-path/metrics`. Until the endpoint is
+enabled and a token is set it answers `404`. Send the token either as a Bearer
+header or as the password of HTTP Basic auth (any username).
+
+<Callout type="warn">
+  Per-client series grow with your client count. Panels with tens of thousands of
+  clients produce a large scrape; raise `scrape_timeout` accordingly.
+</Callout>
+
+## Prometheus configuration
+
+```yaml title="prometheus.yml"
+scrape_configs:
+  - job_name: 3x-ui
+    metrics_path: /secret-path/metrics
+    scheme: https
+    authorization:
+      credentials: <your scrape token>
+    static_configs:
+      - targets: ["panel.example.com:2053"]
+```
+
+## Exported metrics
+
+| Metric | Type | Labels | Meaning |
+| --- | --- | --- | --- |
+| `xui_panel_up` | gauge | — | Always 1 while the panel answers |
+| `xui_xray_up` | gauge | — | 1 when the Xray core runs |
+| `xui_cpu_ratio`, `xui_memory_used_bytes`, `xui_memory_total_bytes`, `xui_disk_used_bytes`, `xui_disk_total_bytes`, `xui_uptime_seconds` | gauge | — | Host load |
+| `xui_inbound_enabled` | gauge | `inbound`, `remark`, `protocol` | 1 when enabled |
+| `xui_inbound_traffic_bytes` | counter | `inbound`, `remark`, `protocol`, `direction` | Bytes since the inbound's last reset |
+| `xui_client_traffic_bytes` | counter | `email`, `inbound`, `direction` | Bytes since the client's last reset |
+| `xui_client_traffic_limit_bytes` | gauge | `email`, `inbound` | Quota, `0` = unlimited |
+| `xui_client_enabled` | gauge | `email`, `inbound` | 1 when enabled |
+| `xui_online_clients` | gauge | — | Live clients on this panel and its nodes |
+| `xui_node_up` | gauge | `node` | 1 when the last heartbeat succeeded |
+| `xui_node_latency_seconds`, `xui_node_cpu_ratio`, `xui_node_memory_ratio` | gauge | `node` | Node health |
+
+Traffic "counters" reset to zero when a traffic reset runs (or an inbound is
+recreated), so use `rate()` / `increase()`, which handle resets.
+
+## Grafana dashboard
+
+Import [`monitoring/grafana-dashboard.json`](https://github.com/MHSanaei/3x-ui/blob/main/monitoring/grafana-dashboard.json)
+through **Dashboards → New → Import** and pick your Prometheus data source. It
+shows panel/Xray state, online clients, host CPU/memory/disk, traffic rates per
+inbound, top clients and per-node CPU, memory and heartbeat latency. The **Job**
+variable filters by your scrape job name.

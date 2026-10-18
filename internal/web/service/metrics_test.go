@@ -1,7 +1,9 @@
 package service
 
 import (
+	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -42,6 +44,26 @@ func TestMetricsRenderExposesTrafficAndNodeHealth(t *testing.T) {
 	} {
 		if !strings.Contains(out, want) {
 			t.Errorf("metrics output lacks %q\n---\n%s", want, out)
+		}
+	}
+}
+
+// The shipped dashboard queries metric names by hand; a renamed or dropped
+// family would leave its panels silently empty.
+func TestGrafanaDashboardQueriesOnlyExportedMetrics(t *testing.T) {
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	raw, err := os.ReadFile(filepath.Join("..", "..", "..", "monitoring", "grafana-dashboard.json"))
+	if err != nil {
+		t.Fatalf("read dashboard: %v", err)
+	}
+	exported := (&MetricsService{}).Render(&Status{})
+	names := regexp.MustCompile(`xui_[a-z_]+`).FindAllString(string(raw), -1)
+	if len(names) == 0 {
+		t.Fatal("dashboard references no xui_ metrics")
+	}
+	for _, name := range names {
+		if !strings.Contains(exported, "# TYPE "+name+" ") {
+			t.Errorf("dashboard queries %s, which the endpoint does not export", name)
 		}
 	}
 }
