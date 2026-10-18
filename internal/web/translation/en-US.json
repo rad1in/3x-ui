@@ -1411,6 +1411,8 @@
       "telegramPlatformBale": "Bale",
       "telegramPlatformCustom": "Custom API server",
       "telegramPlatformBaleHint": "Create the bot with Bale's BotFather and paste its token above. Bale has no HTML formatting or command menu, so messages are sent as plain Bale markdown and the command list is not registered.",
+      "botMessages": "Bot message texts",
+      "botMessagesDesc": "Reword client-facing bot messages per language. Leave a box empty to keep the default (shown greyed). Keep the {{ .Name }} placeholders; HTML tags such as b and code are allowed. Applies to the bot language.",
       "telegramChatId": "Admin Chat ID",
       "telegramChatIdDesc": "The Telegram Admin Chat ID(s). (comma-separated)(get it here {'@'}userinfobot) or (use '/id' command in the bot)",
       "telegramNotifyTime": "Notification Time",

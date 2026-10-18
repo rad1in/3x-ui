@@ -57,6 +57,10 @@ _openapi:
         first URL that did not answer 2xx.
       url: '#send-a-signed-test-event-to-every-configured-webhook-url-fails-with-the-first-url-that-did-not-answer-2xx'
     - depth: 2
+      title: Shipped text of every customisable Telegram bot message in a language,
+        placeholders unrendered. Used by the bot message editor.
+      url: '#shipped-text-of-every-customisable-telegram-bot-message-in-a-language-placeholders-unrendered-used-by-the-bot-message-editor'
+    - depth: 2
       title: Send one test message to a push channel (ntfy, Gotify or Slack) using the
         saved settings. Works while the channel is switched off.
       url: '#send-one-test-message-to-a-push-channel-ntfy-gotify-or-slack-using-the-saved-settings-works-while-the-channel-is-switched-off'
@@ -109,6 +113,9 @@ _openapi:
       - content: Send a signed test event to every configured webhook URL. Fails with
           the first URL that did not answer 2xx.
         id: send-a-signed-test-event-to-every-configured-webhook-url-fails-with-the-first-url-that-did-not-answer-2xx
+      - content: Shipped text of every customisable Telegram bot message in a language,
+          placeholders unrendered. Used by the bot message editor.
+        id: shipped-text-of-every-customisable-telegram-bot-message-in-a-language-placeholders-unrendered-used-by-the-bot-message-editor
       - content: Send one test message to a push channel (ntfy, Gotify or Slack) using
           the saved settings. Works while the channel is switched off.
         id: send-one-test-message-to-a-push-channel-ntfy-gotify-or-slack-using-the-saved-settings-works-while-the-channel-is-switched-off
@@ -131,7 +138,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/setting/all","method":"post"},{"path":"/panel/api/setting/defaultSettings","method":"post"},{"path":"/panel/api/setting/factoryDefaults","method":"post"},{"path":"/panel/api/setting/update","method":"post"},{"path":"/panel/api/setting/validateRegex","method":"post"},{"path":"/panel/api/setting/updateUser","method":"post"},{"path":"/panel/api/setting/restartPanel","method":"post"},{"path":"/panel/api/setting/testSmtp","method":"post"},{"path":"/panel/api/setting/testTgBot","method":"post"},{"path":"/panel/api/setting/testDiscord","method":"post"},{"path":"/panel/api/setting/testWebhook","method":"post"},{"path":"/panel/api/setting/testPush","method":"post"},{"path":"/panel/api/setting/backupNow","method":"post"},{"path":"/panel/api/setting/getDefaultJsonConfig","method":"get"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/setting/all","method":"post"},{"path":"/panel/api/setting/defaultSettings","method":"post"},{"path":"/panel/api/setting/factoryDefaults","method":"post"},{"path":"/panel/api/setting/update","method":"post"},{"path":"/panel/api/setting/validateRegex","method":"post"},{"path":"/panel/api/setting/updateUser","method":"post"},{"path":"/panel/api/setting/restartPanel","method":"post"},{"path":"/panel/api/setting/testSmtp","method":"post"},{"path":"/panel/api/setting/testTgBot","method":"post"},{"path":"/panel/api/setting/testDiscord","method":"post"},{"path":"/panel/api/setting/testWebhook","method":"post"},{"path":"/panel/api/setting/botMessages","method":"post"},{"path":"/panel/api/setting/testPush","method":"post"},{"path":"/panel/api/setting/backupNow","method":"post"},{"path":"/panel/api/setting/getDefaultJsonConfig","method":"get"}]} showTitle />
     </>
   );
 }

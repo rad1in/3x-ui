@@ -10,6 +10,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/crypto"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/locale"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/middleware"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/discord"
@@ -88,6 +89,7 @@ func (a *SettingController) initRouter(g *gin.RouterGroup) {
 	g.POST("/testDiscord", a.testDiscord)
 	g.POST("/testWebhook", a.testWebhook)
 	g.POST("/testPush", a.testPush)
+	g.POST("/botMessages", a.botMessages)
 	g.POST("/backupNow", a.backupNow)
 }
 
@@ -180,6 +182,11 @@ func (a *SettingController) updateSetting(c *gin.Context) {
 		// hot-appliable, so this normally does not restart Xray.
 		if applyErr := a.xrayService.RestartXray(false); applyErr != nil {
 			logger.Warning("apply panel outbound change failed:", applyErr)
+		}
+	}
+	if err == nil {
+		if applyErr := locale.SetBotOverrides(allSetting.TgBotMessageOverrides); applyErr != nil {
+			logger.Warning("apply bot message texts failed:", applyErr)
 		}
 	}
 	// UpdateAllSetting already restored a redacted-blank token, so allSetting.TgBotToken is the effective value to compare.
@@ -371,6 +378,23 @@ func (a *SettingController) testWebhook(c *gin.Context) {
 		return
 	}
 	jsonMsg(c, I18nWeb(c, "pages.settings.webhookTestSuccess"), nil)
+}
+
+type botMessagesForm struct {
+	Lang string `json:"lang" form:"lang" validate:"required"`
+}
+
+// botMessages lists the shipped text of every customisable bot message in a language.
+func (a *SettingController) botMessages(c *gin.Context) {
+	form, ok := middleware.BindAndValidate[botMessagesForm](c)
+	if !ok {
+		return
+	}
+	if err := locale.ValidBotLang(form.Lang); err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.getSettings"), err)
+		return
+	}
+	jsonObj(c, locale.BotMessageDefaults(form.Lang), nil)
 }
 
 type testPushForm struct {

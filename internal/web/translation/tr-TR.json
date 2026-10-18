@@ -1289,6 +1289,8 @@
       "telegramPlatformBale": "Bale",
       "telegramPlatformCustom": "Özel API sunucusu",
       "telegramPlatformBaleHint": "Botu Bale'in BotFather'ı ile oluşturun ve jetonunu yukarı yapıştırın. Bale HTML biçimlendirmesini ve komut menüsünü desteklemez; mesajlar Bale markdown'ı olarak gönderilir ve komut listesi kaydedilmez.",
+      "botMessages": "Bot mesaj metinleri",
+      "botMessagesDesc": "Müşterilere dönük bot mesajlarını dile göre yeniden yazın. Varsayılanı (gri görünür) korumak için kutuyu boş bırakın. {{ .Name }} yer tutucularını koruyun; b ve code gibi HTML etiketlerine izin verilir. Bot diline uygulanır.",
       "telegramChatId": "Yönetici Sohbet Kimliği",
       "telegramChatIdDesc": "Telegram Yönetici Sohbet Kimliği (Chat ID). Birden fazla ise virgülle ayırın. ({'@'}userinfobot'tan alabilirsiniz veya botta '/id' komutunu kullanabilirsiniz.)",
       "telegramNotifyTime": "Bildirim Zamanı",

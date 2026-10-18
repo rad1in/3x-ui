@@ -30,6 +30,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/util/totp"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/decoy"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/locale"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray/dnsconf"
 )
@@ -115,6 +116,7 @@ var defaultValueMap = map[string]string{
 	"tgCpu":                       "80",
 	"tgMemory":                    "80",
 	"tgLang":                      "en-US",
+	"tgBotMessageOverrides":       "",
 	"twoFactorEnable":             "false",
 	"twoFactorToken":              "",
 	"happLinkEnable":              "false",
@@ -724,6 +726,10 @@ func (s *SettingService) SetTgMemory(value int) error {
 
 func (s *SettingService) GetTgLang() (string, error) {
 	return s.getString("tgLang")
+}
+
+func (s *SettingService) GetTgBotMessageOverrides() (string, error) {
+	return s.getString("tgBotMessageOverrides")
 }
 
 func (s *SettingService) GetTwoFactorEnable() (bool, error) {
@@ -1977,6 +1983,9 @@ func (s *SettingService) preserveRedactedSecrets(allSetting *entity.AllSetting, 
 }
 
 func validateSettingsURLs(allSetting *entity.AllSetting) error {
+	if err := locale.ValidateBotOverrides(allSetting.TgBotMessageOverrides); err != nil {
+		return common.NewError("bot message texts:", err)
+	}
 	var hooks []string
 	for _, raw := range strings.FieldsFunc(allSetting.WebhookUrls, func(r rune) bool { return r == '\n' || r == ',' || r == '\r' }) {
 		if strings.TrimSpace(raw) == "" {

@@ -53,6 +53,7 @@ export class AllSetting {
   tgCpu = 80;
   tgMemory = 80;
   tgLang = 'en-US';
+  tgBotMessageOverrides = '';
   twoFactorEnable = false;
   twoFactorToken = '';
   xrayTemplateConfig = '';

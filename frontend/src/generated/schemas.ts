@@ -596,6 +596,10 @@ export const SCHEMAS: Record<string, unknown> = {
       "tgBotEnable": {
         "type": "boolean"
       },
+      "tgBotMessageOverrides": {
+        "description": "TgBotMessageOverrides is {language: {message key: text}} JSON replacing selected bot texts.",
+        "type": "string"
+      },
       "tgBotProxy": {
         "type": "string"
       },
@@ -864,6 +868,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "tgBotBackup",
       "tgBotChatId",
       "tgBotEnable",
+      "tgBotMessageOverrides",
       "tgBotProxy",
       "tgBotToken",
       "tgCpu",
@@ -1525,6 +1530,10 @@ export const SCHEMAS: Record<string, unknown> = {
       "tgBotEnable": {
         "type": "boolean"
       },
+      "tgBotMessageOverrides": {
+        "description": "TgBotMessageOverrides is {language: {message key: text}} JSON replacing selected bot texts.",
+        "type": "string"
+      },
       "tgBotProxy": {
         "type": "string"
       },
@@ -1806,6 +1815,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "tgBotBackup",
       "tgBotChatId",
       "tgBotEnable",
+      "tgBotMessageOverrides",
       "tgBotProxy",
       "tgBotToken",
       "tgCpu",

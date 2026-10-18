@@ -1289,6 +1289,8 @@
       "telegramPlatformBale": "Bale",
       "telegramPlatformCustom": "Servidor de API personalizado",
       "telegramPlatformBaleHint": "Crie o bot com o BotFather do Bale e cole o token acima. O Bale não tem formatação HTML nem menu de comandos, então as mensagens vão em markdown do Bale e a lista de comandos não é registrada.",
+      "botMessages": "Textos das mensagens do bot",
+      "botMessagesDesc": "Reescreva por idioma as mensagens do bot voltadas a clientes. Deixe o campo vazio para manter o padrão (em cinza). Mantenha os marcadores {{ .Name }}; tags HTML como b e code são permitidas. Vale para o idioma do bot.",
       "telegramChatId": "ID de Chat do Administrador",
       "telegramChatIdDesc": "O(s) ID(s) de Chat do Administrador no Telegram. (separado por vírgulas)(obtenha aqui {'@'}userinfobot) ou (use o comando '/id' no bot)",
       "telegramNotifyTime": "Hora da Notificação",

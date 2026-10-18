@@ -1289,6 +1289,8 @@
       "telegramPlatformBale": "Bale",
       "telegramPlatformCustom": "自訂 API 伺服器",
       "telegramPlatformBaleHint": "請用 Bale 的 BotFather 建立機器人,並將權杖貼到上方。Bale 不支援 HTML 格式與指令選單,因此訊息以 Bale markdown 傳送,且不會註冊指令清單。",
+      "botMessages": "機器人訊息文字",
+      "botMessagesDesc": "依語言改寫面向客戶的機器人訊息。留空則使用預設文字(灰色顯示)。請保留 {{ .Name }} 佔位符;允許使用 b、code 等 HTML 標籤。適用於機器人語言。",
       "telegramChatId": "管理員聊天 ID",
       "telegramChatIdDesc": "Telegram 管理員聊天 ID (多個以逗號分隔)（可通過 {'@'}userinfobot 獲取，或在機器人中使用 '/id' 命令獲取）",
       "telegramNotifyTime": "通知時間",

@@ -622,6 +622,10 @@
           "tgBotEnable": {
             "type": "boolean"
           },
+          "tgBotMessageOverrides": {
+            "description": "TgBotMessageOverrides is {language: {message key: text}} JSON replacing selected bot texts.",
+            "type": "string"
+          },
           "tgBotProxy": {
             "type": "string"
           },
@@ -890,6 +894,7 @@
           "tgBotBackup",
           "tgBotChatId",
           "tgBotEnable",
+          "tgBotMessageOverrides",
           "tgBotProxy",
           "tgBotToken",
           "tgCpu",
@@ -1551,6 +1556,10 @@
           "tgBotEnable": {
             "type": "boolean"
           },
+          "tgBotMessageOverrides": {
+            "description": "TgBotMessageOverrides is {language: {message key: text}} JSON replacing selected bot texts.",
+            "type": "string"
+          },
           "tgBotProxy": {
             "type": "string"
           },
@@ -1832,6 +1841,7 @@
           "tgBotBackup",
           "tgBotChatId",
           "tgBotEnable",
+          "tgBotMessageOverrides",
           "tgBotProxy",
           "tgBotToken",
           "tgCpu",
@@ -14362,6 +14372,55 @@
                 "example": {
                   "success": true,
                   "msg": "Test event delivered to every webhook URL"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/setting/botMessages": {
+      "post": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Shipped text of every customisable Telegram bot message in a language, placeholders unrendered. Used by the bot message editor.",
+        "operationId": "post_panel_api_setting_botMessages",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "lang": "en-US"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "tgbot.commands.start": "Hello {{ .Firstname }}."
+                  }
                 }
               }
             }

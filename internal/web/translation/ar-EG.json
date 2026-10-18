@@ -1289,6 +1289,8 @@
       "telegramPlatformBale": "بله",
       "telegramPlatformCustom": "خادم API مخصص",
       "telegramPlatformBaleHint": "أنشئ البوت من BotFather الخاص ببله والصق رمزه أعلاه. بله لا يدعم تنسيق HTML ولا قائمة الأوامر، لذا تُرسل الرسائل بتنسيق بله النصي البسيط ولا تُسجَّل قائمة الأوامر.",
+      "botMessages": "نصوص رسائل البوت",
+      "botMessagesDesc": "أعد صياغة رسائل البوت الموجهة للعملاء لكل لغة. اترك الحقل فارغًا للإبقاء على النص الافتراضي (يظهر باهتًا). احتفظ بعناصر {{ .Name }} النائبة؛ وسوم HTML مثل b وcode مسموحة. تُطبَّق على لغة البوت.",
       "telegramChatId": "ID شات الأدمن",
       "telegramChatIdDesc": "ID شات الأدمن في Telegram. (مفصول بفواصل)(تقدر تجيبه من {'@'}userinfobot) أو (استخدم '/id' في البوت)",
       "telegramNotifyTime": "وقت الإشعار",

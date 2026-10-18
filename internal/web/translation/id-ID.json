@@ -1289,6 +1289,8 @@
       "telegramPlatformBale": "Bale",
       "telegramPlatformCustom": "Server API kustom",
       "telegramPlatformBaleHint": "Buat bot dengan BotFather Bale lalu tempel tokennya di atas. Bale tidak mendukung format HTML maupun menu perintah, jadi pesan dikirim sebagai markdown Bale dan daftar perintah tidak didaftarkan.",
+      "botMessages": "Teks pesan bot",
+      "botMessagesDesc": "Ubah kata-kata pesan bot untuk klien per bahasa. Kosongkan kotak untuk memakai bawaan (tampil abu-abu). Pertahankan placeholder {{ .Name }}; tag HTML seperti b dan code diperbolehkan. Berlaku untuk bahasa bot.",
       "telegramChatId": "ID Obrolan Admin",
       "telegramChatIdDesc": "ID Obrolan Admin Telegram. (dipisahkan koma)(dapatkan di sini {'@'}userinfobot) atau (gunakan perintah '/id' di bot)",
       "telegramNotifyTime": "Waktu Notifikasi",

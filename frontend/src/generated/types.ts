@@ -196,6 +196,7 @@ export interface AllSetting {
   tgBotBackup: boolean;
   tgBotChatId: string;
   tgBotEnable: boolean;
+  tgBotMessageOverrides: string;
   tgBotProxy: string;
   tgBotToken: string;
   tgCpu: number;
@@ -422,6 +423,7 @@ export interface AllSettingView {
   tgBotBackup: boolean;
   tgBotChatId: string;
   tgBotEnable: boolean;
+  tgBotMessageOverrides: string;
   tgBotProxy: string;
   tgBotToken: string;
   tgCpu: number;

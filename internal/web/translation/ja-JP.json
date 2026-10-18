@@ -1289,6 +1289,8 @@
       "telegramPlatformBale": "Bale",
       "telegramPlatformCustom": "カスタムAPIサーバー",
       "telegramPlatformBaleHint": "BaleのBotFatherでボットを作成し、そのトークンを上に貼り付けてください。BaleはHTML書式もコマンドメニューも非対応のため、メッセージはBaleのマークダウンで送信され、コマンド一覧は登録されません。",
+      "botMessages": "ボットのメッセージ文",
+      "botMessagesDesc": "顧客向けボットメッセージの文面を言語ごとに変更します。空欄のままにすると既定の文(灰色表示)が使われます。{{ .Name }} のプレースホルダーは残してください。b や code などの HTML タグが使えます。ボットの言語に適用されます。",
       "telegramChatId": "管理者チャットID",
       "telegramChatIdDesc": "Telegram管理者チャットID（複数の場合はカンマで区切る）{'@'}userinfobotで取得するか、ボットで'/id'コマンドを使用して取得する",
       "telegramNotifyTime": "通知時間",

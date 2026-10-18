@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Button, Input, Select, Space, Switch, Tabs } from 'antd';
-import { BellOutlined, SendOutlined, SettingOutlined } from '@ant-design/icons';
+import { BellOutlined, EditOutlined, SendOutlined, SettingOutlined } from '@ant-design/icons';
 import { HttpUtil, LanguageManager } from '@/utils';
 import type { AllSetting } from '@/models/setting';
 import { SettingListItem } from '@/components/ui';
@@ -10,6 +10,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { catTabLabel } from './catTabLabel';
 import { NotifyTimeField } from './NotifyTimeField';
 import SecretInput from './SecretInput';
+import BotMessagesEditor from './BotMessagesEditor';
 import { BALE_API_SERVER, botPlatformOf, type BotPlatform } from './telegramPlatform';
 
 interface TelegramTabProps {
@@ -180,6 +181,11 @@ export default function TelegramTab({ allSetting, updateSetting }: TelegramTabPr
               </Space>
             </>
           ),
+        },
+        {
+          key: '3',
+          label: catTabLabel(<EditOutlined />, t('pages.settings.botMessages'), isMobile),
+          children: <BotMessagesEditor allSetting={allSetting} updateSetting={updateSetting} />,
         },
         {
           key: '2',

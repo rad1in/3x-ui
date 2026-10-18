@@ -49,6 +49,12 @@ func InitLocalizer(i18nFS fs.FS, settingService SettingService) error {
 	if err := initTGBotLocalizer(settingService); err != nil {
 		return err
 	}
+	if src, ok := settingService.(interface{ GetTgBotMessageOverrides() (string, error) }); ok {
+		raw, _ := src.GetTgBotMessageOverrides()
+		if err := SetBotOverrides(raw); err != nil {
+			logger.Warning("ignoring stored bot message texts:", err)
+		}
+	}
 
 	return nil
 }
@@ -86,6 +92,12 @@ func I18n(i18nType I18nType, key string, params ...string) string {
 	}
 
 	templateData := createTemplateData(params)
+
+	if i18nType == Bot {
+		if text, ok := botOverrideFor(key, templateData); ok {
+			return text
+		}
+	}
 
 	if localizer == nil {
 		// Fallback to key if localizer not ready; prevents nil panic on pages like sub
@@ -137,6 +149,7 @@ func initTGBotLocalizer(settingService SettingService) error {
 	}
 
 	LocalizerBot = i18n.NewLocalizer(i18nBundle, botLang)
+	setBotLang(botLang)
 	return nil
 }
 
@@ -207,6 +220,7 @@ func parseTranslationFiles(i18nFS fs.FS, i18nBundle *i18n.Bundle) error {
 				return err
 			}
 
+			rememberTranslation(path, data)
 			_, err = i18nBundle.ParseMessageFileBytes(data, path)
 			return err
 		})

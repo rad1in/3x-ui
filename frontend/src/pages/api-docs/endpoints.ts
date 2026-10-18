@@ -2051,6 +2051,15 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/panel/api/setting/botMessages',
+        summary:
+          'Shipped text of every customisable Telegram bot message in a language, placeholders unrendered. Used by the bot message editor.',
+        body: '{\n  "lang": "en-US"\n}',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "tgbot.commands.start": "Hello {{ .Firstname }}."\n  }\n}',
+      },
+      {
+        method: 'POST',
         path: '/panel/api/setting/testPush',
         summary:
           'Send one test message to a push channel (ntfy, Gotify or Slack) using the saved settings. Works while the channel is switched off.',

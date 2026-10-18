@@ -1289,6 +1289,8 @@
       "telegramPlatformBale": "Bale",
       "telegramPlatformCustom": "Máy chủ API tùy chỉnh",
       "telegramPlatformBaleHint": "Tạo bot bằng BotFather của Bale và dán token của nó ở trên. Bale không hỗ trợ định dạng HTML hay menu lệnh, nên tin nhắn được gửi bằng markdown của Bale và danh sách lệnh không được đăng ký.",
+      "botMessages": "Nội dung tin nhắn của bot",
+      "botMessagesDesc": "Viết lại các tin nhắn của bot dành cho khách theo từng ngôn ngữ. Để trống ô để giữ mặc định (hiển thị mờ). Giữ nguyên các chỗ giữ chỗ {{ .Name }}; cho phép thẻ HTML như b và code. Áp dụng cho ngôn ngữ của bot.",
       "telegramChatId": "Chat ID Telegram của quản trị viên",
       "telegramChatIdDesc": "Nhiều Chat ID phân tách bằng dấu phẩy. Sử dụng {'@'}userinfobot hoặc sử dụng lệnh '/id' trong bot để lấy Chat ID của bạn.",
       "telegramNotifyTime": "Thời gian thông báo của bot Telegram",
