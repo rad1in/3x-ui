@@ -102,6 +102,8 @@ type AllSetting struct {
 	BackupS3AccessKey          string `json:"backupS3AccessKey" form:"backupS3AccessKey"`
 	BackupS3SecretKey          string `json:"backupS3SecretKey" form:"backupS3SecretKey"`
 	BackupS3Prefix             string `json:"backupS3Prefix" form:"backupS3Prefix"`
+	MetricsEnable              bool   `json:"metricsEnable" form:"metricsEnable"`
+	MetricsToken               string `json:"metricsToken" form:"metricsToken"`
 	RemarkTemplate             string `json:"remarkTemplate" form:"remarkTemplate"`
 	SubShowIdentityOnAllLinks  bool   `json:"subShowIdentityOnAllLinks" form:"subShowIdentityOnAllLinks"`
 	SubInfoNodeEnable          bool   `json:"subInfoNodeEnable" form:"subInfoNodeEnable"`

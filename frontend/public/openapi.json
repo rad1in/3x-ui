@@ -193,6 +193,12 @@
           "ldapVlessField": {
             "type": "string"
           },
+          "metricsEnable": {
+            "type": "boolean"
+          },
+          "metricsToken": {
+            "type": "string"
+          },
           "outboundDownThreshold": {
             "maximum": 100,
             "minimum": 1,
@@ -717,6 +723,8 @@
           "ldapUserAttr",
           "ldapUserFilter",
           "ldapVlessField",
+          "metricsEnable",
+          "metricsToken",
           "outboundDownThreshold",
           "pageSize",
           "panelBrandColor",
@@ -1062,6 +1070,12 @@
             "type": "string"
           },
           "ldapVlessField": {
+            "type": "string"
+          },
+          "metricsEnable": {
+            "type": "boolean"
+          },
+          "metricsToken": {
             "type": "string"
           },
           "outboundDownThreshold": {
@@ -1598,6 +1612,8 @@
           "ldapUserAttr",
           "ldapUserFilter",
           "ldapVlessField",
+          "metricsEnable",
+          "metricsToken",
           "outboundDownThreshold",
           "pageSize",
           "panelBrandColor",

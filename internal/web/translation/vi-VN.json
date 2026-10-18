@@ -1273,6 +1273,15 @@
         "logoBadType": "Chỉ có thể dùng ảnh PNG, JPEG hoặc WebP làm logo",
         "logoTooLarge": "Logo phải nhỏ hơn hoặc bằng {kb} KB"
       },
+      "metrics": {
+        "tab": "Chỉ số",
+        "enable": "Điểm cuối chỉ số Prometheus",
+        "enableDesc": "Công khai chỉ số của bảng điều khiển, Xray, lưu lượng, máy khách trực tuyến và tình trạng nút tại /metrics cho Prometheus. Mặc định tắt.",
+        "token": "Token thu thập",
+        "tokenDesc": "Gửi dưới dạng token Bearer hoặc mật khẩu của HTTP Basic (tên người dùng bất kỳ). Hãy giữ bí mật.",
+        "regenerate": "Tạo token mới",
+        "scrapeHint": "Trỏ Prometheus tới địa chỉ này cùng token ở trên:"
+      },
       "oldUsername": "Tên người dùng hiện tại",
       "currentPassword": "Mật khẩu hiện tại",
       "newUsername": "Tên người dùng mới",

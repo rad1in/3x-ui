@@ -1273,6 +1273,15 @@
         "logoBadType": "Apenas imagens PNG, JPEG ou WebP podem ser usadas como logotipo",
         "logoTooLarge": "O logotipo deve ter no máximo {kb} KB"
       },
+      "metrics": {
+        "tab": "Métricas",
+        "enable": "Endpoint de métricas do Prometheus",
+        "enableDesc": "Expõe métricas do painel, Xray, tráfego, clientes online e saúde dos nós em /metrics para o Prometheus. Desativado por padrão.",
+        "token": "Token de scrape",
+        "tokenDesc": "Enviado como token Bearer ou como senha do HTTP Basic (qualquer usuário). Mantenha em segredo.",
+        "regenerate": "Gerar novo token",
+        "scrapeHint": "Aponte o Prometheus para este endereço com o token acima:"
+      },
       "oldUsername": "Nome de Usuário Atual",
       "currentPassword": "Senha Atual",
       "newUsername": "Novo Nome de Usuário",

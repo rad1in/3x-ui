@@ -1273,6 +1273,15 @@
         "logoBadType": "Logo olarak yalnızca PNG, JPEG veya WebP görseller kullanılabilir",
         "logoTooLarge": "Logo en fazla {kb} KB olmalıdır"
       },
+      "metrics": {
+        "tab": "Metrikler",
+        "enable": "Prometheus metrik uç noktası",
+        "enableDesc": "Panel, Xray, trafik, çevrimiçi istemci ve düğüm sağlığı metriklerini Prometheus için /metrics adresinde sunar. Varsayılan olarak kapalıdır.",
+        "token": "Scrape belirteci",
+        "tokenDesc": "Bearer belirteci veya HTTP Basic kimlik doğrulamasının parolası (herhangi bir kullanıcı adı) olarak gönderilir. Gizli tutun.",
+        "regenerate": "Yeni belirteç oluştur",
+        "scrapeHint": "Prometheus'u yukarıdaki belirteçle bu adrese yönlendirin:"
+      },
       "oldUsername": "Mevcut Kullanıcı Adı",
       "currentPassword": "Mevcut Şifre",
       "newUsername": "Yeni Kullanıcı Adı",

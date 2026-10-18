@@ -1273,6 +1273,15 @@
         "logoBadType": "ロゴには PNG・JPEG・WebP 画像のみ使用できます",
         "logoTooLarge": "ロゴは {kb} KB 以下にしてください"
       },
+      "metrics": {
+        "tab": "メトリクス",
+        "enable": "Prometheus メトリクスエンドポイント",
+        "enableDesc": "パネル、Xray、トラフィック、オンラインクライアント、ノードの状態を Prometheus 向けに /metrics で公開します。デフォルトでは無効です。",
+        "token": "スクレイプトークン",
+        "tokenDesc": "Bearer トークン、または HTTP Basic 認証のパスワード(ユーザー名は任意)として送信します。秘密にしてください。",
+        "regenerate": "新しいトークンを生成",
+        "scrapeHint": "上記のトークンを使って、Prometheus をこのアドレスに向けてください:"
+      },
       "oldUsername": "旧ユーザー名",
       "currentPassword": "旧パスワード",
       "newUsername": "新しいユーザー名",

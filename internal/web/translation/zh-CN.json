@@ -1273,6 +1273,15 @@
         "logoBadType": "标志只能使用 PNG、JPEG 或 WebP 图片",
         "logoTooLarge": "标志不能超过 {kb} KB"
       },
+      "metrics": {
+        "tab": "指标",
+        "enable": "Prometheus 指标端点",
+        "enableDesc": "在 /metrics 向 Prometheus 提供面板、Xray、流量、在线客户端和节点健康指标。默认关闭。",
+        "token": "抓取令牌",
+        "tokenDesc": "作为 Bearer 令牌发送，或作为 HTTP Basic 认证的密码（用户名任意）。请妥善保密。",
+        "regenerate": "生成新令牌",
+        "scrapeHint": "使用上面的令牌将 Prometheus 指向此地址："
+      },
       "oldUsername": "原用户名",
       "currentPassword": "原密码",
       "newUsername": "新用户名",

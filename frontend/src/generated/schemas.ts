@@ -167,6 +167,12 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapVlessField": {
         "type": "string"
       },
+      "metricsEnable": {
+        "type": "boolean"
+      },
+      "metricsToken": {
+        "type": "string"
+      },
       "outboundDownThreshold": {
         "maximum": 100,
         "minimum": 1,
@@ -691,6 +697,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapUserAttr",
       "ldapUserFilter",
       "ldapVlessField",
+      "metricsEnable",
+      "metricsToken",
       "outboundDownThreshold",
       "pageSize",
       "panelBrandColor",
@@ -1036,6 +1044,12 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "string"
       },
       "ldapVlessField": {
+        "type": "string"
+      },
+      "metricsEnable": {
+        "type": "boolean"
+      },
+      "metricsToken": {
         "type": "string"
       },
       "outboundDownThreshold": {
@@ -1572,6 +1586,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapUserAttr",
       "ldapUserFilter",
       "ldapVlessField",
+      "metricsEnable",
+      "metricsToken",
       "outboundDownThreshold",
       "pageSize",
       "panelBrandColor",

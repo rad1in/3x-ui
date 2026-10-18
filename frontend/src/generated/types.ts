@@ -60,6 +60,8 @@ export interface AllSetting {
   ldapUserAttr: string;
   ldapUserFilter: string;
   ldapVlessField: string;
+  metricsEnable: boolean;
+  metricsToken: string;
   outboundDownThreshold: number;
   pageSize: number;
   panelBrandColor: string;
@@ -271,6 +273,8 @@ export interface AllSettingView {
   ldapUserAttr: string;
   ldapUserFilter: string;
   ldapVlessField: string;
+  metricsEnable: boolean;
+  metricsToken: string;
   outboundDownThreshold: number;
   pageSize: number;
   panelBrandColor: string;

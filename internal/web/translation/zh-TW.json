@@ -1273,6 +1273,15 @@
         "logoBadType": "標誌只能使用 PNG、JPEG 或 WebP 圖片",
         "logoTooLarge": "標誌不得超過 {kb} KB"
       },
+      "metrics": {
+        "tab": "指標",
+        "enable": "Prometheus 指標端點",
+        "enableDesc": "在 /metrics 向 Prometheus 提供面板、Xray、流量、線上用戶端與節點健康指標。預設關閉。",
+        "token": "擷取權杖",
+        "tokenDesc": "以 Bearer 權杖傳送，或作為 HTTP Basic 驗證的密碼（使用者名稱任意）。請妥善保密。",
+        "regenerate": "產生新權杖",
+        "scrapeHint": "使用上方權杖將 Prometheus 指向此位址："
+      },
       "oldUsername": "原使用者名稱",
       "currentPassword": "原密碼",
       "newUsername": "新使用者名稱",

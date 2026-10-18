@@ -1273,6 +1273,15 @@
         "logoBadType": "Hanya gambar PNG, JPEG, atau WebP yang dapat dipakai sebagai logo",
         "logoTooLarge": "Ukuran logo maksimal {kb} KB"
       },
+      "metrics": {
+        "tab": "Metrik",
+        "enable": "Endpoint metrik Prometheus",
+        "enableDesc": "Menampilkan metrik panel, Xray, trafik, klien online, dan kesehatan node di /metrics untuk Prometheus. Nonaktif secara default.",
+        "token": "Token scrape",
+        "tokenDesc": "Dikirim sebagai token Bearer, atau sebagai kata sandi HTTP Basic (nama pengguna apa saja). Jaga kerahasiaannya.",
+        "regenerate": "Buat token baru",
+        "scrapeHint": "Arahkan Prometheus ke alamat ini dengan token di atas:"
+      },
       "oldUsername": "Username Saat Ini",
       "currentPassword": "Kata Sandi Saat Ini",
       "newUsername": "Username Baru",

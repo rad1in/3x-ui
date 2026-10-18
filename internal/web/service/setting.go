@@ -98,6 +98,8 @@ var defaultValueMap = map[string]string{
 	"backupS3AccessKey":           "",
 	"backupS3SecretKey":           "",
 	"backupS3Prefix":              "",
+	"metricsEnable":               "false",
+	"metricsToken":                "",
 	"remarkTemplate":              DefaultRemarkTemplate,
 	"subShowIdentityOnAllLinks":   "false",
 	"subInfoNodeEnable":           "false",

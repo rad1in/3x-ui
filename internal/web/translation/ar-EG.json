@@ -1273,6 +1273,15 @@
         "logoBadType": "يجب أن تكون صيغة الشعار إحدى: PNG، JPEG، WebP",
         "logoTooLarge": "يجب ألا يتجاوز حجم الشعار {kb} كيلوبايت"
       },
+      "metrics": {
+        "tab": "المقاييس",
+        "enable": "نقطة نهاية مقاييس Prometheus",
+        "enableDesc": "تعرض مقاييس اللوحة وXray وحركة المرور والعملاء المتصلين وسلامة العقد على المسار /metrics لـ Prometheus. معطّلة افتراضيًا.",
+        "token": "رمز الجمع",
+        "tokenDesc": "يُرسل كرمز Bearer أو ككلمة مرور لمصادقة HTTP Basic (بأي اسم مستخدم). أبقِه سرًا.",
+        "regenerate": "إنشاء رمز جديد",
+        "scrapeHint": "وجّه Prometheus إلى هذا العنوان مع الرمز أعلاه:"
+      },
       "oldUsername": "اسم المستخدم الحالي",
       "currentPassword": "الباسورد الحالي",
       "newUsername": "اسم المستخدم الجديد",
