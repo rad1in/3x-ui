@@ -312,6 +312,13 @@ var defaultValueMap = map[string]string{
 	"weeklyReportBaseline": "",
 	"weeklyReportLastSent": "0",
 
+	// Port probe
+	"portProbeEnable":   "false",
+	"portProbeHost":     "",
+	"portProbeUrl":      "",
+	"portProbeExpect":   "",
+	"portProbeFailures": "3",
+
 	// Push channels
 	"ntfyEnable":      "false",
 	"ntfyServer":      "https://ntfy.sh",

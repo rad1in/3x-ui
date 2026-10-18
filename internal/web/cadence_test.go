@@ -23,6 +23,7 @@ func TestJobCadencesAreValidCronSpecs(t *testing.T) {
 		"cadenceNodeHeartbeat": cadenceNodeHeartbeat,
 		"cadenceNodeTraffic":   cadenceNodeTraffic,
 		"cadenceNodeCap":       cadenceNodeCap,
+		"cadencePortProbe":     cadencePortProbe,
 		"cadenceOutboundSub":   cadenceOutboundSub,
 		"cadenceRemoteRouting": cadenceRemoteRouting,
 		"cadenceCheckHash":     cadenceCheckHash,

@@ -157,6 +157,21 @@ func (t *Tgbot) formatEventMessage(e eventbus.Event) string {
 		}
 		return msg
 
+	case eventbus.EventPortBlocked, eventbus.EventPortRestored:
+		data, ok := e.Data.(*eventbus.PortProbeData)
+		if !ok {
+			return ""
+		}
+		key, icon := "tgbot.messages.eventPortRestored", "🟢 "
+		if e.Type == eventbus.EventPortBlocked {
+			key, icon = "tgbot.messages.eventPortBlocked", "🔴 "
+		}
+		msg := header + icon + t.I18nBot(key, "Name=="+e.Source, "Port=="+strconv.Itoa(data.Port))
+		if data.Error != "" {
+			msg += "\n" + t.I18nBot("tgbot.messages.eventErrorDetail", "Error=="+data.Error)
+		}
+		return msg
+
 	case eventbus.EventCPUHigh:
 		if data, ok := e.Data.(*eventbus.SystemMetricData); ok {
 			tgCpu, err := t.settingService.GetTgCpu()

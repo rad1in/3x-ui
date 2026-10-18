@@ -97,6 +97,11 @@ export interface AllSetting {
   panelBrandLogo: string;
   panelBrandName: string;
   panelOutbound: string;
+  portProbeEnable: boolean;
+  portProbeExpect: string;
+  portProbeFailures: number;
+  portProbeHost: string;
+  portProbeUrl: string;
   quotaWarnPercent: number;
   realityScanCandidates: string;
   remarkTemplate: string;
@@ -338,6 +343,11 @@ export interface AllSettingView {
   panelBrandLogo: string;
   panelBrandName: string;
   panelOutbound: string;
+  portProbeEnable: boolean;
+  portProbeExpect: string;
+  portProbeFailures: number;
+  portProbeHost: string;
+  portProbeUrl: string;
   quotaWarnPercent: number;
   realityScanCandidates: string;
   remarkTemplate: string;

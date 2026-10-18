@@ -316,6 +316,24 @@ export const SCHEMAS: Record<string, unknown> = {
       "panelOutbound": {
         "type": "string"
       },
+      "portProbeEnable": {
+        "description": "Port probe: checks every public TCP inbound port from outside and publishes port.blocked / port.restored.\nWith a URL the check is that URL ({host} and {port} filled in) answering 2xx and containing Expect; without one it is a TCP dial.",
+        "type": "boolean"
+      },
+      "portProbeExpect": {
+        "type": "string"
+      },
+      "portProbeFailures": {
+        "maximum": 20,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "portProbeHost": {
+        "type": "string"
+      },
+      "portProbeUrl": {
+        "type": "string"
+      },
       "quotaWarnPercent": {
         "maximum": 99,
         "minimum": 0,
@@ -884,6 +902,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "panelBrandLogo",
       "panelBrandName",
       "panelOutbound",
+      "portProbeEnable",
+      "portProbeExpect",
+      "portProbeFailures",
+      "portProbeHost",
+      "portProbeUrl",
       "quotaWarnPercent",
       "realityScanCandidates",
       "remarkTemplate",
@@ -1314,6 +1337,24 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "string"
       },
       "panelOutbound": {
+        "type": "string"
+      },
+      "portProbeEnable": {
+        "description": "Port probe: checks every public TCP inbound port from outside and publishes port.blocked / port.restored.\nWith a URL the check is that URL ({host} and {port} filled in) answering 2xx and containing Expect; without one it is a TCP dial.",
+        "type": "boolean"
+      },
+      "portProbeExpect": {
+        "type": "string"
+      },
+      "portProbeFailures": {
+        "maximum": 20,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "portProbeHost": {
+        "type": "string"
+      },
+      "portProbeUrl": {
         "type": "string"
       },
       "quotaWarnPercent": {
@@ -1897,6 +1938,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "panelBrandLogo",
       "panelBrandName",
       "panelOutbound",
+      "portProbeEnable",
+      "portProbeExpect",
+      "portProbeFailures",
+      "portProbeHost",
+      "portProbeUrl",
       "quotaWarnPercent",
       "realityScanCandidates",
       "remarkTemplate",

@@ -236,6 +236,11 @@ export class AllSetting {
   weeklyReportEnable = false;
   weeklyReportDay = 1;
   weeklyReportHour = 9;
+  portProbeEnable = false;
+  portProbeHost = '';
+  portProbeUrl = '';
+  portProbeExpect = '';
+  portProbeFailures = 3;
   ntfyEnable = false;
   ntfyServer = 'https://ntfy.sh';
   ntfyTopic = '';

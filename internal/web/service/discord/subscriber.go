@@ -3,6 +3,7 @@ package discord
 import (
 	"context"
 	"fmt"
+	"net"
 	"os"
 	"strconv"
 	"strings"
@@ -249,6 +250,24 @@ func (s *Subscriber) FormatEmbed(e eventbus.Event) (Embed, bool) {
 			Fields:    fields,
 			Footer:    footer,
 		}, true
+
+	case eventbus.EventPortBlocked, eventbus.EventPortRestored:
+		data, ok := e.Data.(*eventbus.PortProbeData)
+		if !ok {
+			return Embed{}, false
+		}
+		fields := []EmbedField{
+			cleanField(tr("discord.fields.inbound"), e.Source, true),
+			cleanField(tr("discord.fields.address"), net.JoinHostPort(data.Host, strconv.Itoa(data.Port)), true),
+		}
+		title, color := tr("discord.alerts.portRestored"), ColorGreen
+		if e.Type == eventbus.EventPortBlocked {
+			title, color = tr("discord.alerts.portBlocked"), ColorRed
+			if data.Error != "" {
+				fields = append(fields, cleanField(tr("discord.fields.error"), data.Error, false))
+			}
+		}
+		return Embed{Title: title, Color: color, Timestamp: ts, Fields: fields, Footer: footer}, true
 
 	case eventbus.EventXrayCrash:
 		var fields []EmbedField

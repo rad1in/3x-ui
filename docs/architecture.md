@@ -383,6 +383,7 @@ All registered in `web.go` → `startTask()`. Each is a struct with a `Run()` me
 | `@every 5s`         | `node_heartbeat_job`                                                                             | Probe child nodes (online/offline)                                                    |
 | `@every 5s`         | `node_traffic_sync_job`                                                                          | Pull + merge node traffic; push reconciliation                                        |
 | `@every 1m`         | `node_cap_job`                                                                                   | Meter each node's monthly traffic; alert or stop its inbounds at the cap              |
+| `@every 1m`         | `port_probe_job`                                                                                 | Only if `portProbeEnable`; probes each public TCP inbound port from outside, publishes `port.blocked` / `port.restored` |
 | `@every 10s`        | `check_client_ip_job`                                                                            | Enforce per-client IP limits                                                          |
 | `@every 10s`        | `mtproto_job`                                                                                    | Reconcile `mtg` sidecars against enabled MTProto inbounds                             |
 | `@every 10s`        | `openvpn_job`                                                                                    | Reconcile `openvpn` servers against enabled OpenVPN inbounds; meter per-user traffic   |
@@ -447,7 +448,7 @@ also has protocol schemas under `frontend/src/schemas/protocols/` and `frontend/
 
 `internal/eventbus/` is a minimal buffered-channel pub/sub. Producers call a non-blocking
 `Publish(Event)`; all subscribers receive every event. Event types: `outbound.down|up`,
-`xray.crash`, `node.down|up`, `cpu.high`, `memory.high`, `login.attempt`, and the client
+`xray.crash`, `node.down|up`, `port.blocked|restored`, `cpu.high`, `memory.high`, `login.attempt`, and the client
 lifecycle `client.*` (created, deleted, enabled, disabled, depleted, expired, renewed,
 traffic_reset), with structured payloads (OutboundHealthData, NodeHealthData,
 LoginEventData, SystemMetricData, ClientEventData). Producers include the CPU/memory jobs,
