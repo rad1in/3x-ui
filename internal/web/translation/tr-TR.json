@@ -2761,6 +2761,7 @@
       "hint": "Müşterilere paket satın. Paket fiyatı, kotayı ve süreyi belirler; bağlı istemci şablonu müşterinin hangi inbound’lara erişeceğini belirler.",
       "plansTab": "Paketler",
       "ordersTab": "Siparişler",
+      "settingsTab": "Ayarlar",
       "plans": {
         "add": "Paket ekle",
         "edit": "Paketi düzenle",
@@ -2790,6 +2791,18 @@
         "status": "Durum",
         "created": "Oluşturuldu",
         "allStatuses": "Tüm durumlar",
+        "approve": "Ödemeyi onayla",
+        "reject": "Reddet",
+        "retry": "Teslimatı yeniden dene",
+        "confirmApprove": "Bu ödeme kabul edilip istemci şimdi oluşturulsun veya yenilensin mi?",
+        "approved": "Ödeme kabul edildi ve teslim edildi",
+        "rejected": "Sipariş reddedildi",
+        "undelivered": "Ödendi, teslim edilmedi",
+        "contact": "İletişim",
+        "receiptRef": "Dekont referansı",
+        "receiptNote": "Müşteri notu",
+        "rejectReason": "Ret nedeni",
+        "rejectReasonHint": "Müşterinin göreceği isteğe bağlı neden",
         "kinds": {
           "new": "Yeni",
           "renew": "Yenileme"
@@ -2802,6 +2815,19 @@
           "failed": "Başarısız",
           "canceled": "İptal edildi"
         }
+      },
+      "config": {
+        "saved": "Satış ayarları kaydedildi",
+        "publicEnabled": "Herkese açık satın alma sayfası",
+        "publicEnabledHint": "Açıkken müşteriler giriş yapmadan satın alabilir. Varsayılan olarak kapalıdır.",
+        "publicBaseUrl": "Herkese açık temel URL",
+        "publicBaseUrlHint": "Müşterilerin mağazaya ulaştığı adres; ödeme geçitleri müşterileri buraya geri yönlendirir.",
+        "cardTitle": "Karttan karta ödeme",
+        "cardEnabled": "Etkin",
+        "cardNumber": "Kart numarası (16 hane)",
+        "holderName": "Kart sahibi",
+        "bankName": "Banka",
+        "instructions": "Müşteri için talimatlar"
       }
     },
     "sessions": {

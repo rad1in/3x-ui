@@ -2113,6 +2113,37 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "CardPayConfig": {
+    "description": "CardPayConfig is the destination card for manual card-to-card payments.",
+    "properties": {
+      "bankName": {
+        "example": "Melli",
+        "type": "string"
+      },
+      "cardNumber": {
+        "example": "6037991812345678",
+        "type": "string"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "holderName": {
+        "example": "Ali Rezaei",
+        "type": "string"
+      },
+      "instructions": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "bankName",
+      "cardNumber",
+      "enabled",
+      "holderName",
+      "instructions"
+    ],
+    "type": "object"
+  },
   "Client": {
     "description": "Client represents a client configuration for Xray inbounds with traffic limits and settings.",
     "properties": {
@@ -5119,7 +5150,7 @@ export const SCHEMAS: Record<string, unknown> = {
     "type": "object"
   },
   "Order": {
-    "description": "Order is one purchase attempt of a plan. Amount is what the customer pays in\nCurrency's minor unit; PlanName is a snapshot so editing a plan never\nrewrites history. Token is the unguessable handle the customer uses.",
+    "description": "Order is one purchase attempt of a plan. Amount is what the customer pays in\nCurrency's minor unit; the plan name and terms are snapshots so editing a\nplan never changes what a customer already paid for. Token is the\nunguessable handle the customer uses. PaidAt set with FulfilledAt unset is a\npaid order whose client has not been created or renewed yet.",
     "properties": {
       "amount": {
         "example": 250000,
@@ -5142,6 +5173,14 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": "IRT",
         "type": "string"
       },
+      "durationDays": {
+        "example": 30,
+        "type": "integer"
+      },
+      "fulfilledAt": {
+        "format": "int64",
+        "type": "integer"
+      },
       "gateway": {
         "example": "card",
         "type": "string"
@@ -5156,6 +5195,10 @@ export const SCHEMAS: Record<string, unknown> = {
       "kind": {
         "example": "new",
         "type": "string"
+      },
+      "limitIp": {
+        "example": 2,
+        "type": "integer"
       },
       "paidAt": {
         "format": "int64",
@@ -5187,6 +5230,11 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
         "type": "string"
       },
+      "totalGB": {
+        "example": 53687091200,
+        "format": "int64",
+        "type": "integer"
+      },
       "updatedAt": {
         "format": "int64",
         "type": "integer"
@@ -5198,10 +5246,13 @@ export const SCHEMAS: Record<string, unknown> = {
       "contact",
       "createdAt",
       "currency",
+      "durationDays",
+      "fulfilledAt",
       "gateway",
       "gatewayRef",
       "id",
       "kind",
+      "limitIp",
       "paidAt",
       "planId",
       "planName",
@@ -5210,6 +5261,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "rejectReason",
       "status",
       "token",
+      "totalGB",
       "updatedAt"
     ],
     "type": "object"
@@ -5680,6 +5732,27 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "SalesConfig": {
+    "description": "SalesConfig is everything the operator configures about selling. It is one\nJSON setting; later payment methods add their own sections.",
+    "properties": {
+      "card": {
+        "$ref": "#/components/schemas/CardPayConfig"
+      },
+      "publicBaseUrl": {
+        "example": "https://shop.example.com",
+        "type": "string"
+      },
+      "publicEnabled": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "card",
+      "publicBaseUrl",
+      "publicEnabled"
+    ],
+    "type": "object"
+  },
   "ServerSettings": {
     "description": "ServerSettings is the \"server\" block of an AmneziaWG inbound's Settings\nJSON: the interface-level configuration shared by every client/peer. The\nlisten port is deliberately not duplicated here — it lives on the inbound\nrow itself (Inbound.Port), like every other protocol.",
     "properties": {
@@ -5891,6 +5964,151 @@ export const SCHEMAS: Record<string, unknown> = {
       "id",
       "key",
       "value"
+    ],
+    "type": "object"
+  },
+  "ShopCatalog": {
+    "description": "ShopCatalog is what the public shop lists: sellable plans and the payment\nmethods that are switched on.",
+    "properties": {
+      "methods": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "plans": {
+        "items": {
+          "$ref": "#/components/schemas/ShopPlan"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "methods",
+      "plans"
+    ],
+    "type": "object"
+  },
+  "ShopOrderView": {
+    "description": "ShopOrderView is an order as its customer sees it: no internal ids, and the\ncard details only while a transfer is still expected.",
+    "properties": {
+      "amount": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "card": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CardPayConfig"
+          }
+        ],
+        "nullable": true
+      },
+      "clientEmail": {
+        "example": "alice",
+        "type": "string"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "currency": {
+        "example": "IRT",
+        "type": "string"
+      },
+      "fulfilled": {
+        "type": "boolean"
+      },
+      "gateway": {
+        "example": "card",
+        "type": "string"
+      },
+      "kind": {
+        "example": "new",
+        "type": "string"
+      },
+      "planName": {
+        "example": "Monthly 50 GB",
+        "type": "string"
+      },
+      "rejectReason": {
+        "type": "string"
+      },
+      "status": {
+        "example": "pending",
+        "type": "string"
+      },
+      "subscriptionUrl": {
+        "type": "string"
+      },
+      "token": {
+        "example": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+        "type": "string"
+      }
+    },
+    "required": [
+      "amount",
+      "clientEmail",
+      "createdAt",
+      "currency",
+      "fulfilled",
+      "gateway",
+      "kind",
+      "planName",
+      "rejectReason",
+      "status",
+      "subscriptionUrl",
+      "token"
+    ],
+    "type": "object"
+  },
+  "ShopPlan": {
+    "description": "ShopPlan is a plan as the public shop shows it.",
+    "properties": {
+      "currency": {
+        "example": "IRT",
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "durationDays": {
+        "example": 30,
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "limitIp": {
+        "example": 2,
+        "type": "integer"
+      },
+      "name": {
+        "example": "Monthly 50 GB",
+        "type": "string"
+      },
+      "price": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "totalGB": {
+        "example": 53687091200,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "currency",
+      "description",
+      "durationDays",
+      "id",
+      "limitIp",
+      "name",
+      "price",
+      "totalGB"
     ],
     "type": "object"
   },

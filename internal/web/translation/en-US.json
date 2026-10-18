@@ -2761,6 +2761,7 @@
       "hint": "Sell plans to customers. A plan sets the price, quota and duration; the client template it points to decides which inbounds the customer gets.",
       "plansTab": "Plans",
       "ordersTab": "Orders",
+      "settingsTab": "Settings",
       "plans": {
         "add": "Add plan",
         "edit": "Edit plan",
@@ -2790,6 +2791,18 @@
         "status": "Status",
         "created": "Created",
         "allStatuses": "All statuses",
+        "approve": "Approve payment",
+        "reject": "Reject",
+        "retry": "Retry delivery",
+        "confirmApprove": "Accept this payment and create or renew the client now?",
+        "approved": "Payment accepted and delivered",
+        "rejected": "Order rejected",
+        "undelivered": "Paid, not delivered",
+        "contact": "Contact",
+        "receiptRef": "Receipt reference",
+        "receiptNote": "Customer note",
+        "rejectReason": "Rejection reason",
+        "rejectReasonHint": "Optional reason the customer will see",
         "kinds": {
           "new": "New",
           "renew": "Renewal"
@@ -2802,6 +2815,19 @@
           "failed": "Failed",
           "canceled": "Canceled"
         }
+      },
+      "config": {
+        "saved": "Sales settings saved",
+        "publicEnabled": "Public purchase page",
+        "publicEnabledHint": "When on, customers can buy without logging in. Off by default.",
+        "publicBaseUrl": "Public base URL",
+        "publicBaseUrlHint": "The address customers reach the shop at; payment gateways send customers back to it.",
+        "cardTitle": "Card-to-card payment",
+        "cardEnabled": "Enabled",
+        "cardNumber": "Card number (16 digits)",
+        "holderName": "Card holder",
+        "bankName": "Bank",
+        "instructions": "Instructions for the customer"
       }
     },
     "sessions": {

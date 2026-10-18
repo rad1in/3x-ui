@@ -99,6 +99,11 @@ func run(root, outDir string) error {
 			StructAllow: setOf(
 				"InboundOption",
 				"OrderPage",
+				"SalesConfig",
+				"CardPayConfig",
+				"ShopPlan",
+				"ShopCatalog",
+				"ShopOrderView",
 				"VPNStatus",
 				"BackupResult",
 				"HappLinkResult",

@@ -2,7 +2,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { keys } from '@/api/queryKeys';
-import { OrderPageSchema, PlanSchema, type OrderPage, type Plan } from '@/generated/zod';
+import {
+  OrderPageSchema,
+  PlanSchema,
+  SalesConfigSchema,
+  type OrderPage,
+  type Plan,
+  type SalesConfig,
+} from '@/generated/zod';
 import { HttpUtil } from '@/utils';
 import { parseMsg } from '@/utils/zodValidate';
 
@@ -50,6 +57,53 @@ export function usePlans() {
     save: save.mutateAsync,
     saving: save.isPending,
     remove: remove.mutateAsync,
+  };
+}
+
+export function useOrderActions() {
+  const queryClient = useQueryClient();
+  const refresh = (msg: { success?: boolean } | undefined) => {
+    if (!msg?.success) return;
+    void queryClient.invalidateQueries({ queryKey: keys.sales.root() });
+    void queryClient.invalidateQueries({ queryKey: keys.clients.root() });
+  };
+  const approve = useMutation({
+    mutationFn: (id: number) => HttpUtil.post(`/panel/api/sales/orders/approve/${id}`),
+    onSettled: (msg) => refresh(msg),
+  });
+  const reject = useMutation({
+    mutationFn: (args: { id: number; reason: string }) =>
+      HttpUtil.post(
+        `/panel/api/sales/orders/reject/${args.id}`,
+        { reason: args.reason },
+        JSON_HEADERS,
+      ),
+    onSettled: (msg) => refresh(msg),
+  });
+  return { approve: approve.mutateAsync, reject: reject.mutateAsync };
+}
+
+async function fetchSalesConfig(): Promise<SalesConfig> {
+  const msg = await HttpUtil.get('/panel/api/sales/config', undefined, { silent: true });
+  if (!msg?.success) throw new Error(msg?.msg || 'Failed to load sales settings');
+  return parseMsg(msg, SalesConfigSchema, 'sales/config', { strict: true }).obj as SalesConfig;
+}
+
+export function useSalesConfig() {
+  const queryClient = useQueryClient();
+  const query = useQuery({ queryKey: keys.sales.config(), queryFn: fetchSalesConfig });
+  const save = useMutation({
+    mutationFn: (cfg: SalesConfig) =>
+      HttpUtil.post('/panel/api/sales/config/save', cfg, JSON_HEADERS),
+    onSuccess: (msg) => {
+      if (msg?.success) void queryClient.invalidateQueries({ queryKey: keys.sales.config() });
+    },
+  });
+  return {
+    config: query.data,
+    loading: query.isLoading,
+    save: save.mutateAsync,
+    saving: save.isPending,
   };
 }
 

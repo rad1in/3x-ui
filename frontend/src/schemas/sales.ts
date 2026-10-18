@@ -27,3 +27,16 @@ export const ORDER_STATUSES = [
   'canceled',
 ] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
+
+export const salesConfigSchema = z.object({
+  publicEnabled: z.boolean(),
+  publicBaseUrl: z.string().trim(),
+  card: z.object({
+    enabled: z.boolean(),
+    cardNumber: z.string(),
+    holderName: z.string(),
+    bankName: z.string(),
+    instructions: z.string(),
+  }),
+});
+export type SalesConfigValues = z.infer<typeof salesConfigSchema>;

@@ -50,6 +50,7 @@ export const keys = {
   sales: {
     root: () => ['sales'] as const,
     plans: () => ['sales', 'plans'] as const,
+    config: () => ['sales', 'config'] as const,
     orders: (status: string, page: number) => ['sales', 'orders', status, page] as const,
   },
   clients: {

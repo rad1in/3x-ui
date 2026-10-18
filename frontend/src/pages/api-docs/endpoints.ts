@@ -2498,6 +2498,105 @@ export const sections: readonly Section[] = [
         ],
         responseSchema: 'OrderPage',
       },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/orders/approve/:id',
+        summary:
+          'Accept the payment of a pending or in-review order and deliver it: a new purchase creates the client from the plan terms the order was bought under, a renewal zeroes the usage, applies the plan quota and IP limit and adds the days after the time the client still has. Changes go through the normal client runtime, so remote nodes follow. On a paid order whose delivery failed this retries the delivery. Fails with order_state for an order already delivered, rejected or canceled.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Order id.' }],
+        responseSchema: 'Order',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/orders/reject/:id',
+        summary:
+          'Reject a pending or in-review order, with an optional reason the customer sees. A rejected order cannot be approved afterwards.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Order id.' },
+          {
+            name: 'reason',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Why the payment was not accepted, up to 300 characters.',
+          },
+        ],
+        responseSchema: 'Order',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/config',
+        summary:
+          'Selling configuration: whether the public shop is on, its public base URL and the card-to-card destination. Owner only.',
+        responseSchema: 'SalesConfig',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/config/save',
+        summary:
+          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); a disabled section is stored as is. Owner only.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SalesConfig.' }],
+      },
+    ],
+  },
+
+  {
+    id: 'shop',
+    title: 'Public Shop',
+    description:
+      'The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/shop/api/plans',
+        summary: 'Plans on sale, by sort order, and the payment methods that are switched on.',
+        responseSchema: 'ShopCatalog',
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/orders',
+        summary:
+          'Start a purchase. kind new needs a free username (3 to 32 of a-z, 0-9, dot, underscore, dash; it is lower-cased) with no open order; renew needs the exact username of an existing client. The reply is the order as the customer sees it, including the card details while a transfer is expected.',
+        params: [
+          { name: 'planId', in: 'body (json)', type: 'integer', desc: 'Plan to buy.' },
+          { name: 'kind', in: 'body (json)', type: 'string', enum: ['new', 'renew'] },
+          { name: 'email', in: 'body (json)', type: 'string', desc: 'Client username.' },
+          {
+            name: 'gateway',
+            in: 'body (json)',
+            type: 'string',
+            desc: 'Payment method, e.g. card.',
+          },
+          {
+            name: 'contact',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'How to reach the customer, up to 100 characters.',
+          },
+        ],
+        responseSchema: 'ShopOrderView',
+      },
+      {
+        method: 'GET',
+        path: '/shop/api/orders/:token',
+        summary:
+          'Follow an order. Once it is delivered, fulfilled is true and subscriptionUrl carries the client subscription link when the subscription server is on.',
+        params: [{ name: 'token', in: 'path', type: 'string', desc: 'Order token.' }],
+        responseSchema: 'ShopOrderView',
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/orders/:token/receipt',
+        summary:
+          'Tell the shop a card transfer was made: ref is the tracking number or last numbers (up to 64 characters), note is free text (up to 500). Moves the order to review; allowed while it is pending or already in review.',
+        params: [
+          { name: 'token', in: 'path', type: 'string', desc: 'Order token.' },
+          { name: 'ref', in: 'body (json)', type: 'string' },
+          { name: 'note', in: 'body (json)', type: 'string', optional: true },
+        ],
+        responseSchema: 'ShopOrderView',
+      },
     ],
   },
 

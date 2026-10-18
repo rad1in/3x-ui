@@ -2761,6 +2761,7 @@
       "hint": "向客户出售套餐。套餐设定价格、流量和时长，其关联的客户端模板决定客户可使用的入站。",
       "plansTab": "套餐",
       "ordersTab": "订单",
+      "settingsTab": "设置",
       "plans": {
         "add": "添加套餐",
         "edit": "编辑套餐",
@@ -2790,6 +2791,18 @@
         "status": "状态",
         "created": "创建时间",
         "allStatuses": "全部状态",
+        "approve": "确认收款",
+        "reject": "拒绝",
+        "retry": "重试发放",
+        "confirmApprove": "确认收到该笔款项，并立即创建或续费客户端？",
+        "approved": "已确认收款并发放",
+        "rejected": "订单已拒绝",
+        "undelivered": "已付款，未发放",
+        "contact": "联系方式",
+        "receiptRef": "付款凭证号",
+        "receiptNote": "客户备注",
+        "rejectReason": "拒绝原因",
+        "rejectReasonHint": "可选，客户会看到此原因",
         "kinds": {
           "new": "新购",
           "renew": "续费"
@@ -2802,6 +2815,19 @@
           "failed": "失败",
           "canceled": "已取消"
         }
+      },
+      "config": {
+        "saved": "销售设置已保存",
+        "publicEnabled": "公开购买页面",
+        "publicEnabledHint": "开启后客户无需登录即可购买，默认关闭。",
+        "publicBaseUrl": "公开基础网址",
+        "publicBaseUrlHint": "客户访问商店的地址，支付网关会把客户跳转回该地址。",
+        "cardTitle": "银行卡转账支付",
+        "cardEnabled": "启用",
+        "cardNumber": "卡号（16 位）",
+        "holderName": "持卡人",
+        "bankName": "银行",
+        "instructions": "给客户的说明"
       }
     },
     "sessions": {

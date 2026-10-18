@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Select, Table, Tag } from 'antd';
+import { Button, Descriptions, Input, Modal, Popconfirm, Select, Space, Table, Tag } from 'antd';
 import type { TableColumnsType } from 'antd';
+import { CheckOutlined, CloseOutlined, ReloadOutlined } from '@ant-design/icons';
 
-import { ORDER_PAGE_SIZE, useOrders } from '@/api/queries/useSales';
+import { ORDER_PAGE_SIZE, useOrderActions, useOrders } from '@/api/queries/useSales';
 import type { Order } from '@/generated/zod';
 import { formatMoney } from '@/lib/money';
 import { ORDER_STATUSES } from '@/schemas/sales';
@@ -17,11 +18,27 @@ const STATUS_COLORS: Record<string, string> = {
   canceled: 'default',
 };
 
+const isOpen = (o: Order) => o.status === 'pending' || o.status === 'review';
+const isUndelivered = (o: Order) => o.status === 'paid' && o.fulfilledAt === 0;
+
 export default function OrdersTab() {
   const { t } = useTranslation();
   const [status, setStatus] = useState('');
   const [page, setPage] = useState(1);
   const { data, isLoading } = useOrders(status, page);
+  const { approve, reject } = useOrderActions();
+
+  const [rejecting, setRejecting] = useState<Order | null>(null);
+  const [reason, setReason] = useState('');
+
+  async function onReject() {
+    if (!rejecting) return;
+    const msg = await reject({ id: rejecting.id, reason });
+    if (msg?.success) {
+      setRejecting(null);
+      setReason('');
+    }
+  }
 
   const columns: TableColumnsType<Order> = [
     { title: '#', dataIndex: 'id', width: 70 },
@@ -43,14 +60,54 @@ export default function OrdersTab() {
     {
       title: t('pages.sales.orders.status'),
       dataIndex: 'status',
-      render: (s: string) => (
-        <Tag color={STATUS_COLORS[s]}>{t(`pages.sales.orders.statuses.${s}`)}</Tag>
-      ),
+      render: (s: string, o) =>
+        isUndelivered(o) ? (
+          <Tag color="orange">{t('pages.sales.orders.undelivered')}</Tag>
+        ) : (
+          <Tag color={STATUS_COLORS[s]}>{t(`pages.sales.orders.statuses.${s}`)}</Tag>
+        ),
     },
     {
       title: t('pages.sales.orders.created'),
       dataIndex: 'createdAt',
       render: (ms: number) => new Date(ms).toLocaleString(),
+    },
+    {
+      width: 110,
+      render: (_, o) => (
+        <Space size={4}>
+          {isOpen(o) && (
+            <>
+              <Popconfirm
+                title={t('pages.sales.orders.confirmApprove')}
+                onConfirm={() => approve(o.id)}
+              >
+                <Button
+                  size="small"
+                  type="primary"
+                  icon={<CheckOutlined />}
+                  aria-label={t('pages.sales.orders.approve')}
+                />
+              </Popconfirm>
+              <Button
+                size="small"
+                danger
+                icon={<CloseOutlined />}
+                aria-label={t('pages.sales.orders.reject')}
+                onClick={() => setRejecting(o)}
+              />
+            </>
+          )}
+          {isUndelivered(o) && (
+            <Button
+              size="small"
+              icon={<ReloadOutlined />}
+              aria-label={t('pages.sales.orders.retry')}
+              onClick={() => approve(o.id)}
+            />
+          )}
+        </Space>
+      ),
     },
   ];
 
@@ -79,7 +136,27 @@ export default function OrdersTab() {
         loading={isLoading}
         columns={columns}
         dataSource={data?.items ?? []}
-        scroll={{ x: 720 }}
+        scroll={{ x: 820 }}
+        expandable={{
+          expandedRowRender: (o) => (
+            <Descriptions size="small" column={1}>
+              <Descriptions.Item label={t('pages.sales.orders.contact')}>
+                <span dir="auto">{o.contact || '-'}</span>
+              </Descriptions.Item>
+              <Descriptions.Item label={t('pages.sales.orders.receiptRef')}>
+                <span dir="auto">{o.receiptRef || '-'}</span>
+              </Descriptions.Item>
+              <Descriptions.Item label={t('pages.sales.orders.receiptNote')}>
+                <span dir="auto">{o.receiptNote || '-'}</span>
+              </Descriptions.Item>
+              {o.rejectReason && (
+                <Descriptions.Item label={t('pages.sales.orders.rejectReason')}>
+                  <span dir="auto">{o.rejectReason}</span>
+                </Descriptions.Item>
+              )}
+            </Descriptions>
+          ),
+        }}
         pagination={{
           current: page,
           pageSize: ORDER_PAGE_SIZE,
@@ -88,6 +165,24 @@ export default function OrdersTab() {
           onChange: setPage,
         }}
       />
+      <Modal
+        open={rejecting !== null}
+        title={t('pages.sales.orders.reject')}
+        okText={t('pages.sales.orders.reject')}
+        okButtonProps={{ danger: true }}
+        cancelText={t('close')}
+        onOk={onReject}
+        onCancel={() => setRejecting(null)}
+        destroyOnHidden
+      >
+        <Input.TextArea
+          rows={3}
+          maxLength={300}
+          value={reason}
+          placeholder={t('pages.sales.orders.rejectReasonHint')}
+          onChange={(e) => setReason(e.target.value)}
+        />
+      </Modal>
     </>
   );
 }

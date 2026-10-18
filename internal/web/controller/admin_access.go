@@ -36,6 +36,8 @@ var ownerOnlyRoutes = map[string]bool{
 	"POST /setting/apiTokens/delete/:id":          true,
 	"POST /setting/apiTokens/setEnabled/:id":      true,
 	"POST /setting/apiTokens/setAllowedCidrs/:id": true,
+	"GET /sales/config":                           true,
+	"POST /sales/config/save":                     true,
 	"GET /server/getDb":                           true,
 	"POST /server/importDB":                       true,
 }

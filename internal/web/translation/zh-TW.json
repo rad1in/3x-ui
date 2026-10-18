@@ -2761,6 +2761,7 @@
       "hint": "向客戶出售方案。方案設定價格、流量與時長，其關聯的客戶端範本決定客戶可使用的入站。",
       "plansTab": "方案",
       "ordersTab": "訂單",
+      "settingsTab": "設定",
       "plans": {
         "add": "新增方案",
         "edit": "編輯方案",
@@ -2790,6 +2791,18 @@
         "status": "狀態",
         "created": "建立時間",
         "allStatuses": "全部狀態",
+        "approve": "確認收款",
+        "reject": "拒絕",
+        "retry": "重試發放",
+        "confirmApprove": "確認收到該筆款項，並立即建立或續費客戶端？",
+        "approved": "已確認收款並發放",
+        "rejected": "訂單已拒絕",
+        "undelivered": "已付款，未發放",
+        "contact": "聯絡方式",
+        "receiptRef": "付款憑證號",
+        "receiptNote": "客戶備註",
+        "rejectReason": "拒絕原因",
+        "rejectReasonHint": "選填，客戶會看到此原因",
         "kinds": {
           "new": "新購",
           "renew": "續費"
@@ -2802,6 +2815,19 @@
           "failed": "失敗",
           "canceled": "已取消"
         }
+      },
+      "config": {
+        "saved": "銷售設定已儲存",
+        "publicEnabled": "公開購買頁面",
+        "publicEnabledHint": "開啟後客戶無需登入即可購買，預設關閉。",
+        "publicBaseUrl": "公開基礎網址",
+        "publicBaseUrlHint": "客戶造訪商店的位址，支付閘道會將客戶導回該位址。",
+        "cardTitle": "銀行卡轉帳付款",
+        "cardEnabled": "啟用",
+        "cardNumber": "卡號（16 位）",
+        "holderName": "持卡人",
+        "bankName": "銀行",
+        "instructions": "給客戶的說明"
       }
     },
     "sessions": {

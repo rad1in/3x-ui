@@ -12,8 +12,11 @@ import (
 // SalesController is the admin side of selling plans: the plan catalogue and
 // the order queue.
 type SalesController struct {
-	planService  service.PlanService
-	orderService service.OrderService
+	planService    service.PlanService
+	orderService   service.OrderService
+	configService  service.SalesConfigService
+	inboundService service.InboundService
+	xrayService    service.XrayService
 }
 
 func NewSalesController(g *gin.RouterGroup) *SalesController {
@@ -22,6 +25,10 @@ func NewSalesController(g *gin.RouterGroup) *SalesController {
 	g.POST("/plans/save", a.savePlan)
 	g.POST("/plans/del/:id", a.deletePlan)
 	g.GET("/orders", a.listOrders)
+	g.POST("/orders/approve/:id", a.approveOrder)
+	g.POST("/orders/reject/:id", a.rejectOrder)
+	g.GET("/config", a.getConfig)
+	g.POST("/config/save", a.saveConfig)
 	return a
 }
 
@@ -54,4 +61,56 @@ func (a *SalesController) listOrders(c *gin.Context) {
 	offset, _ := strconv.Atoi(c.Query("offset"))
 	page, err := a.orderService.ListOrders(c.Query("status"), limit, offset)
 	jsonObj(c, page, err)
+}
+
+func (a *SalesController) approveOrder(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	needRestart, err := a.orderService.FulfilOrder(&a.inboundService, id)
+	if needRestart {
+		a.xrayService.SetToNeedRestart()
+	}
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	notifyClientsChanged()
+	order, err := a.orderService.GetOrder(id)
+	jsonMsgObj(c, I18nWeb(c, "pages.sales.orders.approved"), order, err)
+}
+
+type rejectOrderBody struct {
+	Reason string `json:"reason"`
+}
+
+func (a *SalesController) rejectOrder(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	var body rejectOrderBody
+	if err := c.ShouldBindJSON(&body); err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	order, err := a.orderService.RejectOrder(id, body.Reason)
+	jsonMsgObj(c, I18nWeb(c, "pages.sales.orders.rejected"), order, err)
+}
+
+func (a *SalesController) getConfig(c *gin.Context) {
+	cfg, err := a.configService.Get()
+	jsonObj(c, cfg, err)
+}
+
+func (a *SalesController) saveConfig(c *gin.Context) {
+	var cfg service.SalesConfig
+	if err := c.ShouldBindJSON(&cfg); err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	jsonMsg(c, I18nWeb(c, "pages.sales.config.saved"), a.configService.Save(&cfg))
 }

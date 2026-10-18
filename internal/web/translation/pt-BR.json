@@ -2761,6 +2761,7 @@
       "hint": "Venda planos aos clientes. O plano define preço, cota e duração; o modelo de cliente associado decide quais inbounds o cliente recebe.",
       "plansTab": "Planos",
       "ordersTab": "Pedidos",
+      "settingsTab": "Configurações",
       "plans": {
         "add": "Adicionar plano",
         "edit": "Editar plano",
@@ -2790,6 +2791,18 @@
         "status": "Status",
         "created": "Criado",
         "allStatuses": "Todos os status",
+        "approve": "Aprovar pagamento",
+        "reject": "Recusar",
+        "retry": "Tentar a entrega de novo",
+        "confirmApprove": "Aceitar este pagamento e criar ou renovar o cliente agora?",
+        "approved": "Pagamento aceito e entregue",
+        "rejected": "Pedido recusado",
+        "undelivered": "Pago, não entregue",
+        "contact": "Contato",
+        "receiptRef": "Referência do comprovante",
+        "receiptNote": "Nota do cliente",
+        "rejectReason": "Motivo da recusa",
+        "rejectReasonHint": "Motivo opcional que o cliente verá",
         "kinds": {
           "new": "Novo",
           "renew": "Renovação"
@@ -2802,6 +2815,19 @@
           "failed": "Falhou",
           "canceled": "Cancelado"
         }
+      },
+      "config": {
+        "saved": "Configurações de vendas salvas",
+        "publicEnabled": "Página de compra pública",
+        "publicEnabledHint": "Quando ativada, os clientes compram sem fazer login. Desativada por padrão.",
+        "publicBaseUrl": "URL pública base",
+        "publicBaseUrlHint": "O endereço pelo qual os clientes acessam a loja; os gateways de pagamento os trazem de volta a ele.",
+        "cardTitle": "Pagamento cartão a cartão",
+        "cardEnabled": "Ativado",
+        "cardNumber": "Número do cartão (16 dígitos)",
+        "holderName": "Titular do cartão",
+        "bankName": "Banco",
+        "instructions": "Instruções para o cliente"
       }
     },
     "sessions": {

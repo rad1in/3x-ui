@@ -524,6 +524,13 @@ export const EXAMPLES: Record<string, unknown> = {
     "name": "panel.example.com_2026-10-17_030000.db.gz",
     "pruned": 1
   },
+  "CardPayConfig": {
+    "bankName": "Melli",
+    "cardNumber": "6037991812345678",
+    "enabled": false,
+    "holderName": "Ali Rezaei",
+    "instructions": ""
+  },
   "Client": {
     "adTag": "0123456789abcdef0123456789abcdef",
     "allowedIPs": [
@@ -1275,10 +1282,13 @@ export const EXAMPLES: Record<string, unknown> = {
     "contact": "@alice",
     "createdAt": 0,
     "currency": "IRT",
+    "durationDays": 30,
+    "fulfilledAt": 0,
     "gateway": "card",
     "gatewayRef": "",
     "id": 1,
     "kind": "new",
+    "limitIp": 2,
     "paidAt": 0,
     "planId": 1,
     "planName": "Monthly 50 GB",
@@ -1287,6 +1297,7 @@ export const EXAMPLES: Record<string, unknown> = {
     "rejectReason": "",
     "status": "pending",
     "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+    "totalGB": 53687091200,
     "updatedAt": 0
   },
   "OrderPage": {
@@ -1297,10 +1308,13 @@ export const EXAMPLES: Record<string, unknown> = {
         "contact": "@alice",
         "createdAt": 0,
         "currency": "IRT",
+        "durationDays": 30,
+        "fulfilledAt": 0,
         "gateway": "card",
         "gatewayRef": "",
         "id": 1,
         "kind": "new",
+        "limitIp": 2,
         "paidAt": 0,
         "planId": 1,
         "planName": "Monthly 50 GB",
@@ -1309,6 +1323,7 @@ export const EXAMPLES: Record<string, unknown> = {
         "rejectReason": "",
         "status": "pending",
         "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+        "totalGB": 53687091200,
         "updatedAt": 0
       }
     ],
@@ -1407,6 +1422,17 @@ export const EXAMPLES: Record<string, unknown> = {
     "tlsVersion": "1.3",
     "x25519": true
   },
+  "SalesConfig": {
+    "card": {
+      "bankName": "Melli",
+      "cardNumber": "6037991812345678",
+      "enabled": false,
+      "holderName": "Ali Rezaei",
+      "instructions": ""
+    },
+    "publicBaseUrl": "https://shop.example.com",
+    "publicEnabled": false
+  },
   "ServerSettings": {
     "contentPaddingAddition": "",
     "disableCookies": false,
@@ -1460,6 +1486,48 @@ export const EXAMPLES: Record<string, unknown> = {
     "id": 0,
     "key": "",
     "value": ""
+  },
+  "ShopCatalog": {
+    "methods": [
+      ""
+    ],
+    "plans": [
+      {
+        "currency": "IRT",
+        "description": "",
+        "durationDays": 30,
+        "id": 1,
+        "limitIp": 2,
+        "name": "Monthly 50 GB",
+        "price": 250000,
+        "totalGB": 53687091200
+      }
+    ]
+  },
+  "ShopOrderView": {
+    "amount": 250000,
+    "card": null,
+    "clientEmail": "alice",
+    "createdAt": 0,
+    "currency": "IRT",
+    "fulfilled": false,
+    "gateway": "card",
+    "kind": "new",
+    "planName": "Monthly 50 GB",
+    "rejectReason": "",
+    "status": "pending",
+    "subscriptionUrl": "",
+    "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f"
+  },
+  "ShopPlan": {
+    "currency": "IRT",
+    "description": "",
+    "durationDays": 30,
+    "id": 1,
+    "limitIp": 2,
+    "name": "Monthly 50 GB",
+    "price": 250000,
+    "totalGB": 53687091200
   },
   "Sponsor": {
     "enable": true,

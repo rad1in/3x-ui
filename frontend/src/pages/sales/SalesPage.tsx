@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Card, ConfigProvider, Layout, Tabs, message } from 'antd';
 import { ShoppingCartOutlined } from '@ant-design/icons';
 
+import { useCurrentAdmin } from '@/api/queries/useCurrentAdmin';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { useTheme } from '@/hooks/useTheme';
 import AppSidebar from '@/layouts/AppSidebar';
 import { setMessageInstance } from '@/utils/messageBus';
 import OrdersTab from './OrdersTab';
 import PlansTab from './PlansTab';
+import SalesSettingsTab from './SalesSettingsTab';
 import './SalesPage.css';
 
 export default function SalesPage() {
@@ -16,6 +18,7 @@ export default function SalesPage() {
   const { isDark, isUltra, antdThemeConfig } = useTheme();
   const [messageApi, messageContextHolder] = message.useMessage();
   usePageTitle();
+  const isOwner = useCurrentAdmin().data?.role === 'owner';
   useEffect(() => {
     setMessageInstance(messageApi);
   }, [messageApi]);
@@ -44,6 +47,15 @@ export default function SalesPage() {
                 items={[
                   { key: 'plans', label: t('pages.sales.plansTab'), children: <PlansTab /> },
                   { key: 'orders', label: t('pages.sales.ordersTab'), children: <OrdersTab /> },
+                  ...(isOwner
+                    ? [
+                        {
+                          key: 'settings',
+                          label: t('pages.sales.settingsTab'),
+                          children: <SalesSettingsTab />,
+                        },
+                      ]
+                    : []),
                 ]}
               />
             </Card>

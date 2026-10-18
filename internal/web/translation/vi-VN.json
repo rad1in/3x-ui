@@ -2761,6 +2761,7 @@
       "hint": "Bán gói cho khách hàng. Gói đặt giá, hạn mức và thời hạn; mẫu khách hàng mà gói trỏ tới quyết định khách nhận được inbound nào.",
       "plansTab": "Gói",
       "ordersTab": "Đơn hàng",
+      "settingsTab": "Cài đặt",
       "plans": {
         "add": "Thêm gói",
         "edit": "Sửa gói",
@@ -2790,6 +2791,18 @@
         "status": "Trạng thái",
         "created": "Đã tạo",
         "allStatuses": "Mọi trạng thái",
+        "approve": "Duyệt thanh toán",
+        "reject": "Từ chối",
+        "retry": "Thử giao lại",
+        "confirmApprove": "Chấp nhận thanh toán này và tạo hoặc gia hạn khách hàng ngay?",
+        "approved": "Đã nhận thanh toán và giao dịch vụ",
+        "rejected": "Đã từ chối đơn hàng",
+        "undelivered": "Đã thanh toán, chưa giao",
+        "contact": "Liên hệ",
+        "receiptRef": "Mã tham chiếu",
+        "receiptNote": "Ghi chú của khách",
+        "rejectReason": "Lý do từ chối",
+        "rejectReasonHint": "Lý do tùy chọn mà khách hàng sẽ thấy",
         "kinds": {
           "new": "Mới",
           "renew": "Gia hạn"
@@ -2802,6 +2815,19 @@
           "failed": "Thất bại",
           "canceled": "Đã hủy"
         }
+      },
+      "config": {
+        "saved": "Đã lưu cài đặt bán hàng",
+        "publicEnabled": "Trang mua hàng công khai",
+        "publicEnabledHint": "Khi bật, khách có thể mua mà không cần đăng nhập. Mặc định tắt.",
+        "publicBaseUrl": "URL công khai",
+        "publicBaseUrlHint": "Địa chỉ khách truy cập cửa hàng; cổng thanh toán đưa khách quay lại địa chỉ này.",
+        "cardTitle": "Thanh toán chuyển khoản thẻ",
+        "cardEnabled": "Bật",
+        "cardNumber": "Số thẻ (16 chữ số)",
+        "holderName": "Chủ thẻ",
+        "bankName": "Ngân hàng",
+        "instructions": "Hướng dẫn cho khách"
       }
     },
     "sessions": {

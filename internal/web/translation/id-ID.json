@@ -2761,6 +2761,7 @@
       "hint": "Jual paket ke pelanggan. Paket menentukan harga, kuota, dan durasi; templat klien yang dituju menentukan inbound yang didapat pelanggan.",
       "plansTab": "Paket",
       "ordersTab": "Pesanan",
+      "settingsTab": "Pengaturan",
       "plans": {
         "add": "Tambah paket",
         "edit": "Ubah paket",
@@ -2790,6 +2791,18 @@
         "status": "Status",
         "created": "Dibuat",
         "allStatuses": "Semua status",
+        "approve": "Setujui pembayaran",
+        "reject": "Tolak",
+        "retry": "Coba kirim lagi",
+        "confirmApprove": "Terima pembayaran ini dan buat atau perpanjang klien sekarang?",
+        "approved": "Pembayaran diterima dan dikirim",
+        "rejected": "Pesanan ditolak",
+        "undelivered": "Dibayar, belum dikirim",
+        "contact": "Kontak",
+        "receiptRef": "Referensi bukti",
+        "receiptNote": "Catatan pelanggan",
+        "rejectReason": "Alasan penolakan",
+        "rejectReasonHint": "Alasan opsional yang dilihat pelanggan",
         "kinds": {
           "new": "Baru",
           "renew": "Perpanjangan"
@@ -2802,6 +2815,19 @@
           "failed": "Gagal",
           "canceled": "Dibatalkan"
         }
+      },
+      "config": {
+        "saved": "Pengaturan penjualan disimpan",
+        "publicEnabled": "Halaman pembelian publik",
+        "publicEnabledHint": "Jika aktif, pelanggan dapat membeli tanpa login. Nonaktif secara bawaan.",
+        "publicBaseUrl": "URL dasar publik",
+        "publicBaseUrlHint": "Alamat tempat pelanggan membuka toko; gerbang pembayaran mengembalikan pelanggan ke sana.",
+        "cardTitle": "Pembayaran kartu ke kartu",
+        "cardEnabled": "Aktif",
+        "cardNumber": "Nomor kartu (16 digit)",
+        "holderName": "Pemegang kartu",
+        "bankName": "Bank",
+        "instructions": "Petunjuk untuk pelanggan"
       }
     },
     "sessions": {

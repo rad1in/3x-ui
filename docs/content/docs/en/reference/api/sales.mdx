@@ -25,6 +25,28 @@ _openapi:
       title: Orders newest first, with the total for the filter. status is one of
         pending, review, paid, rejected, failed or canceled; empty lists all.
       url: '#orders-newest-first-with-the-total-for-the-filter-status-is-one-of-pending-review-paid-rejected-failed-or-canceled-empty-lists-all'
+    - depth: 2
+      title: 'Accept the payment of a pending or in-review order and deliver it: a new
+        purchase creates the client from the plan terms the order was bought
+        under, a renewal zeroes the usage, applies the plan quota and IP limit
+        and adds the days after the time the client still has. Changes go
+        through the normal client runtime, so remote nodes follow. On a paid
+        order whose delivery failed this retries the delivery. Fails with
+        order_state for an order already delivered, rejected or canceled.'
+      url: '#accept-the-payment-of-a-pending-or-in-review-order-and-deliver-it-a-new-purchase-creates-the-client-from-the-plan-terms-the-order-was-bought-under-a-renewal-zeroes-the-usage-applies-the-plan-quota-and-ip-limit-and-adds-the-days-after-the-time-the-client-still-has-changes-go-through-the-normal-client-runtime-so-remote-nodes-follow-on-a-paid-order-whose-delivery-failed-this-retries-the-delivery-fails-with-order_state-for-an-order-already-delivered-rejected-or-canceled'
+    - depth: 2
+      title: Reject a pending or in-review order, with an optional reason the customer
+        sees. A rejected order cannot be approved afterwards.
+      url: '#reject-a-pending-or-in-review-order-with-an-optional-reason-the-customer-sees-a-rejected-order-cannot-be-approved-afterwards'
+    - depth: 2
+      title: 'Selling configuration: whether the public shop is on, its public base
+        URL and the card-to-card destination. Owner only.'
+      url: '#selling-configuration-whether-the-public-shop-is-on-its-public-base-url-and-the-card-to-card-destination-owner-only'
+    - depth: 2
+      title: Replace the selling configuration. An enabled card section needs a 16
+        figure card number (Persian numerals are accepted); a disabled section
+        is stored as is. Owner only.
+      url: '#replace-the-selling-configuration-an-enabled-card-section-needs-a-16-figure-card-number-persian-numerals-are-accepted-a-disabled-section-is-stored-as-is-owner-only'
   structuredData:
     headings:
       - content: Every plan, enabled or not, by sortOrder. Each plan points at a client
@@ -40,6 +62,25 @@ _openapi:
       - content: Orders newest first, with the total for the filter. status is one of
           pending, review, paid, rejected, failed or canceled; empty lists all.
         id: orders-newest-first-with-the-total-for-the-filter-status-is-one-of-pending-review-paid-rejected-failed-or-canceled-empty-lists-all
+      - content: 'Accept the payment of a pending or in-review order and deliver it: a
+          new purchase creates the client from the plan terms the order was
+          bought under, a renewal zeroes the usage, applies the plan quota and
+          IP limit and adds the days after the time the client still has.
+          Changes go through the normal client runtime, so remote nodes follow.
+          On a paid order whose delivery failed this retries the delivery. Fails
+          with order_state for an order already delivered, rejected or
+          canceled.'
+        id: accept-the-payment-of-a-pending-or-in-review-order-and-deliver-it-a-new-purchase-creates-the-client-from-the-plan-terms-the-order-was-bought-under-a-renewal-zeroes-the-usage-applies-the-plan-quota-and-ip-limit-and-adds-the-days-after-the-time-the-client-still-has-changes-go-through-the-normal-client-runtime-so-remote-nodes-follow-on-a-paid-order-whose-delivery-failed-this-retries-the-delivery-fails-with-order_state-for-an-order-already-delivered-rejected-or-canceled
+      - content: Reject a pending or in-review order, with an optional reason the
+          customer sees. A rejected order cannot be approved afterwards.
+        id: reject-a-pending-or-in-review-order-with-an-optional-reason-the-customer-sees-a-rejected-order-cannot-be-approved-afterwards
+      - content: 'Selling configuration: whether the public shop is on, its public base
+          URL and the card-to-card destination. Owner only.'
+        id: selling-configuration-whether-the-public-shop-is-on-its-public-base-url-and-the-card-to-card-destination-owner-only
+      - content: Replace the selling configuration. An enabled card section needs a 16
+          figure card number (Persian numerals are accepted); a disabled section
+          is stored as is. Owner only.
+        id: replace-the-selling-configuration-an-enabled-card-section-needs-a-16-figure-card-number-persian-numerals-are-accepted-a-disabled-section-is-stored-as-is-owner-only
     contents: []
 ---
 
@@ -52,7 +93,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/sales/plans","method":"get"},{"path":"/panel/api/sales/plans/save","method":"post"},{"path":"/panel/api/sales/plans/del/{id}","method":"post"},{"path":"/panel/api/sales/orders","method":"get"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/sales/plans","method":"get"},{"path":"/panel/api/sales/plans/save","method":"post"},{"path":"/panel/api/sales/plans/del/{id}","method":"post"},{"path":"/panel/api/sales/orders","method":"get"},{"path":"/panel/api/sales/orders/approve/{id}","method":"post"},{"path":"/panel/api/sales/orders/reject/{id}","method":"post"},{"path":"/panel/api/sales/config","method":"get"},{"path":"/panel/api/sales/config/save","method":"post"}]} showTitle />
     </>
   );
 }

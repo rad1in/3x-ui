@@ -509,6 +509,14 @@ export interface BackupResult {
   pruned: number;
 }
 
+export interface CardPayConfig {
+  bankName: string;
+  cardNumber: string;
+  enabled: boolean;
+  holderName: string;
+  instructions: string;
+}
+
 export interface Client {
   adTag?: string;
   allowedIPs?: string[];
@@ -1161,10 +1169,13 @@ export interface Order {
   contact: string;
   createdAt: number;
   currency: string;
+  durationDays: number;
+  fulfilledAt: number;
   gateway: string;
   gatewayRef: string;
   id: number;
   kind: string;
+  limitIp: number;
   paidAt: number;
   planId: number;
   planName: string;
@@ -1173,6 +1184,7 @@ export interface Order {
   rejectReason: string;
   status: string;
   token: string;
+  totalGB: number;
   updatedAt: number;
 }
 
@@ -1280,6 +1292,12 @@ export interface RealityScanResult {
   x25519: boolean;
 }
 
+export interface SalesConfig {
+  card: CardPayConfig;
+  publicBaseUrl: string;
+  publicEnabled: boolean;
+}
+
 export interface ServerSettings {
   contentPaddingAddition?: string;
   disableCookies: boolean;
@@ -1335,6 +1353,38 @@ export interface Setting {
   id: number;
   key: string;
   value: string;
+}
+
+export interface ShopCatalog {
+  methods: string[];
+  plans: ShopPlan[];
+}
+
+export interface ShopOrderView {
+  amount: number;
+  card?: CardPayConfig | null;
+  clientEmail: string;
+  createdAt: number;
+  currency: string;
+  fulfilled: boolean;
+  gateway: string;
+  kind: string;
+  planName: string;
+  rejectReason: string;
+  status: string;
+  subscriptionUrl: string;
+  token: string;
+}
+
+export interface ShopPlan {
+  currency: string;
+  description: string;
+  durationDays: number;
+  id: number;
+  limitIp: number;
+  name: string;
+  price: number;
+  totalGB: number;
 }
 
 export interface Sponsor {

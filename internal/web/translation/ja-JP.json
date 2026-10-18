@@ -2761,6 +2761,7 @@
       "hint": "プランを顧客に販売します。プランは価格・容量・期間を定め、紐づくクライアントテンプレートが顧客に付与するインバウンドを決めます。",
       "plansTab": "プラン",
       "ordersTab": "注文",
+      "settingsTab": "設定",
       "plans": {
         "add": "プランを追加",
         "edit": "プランを編集",
@@ -2790,6 +2791,18 @@
         "status": "ステータス",
         "created": "作成日時",
         "allStatuses": "すべてのステータス",
+        "approve": "支払いを承認",
+        "reject": "却下",
+        "retry": "配信を再試行",
+        "confirmApprove": "この支払いを承認して、今すぐクライアントを作成または更新しますか？",
+        "approved": "支払いを承認し配信しました",
+        "rejected": "注文を却下しました",
+        "undelivered": "支払い済み・未配信",
+        "contact": "連絡先",
+        "receiptRef": "受付番号",
+        "receiptNote": "お客様のメモ",
+        "rejectReason": "却下の理由",
+        "rejectReasonHint": "顧客に表示される任意の理由",
         "kinds": {
           "new": "新規",
           "renew": "更新"
@@ -2802,6 +2815,19 @@
           "failed": "失敗",
           "canceled": "キャンセル"
         }
+      },
+      "config": {
+        "saved": "販売設定を保存しました",
+        "publicEnabled": "公開購入ページ",
+        "publicEnabledHint": "オンにすると、顧客はログインなしで購入できます。初期設定はオフです。",
+        "publicBaseUrl": "公開ベース URL",
+        "publicBaseUrlHint": "顧客がショップにアクセスするアドレス。決済ゲートウェイはここへ顧客を戻します。",
+        "cardTitle": "カード間振込",
+        "cardEnabled": "有効",
+        "cardNumber": "カード番号（16 桁）",
+        "holderName": "カード名義",
+        "bankName": "銀行名",
+        "instructions": "お客様への案内"
       }
     },
     "sessions": {

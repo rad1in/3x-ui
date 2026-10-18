@@ -2139,6 +2139,37 @@
         ],
         "type": "object"
       },
+      "CardPayConfig": {
+        "description": "CardPayConfig is the destination card for manual card-to-card payments.",
+        "properties": {
+          "bankName": {
+            "example": "Melli",
+            "type": "string"
+          },
+          "cardNumber": {
+            "example": "6037991812345678",
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "holderName": {
+            "example": "Ali Rezaei",
+            "type": "string"
+          },
+          "instructions": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "bankName",
+          "cardNumber",
+          "enabled",
+          "holderName",
+          "instructions"
+        ],
+        "type": "object"
+      },
       "Client": {
         "description": "Client represents a client configuration for Xray inbounds with traffic limits and settings.",
         "properties": {
@@ -5145,7 +5176,7 @@
         "type": "object"
       },
       "Order": {
-        "description": "Order is one purchase attempt of a plan. Amount is what the customer pays in\nCurrency's minor unit; PlanName is a snapshot so editing a plan never\nrewrites history. Token is the unguessable handle the customer uses.",
+        "description": "Order is one purchase attempt of a plan. Amount is what the customer pays in\nCurrency's minor unit; the plan name and terms are snapshots so editing a\nplan never changes what a customer already paid for. Token is the\nunguessable handle the customer uses. PaidAt set with FulfilledAt unset is a\npaid order whose client has not been created or renewed yet.",
         "properties": {
           "amount": {
             "example": 250000,
@@ -5168,6 +5199,14 @@
             "example": "IRT",
             "type": "string"
           },
+          "durationDays": {
+            "example": 30,
+            "type": "integer"
+          },
+          "fulfilledAt": {
+            "format": "int64",
+            "type": "integer"
+          },
           "gateway": {
             "example": "card",
             "type": "string"
@@ -5182,6 +5221,10 @@
           "kind": {
             "example": "new",
             "type": "string"
+          },
+          "limitIp": {
+            "example": 2,
+            "type": "integer"
           },
           "paidAt": {
             "format": "int64",
@@ -5213,6 +5256,11 @@
             "example": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
             "type": "string"
           },
+          "totalGB": {
+            "example": 53687091200,
+            "format": "int64",
+            "type": "integer"
+          },
           "updatedAt": {
             "format": "int64",
             "type": "integer"
@@ -5224,10 +5272,13 @@
           "contact",
           "createdAt",
           "currency",
+          "durationDays",
+          "fulfilledAt",
           "gateway",
           "gatewayRef",
           "id",
           "kind",
+          "limitIp",
           "paidAt",
           "planId",
           "planName",
@@ -5236,6 +5287,7 @@
           "rejectReason",
           "status",
           "token",
+          "totalGB",
           "updatedAt"
         ],
         "type": "object"
@@ -5706,6 +5758,27 @@
         ],
         "type": "object"
       },
+      "SalesConfig": {
+        "description": "SalesConfig is everything the operator configures about selling. It is one\nJSON setting; later payment methods add their own sections.",
+        "properties": {
+          "card": {
+            "$ref": "#/components/schemas/CardPayConfig"
+          },
+          "publicBaseUrl": {
+            "example": "https://shop.example.com",
+            "type": "string"
+          },
+          "publicEnabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "card",
+          "publicBaseUrl",
+          "publicEnabled"
+        ],
+        "type": "object"
+      },
       "ServerSettings": {
         "description": "ServerSettings is the \"server\" block of an AmneziaWG inbound's Settings\nJSON: the interface-level configuration shared by every client/peer. The\nlisten port is deliberately not duplicated here — it lives on the inbound\nrow itself (Inbound.Port), like every other protocol.",
         "properties": {
@@ -5917,6 +5990,151 @@
           "id",
           "key",
           "value"
+        ],
+        "type": "object"
+      },
+      "ShopCatalog": {
+        "description": "ShopCatalog is what the public shop lists: sellable plans and the payment\nmethods that are switched on.",
+        "properties": {
+          "methods": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "plans": {
+            "items": {
+              "$ref": "#/components/schemas/ShopPlan"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "methods",
+          "plans"
+        ],
+        "type": "object"
+      },
+      "ShopOrderView": {
+        "description": "ShopOrderView is an order as its customer sees it: no internal ids, and the\ncard details only while a transfer is still expected.",
+        "properties": {
+          "amount": {
+            "example": 250000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "card": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CardPayConfig"
+              }
+            ],
+            "nullable": true
+          },
+          "clientEmail": {
+            "example": "alice",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "currency": {
+            "example": "IRT",
+            "type": "string"
+          },
+          "fulfilled": {
+            "type": "boolean"
+          },
+          "gateway": {
+            "example": "card",
+            "type": "string"
+          },
+          "kind": {
+            "example": "new",
+            "type": "string"
+          },
+          "planName": {
+            "example": "Monthly 50 GB",
+            "type": "string"
+          },
+          "rejectReason": {
+            "type": "string"
+          },
+          "status": {
+            "example": "pending",
+            "type": "string"
+          },
+          "subscriptionUrl": {
+            "type": "string"
+          },
+          "token": {
+            "example": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount",
+          "clientEmail",
+          "createdAt",
+          "currency",
+          "fulfilled",
+          "gateway",
+          "kind",
+          "planName",
+          "rejectReason",
+          "status",
+          "subscriptionUrl",
+          "token"
+        ],
+        "type": "object"
+      },
+      "ShopPlan": {
+        "description": "ShopPlan is a plan as the public shop shows it.",
+        "properties": {
+          "currency": {
+            "example": "IRT",
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "durationDays": {
+            "example": 30,
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "limitIp": {
+            "example": 2,
+            "type": "integer"
+          },
+          "name": {
+            "example": "Monthly 50 GB",
+            "type": "string"
+          },
+          "price": {
+            "example": 250000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalGB": {
+            "example": 53687091200,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "currency",
+          "description",
+          "durationDays",
+          "id",
+          "limitIp",
+          "name",
+          "price",
+          "totalGB"
         ],
         "type": "object"
       },
@@ -6488,6 +6706,10 @@
     {
       "name": "Sales",
       "description": "Sell plans to customers: the plan catalogue and the order queue. Prices and amounts are integers in the currency minor unit (IRT and IRR have none, USD, EUR and USDT have two decimals); quotas are in bytes."
+    },
+    {
+      "name": "Public Shop",
+      "description": "The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address."
     },
     {
       "name": "Admins",
@@ -17072,10 +17294,13 @@
                         "contact": "@alice",
                         "createdAt": 0,
                         "currency": "IRT",
+                        "durationDays": 30,
+                        "fulfilledAt": 0,
                         "gateway": "card",
                         "gatewayRef": "",
                         "id": 1,
                         "kind": "new",
+                        "limitIp": 2,
                         "paidAt": 0,
                         "planId": 1,
                         "planName": "Monthly 50 GB",
@@ -17084,10 +17309,551 @@
                         "rejectReason": "",
                         "status": "pending",
                         "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+                        "totalGB": 53687091200,
                         "updatedAt": 0
                       }
                     ],
                     "total": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/orders/approve/{id}": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Accept the payment of a pending or in-review order and deliver it: a new purchase creates the client from the plan terms the order was bought under, a renewal zeroes the usage, applies the plan quota and IP limit and adds the days after the time the client still has. Changes go through the normal client runtime, so remote nodes follow. On a paid order whose delivery failed this retries the delivery. Fails with order_state for an order already delivered, rejected or canceled.",
+        "operationId": "post_panel_api_sales_orders_approve_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Order id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "amount": 250000,
+                    "clientEmail": "alice",
+                    "contact": "@alice",
+                    "createdAt": 0,
+                    "currency": "IRT",
+                    "durationDays": 30,
+                    "fulfilledAt": 0,
+                    "gateway": "card",
+                    "gatewayRef": "",
+                    "id": 1,
+                    "kind": "new",
+                    "limitIp": 2,
+                    "paidAt": 0,
+                    "planId": 1,
+                    "planName": "Monthly 50 GB",
+                    "receiptNote": "",
+                    "receiptRef": "482913",
+                    "rejectReason": "",
+                    "status": "pending",
+                    "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+                    "totalGB": 53687091200,
+                    "updatedAt": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/orders/reject/{id}": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Reject a pending or in-review order, with an optional reason the customer sees. A rejected order cannot be approved afterwards.",
+        "operationId": "post_panel_api_sales_orders_reject_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Order id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "description": "Why the payment was not accepted, up to 300 characters."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "amount": 250000,
+                    "clientEmail": "alice",
+                    "contact": "@alice",
+                    "createdAt": 0,
+                    "currency": "IRT",
+                    "durationDays": 30,
+                    "fulfilledAt": 0,
+                    "gateway": "card",
+                    "gatewayRef": "",
+                    "id": 1,
+                    "kind": "new",
+                    "limitIp": 2,
+                    "paidAt": 0,
+                    "planId": 1,
+                    "planName": "Monthly 50 GB",
+                    "receiptNote": "",
+                    "receiptRef": "482913",
+                    "rejectReason": "",
+                    "status": "pending",
+                    "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+                    "totalGB": 53687091200,
+                    "updatedAt": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/config": {
+      "get": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Selling configuration: whether the public shop is on, its public base URL and the card-to-card destination. Owner only.",
+        "operationId": "get_panel_api_sales_config",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SalesConfig"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "card": {
+                      "bankName": "Melli",
+                      "cardNumber": "6037991812345678",
+                      "enabled": false,
+                      "holderName": "Ali Rezaei",
+                      "instructions": ""
+                    },
+                    "publicBaseUrl": "https://shop.example.com",
+                    "publicEnabled": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/config/save": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); a disabled section is stored as is. Owner only.",
+        "operationId": "post_panel_api_sales_config_save",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "SalesConfig."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/api/plans": {
+      "get": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "Plans on sale, by sort order, and the payment methods that are switched on.",
+        "operationId": "get_shop_api_plans",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/ShopCatalog"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "methods": [
+                      ""
+                    ],
+                    "plans": [
+                      {
+                        "currency": "IRT",
+                        "description": "",
+                        "durationDays": 30,
+                        "id": 1,
+                        "limitIp": 2,
+                        "name": "Monthly 50 GB",
+                        "price": 250000,
+                        "totalGB": 53687091200
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/api/orders": {
+      "post": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "Start a purchase. kind new needs a free username (3 to 32 of a-z, 0-9, dot, underscore, dash; it is lower-cased) with no open order; renew needs the exact username of an existing client. The reply is the order as the customer sees it, including the card details while a transfer is expected.",
+        "operationId": "post_shop_api_orders",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "planId": {
+                    "type": "integer",
+                    "description": "Plan to buy."
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "new",
+                      "renew"
+                    ],
+                    "description": ""
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "Client username."
+                  },
+                  "gateway": {
+                    "type": "string",
+                    "description": "Payment method, e.g. card."
+                  },
+                  "contact": {
+                    "type": "string",
+                    "description": "How to reach the customer, up to 100 characters."
+                  }
+                },
+                "required": [
+                  "planId",
+                  "kind",
+                  "email",
+                  "gateway"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/ShopOrderView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "amount": 250000,
+                    "card": null,
+                    "clientEmail": "alice",
+                    "createdAt": 0,
+                    "currency": "IRT",
+                    "fulfilled": false,
+                    "gateway": "card",
+                    "kind": "new",
+                    "planName": "Monthly 50 GB",
+                    "rejectReason": "",
+                    "status": "pending",
+                    "subscriptionUrl": "",
+                    "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/api/orders/{token}": {
+      "get": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "Follow an order. Once it is delivered, fulfilled is true and subscriptionUrl carries the client subscription link when the subscription server is on.",
+        "operationId": "get_shop_api_orders_token",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "description": "Order token.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/ShopOrderView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "amount": 250000,
+                    "card": null,
+                    "clientEmail": "alice",
+                    "createdAt": 0,
+                    "currency": "IRT",
+                    "fulfilled": false,
+                    "gateway": "card",
+                    "kind": "new",
+                    "planName": "Monthly 50 GB",
+                    "rejectReason": "",
+                    "status": "pending",
+                    "subscriptionUrl": "",
+                    "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/api/orders/{token}/receipt": {
+      "post": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "Tell the shop a card transfer was made: ref is the tracking number or last numbers (up to 64 characters), note is free text (up to 500). Moves the order to review; allowed while it is pending or already in review.",
+        "operationId": "post_shop_api_orders_token_receipt",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "description": "Order token.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ref": {
+                    "type": "string",
+                    "description": ""
+                  },
+                  "note": {
+                    "type": "string",
+                    "description": ""
+                  }
+                },
+                "required": [
+                  "ref"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/ShopOrderView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "amount": 250000,
+                    "card": null,
+                    "clientEmail": "alice",
+                    "createdAt": 0,
+                    "currency": "IRT",
+                    "fulfilled": false,
+                    "gateway": "card",
+                    "kind": "new",
+                    "planName": "Monthly 50 GB",
+                    "rejectReason": "",
+                    "status": "pending",
+                    "subscriptionUrl": "",
+                    "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f"
                   }
                 }
               }

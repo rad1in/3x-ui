@@ -283,6 +283,9 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 	s.api = controller.NewAPIController(g)
 	controller.NewMetricsController(g)
 
+	decoySite := s.settingService.DecoySite().Handler()
+	controller.NewShopController(engine.Group("/shop"), decoySite)
+
 	// Initialize WebSocket hub
 	s.wsHub = websocket.NewHub()
 	go s.wsHub.Run()
@@ -300,7 +303,6 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 
 	// Let unknown panel document routes fall back to the SPA shell, while every
 	// non-SPA miss still returns a hard 404.
-	decoySite := s.settingService.DecoySite().Handler()
 	engine.NoRoute(func(c *gin.Context) {
 		if s.panel.HandleNoRoutePanelSPA(c) {
 			return

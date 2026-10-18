@@ -535,6 +535,15 @@ export const BackupResultSchema = z.object({
 });
 export type BackupResult = z.infer<typeof BackupResultSchema>;
 
+export const CardPayConfigSchema = z.object({
+  bankName: z.string(),
+  cardNumber: z.string(),
+  enabled: z.boolean(),
+  holderName: z.string(),
+  instructions: z.string(),
+});
+export type CardPayConfig = z.infer<typeof CardPayConfigSchema>;
+
 export const ClientSchema = z.object({
   adTag: z.string().optional(),
   allowedIPs: z.array(z.string()).optional(),
@@ -1230,10 +1239,13 @@ export const OrderSchema = z.object({
   contact: z.string(),
   createdAt: z.number().int(),
   currency: z.string(),
+  durationDays: z.number().int(),
+  fulfilledAt: z.number().int(),
   gateway: z.string(),
   gatewayRef: z.string(),
   id: z.number().int(),
   kind: z.string(),
+  limitIp: z.number().int(),
   paidAt: z.number().int(),
   planId: z.number().int(),
   planName: z.string(),
@@ -1242,6 +1254,7 @@ export const OrderSchema = z.object({
   rejectReason: z.string(),
   status: z.string(),
   token: z.string(),
+  totalGB: z.number().int(),
   updatedAt: z.number().int(),
 });
 export type Order = z.infer<typeof OrderSchema>;
@@ -1359,6 +1372,13 @@ export const RealityScanResultSchema = z.object({
 });
 export type RealityScanResult = z.infer<typeof RealityScanResultSchema>;
 
+export const SalesConfigSchema = z.object({
+  card: z.lazy(() => CardPayConfigSchema),
+  publicBaseUrl: z.string(),
+  publicEnabled: z.boolean(),
+});
+export type SalesConfig = z.infer<typeof SalesConfigSchema>;
+
 export const ServerSettingsSchema = z.object({
   contentPaddingAddition: z.string().optional(),
   disableCookies: z.boolean(),
@@ -1418,6 +1438,41 @@ export const SettingSchema = z.object({
   value: z.string(),
 });
 export type Setting = z.infer<typeof SettingSchema>;
+
+export const ShopCatalogSchema = z.object({
+  methods: z.array(z.string()),
+  plans: z.array(z.lazy(() => ShopPlanSchema)),
+});
+export type ShopCatalog = z.infer<typeof ShopCatalogSchema>;
+
+export const ShopOrderViewSchema = z.object({
+  amount: z.number().int(),
+  card: z.lazy(() => CardPayConfigSchema).nullable().optional(),
+  clientEmail: z.string(),
+  createdAt: z.number().int(),
+  currency: z.string(),
+  fulfilled: z.boolean(),
+  gateway: z.string(),
+  kind: z.string(),
+  planName: z.string(),
+  rejectReason: z.string(),
+  status: z.string(),
+  subscriptionUrl: z.string(),
+  token: z.string(),
+});
+export type ShopOrderView = z.infer<typeof ShopOrderViewSchema>;
+
+export const ShopPlanSchema = z.object({
+  currency: z.string(),
+  description: z.string(),
+  durationDays: z.number().int(),
+  id: z.number().int(),
+  limitIp: z.number().int(),
+  name: z.string(),
+  price: z.number().int(),
+  totalGB: z.number().int(),
+});
+export type ShopPlan = z.infer<typeof ShopPlanSchema>;
 
 export const SponsorSchema = z.object({
   enable: z.boolean().nullable().optional(),
