@@ -17,6 +17,8 @@ import {
   BulkSetEnableResultSchema,
   BulkDetachResultSchema,
   DelDepletedResultSchema,
+  DisconnectResultSchema,
+  type DisconnectResult,
   type ClientHydrate,
   type ClientRecord,
   type ClientTraffic,
@@ -526,6 +528,13 @@ export function useClients(options: UseClientsOptions = {}) {
     },
   });
 
+  const disconnectMut = useMutation({
+    mutationFn: async (email: string): Promise<Msg<DisconnectResult>> => {
+      const raw = await HttpUtil.post(`/panel/api/clients/disconnect/${encodeURIComponent(email)}`);
+      return parseMsg(raw, DisconnectResultSchema, 'clients/disconnect');
+    },
+  });
+
   const resetAllTrafficsMut = useMutation({
     mutationFn: () => HttpUtil.post('/panel/api/clients/resetAllTraffics'),
     onSuccess: (msg) => {
@@ -685,6 +694,10 @@ export function useClients(options: UseClientsOptions = {}) {
       return resetTrafficMut.mutateAsync(client.email);
     },
     [resetTrafficMut],
+  );
+  const disconnect = useCallback(
+    (email: string) => disconnectMut.mutateAsync(email),
+    [disconnectMut],
   );
   const resetAllTraffics = useCallback(
     () => resetAllTrafficsMut.mutateAsync(),
@@ -889,6 +902,7 @@ export function useClients(options: UseClientsOptions = {}) {
     detach,
     bulkDetach,
     resetTraffic,
+    disconnect,
     resetAllTraffics,
     delDepleted,
     delOrphans,

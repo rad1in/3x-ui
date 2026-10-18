@@ -36,6 +36,7 @@ import {
   isAmneziaWGClient,
 } from './amneziawgConfig';
 import { tunnelConfigEndpoints, tunnelEndpointLabel } from './tunnelEndpoints';
+import ClientUsageChart from './ClientUsageChart';
 import type { HostRecord } from '@/schemas/api/host';
 import SubFetchList from './SubFetchList';
 import SubShortLinkRow from './SubShortLinkRow';
@@ -604,6 +605,8 @@ export default function ClientInfoModal({
                 </tr>
               </tbody>
             </table>
+
+            {client?.email && <ClientUsageChart email={client.email} />}
 
             {showSubscription && subLink && (
               <>

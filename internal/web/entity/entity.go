@@ -115,17 +115,19 @@ type AllSetting struct {
 	SubTrafficDepletedTemplate string `json:"subTrafficDepletedTemplate" form:"subTrafficDepletedTemplate"`
 	Datepicker                 string `json:"datepicker" form:"datepicker"`
 
-	TgBotEnable     bool   `json:"tgBotEnable" form:"tgBotEnable"`
-	TgBotToken      string `json:"tgBotToken" form:"tgBotToken"`
-	TgBotProxy      string `json:"tgBotProxy" form:"tgBotProxy"`
-	TgBotAPIServer  string `json:"tgBotAPIServer" form:"tgBotAPIServer"`
-	TgBotChatId     string `json:"tgBotChatId" form:"tgBotChatId"`
-	TgRunTime       string `json:"tgRunTime" form:"tgRunTime"`
-	TgBotBackup     bool   `json:"tgBotBackup" form:"tgBotBackup"`
-	TgCpu           int    `json:"tgCpu" form:"tgCpu" validate:"gte=0,lte=100"`
-	TgMemory        int    `json:"tgMemory" form:"tgMemory" validate:"gte=0,lte=100"`
-	TgLang          string `json:"tgLang" form:"tgLang"`
-	TgEnabledEvents string `json:"tgEnabledEvents" form:"tgEnabledEvents"`
+	TgBotEnable       bool   `json:"tgBotEnable" form:"tgBotEnable"`
+	TgBotToken        string `json:"tgBotToken" form:"tgBotToken"`
+	TgBotProxy        string `json:"tgBotProxy" form:"tgBotProxy"`
+	TgBotAPIServer    string `json:"tgBotAPIServer" form:"tgBotAPIServer"`
+	TgBotChatId       string `json:"tgBotChatId" form:"tgBotChatId"`
+	TgRunTime         string `json:"tgRunTime" form:"tgRunTime"`
+	TgBotBackup       bool   `json:"tgBotBackup" form:"tgBotBackup"`
+	TgTrialEnable     bool   `json:"tgTrialEnable" form:"tgTrialEnable"`
+	TgTrialTemplateId int    `json:"tgTrialTemplateId" form:"tgTrialTemplateId" validate:"gte=0"`
+	TgCpu             int    `json:"tgCpu" form:"tgCpu" validate:"gte=0,lte=100"`
+	TgMemory          int    `json:"tgMemory" form:"tgMemory" validate:"gte=0,lte=100"`
+	TgLang            string `json:"tgLang" form:"tgLang"`
+	TgEnabledEvents   string `json:"tgEnabledEvents" form:"tgEnabledEvents"`
 
 	SmtpEnable         bool   `json:"smtpEnable" form:"smtpEnable"`
 	SmtpHost           string `json:"smtpHost" form:"smtpHost"`

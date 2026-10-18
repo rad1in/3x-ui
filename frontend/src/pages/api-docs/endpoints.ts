@@ -1483,6 +1483,92 @@ export const sections: readonly Section[] = [
         response: '{\n  "success": true,\n  "obj": {\n    "affected": 2\n  }\n}',
       },
       {
+        method: 'GET',
+        path: '/panel/api/clients/templates',
+        summary:
+          'List the saved client templates (presets for quota, duration, IP limit, flow, group and target inbounds), sorted by name. totalGB is in bytes; expiryDays 0 means no expiry.',
+        response:
+          '{\n  "success": true,\n  "obj": [\n    {\n      "id": 1,\n      "name": "30 days 50 GB",\n      "totalGB": 53687091200,\n      "expiryDays": 30,\n      "delayedStart": false,\n      "limitIp": 2,\n      "flow": "",\n      "group": "trial",\n      "inboundIds": [1]\n    }\n  ]\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/templates/save',
+        summary:
+          'Create a client template, or replace the one whose id is given. Names are unique and at least one inbound is required. Returns the saved template.',
+        body: '{\n  "name": "30 days 50 GB",\n  "totalGB": 53687091200,\n  "expiryDays": 30,\n  "delayedStart": false,\n  "limitIp": 2,\n  "group": "trial",\n  "inboundIds": [1]\n}',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "id": 1,\n    "name": "30 days 50 GB",\n    "inboundIds": [1]\n  }\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/templates/del/:id',
+        summary: 'Delete a client template. Clients already created from it are not touched.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Template id.' }],
+        response: '{\n  "success": true,\n  "msg": "Template deleted"\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/templates/apply',
+        summary:
+          'Create one client per email from a template. With delayedStart the expiry is stored as a negative duration that starts counting at first use. Emails that cannot be created (for example duplicates) are reported under failed while the rest are still created.',
+        body: '{\n  "templateId": 1,\n  "emails": ["alice", "bob"]\n}',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "created": ["alice"],\n    "failed": { "bob": "email already in use: bob" },\n    "needRestart": false\n  }\n}',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/clients/usage/:email',
+        summary:
+          'Per-day traffic history of one client, oldest day first. Only days that had traffic have a row; days is the window including today (default 30, capped at 90 — the retention). Day keys are panel-local dates.',
+        params: [
+          { name: 'email', in: 'path', type: 'string', desc: 'Client email.' },
+          {
+            name: 'days',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 30,
+            desc: 'Window length in days, 1 to 90.',
+          },
+        ],
+        response:
+          '{\n  "success": true,\n  "obj": [\n    { "email": "alice", "day": "2026-10-17", "up": 1048576, "down": 5242880 },\n    { "email": "alice", "day": "2026-10-18", "up": 2097152, "down": 8388608 }\n  ]\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/disconnect/:email',
+        summary:
+          'End the live connections of a client without disabling it; the client may reconnect at once. OpenVPN, IKEv2 and L2TP sessions are terminated through their servers. For Xray (VLESS, VMess, Trojan, Shadowsocks over TCP) the core cannot drop an authenticated session, so the established sockets from the IPs the client was last seen on are destroyed. UDP protocols (Hysteria, WireGuard, TUIC, AmneziaWG) and MTProto cannot be disconnected and are listed under unsupported. Inbounds on a node are handled by the node, asked once per node.',
+        params: [{ name: 'email', in: 'path', type: 'string', desc: 'Client email.' }],
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "disconnected": 2,\n    "unsupported": ["inbound-8443"],\n    "failed": {}\n  }\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/importForeign',
+        summary:
+          'Import the users of another panel from its user export and attach them to the given inbounds. source is marzban (GET /api/users), marzneshin (GET /api/users) or hiddify (admin users list); data is the export text. UUIDs, passwords, quotas, expiry (including on-hold and start-on-first-use as a delayed start), reset cycle, notes and used traffic are carried over; existing emails are skipped. Subscription links of the old panel do not carry over. Users that could only be approximated are listed under warnings.',
+        params: [
+          {
+            name: 'source',
+            in: 'body (json)',
+            type: 'string',
+            enum: ['marzban', 'marzneshin', 'hiddify'],
+            desc: 'Which panel the export comes from.',
+          },
+          { name: 'data', in: 'body (json)', type: 'string', desc: 'The export file contents.' },
+          {
+            name: 'inboundIds',
+            in: 'body (json)',
+            type: 'integer[]',
+            desc: 'Inbounds every imported user is attached to.',
+          },
+        ],
+        body: '{\n  "source": "marzban",\n  "data": "{\\"users\\": [...]}",\n  "inboundIds": [7]\n}',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "created": 4,\n    "skipped": [{ "email": "bob", "reason": "email already in use: bob" }],\n    "warnings": [{ "email": "erin", "message": "reset strategy year has no 3x-ui equivalent; the quota is not reset automatically" }]\n  }\n}',
+      },
+      {
         method: 'POST',
         path: '/panel/api/clients/bulkAttach',
         summary:

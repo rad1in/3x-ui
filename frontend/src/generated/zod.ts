@@ -235,6 +235,8 @@ export const AllSettingSchema = z.object({
   tgLang: z.string(),
   tgMemory: z.number().int().min(0).max(100),
   tgRunTime: z.string(),
+  tgTrialEnable: z.boolean(),
+  tgTrialTemplateId: z.number().int().min(0),
   timeLocation: z.string(),
   trafficDiff: z.number().int().min(0).max(100),
   trustedProxyCIDRs: z.string(),
@@ -456,6 +458,8 @@ export const AllSettingViewSchema = z.object({
   tgLang: z.string(),
   tgMemory: z.number().int().min(0).max(100),
   tgRunTime: z.string(),
+  tgTrialEnable: z.boolean(),
+  tgTrialTemplateId: z.number().int().min(0),
   timeLocation: z.string(),
   trafficDiff: z.number().int().min(0).max(100),
   trustedProxyCIDRs: z.string(),
@@ -567,6 +571,14 @@ export const ClientSchema = z.object({
 });
 export type Client = z.infer<typeof ClientSchema>;
 
+export const ClientDailyUsageSchema = z.object({
+  day: z.string(),
+  down: z.number().int(),
+  email: z.string(),
+  up: z.number().int(),
+});
+export type ClientDailyUsage = z.infer<typeof ClientDailyUsageSchema>;
+
 export const ClientInboundSchema = z.object({
   clientId: z.number().int(),
   createdAt: z.number().int(),
@@ -671,6 +683,25 @@ export const ClientSlimSchema = z.object({
   updatedAt: z.number().int(),
 });
 export type ClientSlim = z.infer<typeof ClientSlimSchema>;
+
+export const ClientTemplateSchema = z.object({
+  comment: z.string(),
+  createdAt: z.number().int(),
+  delayedStart: z.boolean(),
+  expiryDays: z.number().int(),
+  flow: z.string(),
+  group: z.string(),
+  id: z.number().int(),
+  inboundIds: z.array(z.number().int()),
+  limitIp: z.number().int(),
+  name: z.string(),
+  reset: z.number().int(),
+  totalGB: z.number().int(),
+  trafficReset: z.string(),
+  trafficResetDay: z.number().int(),
+  updatedAt: z.number().int(),
+});
+export type ClientTemplate = z.infer<typeof ClientTemplateSchema>;
 
 export const ClientTrafficSchema = z.object({
   down: z.number().int(),

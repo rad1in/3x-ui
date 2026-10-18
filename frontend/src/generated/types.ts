@@ -217,6 +217,8 @@ export interface AllSetting {
   tgLang: string;
   tgMemory: number;
   tgRunTime: string;
+  tgTrialEnable: boolean;
+  tgTrialTemplateId: number;
   timeLocation: string;
   trafficDiff: number;
   trustedProxyCIDRs: string;
@@ -437,6 +439,8 @@ export interface AllSettingView {
   tgLang: string;
   tgMemory: number;
   tgRunTime: string;
+  tgTrialEnable: boolean;
+  tgTrialTemplateId: number;
   timeLocation: string;
   trafficDiff: number;
   trustedProxyCIDRs: string;
@@ -540,6 +544,13 @@ export interface Client {
   updated_at?: number;
 }
 
+export interface ClientDailyUsage {
+  day: string;
+  down: number;
+  email: string;
+  up: number;
+}
+
 export interface ClientInbound {
   clientId: number;
   createdAt: number;
@@ -635,6 +646,24 @@ export interface ClientSlim {
   subId: string;
   totalGB: number;
   traffic?: ClientTraffic | null;
+  updatedAt: number;
+}
+
+export interface ClientTemplate {
+  comment: string;
+  createdAt: number;
+  delayedStart: boolean;
+  expiryDays: number;
+  flow: string;
+  group: string;
+  id: number;
+  inboundIds: number[];
+  limitIp: number;
+  name: string;
+  reset: number;
+  totalGB: number;
+  trafficReset: string;
+  trafficResetDay: number;
   updatedAt: number;
 }
 

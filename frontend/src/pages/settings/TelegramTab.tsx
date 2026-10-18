@@ -10,6 +10,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { catTabLabel } from './catTabLabel';
 import { NotifyTimeField } from './NotifyTimeField';
 import SecretInput from './SecretInput';
+import { useClientTemplates } from '@/api/queries/useClientTemplates';
 
 interface TelegramTabProps {
   allSetting: AllSetting;
@@ -18,6 +19,7 @@ interface TelegramTabProps {
 
 export default function TelegramTab({ allSetting, updateSetting }: TelegramTabProps) {
   const { t } = useTranslation();
+  const { templates: trialTemplates } = useClientTemplates();
   const { isMobile } = useMediaQuery();
   const [testLoading, setTestLoading] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; msg: string } | null>(null);
@@ -129,6 +131,31 @@ export default function TelegramTab({ allSetting, updateSetting }: TelegramTabPr
                   onChange={(e) => updateSetting({ tgBotAPIServer: e.target.value })}
                 />
               </SettingListItem>
+
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.tgTrial')}
+                description={t('pages.settings.tgTrialDesc')}
+              >
+                <Switch
+                  checked={allSetting.tgTrialEnable}
+                  onChange={(v) => updateSetting({ tgTrialEnable: v })}
+                />
+              </SettingListItem>
+              {allSetting.tgTrialEnable && (
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.tgTrialTemplate')}
+                  description={t('pages.settings.tgTrialTemplateDesc')}
+                >
+                  <Select
+                    style={{ width: '100%' }}
+                    value={allSetting.tgTrialTemplateId || undefined}
+                    options={trialTemplates.map((tpl) => ({ value: tpl.id, label: tpl.name }))}
+                    onChange={(v) => updateSetting({ tgTrialTemplateId: v })}
+                  />
+                </SettingListItem>
+              )}
 
               <Space orientation="vertical" size={8} style={{ width: '100%', marginTop: 16 }}>
                 <Button

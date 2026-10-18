@@ -109,6 +109,9 @@ func allModels() []any {
 		&model.HostedPanel{},
 		&model.ClientWarning{},
 		&model.ClientDepletion{},
+		&model.ClientTemplate{},
+		&model.ClientDailyUsage{},
+		&model.ClientTrial{},
 	}
 }
 

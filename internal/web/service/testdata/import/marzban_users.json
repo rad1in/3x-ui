@@ -1,0 +1,88 @@
+{
+  "users": [
+    {
+      "proxies": {
+        "vless": {"id": "8f2a6c1e-3b7d-4e55-9a10-2c4d5e6f7a81", "flow": "xtls-rprx-vision"},
+        "vmess": {"id": "8f2a6c1e-3b7d-4e55-9a10-2c4d5e6f7a81"},
+        "trojan": {"password": "Tr0jan-p4ss-alice"},
+        "shadowsocks": {"password": "Tr0jan-p4ss-alice", "method": "chacha20-ietf-poly1305"}
+      },
+      "expire": 1798761600,
+      "data_limit": 107374182400,
+      "data_limit_reset_strategy": "month",
+      "inbounds": {"vless": ["VLESS TCP REALITY"], "vmess": ["VMESS TCP"], "trojan": ["TROJAN TCP NOTLS"], "shadowsocks": ["Shadowsocks TCP"]},
+      "note": "paid until end of 2026",
+      "sub_updated_at": "2026-09-30T18:21:07.554121",
+      "sub_last_user_agent": "v2rayNG/1.8.5",
+      "online_at": "2026-10-17T09:12:44",
+      "on_hold_expire_duration": null,
+      "on_hold_timeout": null,
+      "auto_delete_in_days": null,
+      "username": "alice",
+      "status": "active",
+      "used_traffic": 21474836480,
+      "lifetime_used_traffic": 53687091200,
+      "created_at": "2025-11-02T10:00:31.215114",
+      "links": ["vless://8f2a6c1e-3b7d-4e55-9a10-2c4d5e6f7a81@example.com:443?type=tcp&security=reality#alice"],
+      "subscription_url": "https://panel.example.com:8000/sub/YWxpY2UsMTc2MjA3ODgzMQ4aX8wH3p"
+    },
+    {
+      "proxies": {
+        "vless": {"id": "b17d9d0a-6a52-4b3c-8d2f-90a1c3e5f7b2", "flow": ""}
+      },
+      "expire": null,
+      "data_limit": null,
+      "data_limit_reset_strategy": "no_reset",
+      "inbounds": {"vless": ["VLESS TCP REALITY"]},
+      "note": "",
+      "username": "bob_unlimited",
+      "status": "active",
+      "used_traffic": 1048576,
+      "lifetime_used_traffic": 1048576,
+      "created_at": "2026-01-15T08:30:00.000000",
+      "subscription_url": "https://panel.example.com:8000/sub/Ym9iX3VubGltaXRlZCwxNzY4NDY5NDAw"
+    },
+    {
+      "proxies": {
+        "vless": {"id": "c5e1f2a3-0b9c-4d8e-a7f6-1234567890ab", "flow": ""},
+        "trojan": {"password": "carol-trojan-secret"}
+      },
+      "expire": 1767225600,
+      "data_limit": 5368709120,
+      "data_limit_reset_strategy": "no_reset",
+      "note": "trial",
+      "username": "carol",
+      "status": "expired",
+      "used_traffic": 5000000000,
+      "lifetime_used_traffic": 5000000000,
+      "created_at": "2025-12-01T00:00:00.000000"
+    },
+    {
+      "proxies": {
+        "vmess": {"id": "d9a8b7c6-5e4f-4a3b-9c2d-0f1e2d3c4b5a"}
+      },
+      "expire": 0,
+      "data_limit": 0,
+      "data_limit_reset_strategy": "no_reset",
+      "on_hold_expire_duration": 2592000,
+      "on_hold_timeout": "2026-12-31T00:00:00",
+      "username": "dave_hold",
+      "status": "on_hold",
+      "used_traffic": 0,
+      "created_at": "2026-10-01T12:00:00.000000"
+    },
+    {
+      "proxies": {
+        "vless": {"id": "e0f1a2b3-c4d5-46e7-8f90-a1b2c3d4e5f6", "flow": ""}
+      },
+      "expire": 1893456000,
+      "data_limit": 10737418240,
+      "data_limit_reset_strategy": "year",
+      "username": "erin",
+      "status": "disabled",
+      "used_traffic": 0,
+      "created_at": "2026-02-02T02:02:02.000000"
+    }
+  ],
+  "total": 5
+}

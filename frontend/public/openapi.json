@@ -721,6 +721,13 @@
           "tgRunTime": {
             "type": "string"
           },
+          "tgTrialEnable": {
+            "type": "boolean"
+          },
+          "tgTrialTemplateId": {
+            "minimum": 0,
+            "type": "integer"
+          },
           "timeLocation": {
             "type": "string"
           },
@@ -968,6 +975,8 @@
           "tgLang",
           "tgMemory",
           "tgRunTime",
+          "tgTrialEnable",
+          "tgTrialTemplateId",
           "timeLocation",
           "trafficDiff",
           "trustedProxyCIDRs",
@@ -1632,6 +1641,13 @@
           "tgRunTime": {
             "type": "string"
           },
+          "tgTrialEnable": {
+            "type": "boolean"
+          },
+          "tgTrialTemplateId": {
+            "minimum": 0,
+            "type": "integer"
+          },
           "timeLocation": {
             "type": "string"
           },
@@ -1889,6 +1905,8 @@
           "tgLang",
           "tgMemory",
           "tgRunTime",
+          "tgTrialEnable",
+          "tgTrialTemplateId",
           "timeLocation",
           "trafficDiff",
           "trustedProxyCIDRs",
@@ -2291,6 +2309,35 @@
           "subId",
           "tgId",
           "totalGB"
+        ],
+        "type": "object"
+      },
+      "ClientDailyUsage": {
+        "description": "ClientDailyUsage holds one client's up/down bytes for one calendar day\n(YYYY-MM-DD, panel local time), summed from every traffic tick.",
+        "properties": {
+          "day": {
+            "example": "2026-10-18",
+            "type": "string"
+          },
+          "down": {
+            "example": 5242880,
+            "format": "int64",
+            "type": "integer"
+          },
+          "email": {
+            "type": "string"
+          },
+          "up": {
+            "example": 1048576,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "day",
+          "down",
+          "email",
+          "up"
         ],
         "type": "object"
       },
@@ -2712,6 +2759,92 @@
           "resetWeekday",
           "subId",
           "totalGB",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "ClientTemplate": {
+        "description": "ClientTemplate is a saved preset for creating clients. TotalGB is in bytes\nlike Client.TotalGB; ExpiryDays 0 means no expiry.",
+        "properties": {
+          "comment": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "delayedStart": {
+            "type": "boolean"
+          },
+          "expiryDays": {
+            "example": 30,
+            "type": "integer"
+          },
+          "flow": {
+            "example": "xtls-rprx-vision",
+            "type": "string"
+          },
+          "group": {
+            "example": "trial",
+            "type": "string"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "inboundIds": {
+            "example": [
+              1,
+              2
+            ],
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "limitIp": {
+            "example": 2,
+            "type": "integer"
+          },
+          "name": {
+            "example": "30 days 50 GB",
+            "type": "string"
+          },
+          "reset": {
+            "type": "integer"
+          },
+          "totalGB": {
+            "example": 53687091200,
+            "format": "int64",
+            "type": "integer"
+          },
+          "trafficReset": {
+            "example": "never",
+            "type": "string"
+          },
+          "trafficResetDay": {
+            "type": "integer"
+          },
+          "updatedAt": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "comment",
+          "createdAt",
+          "delayedStart",
+          "expiryDays",
+          "flow",
+          "group",
+          "id",
+          "inboundIds",
+          "limitIp",
+          "name",
+          "reset",
+          "totalGB",
+          "trafficReset",
+          "trafficResetDay",
           "updatedAt"
         ],
         "type": "object"
@@ -11292,6 +11425,430 @@
                   "success": true,
                   "obj": {
                     "affected": 2
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/templates": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "List the saved client templates (presets for quota, duration, IP limit, flow, group and target inbounds), sorted by name. totalGB is in bytes; expiryDays 0 means no expiry.",
+        "operationId": "get_panel_api_clients_templates",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "id": 1,
+                      "name": "30 days 50 GB",
+                      "totalGB": 53687091200,
+                      "expiryDays": 30,
+                      "delayedStart": false,
+                      "limitIp": 2,
+                      "flow": "",
+                      "group": "trial",
+                      "inboundIds": [
+                        1
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/templates/save": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Create a client template, or replace the one whose id is given. Names are unique and at least one inbound is required. Returns the saved template.",
+        "operationId": "post_panel_api_clients_templates_save",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "name": "30 days 50 GB",
+                "totalGB": 53687091200,
+                "expiryDays": 30,
+                "delayedStart": false,
+                "limitIp": 2,
+                "group": "trial",
+                "inboundIds": [
+                  1
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "id": 1,
+                    "name": "30 days 50 GB",
+                    "inboundIds": [
+                      1
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/templates/del/{id}": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Delete a client template. Clients already created from it are not touched.",
+        "operationId": "post_panel_api_clients_templates_del_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Template id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "msg": "Template deleted"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/templates/apply": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Create one client per email from a template. With delayedStart the expiry is stored as a negative duration that starts counting at first use. Emails that cannot be created (for example duplicates) are reported under failed while the rest are still created.",
+        "operationId": "post_panel_api_clients_templates_apply",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "templateId": 1,
+                "emails": [
+                  "alice",
+                  "bob"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "created": [
+                      "alice"
+                    ],
+                    "failed": {
+                      "bob": "email already in use: bob"
+                    },
+                    "needRestart": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/usage/{email}": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Per-day traffic history of one client, oldest day first. Only days that had traffic have a row; days is the window including today (default 30, capped at 90 — the retention). Day keys are panel-local dates.",
+        "operationId": "get_panel_api_clients_usage_email",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "description": "Client email.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "description": "Window length in days, 1 to 90.",
+            "schema": {
+              "type": "integer",
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "email": "alice",
+                      "day": "2026-10-17",
+                      "up": 1048576,
+                      "down": 5242880
+                    },
+                    {
+                      "email": "alice",
+                      "day": "2026-10-18",
+                      "up": 2097152,
+                      "down": 8388608
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/disconnect/{email}": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "End the live connections of a client without disabling it; the client may reconnect at once. OpenVPN, IKEv2 and L2TP sessions are terminated through their servers. For Xray (VLESS, VMess, Trojan, Shadowsocks over TCP) the core cannot drop an authenticated session, so the established sockets from the IPs the client was last seen on are destroyed. UDP protocols (Hysteria, WireGuard, TUIC, AmneziaWG) and MTProto cannot be disconnected and are listed under unsupported. Inbounds on a node are handled by the node, asked once per node.",
+        "operationId": "post_panel_api_clients_disconnect_email",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "description": "Client email.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "disconnected": 2,
+                    "unsupported": [
+                      "inbound-8443"
+                    ],
+                    "failed": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/importForeign": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Import the users of another panel from its user export and attach them to the given inbounds. source is marzban (GET /api/users), marzneshin (GET /api/users) or hiddify (admin users list); data is the export text. UUIDs, passwords, quotas, expiry (including on-hold and start-on-first-use as a delayed start), reset cycle, notes and used traffic are carried over; existing emails are skipped. Subscription links of the old panel do not carry over. Users that could only be approximated are listed under warnings.",
+        "operationId": "post_panel_api_clients_importForeign",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "enum": [
+                      "marzban",
+                      "marzneshin",
+                      "hiddify"
+                    ],
+                    "description": "Which panel the export comes from."
+                  },
+                  "data": {
+                    "type": "string",
+                    "description": "The export file contents."
+                  },
+                  "inboundIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "description": "Inbounds every imported user is attached to."
+                  }
+                },
+                "required": [
+                  "source",
+                  "data",
+                  "inboundIds"
+                ]
+              },
+              "example": {
+                "source": "marzban",
+                "data": "{\"users\": [...]}",
+                "inboundIds": [
+                  7
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "created": 4,
+                    "skipped": [
+                      {
+                        "email": "bob",
+                        "reason": "email already in use: bob"
+                      }
+                    ],
+                    "warnings": [
+                      {
+                        "email": "erin",
+                        "message": "reset strategy year has no 3x-ui equivalent; the quota is not reset automatically"
+                      }
+                    ]
                   }
                 }
               }

@@ -415,6 +415,7 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 	// check client ips from log file every day
 	_, _ = s.cron.AddJob("@daily", job.NewClearLogsJob())
 	_, _ = s.cron.AddJob("@daily", job.NewPruneAuditLogJob())
+	_, _ = s.cron.AddJob("@daily", job.NewClientUsagePruneJob())
 	_, _ = s.cron.AddJob("@every 1m", job.NewClientWarningJob())
 	_, _ = s.cron.AddJob("@hourly", job.NewClientCleanupJob())
 	if spec, _ := s.settingService.GetBackupSchedule(); strings.TrimSpace(spec) != "" {

@@ -83,6 +83,24 @@ func (s *session) SetUsers(users map[string]User) {
 	}
 }
 
+// KickUser ends every connection of one account and returns how many; the
+// account stays valid, so the client may reconnect at once.
+func (s *session) KickUser(user string) int {
+	s.mu.Lock()
+	var kill []uint64
+	for cid, c := range s.conns {
+		if c.user == user {
+			kill = append(kill, cid)
+		}
+	}
+	s.mu.Unlock()
+	slices.Sort(kill)
+	for _, cid := range kill {
+		s.command("client-kill %d", cid)
+	}
+	return len(kill)
+}
+
 // Collect returns the traffic since the last call and the users online now.
 func (s *session) Collect() (map[string]Counters, []string) {
 	s.mu.Lock()

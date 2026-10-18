@@ -248,6 +248,9 @@ func (t *Tgbot) answerCommand(message *telego.Message, chatId int64, isAdmin boo
 			msg += t.I18nBot("tgbot.commands.welcome", "Hostname=="+hostname)
 		}
 		msg += "\n\n" + t.I18nBot("tgbot.commands.pleaseChoose")
+	case "trial":
+		t.handleTrial(chatId, message.From)
+		return
 	case "status":
 		onlyMessage = true
 		msg += t.I18nBot("tgbot.commands.status")

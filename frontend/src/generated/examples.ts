@@ -215,6 +215,8 @@ export const EXAMPLES: Record<string, unknown> = {
     "tgLang": "",
     "tgMemory": 0,
     "tgRunTime": "",
+    "tgTrialEnable": false,
+    "tgTrialTemplateId": 0,
     "timeLocation": "",
     "trafficDiff": 0,
     "trustedProxyCIDRs": "",
@@ -434,6 +436,8 @@ export const EXAMPLES: Record<string, unknown> = {
     "tgLang": "",
     "tgMemory": 0,
     "tgRunTime": "",
+    "tgTrialEnable": false,
+    "tgTrialTemplateId": 0,
     "timeLocation": "",
     "trafficDiff": 0,
     "trustedProxyCIDRs": "",
@@ -555,6 +559,12 @@ export const EXAMPLES: Record<string, unknown> = {
     "trafficReset": "never",
     "trafficResetDay": 1,
     "updated_at": 0
+  },
+  "ClientDailyUsage": {
+    "day": "2026-10-18",
+    "down": 5242880,
+    "email": "",
+    "up": 1048576
   },
   "ClientInbound": {
     "clientId": 0,
@@ -690,6 +700,26 @@ export const EXAMPLES: Record<string, unknown> = {
     "totalGB": 53687091200,
     "traffic": null,
     "updatedAt": 1735100000000
+  },
+  "ClientTemplate": {
+    "comment": "",
+    "createdAt": 0,
+    "delayedStart": false,
+    "expiryDays": 30,
+    "flow": "xtls-rprx-vision",
+    "group": "trial",
+    "id": 1,
+    "inboundIds": [
+      1,
+      2
+    ],
+    "limitIp": 2,
+    "name": "30 days 50 GB",
+    "reset": 0,
+    "totalGB": 53687091200,
+    "trafficReset": "never",
+    "trafficResetDay": 0,
+    "updatedAt": 0
   },
   "ClientTraffic": {
     "down": 2097152,

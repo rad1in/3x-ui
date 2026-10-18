@@ -269,6 +269,19 @@ func (m *Manager) kickLocked(inst Instance, prevPasswds map[string]string) {
 	}
 }
 
+// KickUser ends every live link of one user and returns how many; the login
+// stays valid, so the client may dial again at once.
+func (m *Manager) KickUser(user string) int {
+	kicked := 0
+	for _, s := range liveSessions(runDir()) {
+		if s.user == user && isPPPD(s.pid) {
+			m.kill(s)
+			kicked++
+		}
+	}
+	return kicked
+}
+
 func (m *Manager) kill(s session) {
 	if !isPPPD(s.pid) {
 		return

@@ -117,6 +117,8 @@ var defaultValueMap = map[string]string{
 	"tgBotChatId":                 "",
 	"tgRunTime":                   "@daily",
 	"tgBotBackup":                 "false",
+	"tgTrialEnable":               "false",
+	"tgTrialTemplateId":           "0",
 	"tgCpu":                       "80",
 	"tgMemory":                    "80",
 	"tgLang":                      "en-US",
@@ -693,6 +695,14 @@ func (s *SettingService) GetTgbotRuntime() (string, error) {
 
 func (s *SettingService) SetTgbotRuntime(time string) error {
 	return s.setString("tgRunTime", time)
+}
+
+func (s *SettingService) GetTgTrialEnable() (bool, error) {
+	return s.getBool("tgTrialEnable")
+}
+
+func (s *SettingService) GetTgTrialTemplateId() (int, error) {
+	return s.getInt("tgTrialTemplateId")
 }
 
 func (s *SettingService) GetTgBotBackup() (bool, error) {

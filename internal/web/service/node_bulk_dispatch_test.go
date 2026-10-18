@@ -26,9 +26,15 @@ type fakeNodeRuntime struct {
 	updateInbound atomic.Int32
 	updateSubSort atomic.Int32
 	updateUser    atomic.Int32
+	disconnect    atomic.Int32
 }
 
 func (f *fakeNodeRuntime) Name() string { return "fake-node" }
+
+func (f *fakeNodeRuntime) DisconnectClient(context.Context, *model.Inbound, string, []string) (int, error) {
+	f.disconnect.Add(1)
+	return 3, nil
+}
 
 func (f *fakeNodeRuntime) AddInbound(context.Context, *model.Inbound) error {
 	f.addInbound.Add(1)
