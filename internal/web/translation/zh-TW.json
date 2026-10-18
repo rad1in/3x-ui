@@ -140,6 +140,7 @@
     "sponsors": "贊助商",
     "audit": "操作日誌",
     "admins": "管理員",
+    "sessions": "工作階段",
     "hosts": "主機",
     "docs": "文件",
     "openMenu": "開啟選單",
@@ -2642,6 +2643,22 @@
         "saved": "管理員已儲存",
         "deleted": "管理員已刪除"
       }
+    },
+    "sessions": {
+      "title": "作用中的工作階段",
+      "hint": "目前已登入的瀏覽器。結束你不認得的工作階段；如果密碼可能外洩，請在所有裝置上登出。",
+      "address": "位址",
+      "device": "瀏覽器",
+      "signedIn": "登入時間",
+      "lastSeen": "最近活動",
+      "thisBrowser": "目前的瀏覽器",
+      "end": "結束工作階段",
+      "endConfirm": "結束此工作階段？",
+      "endOthers": "結束其他所有工作階段",
+      "logoutEverywhere": "在所有裝置上登出",
+      "logoutEverywhereConfirm": "登出包含目前瀏覽器在內的所有瀏覽器？",
+      "revoked": "工作階段已結束",
+      "revokedAll": "工作階段已結束"
     },
     "hostedPanels": {
       "saved": "面板已儲存",

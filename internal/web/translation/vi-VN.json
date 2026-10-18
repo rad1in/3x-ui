@@ -140,6 +140,7 @@
     "sponsors": "Nhà tài trợ",
     "audit": "Hoạt động",
     "admins": "Quản trị viên",
+    "sessions": "Phiên",
     "hosts": "Hosts",
     "docs": "Tài liệu",
     "openMenu": "Mở menu",
@@ -2642,6 +2643,22 @@
         "saved": "Đã lưu quản trị viên",
         "deleted": "Đã xóa quản trị viên"
       }
+    },
+    "sessions": {
+      "title": "Phiên đang hoạt động",
+      "hint": "Các trình duyệt đang đăng nhập. Kết thúc phiên bạn không nhận ra, hoặc đăng xuất ở mọi nơi nếu mật khẩu có thể đã bị lộ.",
+      "address": "Địa chỉ",
+      "device": "Trình duyệt",
+      "signedIn": "Đăng nhập lúc",
+      "lastSeen": "Hoạt động gần nhất",
+      "thisBrowser": "trình duyệt này",
+      "end": "Kết thúc phiên",
+      "endConfirm": "Kết thúc phiên này?",
+      "endOthers": "Kết thúc mọi phiên khác",
+      "logoutEverywhere": "Đăng xuất ở mọi nơi",
+      "logoutEverywhereConfirm": "Đăng xuất mọi trình duyệt, kể cả trình duyệt này?",
+      "revoked": "Đã kết thúc phiên",
+      "revokedAll": "Đã kết thúc các phiên"
     },
     "hostedPanels": {
       "saved": "Đã lưu bảng điều khiển",

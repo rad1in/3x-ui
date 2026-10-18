@@ -5238,6 +5238,56 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "SessionView": {
+    "description": "SessionView is one signed-in browser of an admin account.",
+    "properties": {
+      "createdAt": {
+        "example": 1760684400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "current": {
+        "example": true,
+        "type": "boolean"
+      },
+      "id": {
+        "example": "q3Zk0m1u0Vw5gq8mYz1lJm0o3Wq2B8Xc",
+        "type": "string"
+      },
+      "ip": {
+        "example": "203.0.113.5",
+        "type": "string"
+      },
+      "lastSeen": {
+        "example": 1760688000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "userAgent": {
+        "example": "Mozilla/5.0 (X11; Linux x86_64)",
+        "type": "string"
+      },
+      "userId": {
+        "example": 1,
+        "type": "integer"
+      },
+      "username": {
+        "example": "admin",
+        "type": "string"
+      }
+    },
+    "required": [
+      "createdAt",
+      "current",
+      "id",
+      "ip",
+      "lastSeen",
+      "userAgent",
+      "userId",
+      "username"
+    ],
+    "type": "object"
+  },
   "Setting": {
     "description": "Setting stores key-value configuration settings for the 3x-ui panel.",
     "properties": {

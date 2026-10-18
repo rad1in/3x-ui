@@ -22,6 +22,7 @@ import {
   GithubOutlined,
   GlobalOutlined,
   HistoryOutlined,
+  SafetyCertificateOutlined,
   UserSwitchOutlined,
   HeartOutlined,
   ImportOutlined,
@@ -84,6 +85,7 @@ type IconName =
   | 'routing'
   | 'audit'
   | 'admins'
+  | 'sessions'
   | 'panels';
 
 const iconByName: Record<IconName, ComponentType> = {
@@ -102,6 +104,7 @@ const iconByName: Record<IconName, ComponentType> = {
   routing: SwapOutlined,
   audit: HistoryOutlined,
   admins: UserSwitchOutlined,
+  sessions: SafetyCertificateOutlined,
   panels: AppstoreOutlined,
 };
 
@@ -259,6 +262,7 @@ export default function AppSidebar() {
           { key: '/xray', icon: 'tool', title: t('menu.xray') },
           { key: '/audit', icon: 'audit', title: t('menu.audit') },
           { key: '/admins', icon: 'admins', title: t('menu.admins') },
+          { key: '/sessions', icon: 'sessions', title: t('menu.sessions') },
           { key: '/api-docs', icon: 'apidocs', title: t('menu.apiDocs') },
           { key: '/sponsors', icon: 'sponsors', title: t('menu.sponsors') },
           { key: LOGOUT_KEY, icon: 'logout', title: t('logout') },

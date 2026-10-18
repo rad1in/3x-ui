@@ -16,6 +16,7 @@ const ApiDocsPage = lazy(() => import('@/pages/api-docs/ApiDocsPage'));
 const SponsorsPage = lazy(() => import('@/pages/sponsors/SponsorsPage'));
 const AuditPage = lazy(() => import('@/pages/audit/AuditPage'));
 const AdminsPage = lazy(() => import('@/pages/admins/AdminsPage'));
+const SessionsPage = lazy(() => import('@/pages/sessions/SessionsPage'));
 const PanelsPage = lazy(() => import('@/pages/panels/PanelsPage'));
 
 function withSuspense(node: React.ReactNode) {
@@ -58,6 +59,7 @@ const routes: RouteObject[] = [
       { path: 'sponsors', element: withSuspense(<SponsorsPage />) },
       { path: 'audit', element: withSuspense(<AuditPage />) },
       { path: 'admins', element: withSuspense(<AdminsPage />) },
+      { path: 'sessions', element: withSuspense(<SessionsPage />) },
       { path: 'panels', element: withSuspense(<PanelsPage />) },
     ],
   },

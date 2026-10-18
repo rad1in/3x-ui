@@ -140,6 +140,7 @@
     "sponsors": "Sponsorlar",
     "audit": "Etkinlik",
     "admins": "Yöneticiler",
+    "sessions": "Oturumlar",
     "hosts": "Host'lar",
     "docs": "Belgeler",
     "openMenu": "Menüyü aç",
@@ -2642,6 +2643,22 @@
         "saved": "Yönetici kaydedildi",
         "deleted": "Yönetici silindi"
       }
+    },
+    "sessions": {
+      "title": "Etkin oturumlar",
+      "hint": "Şu anda oturum açmış tarayıcılar. Tanımadığınız oturumları sonlandırın; bir şifre sızmış olabilirse her yerden çıkış yapın.",
+      "address": "Adres",
+      "device": "Tarayıcı",
+      "signedIn": "Giriş zamanı",
+      "lastSeen": "Son görülme",
+      "thisBrowser": "bu tarayıcı",
+      "end": "Oturumu sonlandır",
+      "endConfirm": "Bu oturum sonlandırılsın mı?",
+      "endOthers": "Diğer tüm oturumları sonlandır",
+      "logoutEverywhere": "Her yerden çıkış yap",
+      "logoutEverywhereConfirm": "Bu tarayıcı dahil tüm tarayıcılardan çıkış yapılsın mı?",
+      "revoked": "Oturum sonlandırıldı",
+      "revokedAll": "Oturumlar sonlandırıldı"
     },
     "hostedPanels": {
       "saved": "Panel kaydedildi",

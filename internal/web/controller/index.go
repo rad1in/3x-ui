@@ -29,6 +29,7 @@ type IndexController struct {
 
 	settingService service.SettingService
 	userService    panel.UserService
+	sessionService panel.SessionService
 	panelService   panel.PanelService
 	tgbot          tgbot.Tgbot
 }
@@ -175,6 +176,9 @@ func (a *IndexController) login(c *gin.Context) {
 	if err := session.SetLoginUser(c, user); err != nil {
 		logger.Warning("Unable to save session:", err)
 		return
+	}
+	if err := a.sessionService.PruneStale(sessionPruneAfter); err != nil {
+		logger.Warning("Unable to prune stale sessions:", err)
 	}
 
 	jsonMsg(c, I18nWeb(c, "pages.login.toasts.successLogin"), nil)

@@ -111,10 +111,13 @@ func (s *UserService) CheckUser(username string, password string, twoFactorCode 
 
 func (s *UserService) BumpLoginEpoch() error {
 	db := database.GetDB()
-	return db.Model(model.User{}).
+	if err := db.Model(model.User{}).
 		Where("1 = 1").
 		Update("login_epoch", gorm.Expr("login_epoch + 1")).
-		Error
+		Error; err != nil {
+		return err
+	}
+	return db.Where("1 = 1").Delete(&model.AdminSession{}).Error
 }
 
 func (s *UserService) UpdateUser(id int, username string, password string) error {
@@ -139,14 +142,17 @@ func (s *UserService) UpdateUser(id int, username string, password string) error
 		_ = s.settingService.SetTwoFactorToken("")
 	}
 
-	return db.Model(model.User{}).
+	if err := db.Model(model.User{}).
 		Where("id = ?", id).
 		Updates(map[string]any{
 			"username":    username,
 			"password":    hashedPassword,
 			"login_epoch": gorm.Expr("login_epoch + 1"),
 		}).
-		Error
+		Error; err != nil {
+		return err
+	}
+	return db.Where("user_id = ?", id).Delete(&model.AdminSession{}).Error
 }
 
 func (s *UserService) UpdateFirstUser(username string, password string) error {

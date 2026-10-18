@@ -140,6 +140,7 @@
     "sponsors": "赞助商",
     "audit": "操作日志",
     "admins": "管理员",
+    "sessions": "会话",
     "hosts": "主机",
     "docs": "文档",
     "openMenu": "打开菜单",
@@ -2642,6 +2643,22 @@
         "saved": "管理员已保存",
         "deleted": "管理员已删除"
       }
+    },
+    "sessions": {
+      "title": "活动会话",
+      "hint": "当前已登录的浏览器。结束你不认识的会话；如果密码可能已泄露，请在所有设备上退出登录。",
+      "address": "地址",
+      "device": "浏览器",
+      "signedIn": "登录时间",
+      "lastSeen": "最近活动",
+      "thisBrowser": "当前浏览器",
+      "end": "结束会话",
+      "endConfirm": "结束此会话？",
+      "endOthers": "结束其他所有会话",
+      "logoutEverywhere": "在所有设备上退出登录",
+      "logoutEverywhereConfirm": "退出包括当前浏览器在内的所有浏览器？",
+      "revoked": "会话已结束",
+      "revokedAll": "会话已结束"
     },
     "hostedPanels": {
       "saved": "面板已保存",

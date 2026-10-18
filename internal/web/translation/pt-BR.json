@@ -140,6 +140,7 @@
     "sponsors": "Patrocinadores",
     "audit": "Atividade",
     "admins": "Administradores",
+    "sessions": "Sessões",
     "hosts": "Hosts",
     "docs": "Documentação",
     "openMenu": "Abrir menu",
@@ -2642,6 +2643,22 @@
         "saved": "Administrador salvo",
         "deleted": "Administrador excluído"
       }
+    },
+    "sessions": {
+      "title": "Sessões ativas",
+      "hint": "Navegadores com login ativo agora. Encerre os que você não reconhece, ou saia de todos os lugares se uma senha puder ter vazado.",
+      "address": "Endereço",
+      "device": "Navegador",
+      "signedIn": "Login em",
+      "lastSeen": "Último acesso",
+      "thisBrowser": "este navegador",
+      "end": "Encerrar sessão",
+      "endConfirm": "Encerrar esta sessão?",
+      "endOthers": "Encerrar todas as outras sessões",
+      "logoutEverywhere": "Sair de todos os lugares",
+      "logoutEverywhereConfirm": "Sair de todos os navegadores, inclusive deste?",
+      "revoked": "Sessão encerrada",
+      "revokedAll": "Sessões encerradas"
     },
     "hostedPanels": {
       "saved": "Painel salvo",

@@ -2314,6 +2314,53 @@ export const sections: readonly Section[] = [
   },
 
   {
+    id: 'sessions',
+    title: 'Sessions',
+    description:
+      'Browsers signed in to the panel. Every role may list and end its own sessions; owners may also act on other admins. API tokens are not sessions. All endpoints under /panel/api/sessions.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/sessions/list',
+        summary:
+          'Active sessions with address, user agent and last-seen time; current marks the browser making the request. Non-owners always get their own; an owner gets everyone unless userId is given.',
+        params: [
+          {
+            name: 'userId',
+            in: 'query',
+            type: 'integer',
+            desc: 'Owner only: limit to this admin.',
+            optional: true,
+          },
+        ],
+        responseSchema: 'SessionView',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sessions/revoke/:id',
+        summary:
+          'End one session. The browser is signed out on its next request. Non-owners can only end their own.',
+        params: [{ name: 'id', in: 'path', type: 'string', desc: 'Session id from the list.' }],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sessions/revokeAll',
+        summary:
+          'Log an admin out everywhere. userId 0 means yourself; only an owner may name someone else. keepCurrent spares the session making the request.',
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{ "userId": 0, "keepCurrent": true }',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
     id: 'activity-log',
     title: 'Activity Log',
     description:

@@ -140,6 +140,7 @@
     "sponsors": "Patrocinadores",
     "audit": "Actividad",
     "admins": "Administradores",
+    "sessions": "Sesiones",
     "hosts": "Hosts",
     "docs": "Documentación",
     "openMenu": "Abrir menú",
@@ -2642,6 +2643,22 @@
         "saved": "Administrador guardado",
         "deleted": "Administrador eliminado"
       }
+    },
+    "sessions": {
+      "title": "Sesiones activas",
+      "hint": "Navegadores con la sesión iniciada ahora. Cierra las que no reconozcas, o cierra sesión en todas partes si una contraseña pudo filtrarse.",
+      "address": "Dirección",
+      "device": "Navegador",
+      "signedIn": "Inicio de sesión",
+      "lastSeen": "Última actividad",
+      "thisBrowser": "este navegador",
+      "end": "Cerrar sesión",
+      "endConfirm": "¿Cerrar esta sesión?",
+      "endOthers": "Cerrar todas las demás sesiones",
+      "logoutEverywhere": "Cerrar sesión en todas partes",
+      "logoutEverywhereConfirm": "¿Cerrar la sesión en todos los navegadores, incluido este?",
+      "revoked": "Sesión cerrada",
+      "revokedAll": "Sesiones cerradas"
     },
     "hostedPanels": {
       "saved": "Panel guardado",

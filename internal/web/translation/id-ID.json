@@ -140,6 +140,7 @@
     "sponsors": "Sponsor",
     "audit": "Aktivitas",
     "admins": "Admin",
+    "sessions": "Sesi",
     "hosts": "Host",
     "docs": "Dokumentasi",
     "openMenu": "Buka menu",
@@ -2642,6 +2643,22 @@
         "saved": "Admin disimpan",
         "deleted": "Admin dihapus"
       }
+    },
+    "sessions": {
+      "title": "Sesi aktif",
+      "hint": "Peramban yang sedang masuk. Akhiri yang tidak Anda kenali, atau keluar dari semua perangkat jika kata sandi mungkin bocor.",
+      "address": "Alamat",
+      "device": "Peramban",
+      "signedIn": "Waktu masuk",
+      "lastSeen": "Terakhir aktif",
+      "thisBrowser": "peramban ini",
+      "end": "Akhiri sesi",
+      "endConfirm": "Akhiri sesi ini?",
+      "endOthers": "Akhiri semua sesi lain",
+      "logoutEverywhere": "Keluar dari semua perangkat",
+      "logoutEverywhereConfirm": "Keluarkan semua peramban, termasuk yang ini?",
+      "revoked": "Sesi diakhiri",
+      "revokedAll": "Sesi diakhiri"
     },
     "hostedPanels": {
       "saved": "Panel disimpan",

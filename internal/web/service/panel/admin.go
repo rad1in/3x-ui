@@ -111,6 +111,9 @@ func (s *UserService) UpdateAdmin(actorId, id int, in AdminInput) (*AdminView, e
 		}
 		if in.Password != "" {
 			row.LoginEpoch++
+			if err := tx.Where("user_id = ?", id).Delete(&model.AdminSession{}).Error; err != nil {
+				return err
+			}
 		}
 		return tx.Save(&row).Error
 	})
@@ -137,6 +140,9 @@ func (s *UserService) DeleteAdmin(actorId, id int) error {
 			if err := requireAnotherOwner(tx, id); err != nil {
 				return err
 			}
+		}
+		if err := tx.Where("user_id = ?", id).Delete(&model.AdminSession{}).Error; err != nil {
+			return err
 		}
 		return tx.Delete(&model.User{}, id).Error
 	})

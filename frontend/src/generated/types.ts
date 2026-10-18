@@ -1197,6 +1197,17 @@ export interface ServerSettings {
   subnetIp: string;
 }
 
+export interface SessionView {
+  createdAt: number;
+  current: boolean;
+  id: string;
+  ip: string;
+  lastSeen: number;
+  userAgent: string;
+  userId: number;
+  username: string;
+}
+
 export interface Setting {
   id: number;
   key: string;

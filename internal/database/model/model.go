@@ -71,6 +71,17 @@ type User struct {
 	CreatedAt       int64  `json:"createdAt" gorm:"not null;default:0"`
 }
 
+// AdminSession is one signed-in browser. The cookie carries only Id; deleting
+// the row signs that browser out, which a stateless cookie could not do.
+type AdminSession struct {
+	Id        string `json:"id" gorm:"primaryKey;size:64"`
+	UserId    int    `json:"userId" gorm:"index;not null"`
+	Ip        string `json:"ip" gorm:"not null;default:''"`
+	UserAgent string `json:"userAgent" gorm:"not null;default:''"`
+	CreatedAt int64  `json:"createdAt" gorm:"not null"`
+	LastSeen  int64  `json:"lastSeen" gorm:"index;not null"`
+}
+
 // Inbound represents an Xray inbound configuration with traffic statistics and settings.
 type Inbound struct {
 	Id                   int                  `json:"id" form:"id" gorm:"primaryKey;autoIncrement" example:"1"`                                                                                                     // Unique identifier

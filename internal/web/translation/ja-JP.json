@@ -140,6 +140,7 @@
     "sponsors": "スポンサー",
     "audit": "操作ログ",
     "admins": "管理者",
+    "sessions": "セッション",
     "hosts": "ホスト",
     "docs": "ドキュメント",
     "openMenu": "メニューを開く",
@@ -2642,6 +2643,22 @@
         "saved": "管理者を保存しました",
         "deleted": "管理者を削除しました"
       }
+    },
+    "sessions": {
+      "title": "アクティブなセッション",
+      "hint": "現在サインインしているブラウザです。心当たりのないものは終了し、パスワードが漏れた可能性があるときはすべてからログアウトしてください。",
+      "address": "アドレス",
+      "device": "ブラウザ",
+      "signedIn": "サインイン日時",
+      "lastSeen": "最終アクセス",
+      "thisBrowser": "このブラウザ",
+      "end": "セッションを終了",
+      "endConfirm": "このセッションを終了しますか？",
+      "endOthers": "他のセッションをすべて終了",
+      "logoutEverywhere": "すべてからログアウト",
+      "logoutEverywhereConfirm": "このブラウザを含め、すべてのブラウザをサインアウトしますか？",
+      "revoked": "セッションを終了しました",
+      "revokedAll": "セッションを終了しました"
     },
     "hostedPanels": {
       "saved": "パネルを保存しました",

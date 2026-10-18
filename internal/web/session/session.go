@@ -16,7 +16,9 @@ import (
 const (
 	loginUserKey      = "LOGIN_USER"
 	loginEpochKey     = "LOGIN_EPOCH"
+	loginSessionKey   = "LOGIN_SESSION"
 	apiAuthUserKey    = "api_auth_user"
+	resolvedUserKey   = "session_resolved_user"
 	sessionCookieName = "3x-ui"
 )
 
@@ -24,13 +26,23 @@ func init() {
 	gob.Register(model.User{})
 }
 
+// ClientIP resolves the caller's address; the controller swaps in its
+// trusted-proxy aware version.
+var ClientIP = func(c *gin.Context) string { return c.ClientIP() }
+
 func SetLoginUser(c *gin.Context, user *model.User) error {
 	if user == nil {
 		return nil
 	}
+	sessionId, err := registerSession(c, user.Id)
+	if err != nil {
+		return err
+	}
 	s := sessions.Default(c)
 	s.Set(loginUserKey, user.Id)
 	s.Set(loginEpochKey, user.LoginEpoch)
+	s.Set(loginSessionKey, sessionId)
+	c.Set(resolvedUserKey, user)
 	return s.Save()
 }
 
@@ -47,6 +59,16 @@ func GetLoginUser(c *gin.Context) *model.User {
 			return u
 		}
 	}
+	if v, ok := c.Get(resolvedUserKey); ok {
+		u, _ := v.(*model.User)
+		return u
+	}
+	u := resolveSessionUser(c)
+	c.Set(resolvedUserKey, u)
+	return u
+}
+
+func resolveSessionUser(c *gin.Context) *model.User {
 	s := sessions.Default(c)
 	obj := s.Get(loginUserKey)
 	if obj == nil {
@@ -82,6 +104,15 @@ func GetLoginUser(c *gin.Context) *model.User {
 		s.Delete(loginEpochKey)
 		if saveErr := s.Save(); saveErr != nil {
 			logger.Warning("session: failed to drop stale epoch:", saveErr)
+		}
+		return nil
+	}
+	if !touchSession(c, s, user.Id) {
+		s.Delete(loginUserKey)
+		s.Delete(loginEpochKey)
+		s.Delete(loginSessionKey)
+		if saveErr := s.Save(); saveErr != nil {
+			logger.Warning("session: failed to drop revoked session:", saveErr)
 		}
 		return nil
 	}
@@ -160,6 +191,8 @@ func getUserByID(id int) (*model.User, error) {
 }
 
 func ClearSession(c *gin.Context) error {
+	dropCurrentSession(c)
+	c.Set(resolvedUserKey, (*model.User)(nil))
 	s := sessions.Default(c)
 	s.Clear()
 	cookiePath := c.GetString("base_path")

@@ -1271,6 +1271,18 @@ export const ServerSettingsSchema = z.object({
 });
 export type ServerSettings = z.infer<typeof ServerSettingsSchema>;
 
+export const SessionViewSchema = z.object({
+  createdAt: z.number().int(),
+  current: z.boolean(),
+  id: z.string(),
+  ip: z.string(),
+  lastSeen: z.number().int(),
+  userAgent: z.string(),
+  userId: z.number().int(),
+  username: z.string(),
+});
+export type SessionView = z.infer<typeof SessionViewSchema>;
+
 export const SettingSchema = z.object({
   id: z.number().int(),
   key: z.string(),

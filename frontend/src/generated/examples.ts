@@ -1305,6 +1305,16 @@ export const EXAMPLES: Record<string, unknown> = {
     "subnetCidr": 0,
     "subnetIp": ""
   },
+  "SessionView": {
+    "createdAt": 1760684400000,
+    "current": true,
+    "id": "q3Zk0m1u0Vw5gq8mYz1lJm0o3Wq2B8Xc",
+    "ip": "203.0.113.5",
+    "lastSeen": 1760688000000,
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64)",
+    "userId": 1,
+    "username": "admin"
+  },
   "Setting": {
     "id": 0,
     "key": "",

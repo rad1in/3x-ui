@@ -5264,6 +5264,56 @@
         ],
         "type": "object"
       },
+      "SessionView": {
+        "description": "SessionView is one signed-in browser of an admin account.",
+        "properties": {
+          "createdAt": {
+            "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "current": {
+            "example": true,
+            "type": "boolean"
+          },
+          "id": {
+            "example": "q3Zk0m1u0Vw5gq8mYz1lJm0o3Wq2B8Xc",
+            "type": "string"
+          },
+          "ip": {
+            "example": "203.0.113.5",
+            "type": "string"
+          },
+          "lastSeen": {
+            "example": 1760688000000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "userAgent": {
+            "example": "Mozilla/5.0 (X11; Linux x86_64)",
+            "type": "string"
+          },
+          "userId": {
+            "example": 1,
+            "type": "integer"
+          },
+          "username": {
+            "example": "admin",
+            "type": "string"
+          }
+        },
+        "required": [
+          "createdAt",
+          "current",
+          "id",
+          "ip",
+          "lastSeen",
+          "userAgent",
+          "userId",
+          "username"
+        ],
+        "type": "object"
+      },
       "Setting": {
         "description": "Setting stores key-value configuration settings for the 3x-ui panel.",
         "properties": {
@@ -5794,6 +5844,10 @@
     {
       "name": "Admins",
       "description": "Admin accounts and their roles. owner: everything; admin: everything except managing admins, API tokens, the database file and security settings; operator: only the inbounds and client groups in its scope; viewer: read-only. Every endpoint except /me is owner-only. API tokens are not admins and keep their own scopes. All endpoints under /panel/api/admins."
+    },
+    {
+      "name": "Sessions",
+      "description": "Browsers signed in to the panel. Every role may list and end its own sessions; owners may also act on other admins. API tokens are not sessions. All endpoints under /panel/api/sessions."
     },
     {
       "name": "Activity Log",
@@ -15549,6 +15603,157 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sessions/list": {
+      "get": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Active sessions with address, user agent and last-seen time; current marks the browser making the request. Non-owners always get their own; an owner gets everyone unless userId is given.",
+        "operationId": "get_panel_api_sessions_list",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "description": "Owner only: limit to this admin.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SessionView"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "createdAt": 1760684400000,
+                      "current": true,
+                      "id": "q3Zk0m1u0Vw5gq8mYz1lJm0o3Wq2B8Xc",
+                      "ip": "203.0.113.5",
+                      "lastSeen": 1760688000000,
+                      "userAgent": "Mozilla/5.0 (X11; Linux x86_64)",
+                      "userId": 1,
+                      "username": "admin"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sessions/revoke/{id}": {
+      "post": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "End one session. The browser is signed out on its next request. Non-owners can only end their own.",
+        "operationId": "post_panel_api_sessions_revoke_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Session id from the list.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sessions/revokeAll": {
+      "post": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Log an admin out everywhere. userId 0 means yourself; only an owner may name someone else. keepCurrent spares the session making the request.",
+        "operationId": "post_panel_api_sessions_revokeAll",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{ \"userId\": 0, \"keepCurrent\": true }"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successful response",

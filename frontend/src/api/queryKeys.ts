@@ -7,6 +7,9 @@ export const keys = {
   hostedPanels: {
     list: () => ['hostedPanels', 'list'] as const,
   },
+  sessions: {
+    list: () => ['sessions', 'list'] as const,
+  },
   admins: {
     me: () => ['admins', 'me'] as const,
     list: () => ['admins', 'list'] as const,

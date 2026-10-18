@@ -141,6 +141,7 @@
     "sponsors": "Sponsors",
     "audit": "Activity",
     "admins": "Admins",
+    "sessions": "Sessions",
     "docs": "Documentation",
     "openMenu": "Open menu",
     "pinSidebar": "Pin sidebar",
@@ -2642,6 +2643,22 @@
         "saved": "Admin saved",
         "deleted": "Admin deleted"
       }
+    },
+    "sessions": {
+      "title": "Active sessions",
+      "hint": "Browsers currently signed in. End any you do not recognise, or log out everywhere if a password may have leaked.",
+      "address": "Address",
+      "device": "Browser",
+      "signedIn": "Signed in",
+      "lastSeen": "Last seen",
+      "thisBrowser": "this browser",
+      "end": "End session",
+      "endConfirm": "End this session?",
+      "endOthers": "End all other sessions",
+      "logoutEverywhere": "Log out everywhere",
+      "logoutEverywhereConfirm": "Sign out every browser, including this one?",
+      "revoked": "Session ended",
+      "revokedAll": "Sessions ended"
     },
     "hostedPanels": {
       "saved": "Panel saved",
