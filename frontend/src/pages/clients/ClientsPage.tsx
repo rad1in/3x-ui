@@ -86,6 +86,7 @@ const ClientInfoModal = lazy(() => import('./ClientInfoModal'));
 const ClientQrModal = lazy(() => import('./ClientQrModal'));
 const ClientBulkAddModal = lazy(() => import('./ClientBulkAddModal'));
 const ClientTemplatesModal = lazy(() => import('./ClientTemplatesModal'));
+const ClientForeignImportModal = lazy(() => import('./ClientForeignImportModal'));
 const ClientBulkAdjustModal = lazy(() => import('./ClientBulkAdjustModal'));
 import ClientsEmptyState from './ClientsEmptyState';
 const FilterDrawer = lazy(() => import('./FilterDrawer'));
@@ -414,6 +415,7 @@ export default function ClientsPage() {
   );
   const [bulkAddOpen, setBulkAddOpen] = useState(false);
   const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [foreignImportOpen, setForeignImportOpen] = useState(false);
   const [bulkAdjustOpen, setBulkAdjustOpen] = useState(false);
   const [subLinksOpen, setSubLinksOpen] = useState(false);
   const [bulkGroupOpen, setBulkGroupOpen] = useState(false);
@@ -1539,6 +1541,12 @@ export default function ClientsPage() {
                                         onClick: onImportClients,
                                       },
                                       {
+                                        key: 'importForeign',
+                                        icon: <UploadOutlined />,
+                                        label: t('pages.clients.foreignImport.menu'),
+                                        onClick: () => setForeignImportOpen(true),
+                                      },
+                                      {
                                         key: 'resetAll',
                                         icon: <RetweetOutlined />,
                                         label: t('pages.clients.resetAllTraffics'),
@@ -1985,6 +1993,13 @@ export default function ClientsPage() {
             groups={allGroups}
             onOpenChange={setBulkAddOpen}
             onSaved={() => setBulkAddOpen(false)}
+          />
+        </LazyMount>
+        <LazyMount when={foreignImportOpen}>
+          <ClientForeignImportModal
+            open={foreignImportOpen}
+            inbounds={inbounds}
+            onOpenChange={setForeignImportOpen}
           />
         </LazyMount>
         <LazyMount when={templatesOpen}>

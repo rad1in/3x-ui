@@ -1009,6 +1009,21 @@
       "disconnectConfirm": "Cierra las conexiones activas de este cliente. El cliente sigue habilitado y puede volver a conectarse enseguida; deshabilítalo para impedirlo.",
       "disconnectResult": "{count} conexión(es) cerrada(s)",
       "disconnectUnsupported": "No se pueden desconectar las sesiones activas en: {inbounds}",
+      "foreignImport": {
+        "menu": "Importar de otro panel",
+        "title": "Importar de otro panel",
+        "inbounds": "Entradas a las que asociar los usuarios",
+        "chooseFile": "Elegir archivo de exportación",
+        "paste": "O pega aquí el JSON exportado",
+        "note": "Se conservan UUID, contraseñas, cuotas, caducidad y tráfico usado, así que las configuraciones existentes siguen funcionando. Los enlaces de suscripción antiguos no se transfieren.",
+        "run": "Importar usuarios",
+        "done": "{count} usuario(s) importado(s)",
+        "source": {
+          "marzban": "Marzban (JSON de usuarios)",
+          "marzneshin": "Marzneshin (JSON de usuarios)",
+          "hiddify": "Hiddify Manager (JSON de usuarios)"
+        }
+      },
       "import": "Importar",
       "delOrphans": "Eliminar clientes sin entrante",
       "delOrphansConfirmTitle": "¿Eliminar clientes sin entrante?",

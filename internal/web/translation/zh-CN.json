@@ -1009,6 +1009,21 @@
       "disconnectConfirm": "结束该客户端当前的连接。客户端仍保持启用，可立即重新连接；如需阻止请将其禁用。",
       "disconnectResult": "已关闭 {count} 个连接",
       "disconnectUnsupported": "无法断开以下入站上的在线会话：{inbounds}",
+      "foreignImport": {
+        "menu": "从其他面板导入",
+        "title": "从其他面板导入",
+        "inbounds": "用户要关联的入站",
+        "chooseFile": "选择导出文件",
+        "paste": "或在此粘贴导出的 JSON",
+        "note": "UUID、密码、流量配额、到期时间和已用流量都会保留，现有配置可继续使用。旧的订阅链接不会迁移。",
+        "run": "导入用户",
+        "done": "已导入 {count} 个用户",
+        "source": {
+          "marzban": "Marzban（用户 JSON）",
+          "marzneshin": "Marzneshin（用户 JSON）",
+          "hiddify": "Hiddify Manager（用户 JSON）"
+        }
+      },
       "import": "导入",
       "delOrphans": "删除未关联的客户端",
       "delOrphansConfirmTitle": "删除没有入站的客户端？",

@@ -1009,6 +1009,21 @@
       "disconnectConfirm": "Ends this client's live connections. The client stays enabled and can reconnect right away; disable it to keep it out.",
       "disconnectResult": "{count} connection(s) closed",
       "disconnectUnsupported": "Cannot disconnect live sessions on: {inbounds}",
+      "foreignImport": {
+        "menu": "Import from another panel",
+        "title": "Import from another panel",
+        "inbounds": "Inbounds to attach the users to",
+        "chooseFile": "Choose export file",
+        "paste": "Or paste the exported JSON here",
+        "note": "UUIDs, passwords, quotas, expiry and used traffic are kept, so existing configs keep working. Old subscription links are not carried over.",
+        "run": "Import users",
+        "done": "{count} user(s) imported",
+        "source": {
+          "marzban": "Marzban (users JSON)",
+          "marzneshin": "Marzneshin (users JSON)",
+          "hiddify": "Hiddify Manager (users JSON)"
+        }
+      },
       "import": "Import",
       "delOrphans": "Delete unattached clients",
       "delOrphansConfirmTitle": "Delete clients without an inbound?",

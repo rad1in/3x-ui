@@ -1009,6 +1009,21 @@
       "disconnectConfirm": "結束該用戶端目前的連線。用戶端仍保持啟用，可立即重新連線；如需阻止請將其停用。",
       "disconnectResult": "已關閉 {count} 個連線",
       "disconnectUnsupported": "無法中斷以下入站上的線上連線：{inbounds}",
+      "foreignImport": {
+        "menu": "從其他面板匯入",
+        "title": "從其他面板匯入",
+        "inbounds": "使用者要關聯的入站",
+        "chooseFile": "選擇匯出檔案",
+        "paste": "或在此貼上匯出的 JSON",
+        "note": "UUID、密碼、流量配額、到期時間與已用流量都會保留，現有設定可繼續使用。舊的訂閱連結不會遷移。",
+        "run": "匯入使用者",
+        "done": "已匯入 {count} 位使用者",
+        "source": {
+          "marzban": "Marzban（使用者 JSON）",
+          "marzneshin": "Marzneshin（使用者 JSON）",
+          "hiddify": "Hiddify Manager（使用者 JSON）"
+        }
+      },
       "import": "匯入",
       "delOrphans": "刪除未關聯的客戶端",
       "delOrphansConfirmTitle": "刪除沒有入站的客戶端？",

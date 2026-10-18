@@ -1009,6 +1009,21 @@
       "disconnectConfirm": "Mengakhiri koneksi aktif klien ini. Klien tetap aktif dan dapat langsung tersambung lagi; nonaktifkan untuk menahannya.",
       "disconnectResult": "{count} koneksi ditutup",
       "disconnectUnsupported": "Sesi aktif tidak dapat diputus pada: {inbounds}",
+      "foreignImport": {
+        "menu": "Impor dari panel lain",
+        "title": "Impor dari panel lain",
+        "inbounds": "Inbound tujuan pengguna",
+        "chooseFile": "Pilih berkas ekspor",
+        "paste": "Atau tempel JSON hasil ekspor di sini",
+        "note": "UUID, kata sandi, kuota, masa berlaku, dan trafik terpakai dipertahankan sehingga konfigurasi lama tetap berfungsi. Tautan langganan lama tidak ikut dipindahkan.",
+        "run": "Impor pengguna",
+        "done": "{count} pengguna diimpor",
+        "source": {
+          "marzban": "Marzban (JSON pengguna)",
+          "marzneshin": "Marzneshin (JSON pengguna)",
+          "hiddify": "Hiddify Manager (JSON pengguna)"
+        }
+      },
       "import": "Impor",
       "delOrphans": "Hapus klien tanpa inbound",
       "delOrphansConfirmTitle": "Hapus klien tanpa inbound?",

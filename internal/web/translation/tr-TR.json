@@ -1009,6 +1009,21 @@
       "disconnectConfirm": "Bu istemcinin canlı bağlantılarını sonlandırır. İstemci etkin kalır ve hemen yeniden bağlanabilir; engellemek için devre dışı bırakın.",
       "disconnectResult": "{count} bağlantı kapatıldı",
       "disconnectUnsupported": "Şurada canlı oturumlar kesilemez: {inbounds}",
+      "foreignImport": {
+        "menu": "Başka bir panelden içe aktar",
+        "title": "Başka bir panelden içe aktar",
+        "inbounds": "Kullanıcıların bağlanacağı inbound'lar",
+        "chooseFile": "Dışa aktarım dosyasını seç",
+        "paste": "Veya dışa aktarılan JSON'u buraya yapıştırın",
+        "note": "UUID'ler, parolalar, kotalar, bitiş tarihleri ve kullanılan trafik korunur, böylece mevcut yapılandırmalar çalışmaya devam eder. Eski abonelik bağlantıları taşınmaz.",
+        "run": "Kullanıcıları içe aktar",
+        "done": "{count} kullanıcı içe aktarıldı",
+        "source": {
+          "marzban": "Marzban (kullanıcı JSON)",
+          "marzneshin": "Marzneshin (kullanıcı JSON)",
+          "hiddify": "Hiddify Manager (kullanıcı JSON)"
+        }
+      },
       "import": "İçe Aktar",
       "delOrphans": "Bağsız Kullanıcıları Sil",
       "delOrphansConfirmTitle": "Gelen Bağlantısı Olmayan Kullanıcılar Silinsin Mi?",

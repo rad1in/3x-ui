@@ -1009,6 +1009,21 @@
       "disconnectConfirm": "このクライアントの接続中のセッションを終了します。クライアントは有効のままで、すぐに再接続できます。接続させない場合は無効にしてください。",
       "disconnectResult": "{count} 件の接続を切断しました",
       "disconnectUnsupported": "次では接続中のセッションを切断できません: {inbounds}",
+      "foreignImport": {
+        "menu": "他のパネルからインポート",
+        "title": "他のパネルからインポート",
+        "inbounds": "ユーザーを割り当てるインバウンド",
+        "chooseFile": "エクスポートファイルを選択",
+        "paste": "またはエクスポートしたJSONをここに貼り付け",
+        "note": "UUID、パスワード、容量、有効期限、使用済みトラフィックは引き継がれるため、既存の設定はそのまま使えます。旧サブスクリプションリンクは引き継がれません。",
+        "run": "ユーザーをインポート",
+        "done": "{count} 人のユーザーをインポートしました",
+        "source": {
+          "marzban": "Marzban（ユーザーJSON）",
+          "marzneshin": "Marzneshin（ユーザーJSON）",
+          "hiddify": "Hiddify Manager（ユーザーJSON）"
+        }
+      },
       "import": "インポート",
       "delOrphans": "未アタッチのクライアントを削除",
       "delOrphansConfirmTitle": "インバウンドのないクライアントを削除しますか?",

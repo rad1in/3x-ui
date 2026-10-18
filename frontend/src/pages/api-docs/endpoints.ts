@@ -1532,6 +1532,31 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/panel/api/clients/importForeign',
+        summary:
+          'Import the users of another panel from its user export and attach them to the given inbounds. source is marzban (GET /api/users), marzneshin (GET /api/users) or hiddify (admin users list); data is the export text. UUIDs, passwords, quotas, expiry (including on-hold and start-on-first-use as a delayed start), reset cycle, notes and used traffic are carried over; existing emails are skipped. Subscription links of the old panel do not carry over. Users that could only be approximated are listed under warnings.',
+        params: [
+          {
+            name: 'source',
+            in: 'body (json)',
+            type: 'string',
+            enum: ['marzban', 'marzneshin', 'hiddify'],
+            desc: 'Which panel the export comes from.',
+          },
+          { name: 'data', in: 'body (json)', type: 'string', desc: 'The export file contents.' },
+          {
+            name: 'inboundIds',
+            in: 'body (json)',
+            type: 'integer[]',
+            desc: 'Inbounds every imported user is attached to.',
+          },
+        ],
+        body: '{\n  "source": "marzban",\n  "data": "{\\"users\\": [...]}",\n  "inboundIds": [7]\n}',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "created": 4,\n    "skipped": [{ "email": "bob", "reason": "email already in use: bob" }],\n    "warnings": [{ "email": "erin", "message": "reset strategy year has no 3x-ui equivalent; the quota is not reset automatically" }]\n  }\n}',
+      },
+      {
+        method: 'POST',
         path: '/panel/api/clients/bulkAttach',
         summary:
           'Attach many existing clients to many inbounds in one call. Each client keeps its identity (email/UUID/password/subId) and a shared traffic row; all clients are added to a target inbound in a single AddInboundClient call. Clients already present on a target are reported under skipped. Returns per-email attached/skipped/errors lists and triggers a single Xray restart if any target inbound was running.',

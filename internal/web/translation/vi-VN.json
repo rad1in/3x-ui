@@ -1009,6 +1009,21 @@
       "disconnectConfirm": "Kết thúc các kết nối đang hoạt động của khách hàng này. Khách hàng vẫn được bật và có thể kết nối lại ngay; hãy tắt để chặn.",
       "disconnectResult": "Đã đóng {count} kết nối",
       "disconnectUnsupported": "Không thể ngắt phiên đang hoạt động trên: {inbounds}",
+      "foreignImport": {
+        "menu": "Nhập từ bảng điều khiển khác",
+        "title": "Nhập từ bảng điều khiển khác",
+        "inbounds": "Inbound để gắn người dùng",
+        "chooseFile": "Chọn tệp xuất",
+        "paste": "Hoặc dán JSON đã xuất vào đây",
+        "note": "UUID, mật khẩu, hạn mức, ngày hết hạn và lưu lượng đã dùng được giữ nguyên nên cấu hình hiện có vẫn hoạt động. Liên kết đăng ký cũ không được chuyển.",
+        "run": "Nhập người dùng",
+        "done": "Đã nhập {count} người dùng",
+        "source": {
+          "marzban": "Marzban (JSON người dùng)",
+          "marzneshin": "Marzneshin (JSON người dùng)",
+          "hiddify": "Hiddify Manager (JSON người dùng)"
+        }
+      },
       "import": "Nhập",
       "delOrphans": "Xóa khách hàng không gắn inbound",
       "delOrphansConfirmTitle": "Xóa khách hàng không thuộc inbound nào?",
