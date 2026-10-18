@@ -166,6 +166,8 @@ type AllSetting struct {
 	SubJsonUserAgentRegex       string `json:"subJsonUserAgentRegex" form:"subJsonUserAgentRegex"`
 	SubJsonApps                 string `json:"subJsonApps" form:"subJsonApps"`
 	SubShortLinkEnable          bool   `json:"subShortLinkEnable" form:"subShortLinkEnable"`
+	SubRateLimitPerIP           int    `json:"subRateLimitPerIP" form:"subRateLimitPerIP"`
+	SubRateLimitPerSub          int    `json:"subRateLimitPerSub" form:"subRateLimitPerSub"`
 	SubClashAutoDetect          bool   `json:"subClashAutoDetect" form:"subClashAutoDetect"`
 	SubClashUserAgentRegex      string `json:"subClashUserAgentRegex" form:"subClashUserAgentRegex"`
 	SubTitle                    string `json:"subTitle" form:"subTitle"`

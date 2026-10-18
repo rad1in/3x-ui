@@ -550,6 +550,12 @@
           "subProfileUrl": {
             "type": "string"
           },
+          "subRateLimitPerIP": {
+            "type": "integer"
+          },
+          "subRateLimitPerSub": {
+            "type": "integer"
+          },
           "subRoutingRules": {
             "type": "string"
           },
@@ -836,6 +842,8 @@
           "subPort",
           "subProfileMode",
           "subProfileUrl",
+          "subRateLimitPerIP",
+          "subRateLimitPerSub",
           "subRoutingRules",
           "subShortLinkEnable",
           "subShowIdentityOnAllLinks",
@@ -1429,6 +1437,12 @@
           "subProfileUrl": {
             "type": "string"
           },
+          "subRateLimitPerIP": {
+            "type": "integer"
+          },
+          "subRateLimitPerSub": {
+            "type": "integer"
+          },
           "subRoutingRules": {
             "type": "string"
           },
@@ -1725,6 +1739,8 @@
           "subPort",
           "subProfileMode",
           "subProfileUrl",
+          "subRateLimitPerIP",
+          "subRateLimitPerSub",
           "subRoutingRules",
           "subShortLinkEnable",
           "subShowIdentityOnAllLinks",

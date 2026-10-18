@@ -125,6 +125,8 @@ var defaultValueMap = map[string]string{
 	"subJsonUserAgentRegex":       "",
 	"subJsonApps":                 "",
 	"subShortLinkEnable":          "false",
+	"subRateLimitPerIP":           "0",
+	"subRateLimitPerSub":          "0",
 	"subClashAutoDetect":          "false",
 	"subClashUserAgentRegex":      "",
 	"subTitle":                    "",

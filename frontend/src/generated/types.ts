@@ -173,6 +173,8 @@ export interface AllSetting {
   subPort: number;
   subProfileMode: string;
   subProfileUrl: string;
+  subRateLimitPerIP: number;
+  subRateLimitPerSub: number;
   subRoutingRules: string;
   subShortLinkEnable: boolean;
   subShowIdentityOnAllLinks: boolean;
@@ -386,6 +388,8 @@ export interface AllSettingView {
   subPort: number;
   subProfileMode: string;
   subProfileUrl: string;
+  subRateLimitPerIP: number;
+  subRateLimitPerSub: number;
   subRoutingRules: string;
   subShortLinkEnable: boolean;
   subShowIdentityOnAllLinks: boolean;

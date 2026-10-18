@@ -63,6 +63,8 @@ export const AllSettingSchema = z
     subJsonUserAgentRegex: z.string().max(2048).optional(),
     subJsonApps: z.string().optional(),
     subShortLinkEnable: z.boolean().optional(),
+    subRateLimitPerIP: z.number().int().min(0).optional(),
+    subRateLimitPerSub: z.number().int().min(0).optional(),
     subClashAutoDetect: z.boolean().optional(),
     subClashUserAgentRegex: z.string().max(2048).optional(),
     subTitle: z.string().optional(),

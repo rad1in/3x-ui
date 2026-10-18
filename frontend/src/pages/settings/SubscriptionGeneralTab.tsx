@@ -149,6 +149,30 @@ export default function SubscriptionGeneralTab({
               </SettingListItem>
               <SettingListItem
                 paddings="small"
+                title={t('pages.settings.subRateLimitPerIP')}
+                description={t('pages.settings.subRateLimitDesc')}
+              >
+                <InputNumber
+                  value={allSetting.subRateLimitPerIP}
+                  min={0}
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ subRateLimitPerIP: v }))}
+                />
+              </SettingListItem>
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.subRateLimitPerSub')}
+                description={t('pages.settings.subRateLimitDesc')}
+              >
+                <InputNumber
+                  value={allSetting.subRateLimitPerSub}
+                  min={0}
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ subRateLimitPerSub: v }))}
+                />
+              </SettingListItem>
+              <SettingListItem
+                paddings="small"
                 title={t('pages.settings.subURI')}
                 description={t('pages.settings.subURIDesc')}
               >

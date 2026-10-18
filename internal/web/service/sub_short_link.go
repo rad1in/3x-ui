@@ -40,6 +40,14 @@ func (s *SettingService) GetSubShortLinkEnable() (bool, error) {
 	return s.getBool("subShortLinkEnable")
 }
 
+func (s *SettingService) GetSubRateLimitPerIP() (int, error) {
+	return s.getInt("subRateLimitPerIP")
+}
+
+func (s *SettingService) GetSubRateLimitPerSub() (int, error) {
+	return s.getInt("subRateLimitPerSub")
+}
+
 func (s *SubShortLinkService) Ensure(subID string) (model.SubShortLink, error) {
 	subID = strings.TrimSpace(subID)
 	if subID == "" {

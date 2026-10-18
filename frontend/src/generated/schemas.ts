@@ -524,6 +524,12 @@ export const SCHEMAS: Record<string, unknown> = {
       "subProfileUrl": {
         "type": "string"
       },
+      "subRateLimitPerIP": {
+        "type": "integer"
+      },
+      "subRateLimitPerSub": {
+        "type": "integer"
+      },
       "subRoutingRules": {
         "type": "string"
       },
@@ -810,6 +816,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "subPort",
       "subProfileMode",
       "subProfileUrl",
+      "subRateLimitPerIP",
+      "subRateLimitPerSub",
       "subRoutingRules",
       "subShortLinkEnable",
       "subShowIdentityOnAllLinks",
@@ -1403,6 +1411,12 @@ export const SCHEMAS: Record<string, unknown> = {
       "subProfileUrl": {
         "type": "string"
       },
+      "subRateLimitPerIP": {
+        "type": "integer"
+      },
+      "subRateLimitPerSub": {
+        "type": "integer"
+      },
       "subRoutingRules": {
         "type": "string"
       },
@@ -1699,6 +1713,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "subPort",
       "subProfileMode",
       "subProfileUrl",
+      "subRateLimitPerIP",
+      "subRateLimitPerSub",
       "subRoutingRules",
       "subShortLinkEnable",
       "subShowIdentityOnAllLinks",

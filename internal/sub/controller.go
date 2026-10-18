@@ -90,6 +90,8 @@ type SUBController struct {
 	settingService  service.SettingService
 	shortLinks      service.SubShortLinkService
 	shortLinksOn    bool
+	ipLimiter       *fixedWindowLimiter
+	subLimiter      *fixedWindowLimiter
 
 	subTemplateMu    sync.RWMutex
 	subTemplateCache map[string]*cachedSubTemplate
@@ -107,6 +109,8 @@ type subControllerConfig struct {
 	subJsonAlwaysArray     bool
 	subJsonApps            string
 	subShortLinks          bool
+	rateLimitPerIP         int
+	rateLimitPerSub        int
 	subJsonEnabled         bool
 	subClashEnabled        bool
 
@@ -170,6 +174,12 @@ func WithSUBJsonUserAgentRegex(value string) SUBControllerOption {
 
 func WithSUBJsonAlwaysArray(value bool) SUBControllerOption {
 	return func(config *subControllerConfig) { config.subJsonAlwaysArray = value }
+}
+
+func WithSUBRateLimits(perIP, perSub int) SUBControllerOption {
+	return func(config *subControllerConfig) {
+		config.rateLimitPerIP, config.rateLimitPerSub = perIP, perSub
+	}
 }
 
 func WithSUBShortLinks(value bool) SUBControllerOption {
@@ -339,6 +349,8 @@ func NewSUBController(g *gin.RouterGroup, options ...SUBControllerOption) *SUBCo
 
 		subTemplateCache: map[string]*cachedSubTemplate{},
 		shortLinksOn:     config.subShortLinks,
+		ipLimiter:        newFixedWindowLimiter(config.rateLimitPerIP, nil),
+		subLimiter:       newFixedWindowLimiter(config.rateLimitPerSub, nil),
 	}
 	a.initRouter(g)
 	return a
@@ -347,6 +359,9 @@ func NewSUBController(g *gin.RouterGroup, options ...SUBControllerOption) *SUBCo
 // initRouter registers HTTP routes for subscription links and JSON endpoints
 // on the provided router group.
 func (a *SUBController) initRouter(g *gin.RouterGroup) {
+	if a.ipLimiter != nil || a.subLimiter != nil {
+		g = g.Group("", a.rateLimit)
+	}
 	gLink := g.Group(a.subPath)
 	gLink.GET(":subid", a.subs)
 	gLink.HEAD(":subid", a.subs)

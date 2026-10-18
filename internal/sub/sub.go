@@ -230,6 +230,8 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		SubIncyEnableRouting = false
 	}
 
+	rateLimitPerIP, _ := s.settingService.GetSubRateLimitPerIP()
+	rateLimitPerSub, _ := s.settingService.GetSubRateLimitPerSub()
 	subShortLinks, _ := s.settingService.GetSubShortLinkEnable()
 
 	SubIncyRoutingRules, err := s.settingService.GetSubIncyRoutingRules()
@@ -383,6 +385,7 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		WithSUBIncyEnableRouting(SubIncyEnableRouting),
 		WithSUBIncyRoutingRules(SubIncyRoutingRules),
 		WithSUBShortLinks(subShortLinks),
+		WithSUBRateLimits(rateLimitPerIP, rateLimitPerSub),
 	)
 
 	return engine, nil
