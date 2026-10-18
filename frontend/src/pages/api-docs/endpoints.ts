@@ -512,6 +512,19 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/server/speedtestDownload',
+        summary:
+          'Stream the requested number of incompressible bytes (1 to 64 MiB). Called by a master panel while it speed-tests this node.',
+        params: [{ name: 'bytes', in: 'query', type: 'number', desc: 'Payload size in bytes.' }],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/server/speedtestUpload',
+        summary:
+          'Accept and discard an upload body of up to 64 MiB so a master panel can time the upload direction.',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/server/fail2banStatus',
         summary:
           'Reports whether per-client IP limits can be enforced on this host. The panel uses it to gate the "IP Limit" field, since enforcement depends on Fail2ban being installed.',
@@ -1866,6 +1879,15 @@ export const sections: readonly Section[] = [
         path: '/panel/api/nodes/probe/:id',
         summary: 'Probe an existing node, updating its cached health state.',
         params: [{ name: 'id', in: 'path', type: 'number', desc: 'Node ID.' }],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/nodes/speedtest/:id',
+        summary:
+          'Measure the master-to-node path on demand: five latency pings (min/avg/max/jitter/loss), then an 8 MiB download and a 4 MiB upload. Nothing is stored. A node without the speed test routes still reports latency, with throughputError set.',
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'Node ID.' }],
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "nodeId": 1,\n    "samples": 5,\n    "lost": 0,\n    "latencyMinMs": 38.2,\n    "latencyAvgMs": 41.7,\n    "latencyMaxMs": 47.1,\n    "jitterMs": 3.1,\n    "downloadMbps": 412.5,\n    "uploadMbps": 188.9\n  }\n}',
       },
       {
         method: 'POST',

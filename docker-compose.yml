@@ -52,6 +52,9 @@ services:
       # and uncomment the two lines below.
       # XUI_DB_TYPE: "postgres"
       # XUI_DB_DSN: "postgres://xui:xui@postgres:5432/xui?sslmode=disable"
+      # For MariaDB instead, run `docker compose --profile mariadb up -d` and use:
+      # XUI_DB_TYPE: "mysql"
+      # XUI_DB_DSN: "mysql://xui:xui@mariadb:3306/xui"
     tty: true
     ports:
       # When XUI_PORT is set, publish the same container port (for example "8080:8080").
@@ -68,4 +71,17 @@ services:
       POSTGRES_DB: xui
     volumes:
       - $PWD/pgdata/:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  mariadb:
+    image: mariadb:10.11
+    container_name: 3xui_mariadb
+    profiles: ["mariadb"]
+    environment:
+      MARIADB_USER: xui
+      MARIADB_PASSWORD: xui
+      MARIADB_DATABASE: xui
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+    volumes:
+      - $PWD/mariadbdata/:/var/lib/mysql
     restart: unless-stopped

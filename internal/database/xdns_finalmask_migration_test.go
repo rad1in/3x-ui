@@ -93,7 +93,7 @@ func TestXdnsFinalmaskSeederUpgradesEveryStoredMask(t *testing.T) {
 	assertXdnsUpgraded(t, "template outbound", template.Outbounds[0].StreamSettings.Finalmask)
 
 	var subMask model.Setting
-	if err := GetDB().Where("key = ?", "subJsonFinalMask").First(&subMask).Error; err != nil {
+	if err := GetDB().Where(`"key" = ?`, "subJsonFinalMask").First(&subMask).Error; err != nil {
 		t.Fatalf("reload subJsonFinalMask: %v", err)
 	}
 	var subFinalmask any

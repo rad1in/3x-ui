@@ -357,7 +357,7 @@ func TestMigrateDNSOutboundLegacyKeysRewritesStoredTemplate(t *testing.T) {
 
 func seedDNSOutboundTemplate(t *testing.T, value string) {
 	t.Helper()
-	if err := db.Where("key = ?", "xrayTemplateConfig").Delete(&model.Setting{}).Error; err != nil {
+	if err := db.Where(`"key" = ?`, "xrayTemplateConfig").Delete(&model.Setting{}).Error; err != nil {
 		t.Fatalf("clear template: %v", err)
 	}
 	if err := db.Create(&model.Setting{Key: "xrayTemplateConfig", Value: value}).Error; err != nil {
@@ -368,7 +368,7 @@ func seedDNSOutboundTemplate(t *testing.T, value string) {
 func storedDNSOutboundTemplate(t *testing.T) string {
 	t.Helper()
 	var setting model.Setting
-	if err := db.Where("key = ?", "xrayTemplateConfig").First(&setting).Error; err != nil {
+	if err := db.Where(`"key" = ?`, "xrayTemplateConfig").First(&setting).Error; err != nil {
 		t.Fatalf("reload template: %v", err)
 	}
 	return setting.Value

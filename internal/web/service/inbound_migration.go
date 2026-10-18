@@ -42,7 +42,7 @@ func (s *InboundService) MigrationRequirements() (err error) {
 				err = commitErr
 				return
 			}
-			if !database.IsPostgres() {
+			if database.IsSQLite() {
 				if dbErr := db.Exec(`VACUUM "main"`).Error; dbErr != nil {
 					logger.Warningf("VACUUM failed: %v", dbErr)
 				}
@@ -223,6 +223,14 @@ func (s *InboundService) MigrationRequirements() (err error) {
 	  AND NULLIF(stream_settings, '')::jsonb #>> '{security}' = 'tls'
 	  AND NULLIF(stream_settings, '')::jsonb #> '{tlsSettings,settings,domains}' IS NOT NULL`
 	}
+	if database.IsMySQL() {
+		// JSON_EXTRACT yields a quoted JSON string here, so compare the unquoted scalar.
+		externalProxyQuery = `select id, port, stream_settings
+	from inbounds
+	WHERE protocol in ('vmess','vless','trojan')
+	  AND JSON_VALUE(stream_settings, '$.security') = 'tls'
+	  AND JSON_EXTRACT(stream_settings, '$.tlsSettings.settings.domains') IS NOT NULL`
+	}
 	err = tx.Raw(externalProxyQuery).Scan(&externalProxy).Error
 	if err != nil || len(externalProxy) == 0 {
 		return
@@ -278,6 +286,14 @@ func (s *InboundService) MigrationRequirements() (err error) {
 				WHERE other.id <> i.id
 				  AND other.tag = REPLACE(i.tag, '0.0.0.0:', '')
 			  );`
+	}
+	if database.IsMySQL() {
+		// MySQL refuses a subquery on the UPDATE's own table (error 1093); a self-join is allowed.
+		tagCleanup = `UPDATE inbounds AS i
+			LEFT JOIN inbounds AS other
+			  ON other.id <> i.id AND other.tag = REPLACE(i.tag, '0.0.0.0:', '')
+			SET i.tag = REPLACE(i.tag, '0.0.0.0:', '')
+			WHERE INSTR(i.tag, '0.0.0.0:') > 0 AND other.id IS NULL`
 	}
 	err = tx.Exec(tagCleanup).Error
 	if err != nil {

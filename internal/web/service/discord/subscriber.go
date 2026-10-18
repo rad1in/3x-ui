@@ -233,6 +233,23 @@ func (s *Subscriber) FormatEmbed(e eventbus.Event) (Embed, bool) {
 			Footer:    footer,
 		}, true
 
+	case eventbus.EventNodeCapReached:
+		fields := []EmbedField{
+			cleanField(tr("discord.fields.node"), e.Source, true),
+		}
+		if data, ok := e.Data.(*eventbus.NodeCapData); ok {
+			fields = append(fields,
+				cleanField(tr("discord.fields.totalUsed"), common.FormatTraffic(data.UsedBytes), true),
+				cleanField(tr("discord.fields.quota"), common.FormatTraffic(data.CapBytes), true))
+		}
+		return Embed{
+			Title:     tr("discord.alerts.nodeCapReached"),
+			Color:     ColorRed,
+			Timestamp: ts,
+			Fields:    fields,
+			Footer:    footer,
+		}, true
+
 	case eventbus.EventXrayCrash:
 		var fields []EmbedField
 		if e.Data != nil {

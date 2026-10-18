@@ -26,7 +26,7 @@ func TestInitDB_GeneratesPerPanelSubscriptionPaths(t *testing.T) {
 		paths := make(map[string]string, len(keys))
 		for _, key := range keys {
 			var setting model.Setting
-			if err := db.Where("key = ?", key).First(&setting).Error; err != nil {
+			if err := db.Where(`"key" = ?`, key).First(&setting).Error; err != nil {
 				t.Fatalf("read %s: %v", key, err)
 			}
 			if !pathPattern.MatchString(setting.Value) {
@@ -216,7 +216,7 @@ func TestNormalizeSettingPaths_RepairsLegacyValues(t *testing.T) {
 		{Key: "subClashPath", Value: "clash/"},
 		{Key: "webBasePath", Value: "/panel/"},
 	}
-	if err := db.Where("key IN ?", []string{"subPath", "subJsonPath", "subClashPath"}).Delete(&model.Setting{}).Error; err != nil {
+	if err := db.Where(`"key" IN ?`, []string{"subPath", "subJsonPath", "subClashPath"}).Delete(&model.Setting{}).Error; err != nil {
 		t.Fatalf("clear generated subscription paths: %v", err)
 	}
 	for i := range seed {
@@ -237,7 +237,7 @@ func TestNormalizeSettingPaths_RepairsLegacyValues(t *testing.T) {
 	}
 	for key, expected := range want {
 		var row model.Setting
-		if err := db.Where("key = ?", key).First(&row).Error; err != nil {
+		if err := db.Where(`"key" = ?`, key).First(&row).Error; err != nil {
 			t.Fatalf("read %s: %v", key, err)
 		}
 		if row.Value != expected {

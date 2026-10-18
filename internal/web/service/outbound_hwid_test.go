@@ -32,7 +32,7 @@ func TestOutboundFetchSendsExternalSubscriptionHwid(t *testing.T) {
 		t.Fatalf("refresh: %v", err)
 	}
 	var row model.Setting
-	if err := database.GetDB().Where("key = ?", "externalSubHwid").First(&row).Error; err != nil {
+	if err := database.GetDB().Where(`"key" = ?`, "externalSubHwid").First(&row).Error; err != nil {
 		t.Fatalf("no persisted externalSubHwid after the fetch: %v", err)
 	}
 	if gotHwid == "" || gotHwid != row.Value {
@@ -51,7 +51,7 @@ func TestExternalSubscriptionHwidIsStableAndPersisted(t *testing.T) {
 		t.Fatalf("hwid not stable: %q vs %q", first, second)
 	}
 	var row model.Setting
-	if err := database.GetDB().Where("key = ?", "externalSubHwid").First(&row).Error; err != nil {
+	if err := database.GetDB().Where(`"key" = ?`, "externalSubHwid").First(&row).Error; err != nil {
 		t.Fatalf("hwid not persisted: %v", err)
 	}
 	if row.Value != first {

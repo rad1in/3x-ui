@@ -68,6 +68,39 @@ certificate instead of an API token.
 
 </Steps>
 
+### Metered nodes: traffic cap and cost
+
+For a VPS with a monthly transfer allowance, set **Monthly traffic cap** (GB),
+the **billing day** on which the provider's counter resets, and what happens at
+the cap in the node's edit dialog:
+
+- **Send an alert only** publishes a `node.cap_reached` event to Telegram,
+  Discord, email and webhooks (enable it in the notification event lists).
+- **Alert and disable the node's inbounds** also disables every enabled inbound
+  on that node. When the next billing period starts, or you raise the cap, only
+  the inbounds the cap itself stopped are enabled again; inbounds you disabled
+  by hand stay off.
+
+The panel counts the traffic it accounts on the node's inbounds, checked once a
+minute. That excludes anything else the VPS sends (SSH, package updates, other
+services), so it runs below the provider's meter — set the cap a little under the
+real allowance. A node's first sample only sets a baseline, so history from before
+the cap was configured is not counted.
+
+**Monthly cost** and currency are shown per node on the Nodes page, with the
+cost per terabyte used so far this period (withheld until 10 GB have flowed) and
+the total cost per currency. The panel does not know what your clients pay, so
+it shows costs and traffic only and calculates no profit.
+
+### Speed test
+
+The dashboard icon on a node row runs an on-demand test of the path between the
+master and that node: five latency pings (min / avg / max, jitter, lost pings),
+then an 8 MiB download and a 4 MiB upload over the same authenticated API the
+panel syncs through. Nothing is stored. A node running an older panel still
+reports latency; its throughput is shown as unavailable until you update it.
+The test moves about 12 MiB, so avoid running it repeatedly on metered links.
+
 ## Managed hosts
 
 A **managed host** is an override endpoint attached to an inbound. At

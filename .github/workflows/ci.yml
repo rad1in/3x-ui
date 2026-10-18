@@ -92,6 +92,49 @@ jobs:
             exit 1
           fi
 
+  mysql:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["mysql:8.4", "mariadb:10.11"]
+    services:
+      db:
+        image: ${{ matrix.image }}
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: xui
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: xui
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping -h 127.0.0.1 -proot || healthcheck.sh --connect"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      XUI_TEST_MYSQL_DSN: "mysql://root:root@127.0.0.1:3306/xui"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+          cache: true
+      - name: Stub internal/web/dist for go:embed
+        run: mkdir -p internal/web/dist && touch internal/web/dist/.gitkeep
+      - name: MySQL schema, migration and dialect tests
+        run: |
+          set -o pipefail
+          go test ./internal/database -run 'MySQL' -count=1 -v | tee /tmp/mysql-schema.log
+          XUI_DB_TYPE=mysql XUI_DB_DSN="$XUI_TEST_MYSQL_DSN" go test ./internal/web/service -run 'TestMergeNodeClientTrafficJudgesStaleDisableOnPreMergeCounters|TestListPaged' -count=1 -v | tee -a /tmp/mysql-schema.log
+          # Count passes: a renamed test prints "no tests to run" and exits 0.
+          passed=$(grep -c -- '^--- PASS' /tmp/mysql-schema.log || true)
+          if [ "$passed" -lt 6 ]; then
+            echo "expected at least 6 passing MySQL tests, got $passed" >&2
+            exit 1
+          fi
+
   codegen:
     runs-on: ubuntu-latest
     steps:

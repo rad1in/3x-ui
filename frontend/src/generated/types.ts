@@ -79,6 +79,8 @@ export interface AllSetting {
   ldapVlessField: string;
   loginLockoutMinutes: number;
   loginMaxFailures: number;
+  metricsEnable: boolean;
+  metricsToken: string;
   outboundDownThreshold: number;
   pageSize: number;
   panelAllowedCidrs: string;
@@ -297,6 +299,8 @@ export interface AllSettingView {
   ldapVlessField: string;
   loginLockoutMinutes: number;
   loginMaxFailures: number;
+  metricsEnable: boolean;
+  metricsToken: string;
   outboundDownThreshold: number;
   pageSize: number;
   panelAllowedCidrs: string;
@@ -987,9 +991,13 @@ export interface Node {
   address: string;
   allowPrivateAddress: boolean;
   basePath: string;
+  billingDay: number;
+  capAction: string;
+  capState: string;
   clientCount: number;
   configDirty: boolean;
   configDirtyAt: number;
+  costCurrency: string;
   cpuPct: number;
   createdAt: number;
   depletedCount: number;
@@ -1004,6 +1012,8 @@ export interface Node {
   lastHeartbeat: number;
   latencyMs: number;
   memPct: number;
+  monthlyCapGB: number;
+  monthlyCost: number;
   name: string;
   netDown: number;
   netUp: number;
@@ -1011,6 +1021,8 @@ export interface Node {
   outboundTag: string;
   panelVersion: string;
   parentGuid?: string;
+  periodBytes: number;
+  periodStart: number;
   pinnedCertSha256: string;
   port: number;
   remark: string;
@@ -1030,11 +1042,16 @@ export interface NodeMutationRequest {
   allowPrivateAddress: boolean;
   apiToken?: string | null;
   basePath: string;
+  billingDay: number;
+  capAction: string;
   clearApiToken?: boolean;
+  costCurrency: string;
   enable: boolean;
   id: number;
   inboundSyncMode: string;
   inboundTags: string[];
+  monthlyCapGB: number;
+  monthlyCost: number;
   name: string;
   outboundTag: string;
   pinnedCertSha256: string;
@@ -1044,14 +1061,31 @@ export interface NodeMutationRequest {
   tlsVerifyMode: string;
 }
 
+export interface NodeSpeedResult {
+  downloadMbps: number;
+  jitterMs: number;
+  latencyAvgMs: number;
+  latencyMaxMs: number;
+  latencyMinMs: number;
+  lost: number;
+  nodeId: number;
+  samples: number;
+  throughputError?: string;
+  uploadMbps: number;
+}
+
 export interface NodeView {
   activeCount: number;
   address: string;
   allowPrivateAddress: boolean;
   basePath: string;
+  billingDay: number;
+  capAction: string;
+  capState: string;
   clientCount: number;
   configDirty: boolean;
   configDirtyAt: number;
+  costCurrency: string;
   cpuPct: number;
   createdAt: number;
   depletedCount: number;
@@ -1067,6 +1101,8 @@ export interface NodeView {
   lastHeartbeat: number;
   latencyMs: number;
   memPct: number;
+  monthlyCapGB: number;
+  monthlyCost: number;
   name: string;
   netDown: number;
   netUp: number;
@@ -1074,6 +1110,8 @@ export interface NodeView {
   outboundTag: string;
   panelVersion: string;
   parentGuid?: string;
+  periodBytes: number;
+  periodStart: number;
   pinnedCertSha256: string;
   port: number;
   remark: string;

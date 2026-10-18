@@ -6,6 +6,7 @@ import {
   BellOutlined,
   BgColorsOutlined,
   ClockCircleOutlined,
+  DashboardOutlined,
   GlobalOutlined,
   SafetyCertificateOutlined,
   SettingOutlined,
@@ -20,6 +21,7 @@ import { catTabLabel } from './catTabLabel';
 import { sanitizePath } from './uriPath';
 import SecretInput from './SecretInput';
 import BrandingSettings from './BrandingSettings';
+import MetricsSettings from './MetricsSettings';
 
 interface ApiMsg<T = unknown> {
   success?: boolean;
@@ -519,6 +521,11 @@ export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProp
           key: 'brand',
           label: catTabLabel(<BgColorsOutlined />, t('pages.settings.brand.tab'), isMobile),
           children: <BrandingSettings allSetting={allSetting} updateSetting={updateSetting} />,
+        },
+        {
+          key: 'metrics',
+          label: catTabLabel(<DashboardOutlined />, t('pages.settings.metrics.tab'), isMobile),
+          children: <MetricsSettings allSetting={allSetting} updateSetting={updateSetting} />,
         },
         {
           key: '6',

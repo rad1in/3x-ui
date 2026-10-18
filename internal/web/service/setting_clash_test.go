@@ -24,7 +24,7 @@ func TestValidateRegex(t *testing.T) {
 func TestSubscriptionAutoDetectDefaultsWithoutStoredRows(t *testing.T) {
 	setupSettingTestDB(t)
 	keys := []string{"subClashAutoDetect", "subClashUserAgentRegex", "subJsonAutoDetect", "subJsonAlwaysArray", "subJsonUserAgentRegex"}
-	if err := database.GetDB().Where("key IN ?", keys).Delete(&model.Setting{}).Error; err != nil {
+	if err := database.GetDB().Where(`"key" IN ?`, keys).Delete(&model.Setting{}).Error; err != nil {
 		t.Fatal(err)
 	}
 
@@ -61,7 +61,7 @@ func TestSubscriptionAutoDetectDefaultsWithoutStoredRows(t *testing.T) {
 	}
 
 	var count int64
-	if err := database.GetDB().Model(&model.Setting{}).Where("key IN ?", keys).Count(&count).Error; err != nil {
+	if err := database.GetDB().Model(&model.Setting{}).Where(`"key" IN ?`, keys).Count(&count).Error; err != nil {
 		t.Fatal(err)
 	}
 	if count != 0 {
@@ -85,7 +85,7 @@ func TestUpdateAllSettingPreservesEmptyUserAgentRegexes(t *testing.T) {
 
 	for _, key := range []string{"subJsonUserAgentRegex", "subClashUserAgentRegex"} {
 		var stored model.Setting
-		if err := database.GetDB().Where("key = ?", key).First(&stored).Error; err != nil {
+		if err := database.GetDB().Where(`"key" = ?`, key).First(&stored).Error; err != nil {
 			t.Fatal(err)
 		}
 		if stored.Value != "" {

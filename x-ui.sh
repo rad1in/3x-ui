@@ -413,6 +413,13 @@ check_config() {
         local dsn_safe
         dsn_safe="$(echo "$dsn" | sed -E 's|(://[^:/@]+:)[^@]+@|\1****@|')"
         echo -e "${green}Database: PostgreSQL — ${dsn_safe}${plain}"
+    elif [[ -r "$db_env_file" ]] && grep -qE '^XUI_DB_TYPE=(mysql|mariadb)' "$db_env_file"; then
+        local dsn
+        dsn="$(grep -E '^XUI_DB_DSN=' "$db_env_file" | head -1 | cut -d= -f2-)"
+        local dsn_safe
+        # Masks the password in both mysql://user:pass@ and user:pass@tcp(...) forms.
+        dsn_safe="$(echo "$dsn" | sed -E 's|(://[^:/@]+:)[^@]+@|\1****@|; s|^([^:/@]+:)[^@]+@tcp|\1****@tcp|')"
+        echo -e "${green}Database: MySQL/MariaDB — ${dsn_safe}${plain}"
     else
         echo -e "${green}Database: SQLite (/etc/x-ui/x-ui.db)${plain}"
     fi

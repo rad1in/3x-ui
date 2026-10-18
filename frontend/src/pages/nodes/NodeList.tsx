@@ -19,9 +19,11 @@ import {
   SafetyCertificateOutlined,
   TeamOutlined,
   ThunderboltOutlined,
+  DashboardOutlined,
 } from '@ant-design/icons';
 
 import NodeHistoryPanel from './NodeHistoryPanel';
+import NodeUsageCell from './NodeUsageCell';
 import type { NodeRecord } from '@/api/queries/useNodesQuery';
 import { isPanelUpdateAvailable } from '@/lib/panel-version';
 import { activateOnKey } from '@/utils/a11y';
@@ -39,6 +41,7 @@ interface NodeListProps {
   onEdit: (node: NodeRecord) => void;
   onDelete: (node: NodeRecord) => void;
   onProbe: (node: NodeRecord) => void;
+  onSpeedTest: (node: NodeRecord) => void;
   onToggleEnable: (node: NodeRecord, next: boolean) => void;
   onUpdateNode: (node: NodeRecord) => void;
   onUpdateSelected: () => void;
@@ -175,6 +178,7 @@ export default function NodeList({
   onEdit,
   onDelete,
   onProbe,
+  onSpeedTest,
   onToggleEnable,
   onUpdateNode,
   onUpdateSelected,
@@ -266,6 +270,16 @@ export default function NodeList({
                   icon={<ThunderboltOutlined />}
                   aria-label={t('pages.nodes.probe')}
                   onClick={() => onProbe(record)}
+                />
+              </Tooltip>
+              <Tooltip title={t('pages.nodes.speedTest.title')}>
+                <Button
+                  type="text"
+                  size="small"
+                  style={{ fontSize: 16 }}
+                  icon={<DashboardOutlined />}
+                  aria-label={t('pages.nodes.speedTest.title')}
+                  onClick={() => onSpeedTest(record)}
                 />
               </Tooltip>
               {isUpdateEligible(record) && (
@@ -514,6 +528,12 @@ export default function NodeList({
           record.latencyMs && record.latencyMs > 0 ? `${record.latencyMs} ms` : '-',
       },
       {
+        title: t('pages.nodes.metered.usage'),
+        key: 'usage',
+        width: 180,
+        render: (_value, record) => <NodeUsageCell node={record} />,
+      },
+      {
         title: t('pages.nodes.lastHeartbeat'),
         dataIndex: 'lastHeartbeat',
         align: 'center',
@@ -528,6 +548,7 @@ export default function NodeList({
       latestVersion,
       onToggleEnable,
       onProbe,
+      onSpeedTest,
       onEdit,
       onDelete,
       onUpdateNode,
@@ -668,6 +689,15 @@ export default function NodeList({
                                   </>
                                 ),
                                 onClick: () => onProbe(record),
+                              },
+                              {
+                                key: 'speedtest',
+                                label: (
+                                  <>
+                                    <DashboardOutlined /> {t('pages.nodes.speedTest.title')}
+                                  </>
+                                ),
+                                onClick: () => onSpeedTest(record),
                               },
                               ...(isUpdateEligible(record)
                                 ? [
@@ -816,6 +846,10 @@ export default function NodeList({
                       ? `${statsNode.latencyMs} ms`
                       : '-'}
                   </Tag>
+                </div>
+                <div className="stat-row">
+                  <span className="stat-label">{t('pages.nodes.metered.usage')}</span>
+                  <NodeUsageCell node={statsNode} />
                 </div>
                 <div className="stat-row">
                   <span className="stat-label">{t('clients')}</span>

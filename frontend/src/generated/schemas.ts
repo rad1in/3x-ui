@@ -257,6 +257,12 @@ export const SCHEMAS: Record<string, unknown> = {
         "minimum": 1,
         "type": "integer"
       },
+      "metricsEnable": {
+        "type": "boolean"
+      },
+      "metricsToken": {
+        "type": "string"
+      },
       "outboundDownThreshold": {
         "maximum": 100,
         "minimum": 1,
@@ -798,6 +804,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapVlessField",
       "loginLockoutMinutes",
       "loginMaxFailures",
+      "metricsEnable",
+      "metricsToken",
       "outboundDownThreshold",
       "pageSize",
       "panelAllowedCidrs",
@@ -1159,6 +1167,12 @@ export const SCHEMAS: Record<string, unknown> = {
         "maximum": 100,
         "minimum": 1,
         "type": "integer"
+      },
+      "metricsEnable": {
+        "type": "boolean"
+      },
+      "metricsToken": {
+        "type": "string"
       },
       "outboundDownThreshold": {
         "maximum": 100,
@@ -1711,6 +1725,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapVlessField",
       "loginLockoutMinutes",
       "loginMaxFailures",
+      "metricsEnable",
+      "metricsToken",
       "outboundDownThreshold",
       "pageSize",
       "panelAllowedCidrs",
@@ -4277,6 +4293,23 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": "/",
         "type": "string"
       },
+      "billingDay": {
+        "example": 1,
+        "maximum": 28,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "capAction": {
+        "enum": [
+          "alert",
+          "disable"
+        ],
+        "example": "alert",
+        "type": "string"
+      },
+      "capState": {
+        "type": "string"
+      },
       "clientCount": {
         "example": 27,
         "type": "integer"
@@ -4287,6 +4320,10 @@ export const SCHEMAS: Record<string, unknown> = {
       "configDirtyAt": {
         "format": "int64",
         "type": "integer"
+      },
+      "costCurrency": {
+        "example": "USD",
+        "type": "string"
       },
       "cpuPct": {
         "example": 23.5,
@@ -4351,6 +4388,17 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": 45.1,
         "type": "number"
       },
+      "monthlyCapGB": {
+        "description": "Metered-VPS settings, master-local. The cap counts traffic the panel\naccounts on this node's inbounds, not the provider's NIC meter.",
+        "example": 1000,
+        "minimum": 0,
+        "type": "number"
+      },
+      "monthlyCost": {
+        "example": 5,
+        "minimum": 0,
+        "type": "number"
+      },
       "name": {
         "example": "de-fra-1",
         "type": "string"
@@ -4379,6 +4427,17 @@ export const SCHEMAS: Record<string, unknown> = {
       "parentGuid": {
         "description": "ParentGuid + Transitive are set only when a node is surfaced as part of a\nnode tree (#4983): direct nodes carry the master panel's own GUID, a\ntransitive sub-node carries its parent node's GUID. Transitive nodes are\nread-only projections (Id == 0, not persisted) — never edited or deployed.",
         "type": "string"
+      },
+      "periodBytes": {
+        "example": 1073741824,
+        "format": "int64",
+        "type": "integer"
+      },
+      "periodStart": {
+        "description": "Observed cap state for the current billing period; never user-edited.\nCapLastTotal is the inbound-counter sum at the previous tick, so a counter\nreset cannot be mistaken for traffic.",
+        "example": 1772323200,
+        "format": "int64",
+        "type": "integer"
       },
       "pinnedCertSha256": {
         "type": "string"
@@ -4444,9 +4503,13 @@ export const SCHEMAS: Record<string, unknown> = {
       "address",
       "allowPrivateAddress",
       "basePath",
+      "billingDay",
+      "capAction",
+      "capState",
       "clientCount",
       "configDirty",
       "configDirtyAt",
+      "costCurrency",
       "cpuPct",
       "createdAt",
       "depletedCount",
@@ -4461,12 +4524,16 @@ export const SCHEMAS: Record<string, unknown> = {
       "lastHeartbeat",
       "latencyMs",
       "memPct",
+      "monthlyCapGB",
+      "monthlyCost",
       "name",
       "netDown",
       "netUp",
       "onlineCount",
       "outboundTag",
       "panelVersion",
+      "periodBytes",
+      "periodStart",
       "pinnedCertSha256",
       "port",
       "remark",
@@ -4497,8 +4564,23 @@ export const SCHEMAS: Record<string, unknown> = {
       "basePath": {
         "type": "string"
       },
+      "billingDay": {
+        "maximum": 28,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "capAction": {
+        "enum": [
+          "alert",
+          "disable"
+        ],
+        "type": "string"
+      },
       "clearApiToken": {
         "type": "boolean"
+      },
+      "costCurrency": {
+        "type": "string"
       },
       "enable": {
         "type": "boolean"
@@ -4518,6 +4600,14 @@ export const SCHEMAS: Record<string, unknown> = {
           "type": "string"
         },
         "type": "array"
+      },
+      "monthlyCapGB": {
+        "minimum": 0,
+        "type": "number"
+      },
+      "monthlyCost": {
+        "minimum": 0,
+        "type": "number"
       },
       "name": {
         "type": "string"
@@ -4557,10 +4647,15 @@ export const SCHEMAS: Record<string, unknown> = {
       "address",
       "allowPrivateAddress",
       "basePath",
+      "billingDay",
+      "capAction",
+      "costCurrency",
       "enable",
       "id",
       "inboundSyncMode",
       "inboundTags",
+      "monthlyCapGB",
+      "monthlyCost",
       "name",
       "outboundTag",
       "pinnedCertSha256",
@@ -4568,6 +4663,65 @@ export const SCHEMAS: Record<string, unknown> = {
       "remark",
       "scheme",
       "tlsVerifyMode"
+    ],
+    "type": "object"
+  },
+  "NodeSpeedResult": {
+    "description": "NodeSpeedResult is one on-demand measurement of the master-to-node path.",
+    "properties": {
+      "downloadMbps": {
+        "example": 412.5,
+        "type": "number"
+      },
+      "jitterMs": {
+        "description": "JitterMs is the mean absolute difference between consecutive pings.",
+        "example": 3.1,
+        "type": "number"
+      },
+      "latencyAvgMs": {
+        "example": 41.7,
+        "type": "number"
+      },
+      "latencyMaxMs": {
+        "example": 47.1,
+        "type": "number"
+      },
+      "latencyMinMs": {
+        "example": 38.2,
+        "type": "number"
+      },
+      "lost": {
+        "example": 0,
+        "type": "integer"
+      },
+      "nodeId": {
+        "example": 1,
+        "type": "integer"
+      },
+      "samples": {
+        "description": "Samples is how many latency pings answered; Lost how many did not.",
+        "example": 5,
+        "type": "integer"
+      },
+      "throughputError": {
+        "description": "ThroughputError is set when the latency part worked but the transfer did not,\ntypically a node older than the speedtest routes.",
+        "type": "string"
+      },
+      "uploadMbps": {
+        "example": 188.9,
+        "type": "number"
+      }
+    },
+    "required": [
+      "downloadMbps",
+      "jitterMs",
+      "latencyAvgMs",
+      "latencyMaxMs",
+      "latencyMinMs",
+      "lost",
+      "nodeId",
+      "samples",
+      "uploadMbps"
     ],
     "type": "object"
   },
@@ -4590,6 +4744,17 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": "/",
         "type": "string"
       },
+      "billingDay": {
+        "example": 1,
+        "type": "integer"
+      },
+      "capAction": {
+        "example": "alert",
+        "type": "string"
+      },
+      "capState": {
+        "type": "string"
+      },
       "clientCount": {
         "example": 25,
         "type": "integer"
@@ -4602,6 +4767,10 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": 0,
         "format": "int64",
         "type": "integer"
+      },
+      "costCurrency": {
+        "example": "USD",
+        "type": "string"
       },
       "cpuPct": {
         "example": 12.5,
@@ -4669,6 +4838,14 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": 45.2,
         "type": "number"
       },
+      "monthlyCapGB": {
+        "example": 1000,
+        "type": "number"
+      },
+      "monthlyCost": {
+        "example": 5,
+        "type": "number"
+      },
       "name": {
         "example": "edge-1",
         "type": "string"
@@ -4697,6 +4874,16 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "parentGuid": {
         "type": "string"
+      },
+      "periodBytes": {
+        "example": 1073741824,
+        "format": "int64",
+        "type": "integer"
+      },
+      "periodStart": {
+        "example": 1772323200,
+        "format": "int64",
+        "type": "integer"
       },
       "pinnedCertSha256": {
         "type": "string"
@@ -4752,9 +4939,13 @@ export const SCHEMAS: Record<string, unknown> = {
       "address",
       "allowPrivateAddress",
       "basePath",
+      "billingDay",
+      "capAction",
+      "capState",
       "clientCount",
       "configDirty",
       "configDirtyAt",
+      "costCurrency",
       "cpuPct",
       "createdAt",
       "depletedCount",
@@ -4770,12 +4961,16 @@ export const SCHEMAS: Record<string, unknown> = {
       "lastHeartbeat",
       "latencyMs",
       "memPct",
+      "monthlyCapGB",
+      "monthlyCost",
       "name",
       "netDown",
       "netUp",
       "onlineCount",
       "outboundTag",
       "panelVersion",
+      "periodBytes",
+      "periodStart",
       "pinnedCertSha256",
       "port",
       "remark",

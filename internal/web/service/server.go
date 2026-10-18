@@ -1563,6 +1563,10 @@ func (s *ServerService) GetDb() ([]byte, error) {
 	if database.IsPostgres() {
 		return s.exportPostgresDB()
 	}
+	if database.IsMySQL() {
+		// A SQLite snapshot needs no mysqldump on the host and restores anywhere.
+		return exportServerDBAsSQLite()
+	}
 	backupPath, cleanup, err := s.backupSQLite()
 	if err != nil {
 		return nil, err
@@ -1597,7 +1601,7 @@ func (s *ServerService) backupSQLite() (string, func(), error) {
 // is .dump on PostgreSQL and .db on SQLite; the base falls back to "x-ui" when
 // no address is known.
 func (s *ServerService) BackupFilename(requestHost string) string {
-	ext := ".db"
+	ext := ".db" // MySQL backs up as a SQLite snapshot too
 	if database.IsPostgres() {
 		ext = ".dump"
 	}
@@ -1663,20 +1667,26 @@ func sanitizeBackupHost(host string) string {
 // SQLite panel it returns a portable .dump (SQL text), and on a PostgreSQL panel
 // it returns a .db SQLite database built from the live data. Either output can
 // then seed a panel running on the other backend.
-func (s *ServerService) GetMigration() ([]byte, string, error) {
-	if database.IsPostgres() {
-		tmp, err := os.CreateTemp("", "x-ui-migration-*.db")
-		if err != nil {
-			return nil, "", err
-		}
-		tmpPath := tmp.Name()
-		tmp.Close()
-		defer os.Remove(tmpPath)
+// exportServerDBAsSQLite copies the live PostgreSQL/MySQL data into a
+// temporary SQLite file and returns its bytes.
+func exportServerDBAsSQLite() ([]byte, error) {
+	tmp, err := os.CreateTemp("", "x-ui-migration-*.db")
+	if err != nil {
+		return nil, err
+	}
+	tmpPath := tmp.Name()
+	tmp.Close()
+	defer os.Remove(tmpPath)
 
-		if err := database.ExportPostgresToSQLite(config.GetDBDSN(), tmpPath); err != nil {
-			return nil, "", err
-		}
-		data, err := os.ReadFile(tmpPath)
+	if err := database.ExportServerDBToSQLite(config.GetDBKind(), config.GetDBDSN(), tmpPath); err != nil {
+		return nil, err
+	}
+	return os.ReadFile(tmpPath)
+}
+
+func (s *ServerService) GetMigration() ([]byte, string, error) {
+	if !database.IsSQLite() {
+		data, err := exportServerDBAsSQLite()
 		if err != nil {
 			return nil, "", err
 		}
@@ -1724,7 +1734,7 @@ func captureHostBoundSettings() hostBoundSnapshot {
 		return hostBoundSnapshot{}
 	}
 	var rows []model.Setting
-	if err := db.Model(&model.Setting{}).Where("key IN ?", hostBoundSettingKeys).Find(&rows).Error; err != nil {
+	if err := db.Model(&model.Setting{}).Where(`"key" IN ?`, hostBoundSettingKeys).Find(&rows).Error; err != nil {
 		logger.Warningf("Import: could not read this machine's settings, they will come from the uploaded file: %v", err)
 		return hostBoundSnapshot{}
 	}
@@ -1756,7 +1766,7 @@ func restoreHostBoundSettings(snap hostBoundSnapshot) {
 			if lazilyMintedSettingKeys[key] {
 				continue
 			}
-			if err := db.Where("key = ?", key).Delete(&model.Setting{}).Error; err != nil {
+			if err := db.Where(`"key" = ?`, key).Delete(&model.Setting{}).Error; err != nil {
 				logger.Warningf("Import: could not drop imported setting %q: %v", key, err)
 			}
 			continue
@@ -1782,6 +1792,9 @@ var lazilyMintedSettingKeys = map[string]bool{
 func (s *ServerService) ImportDB(file multipart.File, keepHostSettings bool) error {
 	if database.IsPostgres() {
 		return s.importPostgresDB(file, keepHostSettings)
+	}
+	if database.IsMySQL() {
+		return s.importMySQLDB(file, keepHostSettings)
 	}
 	kind, err := sniffUploadKind(file)
 	if err != nil {
@@ -2058,11 +2071,30 @@ func (s *ServerService) importPostgresDB(file multipart.File, keepHostSettings b
 	case importKindPgDump:
 		return s.restorePostgresDump(file, keepHostSettings)
 	case importKindSQLiteDB:
-		return s.migrateSQLiteIntoPostgres(file, false)
+		return s.migrateSQLiteIntoServerDB(file, false, keepHostSettings)
 	case importKindSQLiteDump:
-		return s.migrateSQLiteIntoPostgres(file, true)
+		return s.migrateSQLiteIntoServerDB(file, true, keepHostSettings)
 	default:
 		return common.NewError("Invalid file: expected a PostgreSQL custom-format dump (.dump) from this panel's Back Up, a SQLite database (.db), or a SQLite migration dump")
+	}
+}
+
+// importMySQLDB restores a MySQL panel from the SQLite .db its Back Up writes,
+// or from a SQLite panel's .db or migration .dump.
+func (s *ServerService) importMySQLDB(file multipart.File, keepHostSettings bool) error {
+	kind, err := sniffUploadKind(file)
+	if err != nil {
+		return common.NewErrorf("Error reading uploaded file: %v", err)
+	}
+	switch kind {
+	case importKindSQLiteDB:
+		return s.migrateSQLiteIntoServerDB(file, false, keepHostSettings)
+	case importKindSQLiteDump:
+		return s.migrateSQLiteIntoServerDB(file, true, keepHostSettings)
+	case importKindPgDump:
+		return common.NewError("This file is a PostgreSQL backup; it can only be restored on a panel running PostgreSQL")
+	default:
+		return common.NewError("Invalid file: expected a SQLite database (.db) from Back Up or a SQLite migration dump (.dump)")
 	}
 }
 
@@ -2142,7 +2174,7 @@ func (s *ServerService) restorePostgresDump(file multipart.File, keepHostSetting
 	return nil
 }
 
-func (s *ServerService) migrateSQLiteIntoPostgres(file multipart.File, isSQLDump bool) error {
+func (s *ServerService) migrateSQLiteIntoServerDB(file multipart.File, isSQLDump, keepHostSettings bool) error {
 	tempDir, err := os.MkdirTemp("", "x-ui-pg-migrate-*")
 	if err != nil {
 		return common.NewErrorf("Error creating temporary folder: %v", err)
@@ -2183,19 +2215,27 @@ func (s *ServerService) migrateSQLiteIntoPostgres(file multipart.File, isSQLDump
 		logger.Warningf("Failed to stop Xray before DB restore: %v", errStop)
 	}
 
+	var keptSettings hostBoundSnapshot
+	if keepHostSettings {
+		keptSettings = captureHostBoundSettings()
+	}
+
 	if errClose := database.CloseDB(); errClose != nil {
 		logger.Warningf("Failed to close existing DB before restore: %v", errClose)
 	}
 
-	migrateErr := database.MigrateData(dbPath, config.GetDBDSN())
+	migrateErr := database.MigrateDataTo(dbPath, config.GetDBKind(), config.GetDBDSN())
 
 	if errInit := database.InitDB(config.GetDBPath()); errInit != nil {
 		return common.NewErrorf("Restore finished but reopening the database failed: %v", errInit)
 	}
+	if migrateErr == nil {
+		restoreHostBoundSettings(keptSettings)
+	}
 	s.inboundService.MigrateDB()
 
 	if migrateErr != nil {
-		return common.NewErrorf("Importing the SQLite data into PostgreSQL failed: %v; the import runs in a single transaction, so the database was left unchanged", migrateErr)
+		return common.NewErrorf("Importing the SQLite data into %s failed: %v; the import runs in a single transaction, so the database was left unchanged", config.GetDBKind(), migrateErr)
 	}
 
 	xrayStopped = false

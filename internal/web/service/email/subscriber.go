@@ -140,6 +140,17 @@ func (s *Subscriber) formatMessage(e eventbus.Event) (subject, body string) {
 		}
 		body = wrap(i18n("tgbot.messages.eventNodeUp", "Name=="+e.Source), content)
 
+	case eventbus.EventNodeCapReached:
+		subject = host + " " + i18n("tgbot.messages.eventNodeCapReached", "Name=="+e.Source)
+		content := kv(i18n("email.labelNode"), e.Source)
+		if data, ok := e.Data.(*eventbus.NodeCapData); ok {
+			content += kv(i18n("email.labelUsage"), common.FormatTraffic(data.UsedBytes)+" / "+common.FormatTraffic(data.CapBytes))
+			if data.Stopped {
+				content += kv(i18n("email.labelStatus"), i18n("tgbot.messages.eventNodeCapStopped"))
+			}
+		}
+		body = wrap(i18n("tgbot.messages.eventNodeCapReached", "Name=="+e.Source), content)
+
 	case eventbus.EventCPUHigh:
 		if data, ok := e.Data.(*eventbus.SystemMetricData); ok {
 			smtpCpu, err := s.settingService.GetSmtpCpu()

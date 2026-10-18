@@ -112,6 +112,7 @@ func run(root, outDir string) error {
 				"NodeMutationRequest",
 				"NodeView",
 				"ProbeResultUI",
+				"NodeSpeedResult",
 				"RealityScanResult",
 				"GeodataTokenIssue",
 				"AmneziaWGLogs",

@@ -26,6 +26,7 @@ export default function BackupModal({
 }: BackupModalProps) {
   const { t } = useTranslation();
   const isPostgres = window.X_UI_DB_TYPE === 'postgres';
+  const isMySQL = window.X_UI_DB_TYPE === 'mysql';
   const [keepHostSettings, setKeepHostSettings] = useState(true);
 
   function exportDb() {
@@ -72,6 +73,11 @@ export default function BackupModal({
       {isPostgres && (
         <div className="backup-description" style={{ marginBottom: 16 }}>
           {t('pages.index.backupPostgresNote')}
+        </div>
+      )}
+      {isMySQL && (
+        <div className="backup-description" style={{ marginBottom: 16 }}>
+          {t('pages.index.backupMysqlNote')}
         </div>
       )}
       <div className="backup-list">

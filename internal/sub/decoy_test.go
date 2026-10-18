@@ -13,7 +13,7 @@ import (
 func setSubSettings(t *testing.T, kv map[string]string) {
 	t.Helper()
 	for k, v := range kv {
-		if err := database.GetDB().Where("key = ?", k).Delete(&model.Setting{}).Error; err != nil {
+		if err := database.GetDB().Where(`"key" = ?`, k).Delete(&model.Setting{}).Error; err != nil {
 			t.Fatal(err)
 		}
 		if err := database.GetDB().Create(&model.Setting{Key: k, Value: v}).Error; err != nil {

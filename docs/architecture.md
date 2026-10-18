@@ -382,6 +382,7 @@ All registered in `web.go` → `startTask()`. Each is a struct with a `Run()` me
 | `@every 5s`         | `xray_traffic_job`                                                                               | Pull traffic stats from Xray (5s start delay)                                         |
 | `@every 5s`         | `node_heartbeat_job`                                                                             | Probe child nodes (online/offline)                                                    |
 | `@every 5s`         | `node_traffic_sync_job`                                                                          | Pull + merge node traffic; push reconciliation                                        |
+| `@every 1m`         | `node_cap_job`                                                                                   | Meter each node's monthly traffic; alert or stop its inbounds at the cap              |
 | `@every 10s`        | `check_client_ip_job`                                                                            | Enforce per-client IP limits                                                          |
 | `@every 10s`        | `mtproto_job`                                                                                    | Reconcile `mtg` sidecars against enabled MTProto inbounds                             |
 | `@every 10s`        | `openvpn_job`                                                                                    | Reconcile `openvpn` servers against enabled OpenVPN inbounds; meter per-user traffic   |
@@ -613,9 +614,13 @@ them with a comment starting `@claude review` on a PR or `@claude analyze` on an
 ## 10. Gotchas & conventions
 
 - **Module path is `.../v3`.** Internal imports use `github.com/mhsanaei/3x-ui/v3/internal/...`.
-- **SQLite vs Postgres.** Default is SQLite at `{XUI_DB_FOLDER}/x-ui.db`. Postgres via
-  `XUI_DB_TYPE=postgres` + `XUI_DB_DSN`. Some SQL paths are dialect-aware (`database/dialect.go`);
-  test both when touching raw queries (there are `*_scale_postgres_test.go` suites).
+- **SQLite vs Postgres vs MySQL.** Default is SQLite at `{XUI_DB_FOLDER}/x-ui.db`. Postgres via
+  `XUI_DB_TYPE=postgres` + `XUI_DB_DSN`; MySQL/MariaDB via `XUI_DB_TYPE=mysql` (`database/mysql.go`:
+  utf8mb4_bin tables, `ANSI_QUOTES` + `NO_BACKSLASH_ESCAPES` sessions, indexed strings as VARCHAR(255)).
+  Some SQL paths are dialect-aware (`database/dialect.go`); test all three when touching raw queries
+  (`*_scale_postgres_test.go` suites; `XUI_TEST_MYSQL_DSN` gates the MySQL ones). MySQL evaluates
+  `UPDATE ... SET a = .., b = f(a)` left to right on the *updated* `a`, and rejects a subquery on
+  the UPDATE/DELETE target table (error 1093) — use a self-join there.
 - **`Inbound.Settings` / `StreamSettings` / `Sniffing` are raw JSON strings**, not structured
   columns. Parsing/validation happens in services and the `xray` package, not in GORM.
 - **Hot-reload is the default; full restart is the fallback.** Changes that look config-only

@@ -41,13 +41,26 @@ var backupSQLiteTimeout = 2 * time.Minute
 const (
 	DialectSQLite   = "sqlite"
 	DialectPostgres = "postgres"
+	DialectMySQL    = "mysql"
 )
 
 func IsPostgres() bool {
 	if db == nil {
-		return config.GetDBKind() == "postgres"
+		return config.GetDBKind() == DialectPostgres
 	}
-	return db.Name() == "postgres"
+	return db.Name() == DialectPostgres
+}
+
+// IsMySQL reports a MySQL or MariaDB backend; both share GORM's mysql dialect.
+func IsMySQL() bool {
+	if db == nil {
+		return config.GetDBKind() == DialectMySQL
+	}
+	return db.Name() == DialectMySQL
+}
+
+func IsSQLite() bool {
+	return !IsPostgres() && !IsMySQL()
 }
 
 func Dialect() string {
@@ -135,7 +148,7 @@ func initModels() error {
 	}
 	models := allModels()
 	for _, mdl := range models {
-		if IsPostgres() && postgresModelSettled(mdl) {
+		if !IsSQLite() && serverModelSettled(mdl) {
 			continue
 		}
 		if err := db.AutoMigrate(mdl); err != nil {
@@ -222,7 +235,7 @@ func initModels() error {
 	return nil
 }
 
-func postgresModelSettled(mdl any) bool {
+func serverModelSettled(mdl any) bool {
 	migrator := db.Migrator()
 	if !migrator.HasTable(mdl) {
 		return false
@@ -291,7 +304,7 @@ func sqliteUniquePortIndexes() (autoIndexes, explicitIndexes []string, err error
 // dropLegacyInboundPortUnique removes the pre-multi-node UNIQUE on inbounds.port,
 // which AutoMigrate never drops and which blocks cross-node port reuse on old SQLite DBs.
 func dropLegacyInboundPortUnique() error {
-	if IsPostgres() {
+	if !IsSQLite() {
 		return nil
 	}
 	autoIndexes, explicitIndexes, err := sqliteUniquePortIndexes()
@@ -412,6 +425,12 @@ func migrateClientEmailLowerIndex() error {
 	if db.Migrator().HasIndex(&model.ClientRecord{}, "idx_clients_email_lower") {
 		return nil
 	}
+	if IsMySQL() {
+		if isMariaDB() {
+			return nil // MariaDB has no functional indexes; the lookups scan.
+		}
+		return db.Exec("CREATE INDEX idx_clients_email_lower ON clients ((LOWER(email)))").Error
+	}
 	return db.Exec("CREATE INDEX IF NOT EXISTS idx_clients_email_lower ON clients (LOWER(email))").Error
 }
 
@@ -434,6 +453,10 @@ func migrateHostVerifyPeerCertByNameColumn() error {
 			return err
 		}
 		return db.Exec(`ALTER TABLE hosts ALTER COLUMN verify_peer_cert_by_name TYPE text USING ''`).Error
+	}
+	if IsMySQL() {
+		// MySQL support postdates the boolean era, so only NULLs can need a blank.
+		return db.Exec(`UPDATE hosts SET verify_peer_cert_by_name = '' WHERE verify_peer_cert_by_name IS NULL`).Error
 	}
 
 	return db.Exec(`UPDATE hosts SET verify_peer_cert_by_name = '' WHERE verify_peer_cert_by_name IS NULL OR typeof(verify_peer_cert_by_name) <> 'text'`).Error
@@ -1218,7 +1241,7 @@ func repairOverflowedTrafficCounters() error {
 				fmt.Sprintf("UPDATE %s SET %s = %d WHERE %s > %d", target.table, col, TrafficMax, col, TrafficMax),
 				fmt.Sprintf("UPDATE %s SET %s = 0 WHERE %s < 0", target.table, col, col),
 			}
-			if !IsPostgres() {
+			if IsSQLite() {
 				statements = append([]string{
 					fmt.Sprintf("UPDATE %s SET %s = CAST(%s AS INTEGER) WHERE typeof(%s) = 'real'", target.table, col, col, col),
 				}, statements...)
@@ -1354,7 +1377,7 @@ func seedRandomSubscriptionPaths() error {
 	}
 	return db.Transaction(func(tx *gorm.DB) error {
 		for i := range settings {
-			if err := tx.Where("key = ?", settings[i].Key).FirstOrCreate(&settings[i]).Error; err != nil {
+			if err := tx.Where(`"key" = ?`, settings[i].Key).FirstOrCreate(&settings[i]).Error; err != nil {
 				return err
 			}
 		}
@@ -1711,7 +1734,7 @@ func fail2banEnforcementState() (fail2banState, error) {
 
 func clearLegacyProxySettings() error {
 	return db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where("key IN ?", []string{"panelProxy", "tgBotProxy"}).
+		if err := tx.Where(`"key" IN ?`, []string{"panelProxy", "tgBotProxy"}).
 			Delete(&model.Setting{}).Error; err != nil {
 			return err
 		}
@@ -1721,7 +1744,7 @@ func clearLegacyProxySettings() error {
 
 func migrateOutboundRemovedKeys() error {
 	var setting model.Setting
-	err := db.Model(model.Setting{}).Where("key = ?", "xrayTemplateConfig").First(&setting).Error
+	err := db.Model(model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").First(&setting).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return db.Create(&model.HistoryOfSeeders{SeederName: "OutboundRemovedKeysFix"}).Error
 	}
@@ -1737,7 +1760,7 @@ func migrateOutboundRemovedKeys() error {
 
 	return db.Transaction(func(tx *gorm.DB) error {
 		if changed {
-			if err := tx.Model(&model.Setting{}).Where("key = ?", "xrayTemplateConfig").
+			if err := tx.Model(&model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").
 				Update("value", updated).Error; err != nil {
 				return err
 			}
@@ -1818,7 +1841,7 @@ func outboundSockopt(obj map[string]any, create bool) map[string]any {
 
 func migrateFreedomDomainStrategy() error {
 	var setting model.Setting
-	err := db.Model(model.Setting{}).Where("key = ?", "xrayTemplateConfig").First(&setting).Error
+	err := db.Model(model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").First(&setting).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return db.Create(&model.HistoryOfSeeders{SeederName: "FreedomDomainStrategyFix"}).Error
 	}
@@ -1834,7 +1857,7 @@ func migrateFreedomDomainStrategy() error {
 
 	return db.Transaction(func(tx *gorm.DB) error {
 		if changed {
-			if err := tx.Model(&model.Setting{}).Where("key = ?", "xrayTemplateConfig").
+			if err := tx.Model(&model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").
 				Update("value", updated).Error; err != nil {
 				return err
 			}
@@ -1931,7 +1954,7 @@ var freedomDomainStrategies = map[string]bool{
 
 func migrateWireguardDomainStrategy() error {
 	var setting model.Setting
-	err := db.Model(model.Setting{}).Where("key = ?", "xrayTemplateConfig").First(&setting).Error
+	err := db.Model(model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").First(&setting).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return db.Create(&model.HistoryOfSeeders{SeederName: "WireguardDomainStrategyFix"}).Error
 	}
@@ -1947,7 +1970,7 @@ func migrateWireguardDomainStrategy() error {
 
 	return db.Transaction(func(tx *gorm.DB) error {
 		if changed {
-			if err := tx.Model(&model.Setting{}).Where("key = ?", "xrayTemplateConfig").
+			if err := tx.Model(&model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").
 				Update("value", updated).Error; err != nil {
 				return err
 			}
@@ -2077,7 +2100,7 @@ func migrateXdnsFinalmaskShape() error {
 			{"subJsonFinalMask", wholeFinalmask, false},
 		} {
 			var setting model.Setting
-			err := tx.Where("key = ?", stored.key).First(&setting).Error
+			err := tx.Where(`"key" = ?`, stored.key).First(&setting).Error
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				continue
 			}
@@ -2085,7 +2108,7 @@ func migrateXdnsFinalmaskShape() error {
 				return err
 			}
 			if updated, changed := upgradeFinalmasksJSON(setting.Value, stored.locate, stored.indent, maskcompat.UpgradeLegacyXdns); changed {
-				if err := tx.Model(&model.Setting{}).Where("key = ?", stored.key).
+				if err := tx.Model(&model.Setting{}).Where(`"key" = ?`, stored.key).
 					Update("value", updated).Error; err != nil {
 					return err
 				}
@@ -2132,7 +2155,7 @@ func migrateUDPHopClientMasks() error {
 			{"subJsonFinalMask", wholeFinalmask, false},
 		} {
 			var setting model.Setting
-			err := tx.Where("key = ?", stored.key).First(&setting).Error
+			err := tx.Where(`"key" = ?`, stored.key).First(&setting).Error
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				continue
 			}
@@ -2140,7 +2163,7 @@ func migrateUDPHopClientMasks() error {
 				return err
 			}
 			if updated, changed := upgradeFinalmasksJSON(setting.Value, stored.locate, stored.indent, maskcompat.UpgradeLegacyUDPHop); changed {
-				if err := tx.Model(&model.Setting{}).Where("key = ?", stored.key).
+				if err := tx.Model(&model.Setting{}).Where(`"key" = ?`, stored.key).
 					Update("value", updated).Error; err != nil {
 					return err
 				}
@@ -2213,7 +2236,7 @@ func templateFinalmasks(doc any) []any {
 // core logs nonIPQuery/blockTypes as deprecated on every config load.
 func migrateDNSOutboundLegacyKeys() error {
 	var setting model.Setting
-	err := db.Model(model.Setting{}).Where("key = ?", "xrayTemplateConfig").First(&setting).Error
+	err := db.Model(model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").First(&setting).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return db.Create(&model.HistoryOfSeeders{SeederName: "DNSOutboundLegacyKeysFix"}).Error
 	}
@@ -2229,7 +2252,7 @@ func migrateDNSOutboundLegacyKeys() error {
 
 	return db.Transaction(func(tx *gorm.DB) error {
 		if changed {
-			if err := tx.Model(&model.Setting{}).Where("key = ?", "xrayTemplateConfig").
+			if err := tx.Model(&model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").
 				Update("value", updated).Error; err != nil {
 				return err
 			}
@@ -2363,7 +2386,7 @@ func dnsQTypeValue(blockTypes []int) any {
 // seeder stored, which that seeder's own history row keeps it from revisiting.
 func migrateDNSOutboundQTypeZero() error {
 	var setting model.Setting
-	err := db.Model(model.Setting{}).Where("key = ?", "xrayTemplateConfig").First(&setting).Error
+	err := db.Model(model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").First(&setting).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return db.Create(&model.HistoryOfSeeders{SeederName: "DNSOutboundQTypeZeroFix"}).Error
 	}
@@ -2379,7 +2402,7 @@ func migrateDNSOutboundQTypeZero() error {
 
 	return db.Transaction(func(tx *gorm.DB) error {
 		if changed {
-			if err := tx.Model(&model.Setting{}).Where("key = ?", "xrayTemplateConfig").
+			if err := tx.Model(&model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").
 				Update("value", updated).Error; err != nil {
 				return err
 			}
@@ -2428,7 +2451,7 @@ func RewriteDNSOutboundQTypeZero(raw string) (string, bool, error) {
 func normalizeSettingPaths() error {
 	pathKeys := []string{"webBasePath", "subPath", "subJsonPath", "subClashPath"}
 	var rows []model.Setting
-	if err := db.Where("key IN ?", pathKeys).Find(&rows).Error; err != nil {
+	if err := db.Where(`"key" IN ?`, pathKeys).Find(&rows).Error; err != nil {
 		return err
 	}
 	for _, row := range rows {
@@ -2600,7 +2623,7 @@ func normalizeInboundClientsArray() error {
 
 func normalizeFreedomFinalRules() error {
 	var setting model.Setting
-	err := db.Model(model.Setting{}).Where("key = ?", "xrayTemplateConfig").First(&setting).Error
+	err := db.Model(model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").First(&setting).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return db.Create(&model.HistoryOfSeeders{SeederName: "FreedomFinalRulesReverseFix"}).Error
 	}
@@ -2616,7 +2639,7 @@ func normalizeFreedomFinalRules() error {
 
 	return db.Transaction(func(tx *gorm.DB) error {
 		if changed {
-			if err := tx.Model(&model.Setting{}).Where("key = ?", "xrayTemplateConfig").
+			if err := tx.Model(&model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").
 				Update("value", updated).Error; err != nil {
 				return err
 			}
@@ -2703,7 +2726,7 @@ func isUnrestrictedFreedomFinalRules(v any, present bool) bool {
 
 func hardenFreedomFinalRules() error {
 	var setting model.Setting
-	err := db.Model(model.Setting{}).Where("key = ?", "xrayTemplateConfig").First(&setting).Error
+	err := db.Model(model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").First(&setting).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return db.Create(&model.HistoryOfSeeders{SeederName: "FreedomFinalRulesPrivateEgressBlock"}).Error
 	}
@@ -2719,7 +2742,7 @@ func hardenFreedomFinalRules() error {
 
 	return db.Transaction(func(tx *gorm.DB) error {
 		if changed {
-			if err := tx.Model(&model.Setting{}).Where("key = ?", "xrayTemplateConfig").
+			if err := tx.Model(&model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").
 				Update("value", updated).Error; err != nil {
 				return err
 			}
@@ -2777,7 +2800,7 @@ func rewriteFreedomFinalRulesPrivateEgress(raw string) (string, bool, error) {
 
 func fixUppercaseFreedomFinalRules() error {
 	var setting model.Setting
-	err := db.Model(model.Setting{}).Where("key = ?", "xrayTemplateConfig").First(&setting).Error
+	err := db.Model(model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").First(&setting).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return db.Create(&model.HistoryOfSeeders{SeederName: "UppercaseFreedomFinalRulesFix"}).Error
 	}
@@ -2793,7 +2816,7 @@ func fixUppercaseFreedomFinalRules() error {
 
 	return db.Transaction(func(tx *gorm.DB) error {
 		if changed {
-			if err := tx.Model(&model.Setting{}).Where("key = ?", "xrayTemplateConfig").
+			if err := tx.Model(&model.Setting{}).Where(`"key" = ?`, "xrayTemplateConfig").
 				Update("value", updated).Error; err != nil {
 				return err
 			}
@@ -3010,7 +3033,7 @@ func seedApiTokens() error {
 	}
 	if empty {
 		var legacy model.Setting
-		err := db.Model(model.Setting{}).Where("key = ?", "apiToken").First(&legacy).Error
+		err := db.Model(model.Setting{}).Where(`"key" = ?`, "apiToken").First(&legacy).Error
 		if err == nil && legacy.Value != "" {
 			row := &model.ApiToken{
 				Name:    "default",
@@ -3079,10 +3102,20 @@ func InitDB(dbPath string) error {
 		if dsn == "" {
 			return errors.New("XUI_DB_TYPE=postgres but XUI_DB_DSN is empty")
 		}
-		db, err = openPostgresWithRetry(dsn, c)
+		db, err = openServerDBWithRetry("postgres", postgres.Open(dsn), c)
 		if err != nil {
 			return err
 		}
+	case DialectMySQL:
+		cfg, cfgErr := ParseMySQLDSN(config.GetDBDSN())
+		if cfgErr != nil {
+			return fmt.Errorf("XUI_DB_TYPE=mysql: %w", cfgErr)
+		}
+		db, err = openServerDBWithRetry("mysql", newMySQLDialector(cfg), c)
+		if err != nil {
+			return err
+		}
+		db = db.Set("gorm:table_options", mysqlTableOptions).Session(&gorm.Session{})
 	default:
 		dir := path.Dir(dbPath)
 		if err = os.MkdirAll(dir, 0o700); err != nil {
@@ -3128,7 +3161,7 @@ func InitDB(dbPath string) error {
 	}
 	var maxOpen, maxIdle int
 	switch config.GetDBKind() {
-	case "postgres":
+	case DialectPostgres, DialectMySQL:
 		maxOpen = envInt("XUI_DB_MAX_OPEN_CONNS", 25)
 		maxIdle = envInt("XUI_DB_MAX_IDLE_CONNS", 25)
 	default:
@@ -3182,29 +3215,26 @@ func migrateApiTokenScopeAndExpiry() error {
 		Updates(map[string]any{"scope": model.ApiScopeAdmin, "expires_at": 0}).Error
 }
 
-// openPostgresWithRetry retries the initial PostgreSQL connection with
-// backoff so a database that starts slower than the panel (or drops out
-// briefly) does not immediately kill the process and trip systemd's
-// restart loop. Every failed attempt logs the real driver error, which
-// used to be buried behind a generic startup failure.
-func openPostgresWithRetry(dsn string, c *gorm.Config) (*gorm.DB, error) {
+// openServerDBWithRetry retries the first PostgreSQL/MySQL connection with
+// backoff so a database starting slower than the panel does not trip systemd.
+func openServerDBWithRetry(name string, dialector gorm.Dialector, c *gorm.Config) (*gorm.DB, error) {
 	delays := []time.Duration{0, 2 * time.Second, 5 * time.Second, 10 * time.Second, 20 * time.Second, 30 * time.Second}
 	var lastErr error
 	for i, delay := range delays {
 		if delay > 0 {
 			time.Sleep(delay)
 		}
-		conn, err := gorm.Open(postgres.Open(dsn), c)
+		conn, err := gorm.Open(dialector, c)
 		if err == nil {
 			if i > 0 {
-				log.Printf("postgres connection established on attempt %d/%d", i+1, len(delays))
+				log.Printf("%s connection established on attempt %d/%d", name, i+1, len(delays))
 			}
 			return conn, nil
 		}
 		lastErr = err
-		log.Printf("postgres connection attempt %d/%d failed: %v", i+1, len(delays), err)
+		log.Printf("%s connection attempt %d/%d failed: %v", name, i+1, len(delays), err)
 	}
-	return nil, fmt.Errorf("postgres unreachable after %d attempts: %w", len(delays), lastErr)
+	return nil, fmt.Errorf("%s unreachable after %d attempts: %w", name, len(delays), lastErr)
 }
 
 // The store holds client secrets, so it and its WAL/SHM side files stay
@@ -3307,8 +3337,8 @@ func IsSQLiteDB(file io.ReaderAt) (bool, error) {
 }
 
 func BackupSQLite(dstPath string) (err error) {
-	if IsPostgres() {
-		return errors.New("sqlite backup is unavailable for PostgreSQL")
+	if !IsSQLite() {
+		return errors.New("sqlite backup is unavailable for " + Dialect())
 	}
 	if db == nil {
 		return errors.New("database is not initialized")

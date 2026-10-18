@@ -585,7 +585,7 @@ func (r *remoteRoutingResolver) loadPersisted() {
 	loaded := make(map[remoteRoutingKey]remoteRoutingCacheEntry, 2)
 	for _, kind := range []remoteRoutingKind{remoteRoutingHapp, remoteRoutingJson, remoteRoutingClash} {
 		var setting model.Setting
-		err := database.GetDB().Where("key = ?", remoteRoutingSettingKey(kind)).First(&setting).Error
+		err := database.GetDB().Where(`"key" = ?`, remoteRoutingSettingKey(kind)).First(&setting).Error
 		if err != nil {
 			continue
 		}
@@ -628,7 +628,7 @@ func (r *remoteRoutingResolver) persistEntry(kind remoteRoutingKind, entry remot
 	}
 	key := remoteRoutingSettingKey(kind)
 	var setting model.Setting
-	err = db.Where("key = ?", key).First(&setting).Error
+	err = db.Where(`"key" = ?`, key).First(&setting).Error
 	if database.IsNotFound(err) {
 		err = db.Create(&model.Setting{Key: key, Value: string(encoded)}).Error
 	} else if err == nil {

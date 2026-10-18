@@ -153,7 +153,7 @@ func clientSearchCond(variants []string) (string, []any) {
 			args = append(args, like(v))
 		}
 	}
-	parts = append(parts, "(COALESCE(c.tg_id, 0) <> 0 AND CAST(c.tg_id AS TEXT) LIKE ? ESCAPE '\\')")
+	parts = append(parts, "(COALESCE(c.tg_id, 0) <> 0 AND "+database.CastTextExpr("c.tg_id")+" LIKE ? ESCAPE '\\')")
 	args = append(args, like(variants[0]))
 	return "(" + strings.Join(parts, " OR ") + ")", args
 }

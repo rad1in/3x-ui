@@ -36,7 +36,7 @@ func TestPostgresModelSettled_TracksSchemaPresence(t *testing.T) {
 	t.Cleanup(func() { _ = CloseDB() })
 
 	for _, mdl := range []any{&model.ClientRecord{}, &model.ClientGroup{}, &model.ClientInbound{}} {
-		if !postgresModelSettled(mdl) {
+		if !serverModelSettled(mdl) {
 			t.Errorf("%T not settled right after InitDB", mdl)
 		}
 	}
@@ -44,14 +44,14 @@ func TestPostgresModelSettled_TracksSchemaPresence(t *testing.T) {
 	if err := db.Migrator().DropColumn(&model.ClientGroup{}, "reset_up"); err != nil {
 		t.Fatalf("drop column: %v", err)
 	}
-	if postgresModelSettled(&model.ClientGroup{}) {
+	if serverModelSettled(&model.ClientGroup{}) {
 		t.Error("ClientGroup settled despite missing reset_up column")
 	}
 
 	if err := db.Migrator().DropTable(&model.ClientGroup{}); err != nil {
 		t.Fatalf("drop table: %v", err)
 	}
-	if postgresModelSettled(&model.ClientGroup{}) {
+	if serverModelSettled(&model.ClientGroup{}) {
 		t.Error("ClientGroup settled despite missing table")
 	}
 }

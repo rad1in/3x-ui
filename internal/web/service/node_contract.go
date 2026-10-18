@@ -25,6 +25,14 @@ type NodeView struct {
 	InboundSyncMode     string   `json:"inboundSyncMode" example:"all"`
 	InboundTags         []string `json:"inboundTags" example:"[\"in-443-tcp\"]"`
 	OutboundTag         string   `json:"outboundTag" example:"direct"`
+	MonthlyCapGB        float64  `json:"monthlyCapGB" example:"1000"`
+	CapAction           string   `json:"capAction" example:"alert"`
+	BillingDay          int      `json:"billingDay" example:"1"`
+	MonthlyCost         float64  `json:"monthlyCost" example:"5"`
+	CostCurrency        string   `json:"costCurrency" example:"USD"`
+	PeriodStart         int64    `json:"periodStart" example:"1772323200"`
+	PeriodBytes         int64    `json:"periodBytes" example:"1073741824"`
+	CapState            string   `json:"capState" example:""`
 	Guid                string   `json:"guid" example:"node-guid"`
 	Status              string   `json:"status" example:"online"`
 	LastHeartbeat       int64    `json:"lastHeartbeat" example:"1700000000"`
@@ -73,6 +81,14 @@ func toNodeView(n *model.Node) *NodeView {
 		InboundSyncMode:     n.InboundSyncMode,
 		InboundTags:         n.InboundTags,
 		OutboundTag:         n.OutboundTag,
+		MonthlyCapGB:        n.MonthlyCapGB,
+		CapAction:           n.CapAction,
+		BillingDay:          n.BillingDay,
+		MonthlyCost:         n.MonthlyCost,
+		CostCurrency:        n.CostCurrency,
+		PeriodStart:         n.PeriodStart,
+		PeriodBytes:         n.PeriodBytes,
+		CapState:            n.CapState,
 		Guid:                n.Guid,
 		Status:              n.Status,
 		LastHeartbeat:       n.LastHeartbeat,
@@ -130,6 +146,11 @@ type NodeMutationRequest struct {
 	InboundSyncMode     string   `json:"inboundSyncMode" form:"inboundSyncMode" validate:"omitempty,oneof=all selected"`
 	InboundTags         []string `json:"inboundTags" form:"inboundTags"`
 	OutboundTag         string   `json:"outboundTag" form:"outboundTag"`
+	MonthlyCapGB        float64  `json:"monthlyCapGB" form:"monthlyCapGB" validate:"gte=0"`
+	CapAction           string   `json:"capAction" form:"capAction" validate:"omitempty,oneof=alert disable"`
+	BillingDay          int      `json:"billingDay" form:"billingDay" validate:"gte=0,lte=28"`
+	MonthlyCost         float64  `json:"monthlyCost" form:"monthlyCost" validate:"gte=0"`
+	CostCurrency        string   `json:"costCurrency" form:"costCurrency"`
 }
 
 func (r *NodeMutationRequest) validateCredentials(create bool) error {
@@ -178,6 +199,11 @@ func (r *NodeMutationRequest) toNode() *model.Node {
 		InboundSyncMode:     r.InboundSyncMode,
 		InboundTags:         r.InboundTags,
 		OutboundTag:         r.OutboundTag,
+		MonthlyCapGB:        r.MonthlyCapGB,
+		CapAction:           r.CapAction,
+		BillingDay:          r.BillingDay,
+		MonthlyCost:         r.MonthlyCost,
+		CostCurrency:        r.CostCurrency,
 	}
 	if r.ApiToken != nil {
 		n.ApiToken = *r.ApiToken

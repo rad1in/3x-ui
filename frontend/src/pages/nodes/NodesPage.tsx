@@ -33,6 +33,8 @@ import { useNodeMutations } from '@/api/queries/useNodeMutations';
 import AppSidebar from '@/layouts/AppSidebar';
 import NodeList from './NodeList';
 import NodeFormModal from './NodeFormModal';
+import NodeSpeedModal from './NodeSpeedModal';
+import { monthlyCostTotals } from './NodeUsageCell';
 import { setMessageInstance } from '@/utils/messageBus';
 import { HttpUtil } from '@/utils';
 import type { PanelUpdateInfo } from '../index/PanelUpdateModal';
@@ -99,6 +101,8 @@ export default function NodesPage() {
     staleTime: 5 * 60 * 1000,
   });
 
+  const costTotals = useMemo(() => monthlyCostTotals(nodes), [nodes]);
+  const [speedNode, setSpeedNode] = useState<NodeRecord | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [formNode, setFormNode] = useState<NodeRecord | null>(null);
@@ -342,6 +346,15 @@ export default function NodesPage() {
                           />
                         </Col>
                       </Row>
+                      {costTotals.length > 0 && (
+                        <Typography.Paragraph type="secondary" style={{ margin: '12px 0 0' }}>
+                          {t('pages.nodes.metered.totalCost')}:{' '}
+                          {costTotals
+                            .map((c) => `${c.amount.toFixed(2)} ${c.currency}`.trim())
+                            .join(', ')}{' '}
+                          {t('pages.nodes.metered.perMonth')}. {t('pages.nodes.metered.costNote')}
+                        </Typography.Paragraph>
+                      )}
                     </Card>
                   </Col>
 
@@ -358,6 +371,7 @@ export default function NodesPage() {
                       onEdit={onEdit}
                       onDelete={onDelete}
                       onProbe={onProbe}
+                      onSpeedTest={setSpeedNode}
                       onToggleEnable={onToggleEnable}
                       onUpdateNode={onUpdateNode}
                       onUpdateSelected={onUpdateSelected}
@@ -368,6 +382,8 @@ export default function NodesPage() {
             </Spin>
           </Layout.Content>
         </Layout>
+
+        <NodeSpeedModal node={speedNode} onClose={() => setSpeedNode(null)} />
 
         <NodeFormModal
           open={formOpen}

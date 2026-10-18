@@ -17,6 +17,9 @@ const (
 	EventNodeDown EventType = "node.down"
 	EventNodeUp   EventType = "node.up"
 
+	// A node reached its monthly traffic cap; Source is the node name, Data a *NodeCapData.
+	EventNodeCapReached EventType = "node.cap_reached"
+
 	// System health
 	EventCPUHigh    EventType = "cpu.high"
 	EventMemoryHigh EventType = "memory.high"
@@ -68,6 +71,14 @@ type Event struct {
 type OutboundHealthData struct {
 	Delay int64  // last measured delay in ms, 0 if unknown
 	Error string // last error if probe failed, empty if up
+}
+
+// NodeCapData describes the cap a node just reached.
+type NodeCapData struct {
+	NodeId    int
+	UsedBytes int64
+	CapBytes  int64
+	Stopped   bool // true when the cap action also disabled the node's inbounds
 }
 
 // NodeHealthData carries heartbeat details for node events.

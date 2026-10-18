@@ -1666,7 +1666,7 @@ func (s *InboundService) delInbound(id int) (bool, func(), error) {
 			needRestart = true
 		}
 	}
-	if !database.IsPostgres() {
+	if database.IsSQLite() {
 		var count int64
 		if err := db.Model(&model.Inbound{}).Count(&count).Error; err != nil {
 			return needRestart, nodePush, err
