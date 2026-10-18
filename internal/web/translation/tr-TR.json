@@ -257,6 +257,8 @@
       "connectionCount": "Bağlantı İstatistikleri",
       "topUsage": "En çok kullanım",
       "viewAll": "Tümünü gör",
+      "clientCountries": "Ülkeye göre bağlı istemciler",
+      "clientCountriesClients": "{count} istemci",
       "protocolTraffic": "Protokole göre trafik",
       "healthTitle": "Sağlık denetimleri",
       "healthCheckDatabase": "Veritabanı",

@@ -257,6 +257,8 @@
       "connectionCount": "Số lượng kết nối",
       "topUsage": "Dùng nhiều nhất",
       "viewAll": "Xem tất cả",
+      "clientCountries": "Khách hàng đang kết nối theo quốc gia",
+      "clientCountriesClients": "{count} khách hàng",
       "protocolTraffic": "Lưu lượng theo giao thức",
       "healthTitle": "Kiểm tra sức khỏe",
       "healthCheckDatabase": "Cơ sở dữ liệu",

@@ -257,6 +257,8 @@
       "connectionCount": "Статистика з'єднання",
       "topUsage": "Найбільше використання",
       "viewAll": "Показати все",
+      "clientCountries": "Підключені клієнти за країнами",
+      "clientCountriesClients": "клієнтів: {count}",
       "protocolTraffic": "Трафік за протоколами",
       "healthTitle": "Перевірки стану",
       "healthCheckDatabase": "База даних",

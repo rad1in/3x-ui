@@ -257,6 +257,8 @@
       "connectionCount": "Número de Conexiones",
       "topUsage": "Mayor consumo",
       "viewAll": "Ver todo",
+      "clientCountries": "Clientes conectados por país",
+      "clientCountriesClients": "{count} clientes",
       "protocolTraffic": "Tráfico por protocolo",
       "healthTitle": "Comprobaciones de salud",
       "healthCheckDatabase": "Base de datos",

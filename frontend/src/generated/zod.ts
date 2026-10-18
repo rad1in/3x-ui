@@ -670,6 +670,13 @@ export const ClientDailyUsageSchema = z.object({
 });
 export type ClientDailyUsage = z.infer<typeof ClientDailyUsageSchema>;
 
+export const ClientGeoSchema = z.object({
+  available: z.boolean(),
+  countries: z.array(z.lazy(() => CountryCountSchema)),
+  unlocated: z.number().int(),
+});
+export type ClientGeo = z.infer<typeof ClientGeoSchema>;
+
 export const ClientInboundSchema = z.object({
   clientId: z.number().int(),
   createdAt: z.number().int(),
@@ -848,6 +855,13 @@ export const ClientsSummarySchema = z.object({
   total: z.number().int(),
 });
 export type ClientsSummary = z.infer<typeof ClientsSummarySchema>;
+
+export const CountryCountSchema = z.object({
+  addresses: z.number().int(),
+  clients: z.number().int(),
+  country: z.string(),
+});
+export type CountryCount = z.infer<typeof CountryCountSchema>;
 
 export const CryptoConfigSchema = z.object({
   apiKey: z.string(),

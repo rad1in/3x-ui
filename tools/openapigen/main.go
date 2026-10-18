@@ -107,6 +107,8 @@ func run(root, outDir string) error {
 				"CleanIPStatus",
 				"RotationResult",
 				"HealthReport",
+				"ClientGeo",
+				"CountryCount",
 				"HealthCheck",
 				"NodeJoinCommand",
 				"OrderPage",

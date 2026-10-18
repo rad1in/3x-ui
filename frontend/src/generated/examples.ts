@@ -651,6 +651,17 @@ export const EXAMPLES: Record<string, unknown> = {
     "email": "",
     "up": 1048576
   },
+  "ClientGeo": {
+    "available": true,
+    "countries": [
+      {
+        "addresses": 6,
+        "clients": 4,
+        "country": "DE"
+      }
+    ],
+    "unlocated": 1
+  },
   "ClientInbound": {
     "clientId": 0,
     "createdAt": 0,
@@ -863,6 +874,11 @@ export const EXAMPLES: Record<string, unknown> = {
     ],
     "onlineCount": 1,
     "total": 2000
+  },
+  "CountryCount": {
+    "addresses": 6,
+    "clients": 4,
+    "country": "DE"
   },
   "CryptoConfig": {
     "apiKey": "",

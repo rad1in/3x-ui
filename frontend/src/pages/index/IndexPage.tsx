@@ -31,6 +31,7 @@ import ThroughputCard from './ThroughputCard';
 import ConnectionsCard from './ConnectionsCard';
 import ClientsInsightCard from './ClientsInsightCard';
 import HealthCard from './HealthCard';
+import ClientGeoCard from './ClientGeoCard';
 import ProtocolTrafficCard from './ProtocolTrafficCard';
 import SharedAccountsCard from './SharedAccountsCard';
 import HostedUsageCard from './HostedUsageCard';
@@ -320,6 +321,8 @@ export default function IndexPage() {
                   )}
 
                   <ClientsInsightCard />
+
+                  <ClientGeoCard />
 
                   <ProtocolTrafficCard />
 

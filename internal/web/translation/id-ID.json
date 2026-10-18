@@ -257,6 +257,8 @@
       "connectionCount": "Statistik Koneksi",
       "topUsage": "Penggunaan tertinggi",
       "viewAll": "Lihat semua",
+      "clientCountries": "Klien terhubung menurut negara",
+      "clientCountriesClients": "{count} klien",
       "protocolTraffic": "Trafik per protokol",
       "healthTitle": "Pemeriksaan kesehatan",
       "healthCheckDatabase": "Basis data",

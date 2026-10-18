@@ -257,6 +257,8 @@
       "connectionCount": "接続数",
       "topUsage": "使用量上位",
       "viewAll": "すべて表示",
+      "clientCountries": "国別の接続中クライアント",
+      "clientCountriesClients": "{count} クライアント",
       "protocolTraffic": "プロトコル別トラフィック",
       "healthTitle": "ヘルスチェック",
       "healthCheckDatabase": "データベース",

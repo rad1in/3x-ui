@@ -257,6 +257,8 @@
       "connectionCount": "إحصائيات الاتصال",
       "topUsage": "الأعلى استخدامًا",
       "viewAll": "عرض الكل",
+      "clientCountries": "العملاء المتصلون حسب الدولة",
+      "clientCountriesClients": "{count} عميل",
       "protocolTraffic": "الترافيك حسب البروتوكول",
       "healthTitle": "فحوصات السلامة",
       "healthCheckDatabase": "قاعدة البيانات",

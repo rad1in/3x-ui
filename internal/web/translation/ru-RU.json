@@ -257,6 +257,8 @@
       "connectionCount": "Количество соединений",
       "topUsage": "Наибольший расход",
       "viewAll": "Показать все",
+      "clientCountries": "Подключённые клиенты по странам",
+      "clientCountriesClients": "клиентов: {count}",
       "protocolTraffic": "Трафик по протоколам",
       "healthTitle": "Проверки состояния",
       "healthCheckDatabase": "База данных",

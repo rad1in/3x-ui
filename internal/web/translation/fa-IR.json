@@ -257,6 +257,8 @@
       "connectionCount": "تعداد کانکشن ها",
       "topUsage": "بیشترین مصرف",
       "viewAll": "مشاهده همه",
+      "clientCountries": "کاربران متصل بر اساس کشور",
+      "clientCountriesClients": "{count} کاربر",
       "protocolTraffic": "ترافیک بر اساس پروتکل",
       "healthTitle": "بررسی سلامت",
       "healthCheckDatabase": "پایگاه داده",

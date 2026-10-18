@@ -2719,6 +2719,31 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "ClientGeo": {
+    "description": "ClientGeo is the connected clients grouped by country. Available is false\nwhen no geoip database could be read, so the card can say so.",
+    "properties": {
+      "available": {
+        "example": true,
+        "type": "boolean"
+      },
+      "countries": {
+        "items": {
+          "$ref": "#/components/schemas/CountryCount"
+        },
+        "type": "array"
+      },
+      "unlocated": {
+        "example": 1,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "available",
+      "countries",
+      "unlocated"
+    ],
+    "type": "object"
+  },
   "ClientInbound": {
     "properties": {
       "clientId": {
@@ -3471,6 +3496,29 @@ export const SCHEMAS: Record<string, unknown> = {
       "online",
       "onlineCount",
       "total"
+    ],
+    "type": "object"
+  },
+  "CountryCount": {
+    "description": "CountryCount is how many clients and addresses are connected from one country.",
+    "properties": {
+      "addresses": {
+        "example": 6,
+        "type": "integer"
+      },
+      "clients": {
+        "example": 4,
+        "type": "integer"
+      },
+      "country": {
+        "example": "DE",
+        "type": "string"
+      }
+    },
+    "required": [
+      "addresses",
+      "clients",
+      "country"
     ],
     "type": "object"
   },

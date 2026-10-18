@@ -639,6 +639,12 @@ export interface ClientDailyUsage {
   up: number;
 }
 
+export interface ClientGeo {
+  available: boolean;
+  countries: CountryCount[];
+  unlocated: number;
+}
+
 export interface ClientInbound {
   clientId: number;
   createdAt: number;
@@ -803,6 +809,12 @@ export interface ClientsSummary {
   online: string[];
   onlineCount: number;
   total: number;
+}
+
+export interface CountryCount {
+  addresses: number;
+  clients: number;
+  country: string;
 }
 
 export interface CryptoConfig {

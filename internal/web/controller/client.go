@@ -46,6 +46,7 @@ type ClientController struct {
 	transferService      service.ClientTransferService
 	subSigning           service.SubSigningService
 	sharedAccountService service.SharedAccountService
+	clientGeo            service.ClientGeoService
 }
 
 func NewClientController(g *gin.RouterGroup) *ClientController {
@@ -60,6 +61,7 @@ func (a *ClientController) initRouter(g *gin.RouterGroup) {
 	a.initUsageRouter(g)
 	a.initSharedRouter(g)
 	a.initReportRouter(g)
+	a.initGeoRouter(g)
 	a.initDisconnectRouter(g)
 	a.initForeignImportRouter(g)
 	g.GET("/list", a.list)

@@ -1678,6 +1678,14 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/clients/countries',
+        summary:
+          'Countries the currently connected clients come from, looked up in the geoip.dat of the Xray folder. An address counts as connected when it was seen in the last two minutes. available is false when no geoip database could be read; unlocated counts addresses outside every country (private ranges included).',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "available": true,\n    "countries": [\n      { "country": "DE", "clients": 4, "addresses": 6 },\n      { "country": "BR", "clients": 1, "addresses": 1 }\n    ],\n    "unlocated": 1\n  }\n}',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/clients/sharedAccounts',
         summary:
           'Clients currently flagged as shared: seen from at least sharedAccountMinIPs addresses or sharedAccountMinCountries countries inside the sharedAccountWindowHours window. Most addresses first; empty while both thresholds are 0.',
