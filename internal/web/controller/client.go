@@ -42,6 +42,7 @@ type ClientController struct {
 	happGenerator  service.HappLinkGenerator
 	shortLinks     service.SubShortLinkService
 	subFetches     service.SubFetchService
+	reseller       service.ResellerService
 }
 
 func NewClientController(g *gin.RouterGroup) *ClientController {
@@ -213,7 +214,14 @@ func (a *ClientController) create(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return
 	}
+	credit, ok := a.reserveCredit(c, func() ([]service.TermsChange, error) {
+		return createChanges([]service.ClientCreatePayload{payload}), nil
+	})
+	if !ok {
+		return
+	}
 	needRestart, err := a.clientService.Create(&a.inboundService, &payload)
+	settleCredit(credit)
 	// Flagged before the error check: a partly-applied create leaves clients
 	// committed on the inbounds that succeeded, and those still need the restart.
 	if needRestart {
@@ -242,7 +250,14 @@ func (a *ClientController) update(c *gin.Context) {
 		return
 	}
 	inboundFilter := parseInboundIdsQuery(c.Query("inboundIds"))
+	credit, ok := a.reserveCredit(c, func() ([]service.TermsChange, error) {
+		return []service.TermsChange{{Email: email, After: termsOf(req.Client)}}, nil
+	})
+	if !ok {
+		return
+	}
 	needRestart, err := a.clientService.UpdateByEmail(&a.inboundService, email, req.Client, req.LimitHwid, inboundFilter...)
+	settleCredit(credit)
 	// Flagged before the error check: a partly-applied edit leaves the change
 	// committed on the inbounds that succeeded, and those still need the restart.
 	if needRestart {
@@ -355,7 +370,14 @@ func (a *ClientController) bulkAdjust(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return
 	}
+	credit, ok := a.reserveCredit(c, func() ([]service.TermsChange, error) {
+		return a.reseller.PlanAdjust(trimAll(req.Emails), req.AddDays, req.AddBytes)
+	})
+	if !ok {
+		return
+	}
 	result, needRestart, err := a.clientService.BulkAdjust(&a.inboundService, req.Emails, req.AddDays, req.AddBytes, req.Flow, req.LimitHwid, req.AdTag)
+	settleCredit(credit)
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return
@@ -472,7 +494,12 @@ func (a *ClientController) bulkCreate(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return
 	}
+	credit, ok := a.reserveCredit(c, func() ([]service.TermsChange, error) { return createChanges(payloads), nil })
+	if !ok {
+		return
+	}
 	result, needRestart, err := a.clientService.BulkCreate(&a.inboundService, payloads)
+	settleCredit(credit)
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return

@@ -147,6 +147,7 @@
     "audit": "Activity",
     "admins": "Admins",
     "sessions": "Sessions",
+    "reseller": "Resellers",
     "sales": "Sales",
     "docs": "Documentation",
     "openMenu": "Open menu",
@@ -2783,6 +2784,52 @@
       "toasts": {
         "saved": "Admin saved",
         "deleted": "Admin deleted"
+      }
+    },
+    "reseller": {
+      "title": "Reseller credit",
+      "mine": "My credit",
+      "hint": "Resellers are debited by their price list when they create or renew clients. Top up their credit and follow what they sell.",
+      "hintSelf": "You are debited by your price list when you create or renew clients.",
+      "credit": "Credit",
+      "pricePerGb": "Price per GB",
+      "pricePerDay": "Price per day",
+      "manage": "Manage",
+      "topupTitle": "Add or remove credit",
+      "amountHint": "Amount (negative removes)",
+      "note": "Note",
+      "topup": "Apply",
+      "pricesTitle": "Price list",
+      "ranges": {
+        "all": "All time",
+        "7": "7 days",
+        "30": "30 days",
+        "90": "90 days"
+      },
+      "report": {
+        "reseller": "Reseller",
+        "created": "Created",
+        "renewed": "Renewed",
+        "spent": "Spent",
+        "traffic": "Traffic sold",
+        "days": "Days sold",
+        "toppedUp": "Credit added"
+      },
+      "ledger": {
+        "title": "Credit history",
+        "time": "Time",
+        "kind": "Type",
+        "amount": "Amount",
+        "client": "Client"
+      },
+      "kinds": {
+        "topup": "Top-up",
+        "create": "New client",
+        "renew": "Renewal"
+      },
+      "toasts": {
+        "toppedUp": "Credit updated",
+        "pricesSaved": "Price list saved"
       }
     },
     "sales": {

@@ -146,6 +146,7 @@
     "audit": "Aktivitas",
     "admins": "Admin",
     "sessions": "Sesi",
+    "reseller": "Reseller",
     "sales": "Penjualan",
     "hosts": "Host",
     "docs": "Dokumentasi",
@@ -2783,6 +2784,52 @@
       "toasts": {
         "saved": "Admin disimpan",
         "deleted": "Admin dihapus"
+      }
+    },
+    "reseller": {
+      "title": "Kredit reseller",
+      "mine": "Kredit saya",
+      "hint": "Reseller dipotong sesuai daftar harganya saat membuat atau memperpanjang klien. Isi ulang kredit mereka dan pantau penjualannya.",
+      "hintSelf": "Kredit Anda dipotong sesuai daftar harga Anda saat membuat atau memperpanjang klien.",
+      "credit": "Kredit",
+      "pricePerGb": "Harga per GB",
+      "pricePerDay": "Harga per hari",
+      "manage": "Kelola",
+      "topupTitle": "Tambah atau kurangi kredit",
+      "amountHint": "Jumlah (negatif mengurangi)",
+      "note": "Catatan",
+      "topup": "Terapkan",
+      "pricesTitle": "Daftar harga",
+      "ranges": {
+        "all": "Semua waktu",
+        "7": "7 hari",
+        "30": "30 hari",
+        "90": "90 hari"
+      },
+      "report": {
+        "reseller": "Reseller",
+        "created": "Dibuat",
+        "renewed": "Diperpanjang",
+        "spent": "Terpakai",
+        "traffic": "Trafik terjual",
+        "days": "Hari terjual",
+        "toppedUp": "Kredit ditambahkan"
+      },
+      "ledger": {
+        "title": "Riwayat kredit",
+        "time": "Waktu",
+        "kind": "Jenis",
+        "amount": "Jumlah",
+        "client": "Klien"
+      },
+      "kinds": {
+        "topup": "Isi ulang",
+        "create": "Klien baru",
+        "renew": "Perpanjangan"
+      },
+      "toasts": {
+        "toppedUp": "Kredit diperbarui",
+        "pricesSaved": "Daftar harga disimpan"
       }
     },
     "sales": {

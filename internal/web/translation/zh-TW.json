@@ -146,6 +146,7 @@
     "audit": "操作日誌",
     "admins": "管理員",
     "sessions": "工作階段",
+    "reseller": "分銷商",
     "sales": "銷售",
     "hosts": "主機",
     "docs": "文件",
@@ -2783,6 +2784,52 @@
       "toasts": {
         "saved": "管理員已儲存",
         "deleted": "管理員已刪除"
+      }
+    },
+    "reseller": {
+      "title": "分銷商額度",
+      "mine": "我的額度",
+      "hint": "分銷商建立或續期客戶時，會依其價格表扣除額度。可在此為其儲值並查看銷售情況。",
+      "hintSelf": "建立或續期客戶時，會依您的價格表扣除額度。",
+      "credit": "額度",
+      "pricePerGb": "每 GB 價格",
+      "pricePerDay": "每天價格",
+      "manage": "管理",
+      "topupTitle": "增加或扣減額度",
+      "amountHint": "金額（負數為扣減）",
+      "note": "備註",
+      "topup": "套用",
+      "pricesTitle": "價格表",
+      "ranges": {
+        "all": "全部時間",
+        "7": "7 天",
+        "30": "30 天",
+        "90": "90 天"
+      },
+      "report": {
+        "reseller": "分銷商",
+        "created": "新建",
+        "renewed": "續期",
+        "spent": "已消耗",
+        "traffic": "售出流量",
+        "days": "售出天數",
+        "toppedUp": "已儲值額度"
+      },
+      "ledger": {
+        "title": "額度記錄",
+        "time": "時間",
+        "kind": "類型",
+        "amount": "金額",
+        "client": "客戶"
+      },
+      "kinds": {
+        "topup": "儲值",
+        "create": "新客戶",
+        "renew": "續期"
+      },
+      "toasts": {
+        "toppedUp": "額度已更新",
+        "pricesSaved": "價格表已儲存"
       }
     },
     "sales": {

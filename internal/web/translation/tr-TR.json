@@ -146,6 +146,7 @@
     "audit": "Etkinlik",
     "admins": "Yöneticiler",
     "sessions": "Oturumlar",
+    "reseller": "Bayiler",
     "sales": "Satışlar",
     "hosts": "Host'lar",
     "docs": "Belgeler",
@@ -2783,6 +2784,52 @@
       "toasts": {
         "saved": "Yönetici kaydedildi",
         "deleted": "Yönetici silindi"
+      }
+    },
+    "reseller": {
+      "title": "Bayi kredisi",
+      "mine": "Kredim",
+      "hint": "Bayilerden istemci oluşturduklarında veya yenilediklerinde fiyat listelerine göre kesinti yapılır. Kredilerini yükleyin ve satışlarını izleyin.",
+      "hintSelf": "İstemci oluşturduğunuzda veya yenilediğinizde fiyat listenize göre krediniz düşer.",
+      "credit": "Kredi",
+      "pricePerGb": "GB başına fiyat",
+      "pricePerDay": "Gün başına fiyat",
+      "manage": "Yönet",
+      "topupTitle": "Kredi ekle veya düş",
+      "amountHint": "Tutar (negatif düşer)",
+      "note": "Not",
+      "topup": "Uygula",
+      "pricesTitle": "Fiyat listesi",
+      "ranges": {
+        "all": "Tüm zamanlar",
+        "7": "7 gün",
+        "30": "30 gün",
+        "90": "90 gün"
+      },
+      "report": {
+        "reseller": "Bayi",
+        "created": "Oluşturulan",
+        "renewed": "Yenilenen",
+        "spent": "Harcanan",
+        "traffic": "Satılan trafik",
+        "days": "Satılan gün",
+        "toppedUp": "Eklenen kredi"
+      },
+      "ledger": {
+        "title": "Kredi geçmişi",
+        "time": "Zaman",
+        "kind": "Tür",
+        "amount": "Tutar",
+        "client": "İstemci"
+      },
+      "kinds": {
+        "topup": "Yükleme",
+        "create": "Yeni istemci",
+        "renew": "Yenileme"
+      },
+      "toasts": {
+        "toppedUp": "Kredi güncellendi",
+        "pricesSaved": "Fiyat listesi kaydedildi"
       }
     },
     "sales": {

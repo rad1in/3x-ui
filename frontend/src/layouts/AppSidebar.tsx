@@ -26,6 +26,7 @@ import {
   HistoryOutlined,
   SafetyCertificateOutlined,
   UserSwitchOutlined,
+  WalletOutlined,
   HeartOutlined,
   ImportOutlined,
   LogoutOutlined,
@@ -88,6 +89,7 @@ type IconName =
   | 'routing'
   | 'audit'
   | 'admins'
+  | 'reseller'
   | 'sessions'
   | 'panels';
 
@@ -108,6 +110,7 @@ const iconByName: Record<IconName, ComponentType> = {
   routing: SwapOutlined,
   audit: HistoryOutlined,
   admins: UserSwitchOutlined,
+  reseller: WalletOutlined,
   sessions: SafetyCertificateOutlined,
   panels: AppstoreOutlined,
 };
@@ -267,6 +270,7 @@ export default function AppSidebar() {
           { key: '/sales', icon: 'sales', title: t('menu.sales') },
           { key: '/audit', icon: 'audit', title: t('menu.audit') },
           { key: '/admins', icon: 'admins', title: t('menu.admins') },
+          { key: '/reseller', icon: 'reseller', title: t('menu.reseller') },
           { key: '/sessions', icon: 'sessions', title: t('menu.sessions') },
           { key: '/api-docs', icon: 'apidocs', title: t('menu.apiDocs') },
           { key: '/sponsors', icon: 'sponsors', title: t('menu.sponsors') },

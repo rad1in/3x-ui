@@ -146,6 +146,7 @@
     "audit": "操作ログ",
     "admins": "管理者",
     "sessions": "セッション",
+    "reseller": "リセラー",
     "sales": "販売",
     "hosts": "ホスト",
     "docs": "ドキュメント",
@@ -2783,6 +2784,52 @@
       "toasts": {
         "saved": "管理者を保存しました",
         "deleted": "管理者を削除しました"
+      }
+    },
+    "reseller": {
+      "title": "リセラーのクレジット",
+      "mine": "自分のクレジット",
+      "hint": "リセラーがクライアントを作成または更新すると、価格表に従ってクレジットが引き落とされます。クレジットをチャージし、販売状況を確認できます。",
+      "hintSelf": "クライアントを作成または更新すると、価格表に従ってクレジットが引き落とされます。",
+      "credit": "クレジット",
+      "pricePerGb": "GBあたりの価格",
+      "pricePerDay": "1日あたりの価格",
+      "manage": "管理",
+      "topupTitle": "クレジットの追加・減算",
+      "amountHint": "金額（負の値で減算）",
+      "note": "メモ",
+      "topup": "適用",
+      "pricesTitle": "価格表",
+      "ranges": {
+        "all": "全期間",
+        "7": "7日間",
+        "30": "30日間",
+        "90": "90日間"
+      },
+      "report": {
+        "reseller": "リセラー",
+        "created": "作成数",
+        "renewed": "更新数",
+        "spent": "使用額",
+        "traffic": "販売トラフィック",
+        "days": "販売日数",
+        "toppedUp": "追加クレジット"
+      },
+      "ledger": {
+        "title": "クレジット履歴",
+        "time": "日時",
+        "kind": "種類",
+        "amount": "金額",
+        "client": "クライアント"
+      },
+      "kinds": {
+        "topup": "チャージ",
+        "create": "新規クライアント",
+        "renew": "更新"
+      },
+      "toasts": {
+        "toppedUp": "クレジットを更新しました",
+        "pricesSaved": "価格表を保存しました"
       }
     },
     "sales": {

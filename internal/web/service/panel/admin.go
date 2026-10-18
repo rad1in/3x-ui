@@ -34,6 +34,10 @@ type AdminView struct {
 	InboundIds []int    `json:"inboundIds"`
 	Groups     []string `json:"groups"`
 	CreatedAt  int64    `json:"createdAt" example:"1760684400000"`
+	// A reseller's credit and own price list; a nil price follows the panel's list.
+	Credit      int64  `json:"credit" example:"8500"`
+	PricePerGB  *int64 `json:"pricePerGb" example:"100"`
+	PricePerDay *int64 `json:"pricePerDay" example:"10"`
 }
 
 // AdminInput creates or edits an admin. An empty Password on edit keeps it.
@@ -53,6 +57,9 @@ func ToAdminView(u *model.User) AdminView {
 		InboundIds: service.ParseScopeInboundIds(u.ScopeInboundIds),
 		Groups:     service.ParseScopeGroups(u.ScopeGroups),
 		CreatedAt:  u.CreatedAt,
+
+		PricePerGB:  u.PricePerGB,
+		PricePerDay: u.PricePerDay,
 	}
 }
 
@@ -61,9 +68,24 @@ func (s *UserService) ListAdmins() ([]AdminView, error) {
 	if err := database.GetDB().Order("id ASC").Find(&users).Error; err != nil {
 		return nil, err
 	}
+	var credits []struct {
+		UserId int
+		Sum    int64
+	}
+	err := database.GetDB().Model(&model.ResellerEntry{}).Group("user_id").
+		Select("user_id, COALESCE(SUM(amount), 0) AS sum").Scan(&credits).Error
+	if err != nil {
+		return nil, err
+	}
+	creditOf := make(map[int]int64, len(credits))
+	for _, c := range credits {
+		creditOf[c.UserId] = c.Sum
+	}
 	out := make([]AdminView, 0, len(users))
 	for i := range users {
-		out = append(out, ToAdminView(&users[i]))
+		view := ToAdminView(&users[i])
+		view.Credit = creditOf[users[i].Id]
+		out = append(out, view)
 	}
 	return out, nil
 }

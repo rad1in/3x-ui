@@ -35,9 +35,12 @@ export type AdminInput = z.infer<typeof AdminInputSchema>;
 
 export const AdminViewSchema = z.object({
   createdAt: z.number().int(),
+  credit: z.number().int(),
   groups: z.array(z.string()),
   id: z.number().int(),
   inboundIds: z.array(z.number().int()),
+  pricePerDay: z.number().int().nullable().optional(),
+  pricePerGb: z.number().int().nullable().optional(),
   role: z.string(),
   username: z.string(),
 });
@@ -1458,6 +1461,51 @@ export const ReferralConfigSchema = z.object({
   enabled: z.boolean(),
 });
 export type ReferralConfig = z.infer<typeof ReferralConfigSchema>;
+
+export const ResellerAccountSchema = z.object({
+  balance: z.number().int(),
+  entries: z.array(z.lazy(() => ResellerEntrySchema)),
+  prices: z.lazy(() => ResellerPricesSchema),
+  userId: z.number().int(),
+});
+export type ResellerAccount = z.infer<typeof ResellerAccountSchema>;
+
+export const ResellerEntrySchema = z.object({
+  amount: z.number().int(),
+  bytes: z.number().int(),
+  clientEmail: z.string(),
+  createdAt: z.number().int(),
+  days: z.number().int(),
+  id: z.number().int(),
+  kind: z.string(),
+  note: z.string(),
+  userId: z.number().int(),
+});
+export type ResellerEntry = z.infer<typeof ResellerEntrySchema>;
+
+export const ResellerPricesSchema = z.object({
+  pricePerDay: z.number().int(),
+  pricePerGb: z.number().int(),
+});
+export type ResellerPrices = z.infer<typeof ResellerPricesSchema>;
+
+export const ResellerReportSchema = z.object({
+  rows: z.array(z.lazy(() => ResellerReportRowSchema)),
+});
+export type ResellerReport = z.infer<typeof ResellerReportSchema>;
+
+export const ResellerReportRowSchema = z.object({
+  balance: z.number().int(),
+  bytes: z.number().int(),
+  created: z.number().int(),
+  days: z.number().int(),
+  renewed: z.number().int(),
+  spent: z.number().int(),
+  toppedUp: z.number().int(),
+  userId: z.number().int(),
+  username: z.string(),
+});
+export type ResellerReportRow = z.infer<typeof ResellerReportRowSchema>;
 
 export const SalesConfigSchema = z.object({
   card: z.lazy(() => CardPayConfigSchema),

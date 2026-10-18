@@ -146,6 +146,7 @@
     "audit": "Atividade",
     "admins": "Administradores",
     "sessions": "Sessões",
+    "reseller": "Revendedores",
     "sales": "Vendas",
     "hosts": "Hosts",
     "docs": "Documentação",
@@ -2783,6 +2784,52 @@
       "toasts": {
         "saved": "Administrador salvo",
         "deleted": "Administrador excluído"
+      }
+    },
+    "reseller": {
+      "title": "Crédito de revendedores",
+      "mine": "Meu crédito",
+      "hint": "Os revendedores são debitados conforme a sua lista de preços ao criar ou renovar clientes. Recarregue o crédito deles e acompanhe as vendas.",
+      "hintSelf": "Você é debitado conforme a sua lista de preços ao criar ou renovar clientes.",
+      "credit": "Crédito",
+      "pricePerGb": "Preço por GB",
+      "pricePerDay": "Preço por dia",
+      "manage": "Gerenciar",
+      "topupTitle": "Adicionar ou remover crédito",
+      "amountHint": "Valor (negativo remove)",
+      "note": "Observação",
+      "topup": "Aplicar",
+      "pricesTitle": "Lista de preços",
+      "ranges": {
+        "all": "Todo o período",
+        "7": "7 dias",
+        "30": "30 dias",
+        "90": "90 dias"
+      },
+      "report": {
+        "reseller": "Revendedor",
+        "created": "Criados",
+        "renewed": "Renovados",
+        "spent": "Gasto",
+        "traffic": "Tráfego vendido",
+        "days": "Dias vendidos",
+        "toppedUp": "Crédito adicionado"
+      },
+      "ledger": {
+        "title": "Histórico de crédito",
+        "time": "Hora",
+        "kind": "Tipo",
+        "amount": "Valor",
+        "client": "Cliente"
+      },
+      "kinds": {
+        "topup": "Recarga",
+        "create": "Novo cliente",
+        "renew": "Renovação"
+      },
+      "toasts": {
+        "toppedUp": "Crédito atualizado",
+        "pricesSaved": "Lista de preços salva"
       }
     },
     "sales": {

@@ -49,6 +49,7 @@ func run(root, outDir string) error {
 				"Order",
 				"DiscountCode",
 				"WalletEntry",
+				"ResellerEntry",
 			),
 			AliasAllow: setOf("Protocol"),
 			Overrides: map[string][]walkOverride{
@@ -109,6 +110,10 @@ func run(root, outDir string) error {
 				"ReferralConfig",
 				"WalletView",
 				"WalletBalance",
+				"ResellerAccount",
+				"ResellerPrices",
+				"ResellerReport",
+				"ResellerReportRow",
 				"Quote",
 				"ShopWallet",
 				"SalesConfigView",

@@ -36,6 +36,9 @@ var ownerOnlyRoutes = map[string]bool{
 	"POST /setting/apiTokens/delete/:id":          true,
 	"POST /setting/apiTokens/setEnabled/:id":      true,
 	"POST /setting/apiTokens/setAllowedCidrs/:id": true,
+	"GET /reseller/account/:id":                   true,
+	"POST /reseller/topup/:id":                    true,
+	"POST /reseller/prices/:id":                   true,
 	"GET /sales/config":                           true,
 	"POST /sales/config/save":                     true,
 	"GET /server/getDb":                           true,
@@ -45,6 +48,8 @@ var ownerOnlyRoutes = map[string]bool{
 // selfServiceRoutes act only on the caller's own account, so every role may use them.
 var selfServiceRoutes = map[string]bool{
 	"GET /admins/me":            true,
+	"GET /reseller/me":          true,
+	"GET /reseller/report":      true,
 	"GET /sessions/list":        true,
 	"POST /sessions/revoke/:id": true,
 	"POST /sessions/revokeAll":  true,

@@ -13,6 +13,7 @@ export const EXAMPLES: Record<string, unknown> = {
   },
   "AdminView": {
     "createdAt": 1760684400000,
+    "credit": 8500,
     "groups": [
       ""
     ],
@@ -20,6 +21,8 @@ export const EXAMPLES: Record<string, unknown> = {
     "inboundIds": [
       0
     ],
+    "pricePerDay": 10,
+    "pricePerGb": 100,
     "role": "operator",
     "username": "support"
   },
@@ -1506,6 +1509,68 @@ export const EXAMPLES: Record<string, unknown> = {
   "ReferralConfig": {
     "bonusPercent": 10,
     "enabled": false
+  },
+  "ResellerAccount": {
+    "balance": 8500,
+    "entries": [
+      {
+        "amount": -1500,
+        "bytes": 53687091200,
+        "clientEmail": "alice",
+        "createdAt": 1760684400000,
+        "days": 30,
+        "id": 1,
+        "kind": "create",
+        "note": "",
+        "userId": 2
+      }
+    ],
+    "prices": {
+      "pricePerDay": 10,
+      "pricePerGb": 100
+    },
+    "userId": 2
+  },
+  "ResellerEntry": {
+    "amount": -1500,
+    "bytes": 53687091200,
+    "clientEmail": "alice",
+    "createdAt": 1760684400000,
+    "days": 30,
+    "id": 1,
+    "kind": "create",
+    "note": "",
+    "userId": 2
+  },
+  "ResellerPrices": {
+    "pricePerDay": 10,
+    "pricePerGb": 100
+  },
+  "ResellerReport": {
+    "rows": [
+      {
+        "balance": 8500,
+        "bytes": 1073741824000,
+        "created": 12,
+        "days": 570,
+        "renewed": 7,
+        "spent": 15000,
+        "toppedUp": 20000,
+        "userId": 2,
+        "username": "shop-a"
+      }
+    ]
+  },
+  "ResellerReportRow": {
+    "balance": 8500,
+    "bytes": 1073741824000,
+    "created": 12,
+    "days": 570,
+    "renewed": 7,
+    "spent": 15000,
+    "toppedUp": 20000,
+    "userId": 2,
+    "username": "shop-a"
   },
   "SalesConfig": {
     "card": {
