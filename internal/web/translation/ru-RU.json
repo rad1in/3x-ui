@@ -250,6 +250,7 @@
       "connectionCount": "Количество соединений",
       "topUsage": "Наибольший расход",
       "viewAll": "Показать все",
+      "protocolTraffic": "Трафик по протоколам",
       "healthTitle": "Проверки состояния",
       "healthCheckDatabase": "База данных",
       "healthCheckXray": "Xray",

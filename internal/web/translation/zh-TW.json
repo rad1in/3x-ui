@@ -250,6 +250,7 @@
       "connectionCount": "連線數",
       "topUsage": "用量最高",
       "viewAll": "檢視全部",
+      "protocolTraffic": "依協定劃分的流量",
       "healthTitle": "健康檢查",
       "healthCheckDatabase": "資料庫",
       "healthCheckXray": "Xray",

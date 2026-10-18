@@ -250,6 +250,7 @@
       "connectionCount": "Statistik Koneksi",
       "topUsage": "Penggunaan tertinggi",
       "viewAll": "Lihat semua",
+      "protocolTraffic": "Trafik per protokol",
       "healthTitle": "Pemeriksaan kesehatan",
       "healthCheckDatabase": "Basis data",
       "healthCheckXray": "Xray",

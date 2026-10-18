@@ -60,6 +60,7 @@ export const keys = {
     slim: () => ['inbounds', 'slim'] as const,
     options: () => ['inbounds', 'options'] as const,
     vpnStatus: () => ['inbounds', 'vpnStatus'] as const,
+    protocolTotals: () => ['inbounds', 'protocolTotals'] as const,
   },
   sales: {
     root: () => ['sales'] as const,

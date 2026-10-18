@@ -250,6 +250,7 @@
       "connectionCount": "تعداد کانکشن ها",
       "topUsage": "بیشترین مصرف",
       "viewAll": "مشاهده همه",
+      "protocolTraffic": "ترافیک بر اساس پروتکل",
       "healthTitle": "بررسی سلامت",
       "healthCheckDatabase": "پایگاه داده",
       "healthCheckXray": "Xray",

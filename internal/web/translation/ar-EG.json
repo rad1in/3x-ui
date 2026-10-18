@@ -250,6 +250,7 @@
       "connectionCount": "إحصائيات الاتصال",
       "topUsage": "الأعلى استخدامًا",
       "viewAll": "عرض الكل",
+      "protocolTraffic": "الترافيك حسب البروتوكول",
       "healthTitle": "فحوصات السلامة",
       "healthCheckDatabase": "قاعدة البيانات",
       "healthCheckXray": "Xray",

@@ -250,6 +250,7 @@
       "connectionCount": "Bağlantı İstatistikleri",
       "topUsage": "En çok kullanım",
       "viewAll": "Tümünü gör",
+      "protocolTraffic": "Protokole göre trafik",
       "healthTitle": "Sağlık denetimleri",
       "healthCheckDatabase": "Veritabanı",
       "healthCheckXray": "Xray",

@@ -250,6 +250,7 @@
       "connectionCount": "Estatísticas de Conexão",
       "topUsage": "Maior uso",
       "viewAll": "Ver tudo",
+      "protocolTraffic": "Tráfego por protocolo",
       "healthTitle": "Verificações de saúde",
       "healthCheckDatabase": "Banco de dados",
       "healthCheckXray": "Xray",

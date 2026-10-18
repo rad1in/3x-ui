@@ -250,6 +250,7 @@
       "connectionCount": "连接数",
       "topUsage": "用量最高",
       "viewAll": "查看全部",
+      "protocolTraffic": "按协议划分的流量",
       "healthTitle": "健康检查",
       "healthCheckDatabase": "数据库",
       "healthCheckXray": "Xray",

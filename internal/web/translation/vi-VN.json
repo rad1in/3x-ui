@@ -250,6 +250,7 @@
       "connectionCount": "Số lượng kết nối",
       "topUsage": "Dùng nhiều nhất",
       "viewAll": "Xem tất cả",
+      "protocolTraffic": "Lưu lượng theo giao thức",
       "healthTitle": "Kiểm tra sức khỏe",
       "healthCheckDatabase": "Cơ sở dữ liệu",
       "healthCheckXray": "Xray",

@@ -250,6 +250,7 @@
       "connectionCount": "Статистика з'єднання",
       "topUsage": "Найбільше використання",
       "viewAll": "Показати все",
+      "protocolTraffic": "Трафік за протоколами",
       "healthTitle": "Перевірки стану",
       "healthCheckDatabase": "База даних",
       "healthCheckXray": "Xray",

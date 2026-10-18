@@ -250,6 +250,7 @@
       "connectionCount": "接続数",
       "topUsage": "使用量上位",
       "viewAll": "すべて表示",
+      "protocolTraffic": "プロトコル別トラフィック",
       "healthTitle": "ヘルスチェック",
       "healthCheckDatabase": "データベース",
       "healthCheckXray": "Xray",
