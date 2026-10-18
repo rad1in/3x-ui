@@ -2777,6 +2777,26 @@
       "you": "bạn",
       "passwordKeep": "Để trống để giữ mật khẩu hiện tại.",
       "selfNote": "Bạn không thể thay đổi vai trò hoặc quyền truy cập của chính mình.",
+      "transfer": {
+        "title": "Chuyển khách hàng",
+        "action": "Chuyển khách hàng",
+        "hint": "Chuyển khách hàng từ operator này sang operator khác. Khách trong nhóm của operator này vào nhóm của bên nhận; khách trên inbound của operator này được gắn vào inbound của bên nhận và gỡ khỏi inbound của operator này.",
+        "target": "Chuyển đến",
+        "group": "Nhóm đích",
+        "groupHint": "Cần khi khách nằm trong nhóm của operator này và bên nhận có nhiều hơn một nhóm.",
+        "emails": "Chỉ những khách này",
+        "emailsHint": "Để trống để chuyển mọi khách mà operator này thấy. Phân tách email bằng dấu phẩy hoặc dấu cách.",
+        "submit": "Chuyển",
+        "errTarget": "Chọn operator sẽ nhận khách hàng.",
+        "moved": "Đã chuyển {count} khách hàng",
+        "reasons": {
+          "not_source_client": "Không phải khách của operator này",
+          "shared_inbound": "Nằm trên inbound mà cả hai operator cùng dùng",
+          "no_target_inbound": "Bên nhận không có inbound",
+          "needs_group": "Hãy chọn một nhóm của bên nhận",
+          "failed": "Không thể chuyển"
+        }
+      },
       "deleteConfirm": "Xóa quản trị viên này? Họ sẽ bị đăng xuất ngay.",
       "errUsername": "Nhập tên người dùng tối đa 64 ký tự.",
       "errPassword": "Nhập mật khẩu.",

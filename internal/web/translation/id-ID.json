@@ -2777,6 +2777,26 @@
       "you": "Anda",
       "passwordKeep": "Biarkan kosong untuk mempertahankan kata sandi saat ini.",
       "selfNote": "Anda tidak dapat mengubah peran atau akses Anda sendiri.",
+      "transfer": {
+        "title": "Pindahkan klien",
+        "action": "Pindahkan klien",
+        "hint": "Memindahkan klien dari operator ini ke operator lain. Klien di grup operator ini masuk ke grup tujuan; klien di inbound operator ini dihubungkan ke inbound tujuan dan dilepas dari inbound operator ini.",
+        "target": "Pindahkan ke",
+        "group": "Grup tujuan",
+        "groupHint": "Diperlukan saat klien berada di grup operator ini dan tujuan memiliki lebih dari satu grup.",
+        "emails": "Hanya klien ini",
+        "emailsHint": "Kosongkan untuk memindahkan semua klien yang terlihat oleh operator ini. Pisahkan email dengan koma atau spasi.",
+        "submit": "Pindahkan",
+        "errTarget": "Pilih operator tujuan.",
+        "moved": "{count} klien dipindahkan",
+        "reasons": {
+          "not_source_client": "Bukan klien operator ini",
+          "shared_inbound": "Berada di inbound yang dipakai bersama kedua operator",
+          "no_target_inbound": "Tujuan tidak punya inbound",
+          "needs_group": "Pilih salah satu grup tujuan",
+          "failed": "Tidak dapat dipindahkan"
+        }
+      },
       "deleteConfirm": "Hapus admin ini? Sesinya langsung diakhiri.",
       "errUsername": "Masukkan nama pengguna paling banyak 64 karakter.",
       "errPassword": "Masukkan kata sandi.",

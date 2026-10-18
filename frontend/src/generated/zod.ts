@@ -771,6 +771,26 @@ export const ClientTrafficSchema = z.object({
 });
 export type ClientTraffic = z.infer<typeof ClientTrafficSchema>;
 
+export const ClientTransferRequestSchema = z.object({
+  emails: z.array(z.string()),
+  fromAdminId: z.number().int(),
+  group: z.string(),
+  toAdminId: z.number().int(),
+});
+export type ClientTransferRequest = z.infer<typeof ClientTransferRequestSchema>;
+
+export const ClientTransferResultSchema = z.object({
+  moved: z.array(z.string()),
+  skipped: z.array(z.lazy(() => ClientTransferSkipSchema)),
+});
+export type ClientTransferResult = z.infer<typeof ClientTransferResultSchema>;
+
+export const ClientTransferSkipSchema = z.object({
+  email: z.string(),
+  reason: z.string(),
+});
+export type ClientTransferSkip = z.infer<typeof ClientTransferSkipSchema>;
+
 export const ClientsSummarySchema = z.object({
   active: z.number().int(),
   deactive: z.array(z.string()),

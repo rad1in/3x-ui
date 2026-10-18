@@ -2777,6 +2777,26 @@
       "you": "你",
       "passwordKeep": "留空以保留目前的密碼。",
       "selfNote": "你無法修改自己的角色或存取範圍。",
+      "transfer": {
+        "title": "轉移客戶",
+        "action": "轉移客戶",
+        "hint": "把客戶從此操作員轉移給另一位操作員。此操作員群組中的客戶加入目標群組；此操作員入站上的客戶會附加到目標的入站，並從此操作員的入站上移除。",
+        "target": "轉移給",
+        "group": "目標群組",
+        "groupHint": "當客戶在此操作員的群組中且目標有多個群組時需要選擇。",
+        "emails": "僅這些客戶",
+        "emailsHint": "留空則轉移此操作員可見的全部客戶。電子郵件之間以逗號或空格分隔。",
+        "submit": "轉移",
+        "errTarget": "請選擇接收客戶的操作員。",
+        "moved": "已轉移 {count} 個客戶",
+        "reasons": {
+          "not_source_client": "不是此操作員的客戶",
+          "shared_inbound": "位於兩位操作員共用的入站上",
+          "no_target_inbound": "目標沒有入站",
+          "needs_group": "請選擇目標的一個群組",
+          "failed": "無法轉移"
+        }
+      },
       "deleteConfirm": "刪除此管理員？其工作階段將立即結束。",
       "errUsername": "請輸入不超過 64 個字元的使用者名稱。",
       "errPassword": "請輸入密碼。",

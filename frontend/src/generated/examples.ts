@@ -785,6 +785,29 @@ export const EXAMPLES: Record<string, unknown> = {
     "up": 1048576,
     "uuid": "e18c9a96-71bf-48d4-933f-8b9a46d4290c"
   },
+  "ClientTransferRequest": {
+    "emails": [
+      ""
+    ],
+    "fromAdminId": 2,
+    "group": "team-b",
+    "toAdminId": 3
+  },
+  "ClientTransferResult": {
+    "moved": [
+      ""
+    ],
+    "skipped": [
+      {
+        "email": "alice",
+        "reason": "shared_inbound"
+      }
+    ]
+  },
+  "ClientTransferSkip": {
+    "email": "alice",
+    "reason": "shared_inbound"
+  },
   "ClientsSummary": {
     "active": 1850,
     "deactive": [

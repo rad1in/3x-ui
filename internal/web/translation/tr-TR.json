@@ -2777,6 +2777,26 @@
       "you": "siz",
       "passwordKeep": "Mevcut şifreyi korumak için boş bırakın.",
       "selfNote": "Kendi rolünüzü veya erişiminizi değiştiremezsiniz.",
+      "transfer": {
+        "title": "İstemcileri devret",
+        "action": "İstemcileri devret",
+        "hint": "İstemcileri bu operatörden bir başkasına taşır. Bu operatörün gruplarındaki istemciler hedefin grubuna katılır; bu operatörün gelen bağlantılarındakiler hedefin gelen bağlantılarına eklenir ve bu operatörünkilerden çıkarılır.",
+        "target": "Şuna taşı",
+        "group": "Hedef grup",
+        "groupHint": "İstemciler bu operatörün gruplarındaysa ve hedefin birden fazla grubu varsa gereklidir.",
+        "emails": "Yalnızca bu istemciler",
+        "emailsHint": "Bu operatörün gördüğü tüm istemcileri taşımak için boş bırakın. E-postaları virgül veya boşlukla ayırın.",
+        "submit": "Devret",
+        "errTarget": "İstemcilerin taşınacağı operatörü seçin.",
+        "moved": "{count} istemci taşındı",
+        "reasons": {
+          "not_source_client": "Bu operatörün istemcisi değil",
+          "shared_inbound": "İki operatörün paylaştığı bir gelen bağlantıda",
+          "no_target_inbound": "Hedefin gelen bağlantısı yok",
+          "needs_group": "Hedefin gruplarından birini seçin",
+          "failed": "Taşınamadı"
+        }
+      },
       "deleteConfirm": "Bu yönetici silinsin mi? Oturumu hemen kapatılır.",
       "errUsername": "En fazla 64 karakterlik bir kullanıcı adı girin.",
       "errPassword": "Bir şifre girin.",

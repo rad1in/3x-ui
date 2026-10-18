@@ -2777,6 +2777,26 @@
       "you": "你",
       "passwordKeep": "留空以保留当前密码。",
       "selfNote": "你不能修改自己的角色或访问范围。",
+      "transfer": {
+        "title": "转移客户",
+        "action": "转移客户",
+        "hint": "把客户从此操作员转移给另一位操作员。此操作员分组中的客户加入目标分组；此操作员入站上的客户会附加到目标的入站，并从此操作员的入站上移除。",
+        "target": "转移给",
+        "group": "目标分组",
+        "groupHint": "当客户在此操作员的分组中且目标有多个分组时需要选择。",
+        "emails": "仅这些客户",
+        "emailsHint": "留空则转移此操作员可见的全部客户。邮箱之间用逗号或空格分隔。",
+        "submit": "转移",
+        "errTarget": "请选择接收客户的操作员。",
+        "moved": "已转移 {count} 个客户",
+        "reasons": {
+          "not_source_client": "不是此操作员的客户",
+          "shared_inbound": "位于两位操作员共用的入站上",
+          "no_target_inbound": "目标没有入站",
+          "needs_group": "请选择目标的一个分组",
+          "failed": "无法转移"
+        }
+      },
       "deleteConfirm": "删除此管理员？其会话将立即结束。",
       "errUsername": "请输入不超过 64 个字符的用户名。",
       "errPassword": "请输入密码。",

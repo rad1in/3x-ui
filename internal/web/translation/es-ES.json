@@ -2777,6 +2777,26 @@
       "you": "tú",
       "passwordKeep": "Déjalo vacío para conservar la contraseña actual.",
       "selfNote": "No puedes cambiar tu propio rol ni tu acceso.",
+      "transfer": {
+        "title": "Transferir clientes",
+        "action": "Transferir clientes",
+        "hint": "Mueve clientes de este operador a otro. Los clientes de los grupos de este operador pasan al grupo del destino; los de sus entradas se asocian a las entradas del destino y se desvinculan de las de este operador.",
+        "target": "Mover a",
+        "group": "Grupo de destino",
+        "groupHint": "Necesario cuando los clientes están en grupos de este operador y el destino tiene más de un grupo.",
+        "emails": "Solo estos clientes",
+        "emailsHint": "Déjalo vacío para mover todos los clientes que ve este operador. Separa los correos con coma o espacio.",
+        "submit": "Transferir",
+        "errTarget": "Elige el operador al que mover los clientes.",
+        "moved": "{count} clientes movidos",
+        "reasons": {
+          "not_source_client": "No es cliente de este operador",
+          "shared_inbound": "Está en una entrada que comparten ambos operadores",
+          "no_target_inbound": "El destino no tiene entradas",
+          "needs_group": "Elige uno de los grupos del destino",
+          "failed": "No se pudo mover"
+        }
+      },
       "deleteConfirm": "¿Eliminar este administrador? Su sesión se cierra al instante.",
       "errUsername": "Introduce un nombre de usuario de 64 caracteres como máximo.",
       "errPassword": "Introduce una contraseña.",

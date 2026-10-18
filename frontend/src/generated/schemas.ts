@@ -3130,6 +3130,76 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "ClientTransferRequest": {
+    "description": "ClientTransferRequest hands clients from one operator to another. Emails\nempty means every client the source can see; Group is the target's group the\nsource's group clients move into (optional when the target has only one).",
+    "properties": {
+      "emails": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "fromAdminId": {
+        "example": 2,
+        "type": "integer"
+      },
+      "group": {
+        "example": "team-b",
+        "type": "string"
+      },
+      "toAdminId": {
+        "example": 3,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "emails",
+      "fromAdminId",
+      "group",
+      "toAdminId"
+    ],
+    "type": "object"
+  },
+  "ClientTransferResult": {
+    "description": "ClientTransferResult lists what moved and what stayed.",
+    "properties": {
+      "moved": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "skipped": {
+        "items": {
+          "$ref": "#/components/schemas/ClientTransferSkip"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "moved",
+      "skipped"
+    ],
+    "type": "object"
+  },
+  "ClientTransferSkip": {
+    "description": "ClientTransferSkip names a client left with the source and why.",
+    "properties": {
+      "email": {
+        "example": "alice",
+        "type": "string"
+      },
+      "reason": {
+        "example": "shared_inbound",
+        "type": "string"
+      }
+    },
+    "required": [
+      "email",
+      "reason"
+    ],
+    "type": "object"
+  },
   "ClientsSummary": {
     "description": "ClientsSummary collects per-bucket counts plus the matching email lists so\nthe clients page can render the dashboard stat cards and their hover\npopovers without shipping the full client array. The counters are exact;\nthe lists stop at clientSummaryEmailCap entries and only back the popovers.",
     "properties": {

@@ -2777,6 +2777,26 @@
       "you": "you",
       "passwordKeep": "Leave empty to keep the current password.",
       "selfNote": "You cannot change your own role or access.",
+      "transfer": {
+        "title": "Transfer clients",
+        "action": "Transfer clients",
+        "hint": "Moves clients from this operator to another one. Clients in this operator's groups join the target's group; clients on this operator's inbounds are attached to the target's inbounds and detached from this operator's.",
+        "target": "Move to",
+        "group": "Target group",
+        "groupHint": "Needed when the clients are in this operator's groups and the target has more than one group.",
+        "emails": "Only these clients",
+        "emailsHint": "Leave empty to move every client this operator can see. Separate emails with a comma or a space.",
+        "submit": "Transfer",
+        "errTarget": "Choose the operator to move the clients to.",
+        "moved": "{count} clients moved",
+        "reasons": {
+          "not_source_client": "Not a client of this operator",
+          "shared_inbound": "Sits on an inbound both operators share",
+          "no_target_inbound": "The target has no inbound",
+          "needs_group": "Choose one of the target's groups",
+          "failed": "Could not be moved"
+        }
+      },
       "deleteConfirm": "Delete this admin? They are signed out at once.",
       "errUsername": "Enter a username of at most 64 characters.",
       "errPassword": "Enter a password.",

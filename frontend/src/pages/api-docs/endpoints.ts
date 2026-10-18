@@ -1432,6 +1432,21 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/panel/api/clients/transfer',
+        summary:
+          "Hand clients from one operator to another. Without emails every client the source can see moves. A client in the source's group joins the target's group (group names it; optional when the target has one group); a client on the source's inbounds is attached to the target's inbounds and detached from the source's. A client on an inbound both operators share, or without a usable target group or inbound, stays and is reported in skipped. Owners and admins only.",
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: 'ClientTransferRequest.',
+          },
+        ],
+        responseSchema: 'ClientTransferResult',
+      },
+      {
+        method: 'POST',
         path: '/panel/api/clients/bulkEnable',
         summary:
           'Enable many clients in one call. Emails are grouped by inbound and applied with a single read-modify-write per inbound; the running Xray (local or remote node) is updated to add each user. Note that enabling a client whose quota is exhausted or whose expiry has passed only flips the flag — the traffic loop will disable it again on the next tick. Returns the changed count and per-email skip reasons.',

@@ -35,14 +35,15 @@ func parseInboundIdsQuery(raw string) []int {
 }
 
 type ClientController struct {
-	clientService  service.ClientService
-	inboundService service.InboundService
-	xrayService    service.XrayService
-	settingService service.SettingService
-	happGenerator  service.HappLinkGenerator
-	shortLinks     service.SubShortLinkService
-	subFetches     service.SubFetchService
-	reseller       service.ResellerService
+	clientService   service.ClientService
+	inboundService  service.InboundService
+	xrayService     service.XrayService
+	settingService  service.SettingService
+	happGenerator   service.HappLinkGenerator
+	shortLinks      service.SubShortLinkService
+	subFetches      service.SubFetchService
+	reseller        service.ResellerService
+	transferService service.ClientTransferService
 }
 
 func NewClientController(g *gin.RouterGroup) *ClientController {
@@ -83,6 +84,7 @@ func (a *ClientController) initRouter(g *gin.RouterGroup) {
 	g.POST("/resetAllTraffics", a.resetAllTraffics)
 	g.POST("/delDepleted", a.delDepleted)
 	g.POST("/bulkAdjust", a.bulkAdjust)
+	g.POST("/transfer", a.transfer)
 	g.POST("/bulkEnable", a.bulkEnable)
 	g.POST("/bulkDisable", a.bulkDisable)
 	g.POST("/bulkDel", a.bulkDelete)

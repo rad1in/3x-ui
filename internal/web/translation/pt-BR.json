@@ -2777,6 +2777,26 @@
       "you": "você",
       "passwordKeep": "Deixe em branco para manter a senha atual.",
       "selfNote": "Você não pode alterar a própria função ou o próprio acesso.",
+      "transfer": {
+        "title": "Transferir clientes",
+        "action": "Transferir clientes",
+        "hint": "Move clientes deste operador para outro. Os clientes dos grupos deste operador entram no grupo do destino; os das entradas dele são associados às entradas do destino e desassociados das deste operador.",
+        "target": "Mover para",
+        "group": "Grupo de destino",
+        "groupHint": "Necessário quando os clientes estão em grupos deste operador e o destino tem mais de um grupo.",
+        "emails": "Somente estes clientes",
+        "emailsHint": "Deixe vazio para mover todos os clientes que este operador vê. Separe os e-mails por vírgula ou espaço.",
+        "submit": "Transferir",
+        "errTarget": "Escolha o operador para o qual mover os clientes.",
+        "moved": "{count} clientes movidos",
+        "reasons": {
+          "not_source_client": "Não é cliente deste operador",
+          "shared_inbound": "Está em uma entrada compartilhada pelos dois operadores",
+          "no_target_inbound": "O destino não tem entradas",
+          "needs_group": "Escolha um dos grupos do destino",
+          "failed": "Não foi possível mover"
+        }
+      },
       "deleteConfirm": "Excluir este administrador? A sessão dele é encerrada na hora.",
       "errUsername": "Informe um nome de usuário com no máximo 64 caracteres.",
       "errPassword": "Informe uma senha.",

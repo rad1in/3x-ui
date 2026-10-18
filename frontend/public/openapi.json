@@ -3156,6 +3156,76 @@
         ],
         "type": "object"
       },
+      "ClientTransferRequest": {
+        "description": "ClientTransferRequest hands clients from one operator to another. Emails\nempty means every client the source can see; Group is the target's group the\nsource's group clients move into (optional when the target has only one).",
+        "properties": {
+          "emails": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "fromAdminId": {
+            "example": 2,
+            "type": "integer"
+          },
+          "group": {
+            "example": "team-b",
+            "type": "string"
+          },
+          "toAdminId": {
+            "example": 3,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "emails",
+          "fromAdminId",
+          "group",
+          "toAdminId"
+        ],
+        "type": "object"
+      },
+      "ClientTransferResult": {
+        "description": "ClientTransferResult lists what moved and what stayed.",
+        "properties": {
+          "moved": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "skipped": {
+            "items": {
+              "$ref": "#/components/schemas/ClientTransferSkip"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "moved",
+          "skipped"
+        ],
+        "type": "object"
+      },
+      "ClientTransferSkip": {
+        "description": "ClientTransferSkip names a client left with the source and why.",
+        "properties": {
+          "email": {
+            "example": "alice",
+            "type": "string"
+          },
+          "reason": {
+            "example": "shared_inbound",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "reason"
+        ],
+        "type": "object"
+      },
       "ClientsSummary": {
         "description": "ClientsSummary collects per-bucket counts plus the matching email lists so\nthe clients page can render the dashboard stat cards and their hover\npopovers without shipping the full client array. The counters are exact;\nthe lists stop at clientSummaryEmailCap entries and only back the popovers.",
         "properties": {
@@ -12310,6 +12380,71 @@
                       {
                         "email": "carol",
                         "reason": "unlimited expiry"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/transfer": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Hand clients from one operator to another. Without emails every client the source can see moves. A client in the source's group joins the target's group (group names it; optional when the target has one group); a client on the source's inbounds is attached to the target's inbounds and detached from the source's. A client on an inbound both operators share, or without a usable target group or inbound, stays and is reported in skipped. Owners and admins only.",
+        "operationId": "post_panel_api_clients_transfer",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "ClientTransferRequest."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/ClientTransferResult"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "moved": [
+                      ""
+                    ],
+                    "skipped": [
+                      {
+                        "email": "alice",
+                        "reason": "shared_inbound"
                       }
                     ]
                   }

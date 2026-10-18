@@ -733,6 +733,23 @@ export interface ClientTraffic {
   uuid: string;
 }
 
+export interface ClientTransferRequest {
+  emails: string[];
+  fromAdminId: number;
+  group: string;
+  toAdminId: number;
+}
+
+export interface ClientTransferResult {
+  moved: string[];
+  skipped: ClientTransferSkip[];
+}
+
+export interface ClientTransferSkip {
+  email: string;
+  reason: string;
+}
+
 export interface ClientsSummary {
   active: number;
   deactive: string[];

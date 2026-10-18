@@ -2,24 +2,35 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, ConfigProvider, Layout, Popconfirm, Space, Table, Tag, message } from 'antd';
 import type { TableColumnsType } from 'antd';
-import { DeleteOutlined, EditOutlined, PlusOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusOutlined,
+  SwapOutlined,
+  UserSwitchOutlined,
+} from '@ant-design/icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { keys } from '@/api/queryKeys';
 import { useAdminList } from '@/api/queries/useAdminList';
 import { useCurrentAdmin } from '@/api/queries/useCurrentAdmin';
 import { useInboundOptions } from '@/api/queries/useInboundOptions';
-import type { AdminView } from '@/generated/zod';
+import {
+  ClientTransferResultSchema,
+  type AdminView,
+  type ClientTransferResult,
+} from '@/generated/zod';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import { useTheme } from '@/hooks/useTheme';
 import AppSidebar from '@/layouts/AppSidebar';
 import { GroupSummaryListSchema } from '@/schemas/client';
-import type { AdminFormValues } from '@/schemas/admin';
+import type { AdminFormValues, TransferFormValues } from '@/schemas/admin';
 import { HttpUtil } from '@/utils';
 import { setMessageInstance } from '@/utils/messageBus';
 import { parseMsg } from '@/utils/zodValidate';
 import { formatCredit } from '@/pages/reseller/credit';
 import AdminFormModal from './AdminFormModal';
+import TransferClientsModal from './TransferClientsModal';
 import './AdminsPage.css';
 
 const JSON_HEADERS = { headers: { 'Content-Type': 'application/json' } } as const;
@@ -76,6 +87,28 @@ export default function AdminsPage() {
       if (!msg?.success) return;
       setModalOpen(false);
       await refresh();
+    },
+  });
+  const [transferFrom, setTransferFrom] = useState<AdminView | null>(null);
+  const [transferResult, setTransferResult] = useState<ClientTransferResult | null>(null);
+  const transfer = useMutation({
+    mutationFn: async (values: TransferFormValues) => {
+      const msg = await HttpUtil.post(
+        '/panel/api/clients/transfer',
+        {
+          fromAdminId: transferFrom?.id,
+          toAdminId: values.toAdminId,
+          group: values.group,
+          emails: values.emails,
+        },
+        JSON_HEADERS,
+      );
+      if (!msg?.success) return null;
+      return parseMsg(msg, ClientTransferResultSchema, 'clients/transfer').obj ?? null;
+    },
+    onSuccess: (result) => {
+      setTransferResult(result);
+      if (result) void queryClient.invalidateQueries({ queryKey: keys.clients.root() });
     },
   });
   const remove = useMutation({
@@ -135,9 +168,20 @@ export default function AdminsPage() {
       render: (credit: number, a) => (a.role === 'operator' ? formatCredit(credit) : ''),
     },
     {
-      width: 90,
+      width: 130,
       render: (_, a) => (
         <Space size={4}>
+          {a.role === 'operator' && (
+            <Button
+              size="small"
+              icon={<SwapOutlined />}
+              aria-label={t('pages.admins.transfer.action')}
+              onClick={() => {
+                setTransferResult(null);
+                setTransferFrom(a);
+              }}
+            />
+          )}
           <Button
             size="small"
             icon={<EditOutlined />}
@@ -207,6 +251,15 @@ export default function AdminsPage() {
               groupOptions={groupNames}
               onClose={() => setModalOpen(false)}
               onSubmit={(values) => save.mutate(values)}
+            />
+            <TransferClientsModal
+              open={transferFrom !== null}
+              from={transferFrom}
+              operators={admins.filter((a) => a.role === 'operator' && a.id !== transferFrom?.id)}
+              saving={transfer.isPending}
+              result={transferResult}
+              onClose={() => setTransferFrom(null)}
+              onSubmit={(values) => transfer.mutate(values)}
             />
           </Layout.Content>
         </Layout>
