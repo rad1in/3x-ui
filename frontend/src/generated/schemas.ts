@@ -2298,6 +2298,94 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "CleanIPResult": {
+    "description": "CleanIPResult is the latest probe of one CDN address from the panel host.\nEach scan replaces the whole table, so a row is never older than the last scan.",
+    "properties": {
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "ip": {
+        "example": "104.16.124.96",
+        "type": "string"
+      },
+      "latencyMs": {
+        "example": 84,
+        "type": "integer"
+      },
+      "lossPct": {
+        "description": "LossPct is the share of failed attempts among the samples taken, 0-100.",
+        "example": 0,
+        "type": "integer"
+      },
+      "ok": {
+        "example": true,
+        "type": "boolean"
+      },
+      "port": {
+        "example": 443,
+        "type": "integer"
+      },
+      "reason": {
+        "type": "string"
+      },
+      "scannedAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "id",
+      "ip",
+      "latencyMs",
+      "lossPct",
+      "ok",
+      "port",
+      "reason",
+      "scannedAt"
+    ],
+    "type": "object"
+  },
+  "CleanIPStatus": {
+    "description": "CleanIPStatus is the progress of the running or most recent scan.",
+    "properties": {
+      "done": {
+        "example": 256,
+        "type": "integer"
+      },
+      "error": {
+        "type": "string"
+      },
+      "finishedAt": {
+        "example": 1760000042000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "running": {
+        "example": false,
+        "type": "boolean"
+      },
+      "startedAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "total": {
+        "example": 256,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "done",
+      "error",
+      "finishedAt",
+      "running",
+      "startedAt",
+      "total"
+    ],
+    "type": "object"
+  },
   "Client": {
     "description": "Client represents a client configuration for Xray inbounds with traffic limits and settings.",
     "properties": {

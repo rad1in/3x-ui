@@ -579,6 +579,28 @@ export const CardPayConfigSchema = z.object({
 });
 export type CardPayConfig = z.infer<typeof CardPayConfigSchema>;
 
+export const CleanIPResultSchema = z.object({
+  id: z.number().int(),
+  ip: z.string(),
+  latencyMs: z.number().int(),
+  lossPct: z.number().int(),
+  ok: z.boolean(),
+  port: z.number().int(),
+  reason: z.string(),
+  scannedAt: z.number().int(),
+});
+export type CleanIPResult = z.infer<typeof CleanIPResultSchema>;
+
+export const CleanIPStatusSchema = z.object({
+  done: z.number().int(),
+  error: z.string(),
+  finishedAt: z.number().int(),
+  running: z.boolean(),
+  startedAt: z.number().int(),
+  total: z.number().int(),
+});
+export type CleanIPStatus = z.infer<typeof CleanIPStatusSchema>;
+
 export const ClientSchema = z.object({
   adTag: z.string().optional(),
   allowedIPs: z.array(z.string()).optional(),

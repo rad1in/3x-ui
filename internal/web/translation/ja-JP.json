@@ -2594,6 +2594,37 @@
       "bulkDelete": "削除",
       "bulkDeleteConfirm": "選択した {count} 件のホストを削除しますか？",
       "deleteConfirmTitle": "ホスト「{name}」を削除しますか？",
+      "cleanIp": {
+        "open": "クリーン IP スキャン",
+        "title": "クリーン IP スキャナー",
+        "existingHost": "既存のホスト",
+        "newHostOnInbound": "インバウンドに新しいホスト",
+        "targets": "テストするアドレス",
+        "targetsHint": "IP、CIDR 範囲 (104.16.0.0/24)、IPv4 範囲をカンマまたは改行で区切って入力します。大きな範囲はサンプリングされます。",
+        "sni": "SNI (任意)",
+        "sniHint": "SNI を指定すると、各試行はその名前と証明書が一致する TLS ハンドシェイクになります。未指定の場合は TCP 接続のみをテストします。",
+        "port": "ポート",
+        "samples": "アドレスごとの試行回数",
+        "start": "スキャン開始",
+        "ip": "アドレス",
+        "latency": "レイテンシ",
+        "loss": "損失",
+        "status": "状態",
+        "reachable": "到達可能",
+        "apply": "このアドレスを使用",
+        "applyTitle": "{ip} の適用先",
+        "destination": "適用先",
+        "modeReplace": "ホストのアドレスを置き換え",
+        "modeAdd": "ホストのアドレスに追加",
+        "reasons": {
+          "timeout": "タイムアウト",
+          "refused": "拒否",
+          "certificate": "証明書の不一致",
+          "reset": "接続リセット",
+          "blocked": "ブロックされたアドレス",
+          "failed": "失敗"
+        }
+      },
       "sections": {
         "basic": "基本",
         "security": "セキュリティ",
@@ -2691,6 +2722,7 @@
         "add": "ホストを追加",
         "update": "ホストを更新",
         "delete": "ホストを削除",
+        "cleanIpScan": "スキャンを開始できませんでした",
         "badTag": "無効なタグ",
         "badVlessRoute": "0〜65535 の単一の数値を入力してください"
       }

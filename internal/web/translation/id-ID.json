@@ -2594,6 +2594,37 @@
       "bulkDelete": "Hapus",
       "bulkDeleteConfirm": "Hapus {count} host yang dipilih?",
       "deleteConfirmTitle": "Hapus host \"{name}\"?",
+      "cleanIp": {
+        "open": "Pindai IP bersih",
+        "title": "Pemindai IP bersih",
+        "existingHost": "Host yang ada",
+        "newHostOnInbound": "Host baru pada inbound",
+        "targets": "Alamat yang diuji",
+        "targetsHint": "IP, rentang CIDR (104.16.0.0/24) atau rentang IPv4, dipisahkan koma atau baris baru. Rentang besar diambil sampelnya.",
+        "sni": "SNI (opsional)",
+        "sniHint": "Dengan SNI, setiap percobaan adalah handshake TLS yang sertifikatnya harus cocok dengan nama itu; tanpa SNI hanya koneksi TCP yang diuji.",
+        "port": "Port",
+        "samples": "Percobaan per alamat",
+        "start": "Mulai pindai",
+        "ip": "Alamat",
+        "latency": "Latensi",
+        "loss": "Kehilangan",
+        "status": "Status",
+        "reachable": "Dapat dijangkau",
+        "apply": "Gunakan alamat ini",
+        "applyTitle": "Gunakan {ip} untuk",
+        "destination": "Terapkan ke",
+        "modeReplace": "Ganti alamat host",
+        "modeAdd": "Tambahkan ke alamat host",
+        "reasons": {
+          "timeout": "Waktu habis",
+          "refused": "Ditolak",
+          "certificate": "Sertifikat tidak cocok",
+          "reset": "Koneksi direset",
+          "blocked": "Alamat diblokir",
+          "failed": "Gagal"
+        }
+      },
       "sections": {
         "basic": "Dasar",
         "security": "Keamanan",
@@ -2691,6 +2722,7 @@
         "add": "Tambah host",
         "update": "Perbarui host",
         "delete": "Hapus host",
+        "cleanIpScan": "Gagal memulai pemindaian",
         "badTag": "Tag tidak valid",
         "badVlessRoute": "Masukkan satu angka antara 0 dan 65535"
       }

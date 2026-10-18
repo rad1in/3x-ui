@@ -11,7 +11,8 @@ import (
 )
 
 type HostController struct {
-	hostService service.HostService
+	hostService    service.HostService
+	cleanIPService service.CleanIPService
 }
 
 func NewHostController(g *gin.RouterGroup) *HostController {
@@ -34,6 +35,11 @@ func (a *HostController) initRouter(g *gin.RouterGroup) {
 	g.POST("/bulk/add", a.add)
 	g.POST("/bulk/setEnable", a.bulkSetEnable)
 	g.POST("/bulk/del", a.bulkDel)
+
+	g.POST("/cleanip/scan", a.cleanIPScan)
+	g.GET("/cleanip/status", a.cleanIPStatus)
+	g.GET("/cleanip/results", a.cleanIPResults)
+	g.POST("/cleanip/apply", a.cleanIPApply)
 }
 
 func (a *HostController) list(c *gin.Context) {
@@ -174,4 +180,48 @@ func (a *HostController) bulkDel(c *gin.Context) {
 		return
 	}
 	jsonMsg(c, I18nWeb(c, "pages.hosts.toasts.delete"), nil)
+}
+
+func (a *HostController) cleanIPScan(c *gin.Context) {
+	var req service.CleanIPScanRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.hosts.toasts.cleanIpScan"), err)
+		return
+	}
+	if err := a.cleanIPService.Start(req); err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.hosts.toasts.cleanIpScan"), err)
+		return
+	}
+	jsonObj(c, a.cleanIPService.Status(), nil)
+}
+
+func (a *HostController) cleanIPStatus(c *gin.Context) {
+	jsonObj(c, a.cleanIPService.Status(), nil)
+}
+
+func (a *HostController) cleanIPResults(c *gin.Context) {
+	rows, err := a.cleanIPService.Results()
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.hosts.toasts.list"), err)
+		return
+	}
+	jsonObj(c, rows, nil)
+}
+
+func (a *HostController) cleanIPApply(c *gin.Context) {
+	var req struct {
+		IP        string `json:"ip"`
+		GroupId   string `json:"groupId"`
+		InboundId int    `json:"inboundId"`
+		Mode      string `json:"mode"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.hosts.toasts.update"), err)
+		return
+	}
+	if _, err := a.hostService.ApplyCleanIP(req.IP, req.GroupId, req.InboundId, req.Mode); err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.hosts.toasts.update"), err)
+		return
+	}
+	jsonMsg(c, I18nWeb(c, "pages.hosts.toasts.update"), nil)
 }

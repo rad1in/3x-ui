@@ -2594,6 +2594,37 @@
       "bulkDelete": "刪除",
       "bulkDeleteConfirm": "刪除所選的 {count} 個 Host？",
       "deleteConfirmTitle": "刪除 Host「{name}」？",
+      "cleanIp": {
+        "open": "乾淨 IP 掃描",
+        "title": "乾淨 IP 掃描器",
+        "existingHost": "現有主機",
+        "newHostOnInbound": "入站上的新主機",
+        "targets": "待測試的位址",
+        "targetsHint": "IP、CIDR 網段(104.16.0.0/24)或 IPv4 範圍,以逗號或換行分隔。較大的範圍會被抽樣。",
+        "sni": "SNI(選填)",
+        "sniHint": "指定 SNI 時,每次嘗試都是一次 TLS 握手,其憑證必須與該名稱相符;未指定則只測試 TCP 連線。",
+        "port": "連接埠",
+        "samples": "每個位址的嘗試次數",
+        "start": "開始掃描",
+        "ip": "位址",
+        "latency": "延遲",
+        "loss": "封包遺失",
+        "status": "狀態",
+        "reachable": "可連線",
+        "apply": "使用此位址",
+        "applyTitle": "將 {ip} 用於",
+        "destination": "套用到",
+        "modeReplace": "取代主機的位址",
+        "modeAdd": "附加到主機的位址",
+        "reasons": {
+          "timeout": "逾時",
+          "refused": "被拒絕",
+          "certificate": "憑證不符",
+          "reset": "連線被重設",
+          "blocked": "位址被封鎖",
+          "failed": "失敗"
+        }
+      },
       "sections": {
         "basic": "基本",
         "security": "安全",
@@ -2691,6 +2722,7 @@
         "add": "新增 Host",
         "update": "更新 Host",
         "delete": "刪除 Host",
+        "cleanIpScan": "無法開始掃描",
         "badTag": "無效的標籤",
         "badVlessRoute": "請輸入 0 到 65535 之間的單一數字"
       }

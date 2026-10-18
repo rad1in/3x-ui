@@ -566,6 +566,24 @@ export const EXAMPLES: Record<string, unknown> = {
     "holderName": "Ali Rezaei",
     "instructions": ""
   },
+  "CleanIPResult": {
+    "id": 1,
+    "ip": "104.16.124.96",
+    "latencyMs": 84,
+    "lossPct": 0,
+    "ok": true,
+    "port": 443,
+    "reason": "",
+    "scannedAt": 1760000000000
+  },
+  "CleanIPStatus": {
+    "done": 256,
+    "error": "",
+    "finishedAt": 1760000042000,
+    "running": false,
+    "startedAt": 1760000000000,
+    "total": 256
+  },
   "Client": {
     "adTag": "0123456789abcdef0123456789abcdef",
     "allowedIPs": [

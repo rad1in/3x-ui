@@ -2594,6 +2594,37 @@
       "bulkDelete": "Eliminar",
       "bulkDeleteConfirm": "¿Eliminar {count} host(s) seleccionado(s)?",
       "deleteConfirmTitle": "¿Eliminar el host \"{name}\"?",
+      "cleanIp": {
+        "open": "Escaneo de IP limpias",
+        "title": "Escáner de IP limpias",
+        "existingHost": "Host existente",
+        "newHostOnInbound": "Nuevo host en la entrada",
+        "targets": "Direcciones a probar",
+        "targetsHint": "IP, rangos CIDR (104.16.0.0/24) o rangos IPv4, separados por comas o saltos de línea. Los rangos grandes se muestrean.",
+        "sni": "SNI (opcional)",
+        "sniHint": "Con SNI cada intento es un handshake TLS cuyo certificado debe coincidir con ese nombre; sin él solo se prueba la conexión TCP.",
+        "port": "Puerto",
+        "samples": "Intentos por dirección",
+        "start": "Iniciar escaneo",
+        "ip": "Dirección",
+        "latency": "Latencia",
+        "loss": "Pérdida",
+        "status": "Estado",
+        "reachable": "Accesible",
+        "apply": "Usar esta dirección",
+        "applyTitle": "Usar {ip} en",
+        "destination": "Aplicar a",
+        "modeReplace": "Reemplazar las direcciones del host",
+        "modeAdd": "Añadir a las direcciones del host",
+        "reasons": {
+          "timeout": "Tiempo agotado",
+          "refused": "Rechazada",
+          "certificate": "Certificado no coincide",
+          "reset": "Conexión restablecida",
+          "blocked": "Dirección bloqueada",
+          "failed": "Fallo"
+        }
+      },
       "sections": {
         "basic": "Básico",
         "security": "Seguridad",
@@ -2691,6 +2722,7 @@
         "add": "Agregar host",
         "update": "Actualizar host",
         "delete": "Eliminar host",
+        "cleanIpScan": "No se pudo iniciar el escaneo",
         "badTag": "Etiqueta no válida",
         "badVlessRoute": "Introduce un único número entre 0 y 65535"
       }

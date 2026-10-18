@@ -2594,6 +2594,37 @@
       "bulkDelete": "Xóa",
       "bulkDeleteConfirm": "Xóa {count} host đã chọn?",
       "deleteConfirmTitle": "Xóa host \"{name}\"?",
+      "cleanIp": {
+        "open": "Quét IP sạch",
+        "title": "Trình quét IP sạch",
+        "existingHost": "Host hiện có",
+        "newHostOnInbound": "Host mới trên inbound",
+        "targets": "Địa chỉ cần kiểm tra",
+        "targetsHint": "IP, dải CIDR (104.16.0.0/24) hoặc dải IPv4, ngăn cách bằng dấu phẩy hoặc xuống dòng. Dải lớn sẽ được lấy mẫu.",
+        "sni": "SNI (tùy chọn)",
+        "sniHint": "Với SNI, mỗi lần thử là một bắt tay TLS mà chứng chỉ phải khớp tên đó; không có SNI thì chỉ kiểm tra kết nối TCP.",
+        "port": "Cổng",
+        "samples": "Số lần thử mỗi địa chỉ",
+        "start": "Bắt đầu quét",
+        "ip": "Địa chỉ",
+        "latency": "Độ trễ",
+        "loss": "Mất gói",
+        "status": "Trạng thái",
+        "reachable": "Truy cập được",
+        "apply": "Dùng địa chỉ này",
+        "applyTitle": "Dùng {ip} cho",
+        "destination": "Áp dụng cho",
+        "modeReplace": "Thay thế địa chỉ của host",
+        "modeAdd": "Thêm vào địa chỉ của host",
+        "reasons": {
+          "timeout": "Hết thời gian",
+          "refused": "Bị từ chối",
+          "certificate": "Chứng chỉ không khớp",
+          "reset": "Kết nối bị đặt lại",
+          "blocked": "Địa chỉ bị chặn",
+          "failed": "Thất bại"
+        }
+      },
       "sections": {
         "basic": "Cơ bản",
         "security": "Bảo mật",
@@ -2691,6 +2722,7 @@
         "add": "Thêm host",
         "update": "Cập nhật host",
         "delete": "Xóa host",
+        "cleanIpScan": "Không thể bắt đầu quét",
         "badTag": "Tag không hợp lệ",
         "badVlessRoute": "Nhập một số duy nhất từ 0 đến 65535"
       }

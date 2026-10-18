@@ -552,6 +552,26 @@ export interface CardPayConfig {
   instructions: string;
 }
 
+export interface CleanIPResult {
+  id: number;
+  ip: string;
+  latencyMs: number;
+  lossPct: number;
+  ok: boolean;
+  port: number;
+  reason: string;
+  scannedAt: number;
+}
+
+export interface CleanIPStatus {
+  done: number;
+  error: string;
+  finishedAt: number;
+  running: boolean;
+  startedAt: number;
+  total: number;
+}
+
 export interface Client {
   adTag?: string;
   allowedIPs?: string[];

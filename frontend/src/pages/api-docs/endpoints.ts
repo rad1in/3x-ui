@@ -2094,6 +2094,35 @@ export const sections: readonly Section[] = [
         summary: 'Delete many host groups in one call.',
         body: '{\n  "ids": ["abc-123", "def-456"]\n}',
       },
+      {
+        method: 'POST',
+        path: '/panel/api/hosts/cleanip/scan',
+        summary:
+          'Start a background probe of CDN addresses from the panel host. targets takes IPs, CIDRs and a-b IPv4 ranges; with sni set, each attempt is a verified TLS handshake.',
+        body: '{\n  "targets": "104.16.0.0/24, 172.64.32.1",\n  "port": 443,\n  "sni": "cdn.example.com",\n  "samples": 3,\n  "timeoutMs": 2000\n}',
+        responseSchema: 'CleanIPStatus',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/hosts/cleanip/status',
+        summary: 'Progress of the running or most recent clean-IP scan.',
+        responseSchema: 'CleanIPStatus',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/hosts/cleanip/results',
+        summary:
+          'Results of the last clean-IP scan: reachable addresses first, by packet loss then latency.',
+        responseSchema: 'CleanIPResult',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/hosts/cleanip/apply',
+        summary:
+          'Point a subscription host at a scanned address: replace or add it on a host group, or add a new host to an inbound.',
+        body: '{\n  "ip": "104.16.1.2",\n  "groupId": "abc-123",\n  "mode": "replace"\n}',
+      },
     ],
   },
 

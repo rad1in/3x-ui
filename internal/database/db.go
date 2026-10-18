@@ -117,6 +117,7 @@ func allModels() []any {
 		&model.DiscountCode{},
 		&model.WalletEntry{},
 		&model.ReferralCode{},
+		&model.CleanIPResult{},
 	}
 }
 

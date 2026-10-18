@@ -122,6 +122,22 @@ formats** or **scoped to specific nodes**.
   private while clients connect through the CDN edge.
 </Callout>
 
+### Clean IP scanner
+
+**Hosts → Clean IP scan** probes a list of CDN addresses from the panel host and
+ranks them by packet loss and latency. Enter IPs, CIDR ranges or `a.b.c.d-e.f.g.h`
+ranges; a range larger than 2048 addresses is sampled at random. Give an SNI to
+make each attempt a TLS handshake whose certificate must match that name, so an
+address that is reachable but hijacked is reported as a certificate mismatch.
+Without an SNI only the TCP connection is tested.
+
+A reachable address can be applied to an existing host (replacing or extending
+its addresses) or added as a new host on an inbound. Loopback, private and
+link-local addresses are never probed. The scan runs on the panel host, which is
+usually outside the network that filters your clients: an address that is clean
+there may still be blocked for them, so treat the result as a shortlist and
+verify the chosen address from a client.
+
 ## Related
 
 <Cards>

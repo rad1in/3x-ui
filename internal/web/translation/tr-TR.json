@@ -2594,6 +2594,37 @@
       "bulkDelete": "Sil",
       "bulkDeleteConfirm": "Seçili {count} host silinsin mi?",
       "deleteConfirmTitle": "\"{name}\" host'u silinsin mi?",
+      "cleanIp": {
+        "open": "Temiz IP taraması",
+        "title": "Temiz IP tarayıcısı",
+        "existingHost": "Mevcut ana makine",
+        "newHostOnInbound": "Gelen bağlantıda yeni ana makine",
+        "targets": "Test edilecek adresler",
+        "targetsHint": "IP'ler, CIDR aralıkları (104.16.0.0/24) veya IPv4 aralıkları; virgül veya yeni satırla ayrılır. Büyük aralıklardan örnekleme yapılır.",
+        "sni": "SNI (isteğe bağlı)",
+        "sniHint": "SNI ile her deneme, sertifikası bu adla eşleşmesi gereken bir TLS el sıkışmasıdır; SNI olmadan yalnızca TCP bağlantısı denenir.",
+        "port": "Port",
+        "samples": "Adres başına deneme",
+        "start": "Taramayı başlat",
+        "ip": "Adres",
+        "latency": "Gecikme",
+        "loss": "Kayıp",
+        "status": "Durum",
+        "reachable": "Erişilebilir",
+        "apply": "Bu adresi kullan",
+        "applyTitle": "{ip} adresini şuna uygula",
+        "destination": "Uygulanacak yer",
+        "modeReplace": "Ana makinenin adreslerini değiştir",
+        "modeAdd": "Ana makinenin adreslerine ekle",
+        "reasons": {
+          "timeout": "Zaman aşımı",
+          "refused": "Reddedildi",
+          "certificate": "Sertifika eşleşmiyor",
+          "reset": "Bağlantı sıfırlandı",
+          "blocked": "Engellenen adres",
+          "failed": "Başarısız"
+        }
+      },
       "sections": {
         "basic": "Temel",
         "security": "Güvenlik",
@@ -2691,6 +2722,7 @@
         "add": "Host ekle",
         "update": "Host'u güncelle",
         "delete": "Host'u sil",
+        "cleanIpScan": "Tarama başlatılamadı",
         "badTag": "Geçersiz etiket",
         "badVlessRoute": "0 ile 65535 arasında tek bir sayı girin"
       }
