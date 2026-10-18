@@ -2051,6 +2051,14 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/panel/api/setting/testPush',
+        summary:
+          'Send one test message to a push channel (ntfy, Gotify or Slack) using the saved settings. Works while the channel is switched off.',
+        body: '{\n  "channel": "ntfy"\n}',
+        response: '{\n  "success": true,\n  "msg": "Test notification sent"\n}',
+      },
+      {
+        method: 'POST',
         path: '/panel/api/setting/backupNow',
         summary:
           'Run the scheduled backup once with the saved settings: a gzipped database backup to the local folder and/or the S3 bucket, pruning beyond backupKeep. Returns one result per destination.',

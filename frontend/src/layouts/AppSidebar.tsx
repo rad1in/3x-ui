@@ -6,6 +6,7 @@ import { Drawer, Layout, Menu, Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
 import {
   ApiOutlined,
+  BellOutlined,
   BranchesOutlined,
   ApartmentOutlined,
   AppstoreOutlined,
@@ -286,6 +287,11 @@ export default function AppSidebar() {
         key: '/settings#webhooks',
         icon: <BranchesOutlined />,
         label: t('pages.settings.webhookSettings'),
+      },
+      {
+        key: '/settings#push',
+        icon: <BellOutlined />,
+        label: t('pages.settings.pushSettings'),
       },
       {
         key: '/settings#backups',

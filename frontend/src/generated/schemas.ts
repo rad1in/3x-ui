@@ -93,6 +93,18 @@ export const SCHEMAS: Record<string, unknown> = {
       "externalTrafficInformURI": {
         "type": "string"
       },
+      "gotifyEnable": {
+        "type": "boolean"
+      },
+      "gotifyEvents": {
+        "type": "string"
+      },
+      "gotifyToken": {
+        "type": "string"
+      },
+      "gotifyUrl": {
+        "type": "string"
+      },
       "happLinkEnable": {
         "type": "boolean"
       },
@@ -167,6 +179,22 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapVlessField": {
         "type": "string"
       },
+      "ntfyEnable": {
+        "description": "Push channels: each posts the events it has ticked to ntfy, Gotify or a Slack incoming webhook.",
+        "type": "boolean"
+      },
+      "ntfyEvents": {
+        "type": "string"
+      },
+      "ntfyServer": {
+        "type": "string"
+      },
+      "ntfyToken": {
+        "type": "string"
+      },
+      "ntfyTopic": {
+        "type": "string"
+      },
       "outboundDownThreshold": {
         "maximum": 100,
         "minimum": 1,
@@ -207,6 +235,15 @@ export const SCHEMAS: Record<string, unknown> = {
         "maximum": 525600,
         "minimum": 1,
         "type": "integer"
+      },
+      "slackEnable": {
+        "type": "boolean"
+      },
+      "slackEvents": {
+        "type": "string"
+      },
+      "slackWebhookUrl": {
+        "type": "string"
       },
       "smtpCpu": {
         "maximum": 100,
@@ -668,6 +705,10 @@ export const SCHEMAS: Record<string, unknown> = {
       "externalSubUserAgent",
       "externalTrafficInformEnable",
       "externalTrafficInformURI",
+      "gotifyEnable",
+      "gotifyEvents",
+      "gotifyToken",
+      "gotifyUrl",
       "happLinkEnable",
       "ipLimitAllowlist",
       "ldapAutoCreate",
@@ -691,6 +732,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapUserAttr",
       "ldapUserFilter",
       "ldapVlessField",
+      "ntfyEnable",
+      "ntfyEvents",
+      "ntfyServer",
+      "ntfyToken",
+      "ntfyTopic",
       "outboundDownThreshold",
       "pageSize",
       "panelBrandColor",
@@ -702,6 +748,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "remarkTemplate",
       "restartXrayOnClientDisable",
       "sessionMaxAge",
+      "slackEnable",
+      "slackEvents",
+      "slackWebhookUrl",
       "smtpCpu",
       "smtpEnable",
       "smtpEnabledEvents",
@@ -934,6 +983,18 @@ export const SCHEMAS: Record<string, unknown> = {
       "externalTrafficInformURI": {
         "type": "string"
       },
+      "gotifyEnable": {
+        "type": "boolean"
+      },
+      "gotifyEvents": {
+        "type": "string"
+      },
+      "gotifyToken": {
+        "type": "string"
+      },
+      "gotifyUrl": {
+        "type": "string"
+      },
       "happLinkEnable": {
         "type": "boolean"
       },
@@ -946,10 +1007,19 @@ export const SCHEMAS: Record<string, unknown> = {
       "hasDiscordBotToken": {
         "type": "boolean"
       },
+      "hasGotifyToken": {
+        "type": "boolean"
+      },
       "hasLdapPassword": {
         "type": "boolean"
       },
       "hasNordSecret": {
+        "type": "boolean"
+      },
+      "hasNtfyToken": {
+        "type": "boolean"
+      },
+      "hasSlackWebhookUrl": {
         "type": "boolean"
       },
       "hasSmtpPassword": {
@@ -1038,6 +1108,22 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapVlessField": {
         "type": "string"
       },
+      "ntfyEnable": {
+        "description": "Push channels: each posts the events it has ticked to ntfy, Gotify or a Slack incoming webhook.",
+        "type": "boolean"
+      },
+      "ntfyEvents": {
+        "type": "string"
+      },
+      "ntfyServer": {
+        "type": "string"
+      },
+      "ntfyToken": {
+        "type": "string"
+      },
+      "ntfyTopic": {
+        "type": "string"
+      },
       "outboundDownThreshold": {
         "maximum": 100,
         "minimum": 1,
@@ -1078,6 +1164,15 @@ export const SCHEMAS: Record<string, unknown> = {
         "maximum": 525600,
         "minimum": 1,
         "type": "integer"
+      },
+      "slackEnable": {
+        "type": "boolean"
+      },
+      "slackEvents": {
+        "type": "string"
+      },
+      "slackWebhookUrl": {
+        "type": "string"
       },
       "smtpCpu": {
         "maximum": 100,
@@ -1539,12 +1634,19 @@ export const SCHEMAS: Record<string, unknown> = {
       "externalSubUserAgent",
       "externalTrafficInformEnable",
       "externalTrafficInformURI",
+      "gotifyEnable",
+      "gotifyEvents",
+      "gotifyToken",
+      "gotifyUrl",
       "happLinkEnable",
       "hasApiToken",
       "hasBackupS3Secret",
       "hasDiscordBotToken",
+      "hasGotifyToken",
       "hasLdapPassword",
       "hasNordSecret",
+      "hasNtfyToken",
+      "hasSlackWebhookUrl",
       "hasSmtpPassword",
       "hasTgBotToken",
       "hasTwoFactorToken",
@@ -1572,6 +1674,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapUserAttr",
       "ldapUserFilter",
       "ldapVlessField",
+      "ntfyEnable",
+      "ntfyEvents",
+      "ntfyServer",
+      "ntfyToken",
+      "ntfyTopic",
       "outboundDownThreshold",
       "pageSize",
       "panelBrandColor",
@@ -1583,6 +1690,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "remarkTemplate",
       "restartXrayOnClientDisable",
       "sessionMaxAge",
+      "slackEnable",
+      "slackEvents",
+      "slackWebhookUrl",
       "smtpCpu",
       "smtpEnable",
       "smtpEnabledEvents",

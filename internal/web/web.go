@@ -40,6 +40,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/discord"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/email"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/panel"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/service/push"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/tgbot"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/webhook"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/websocket"
@@ -132,6 +133,7 @@ type Server struct {
 	tgbotService   tgbot.Tgbot
 	discordService *discord.DiscordService
 	webhooks       *webhook.Sender
+	pushChannels   *push.Sender
 	discordGateway *discord.GatewayClient
 
 	wsHub *websocket.Hub
@@ -717,6 +719,17 @@ func (s *Server) start(restartXray bool, startTgBot bool) (err error) {
 	s.bus.Subscribe("webhook", s.webhooks.HandleEvent)
 	controller.SetTestWebhookFunc(s.webhooks.Test)
 
+	s.pushChannels = push.New(func() []push.Channel {
+		c := settingSvc.PushConfig()
+		return []push.Channel{
+			{Kind: push.Ntfy, Enabled: c.NtfyEnable, URL: c.NtfyServer, Topic: c.NtfyTopic, Token: c.NtfyToken, Events: push.ParseEvents(c.NtfyEvents)},
+			{Kind: push.Gotify, Enabled: c.GotifyEnable, URL: c.GotifyUrl, Token: c.GotifyToken, Events: push.ParseEvents(c.GotifyEvents)},
+			{Kind: push.Slack, Enabled: c.SlackEnable, URL: c.SlackWebhookUrl, Events: push.ParseEvents(c.SlackEvents)},
+		}
+	})
+	s.bus.Subscribe("push", s.pushChannels.HandleEvent)
+	controller.SetTestPushFunc(func(channel string) error { return s.pushChannels.Test(push.Kind(channel)) })
+
 	serverService := &service.ServerService{}
 	inboundService := &service.InboundService{}
 	s.discordGateway = discord.NewGatewayClient(s.discordService, s.settingService, serverService, inboundService, &s.xrayService)
@@ -841,6 +854,9 @@ func (s *Server) stop(stopXray bool, stopTgBot bool) error {
 	}
 	if s.bus != nil {
 		s.bus.Stop()
+	}
+	if s.pushChannels != nil {
+		s.pushChannels.Stop()
 	}
 	if s.webhooks != nil {
 		s.webhooks.Stop()

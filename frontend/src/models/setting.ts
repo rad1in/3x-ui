@@ -221,6 +221,24 @@ export class AllSetting {
     'client.created,client.deleted,client.depleted,client.expired,client.renewed,client.quota_warning,client.expiry_warning';
   hasWebhookSecret = false;
   clearWebhookSecret = false;
+  ntfyEnable = false;
+  ntfyServer = 'https://ntfy.sh';
+  ntfyTopic = '';
+  ntfyToken = '';
+  ntfyEvents = 'client.depleted,client.expired,xray.crash,node.down,outbound.down';
+  hasNtfyToken = false;
+  clearNtfyToken = false;
+  gotifyEnable = false;
+  gotifyUrl = '';
+  gotifyToken = '';
+  gotifyEvents = 'client.depleted,client.expired,xray.crash,node.down,outbound.down';
+  hasGotifyToken = false;
+  clearGotifyToken = false;
+  slackEnable = false;
+  slackWebhookUrl = '';
+  slackEvents = 'client.depleted,client.expired,xray.crash,node.down,outbound.down';
+  hasSlackWebhookUrl = false;
+  clearSlackWebhookUrl = false;
 
   constructor(data?: unknown) {
     if (data != null) {

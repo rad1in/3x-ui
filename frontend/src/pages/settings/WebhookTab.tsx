@@ -1,21 +1,14 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Button, Input, Space, Switch, Typography } from 'antd';
-import {
-  CloudServerOutlined,
-  DesktopOutlined,
-  SafetyOutlined,
-  SendOutlined,
-  TeamOutlined,
-  ThunderboltOutlined,
-} from '@ant-design/icons';
+import { SendOutlined } from '@ant-design/icons';
 import { HttpUtil } from '@/utils';
 import type { AllSetting } from '@/models/setting';
 import { SettingListItem } from '@/components/ui';
 import { NotificationLayout } from '@/components/ui/notifications/NotificationLayout';
 import { NotificationGroup } from '@/components/ui/notifications/NotificationGroup';
-import type { NotificationGroupConfig } from '@/components/ui/notifications/types';
 import SecretInput from './SecretInput';
+import { EVENT_GROUPS } from './eventGroups';
 
 interface WebhookTabProps {
   allSetting: AllSetting;
@@ -26,53 +19,6 @@ interface WebhookTestResult {
   success: boolean;
   msg: string;
 }
-
-// cpu.high and memory.high are left out: they are raw per-minute samples that
-// each notifier filters by its own threshold, not alarms.
-const GROUPS: NotificationGroupConfig[] = [
-  {
-    icon: <TeamOutlined />,
-    title: 'eventGroupClients',
-    events: [
-      { key: 'client.created', label: 'eventClientCreated', settingKey: '' },
-      { key: 'client.deleted', label: 'eventClientDeleted', settingKey: '' },
-      { key: 'client.enabled', label: 'eventClientEnabled', settingKey: '' },
-      { key: 'client.disabled', label: 'eventClientDisabled', settingKey: '' },
-      { key: 'client.depleted', label: 'eventClientDepleted', settingKey: '' },
-      { key: 'client.expired', label: 'eventClientExpired', settingKey: '' },
-      { key: 'client.renewed', label: 'eventClientRenewed', settingKey: '' },
-      { key: 'client.traffic_reset', label: 'eventClientTrafficReset', settingKey: '' },
-      { key: 'client.quota_warning', label: 'eventClientQuotaWarning', settingKey: '' },
-      { key: 'client.expiry_warning', label: 'eventClientExpiryWarning', settingKey: '' },
-    ],
-  },
-  {
-    icon: <CloudServerOutlined />,
-    title: 'eventGroupOutbound',
-    events: [
-      { key: 'outbound.down', label: 'eventOutboundDown', settingKey: '' },
-      { key: 'outbound.up', label: 'eventOutboundUp', settingKey: '' },
-    ],
-  },
-  {
-    icon: <ThunderboltOutlined />,
-    title: 'eventGroupXray',
-    events: [{ key: 'xray.crash', label: 'eventXrayCrash', settingKey: '' }],
-  },
-  {
-    icon: <DesktopOutlined />,
-    title: 'eventGroupNode',
-    events: [
-      { key: 'node.down', label: 'eventNodeDown', settingKey: '' },
-      { key: 'node.up', label: 'eventNodeUp', settingKey: '' },
-    ],
-  },
-  {
-    icon: <SafetyOutlined />,
-    title: 'eventGroupSecurity',
-    events: [{ key: 'login.attempt', label: 'eventLoginAttempt', settingKey: '' }],
-  },
-];
 
 export default function WebhookTab({ allSetting, updateSetting }: WebhookTabProps) {
   const { t } = useTranslation();
@@ -169,7 +115,7 @@ export default function WebhookTab({ allSetting, updateSetting }: WebhookTabProp
         description={t('pages.settings.webhookEventsDesc')}
       >
         <NotificationLayout>
-          {GROUPS.map((group) => (
+          {EVENT_GROUPS.map((group) => (
             <NotificationGroup
               key={group.title}
               config={group}

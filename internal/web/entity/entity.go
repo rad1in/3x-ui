@@ -152,6 +152,20 @@ type AllSetting struct {
 	WebhookSecret string `json:"webhookSecret" form:"webhookSecret"`
 	WebhookEvents string `json:"webhookEvents" form:"webhookEvents"`
 
+	// Push channels: each posts the events it has ticked to ntfy, Gotify or a Slack incoming webhook.
+	NtfyEnable      bool   `json:"ntfyEnable" form:"ntfyEnable"`
+	NtfyServer      string `json:"ntfyServer" form:"ntfyServer"`
+	NtfyTopic       string `json:"ntfyTopic" form:"ntfyTopic"`
+	NtfyToken       string `json:"ntfyToken" form:"ntfyToken"`
+	NtfyEvents      string `json:"ntfyEvents" form:"ntfyEvents"`
+	GotifyEnable    bool   `json:"gotifyEnable" form:"gotifyEnable"`
+	GotifyUrl       string `json:"gotifyUrl" form:"gotifyUrl"`
+	GotifyToken     string `json:"gotifyToken" form:"gotifyToken"`
+	GotifyEvents    string `json:"gotifyEvents" form:"gotifyEvents"`
+	SlackEnable     bool   `json:"slackEnable" form:"slackEnable"`
+	SlackWebhookUrl string `json:"slackWebhookUrl" form:"slackWebhookUrl"`
+	SlackEvents     string `json:"slackEvents" form:"slackEvents"`
+
 	OutboundDownThreshold int `json:"outboundDownThreshold" form:"outboundDownThreshold" validate:"gte=1,lte=100"`
 
 	TimeLocation    string `json:"timeLocation" form:"timeLocation"`
@@ -299,6 +313,9 @@ type AllSettingView struct {
 	HasDiscordBotToken bool `json:"hasDiscordBotToken"`
 	HasWebhookSecret   bool `json:"hasWebhookSecret"`
 	HasBackupS3Secret  bool `json:"hasBackupS3Secret"`
+	HasNtfyToken       bool `json:"hasNtfyToken"`
+	HasGotifyToken     bool `json:"hasGotifyToken"`
+	HasSlackWebhookUrl bool `json:"hasSlackWebhookUrl"`
 }
 
 func pathHasForbiddenChar(s string) bool {

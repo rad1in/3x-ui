@@ -42,6 +42,9 @@ type updateSettingForm struct {
 	ClearDiscordBotToken bool   `json:"clearDiscordBotToken" form:"clearDiscordBotToken"`
 	ClearWebhookSecret   bool   `json:"clearWebhookSecret" form:"clearWebhookSecret"`
 	ClearBackupS3Secret  bool   `json:"clearBackupS3Secret" form:"clearBackupS3Secret"`
+	ClearNtfyToken       bool   `json:"clearNtfyToken" form:"clearNtfyToken"`
+	ClearGotifyToken     bool   `json:"clearGotifyToken" form:"clearGotifyToken"`
+	ClearSlackWebhookUrl bool   `json:"clearSlackWebhookUrl" form:"clearSlackWebhookUrl"`
 }
 
 type validateRegexForm struct {
@@ -84,6 +87,7 @@ func (a *SettingController) initRouter(g *gin.RouterGroup) {
 	g.POST("/testTgBot", a.testTgBot)
 	g.POST("/testDiscord", a.testDiscord)
 	g.POST("/testWebhook", a.testWebhook)
+	g.POST("/testPush", a.testPush)
 	g.POST("/backupNow", a.backupNow)
 }
 
@@ -161,6 +165,9 @@ func (a *SettingController) updateSetting(c *gin.Context) {
 		DiscordBotToken: form.ClearDiscordBotToken,
 		WebhookSecret:   form.ClearWebhookSecret,
 		BackupS3Secret:  form.ClearBackupS3Secret,
+		NtfyToken:       form.ClearNtfyToken,
+		GotifyToken:     form.ClearGotifyToken,
+		SlackWebhookUrl: form.ClearSlackWebhookUrl,
 	})
 	if err == nil && twoFactorErr == nil && !oldTwoFactor && allSetting.TwoFactorEnable {
 		if bumpErr := a.userService.BumpLoginEpoch(); bumpErr != nil {
@@ -365,6 +372,30 @@ func (a *SettingController) testWebhook(c *gin.Context) {
 	}
 	jsonMsg(c, I18nWeb(c, "pages.settings.webhookTestSuccess"), nil)
 }
+
+type testPushForm struct {
+	Channel string `json:"channel" form:"channel" validate:"required,oneof=ntfy gotify slack"`
+}
+
+func (a *SettingController) testPush(c *gin.Context) {
+	form, ok := middleware.BindAndValidate[testPushForm](c)
+	if !ok {
+		return
+	}
+	if testPushFunc == nil {
+		jsonMsg(c, I18nWeb(c, "pages.settings.pushTestFailed"), errors.New("push channels are not set up"))
+		return
+	}
+	if err := testPushFunc(form.Channel); err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.settings.pushTestFailed")+": "+err.Error(), err)
+		return
+	}
+	jsonMsg(c, I18nWeb(c, "pages.settings.pushTestSuccess"), nil)
+}
+
+var testPushFunc func(channel string) error
+
+func SetTestPushFunc(fn func(channel string) error) { testPushFunc = fn }
 
 // testWebhookFunc is wired from the web layer, which owns the webhook sender.
 var testWebhookFunc func() error
