@@ -13,6 +13,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/crypto"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/random"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
 )
 
 type ApiTokenService struct{}
@@ -27,6 +28,8 @@ type ApiTokenView struct {
 	CreatedAt int64  `json:"createdAt" example:"1736000000"`
 	Scope     string `json:"scope" example:"admin"`
 	ExpiresAt int64  `json:"expiresAt" example:"0"`
+	// AllowedCidrs limits where the token works from; empty means anywhere.
+	AllowedCidrs string `json:"allowedCidrs" example:"203.0.113.0/24,198.51.100.4"`
 }
 
 func apiTokenCreatedAtSeconds(createdAt int64) int64 {
@@ -41,12 +44,13 @@ func apiTokenCreatedAtSeconds(createdAt int64) int64 {
 // exactly once at creation time.
 func toView(t *model.ApiToken) *ApiTokenView {
 	return &ApiTokenView{
-		Id:        t.Id,
-		Name:      t.Name,
-		Enabled:   t.Enabled,
-		CreatedAt: apiTokenCreatedAtSeconds(t.CreatedAt),
-		Scope:     t.Scope,
-		ExpiresAt: t.ExpiresAt,
+		Id:           t.Id,
+		Name:         t.Name,
+		Enabled:      t.Enabled,
+		CreatedAt:    apiTokenCreatedAtSeconds(t.CreatedAt),
+		Scope:        t.Scope,
+		ExpiresAt:    t.ExpiresAt,
+		AllowedCidrs: t.AllowedCidrs,
 	}
 }
 
@@ -79,6 +83,43 @@ func (s *ApiTokenService) List() ([]*ApiTokenView, error) {
 }
 
 func (s *ApiTokenService) Create(name, scope string, expiresAt int64) (*ApiTokenView, error) {
+	return s.CreateRestricted(name, scope, expiresAt, "")
+}
+
+// normalizeAllowedCidrs validates a comma-separated IP/CIDR list and returns it
+// trimmed; empty means the token works from anywhere.
+func normalizeAllowedCidrs(list string) (string, error) {
+	list = strings.TrimSpace(list)
+	if err := entity.CheckNetipAddrOrPrefixList(list, "allowed IP entry is not valid:"); err != nil {
+		return "", err
+	}
+	return list, nil
+}
+
+// SetAllowedCidrs replaces the addresses a token may be used from.
+func (s *ApiTokenService) SetAllowedCidrs(id int, list string) error {
+	if id <= 0 {
+		return common.NewError("invalid token id")
+	}
+	list, err := normalizeAllowedCidrs(list)
+	if err != nil {
+		return err
+	}
+	res := database.GetDB().Model(model.ApiToken{}).Where("id = ?", id).Update("allowed_cidrs", list)
+	if res.Error != nil {
+		return res.Error
+	}
+	if res.RowsAffected == 0 {
+		return errors.New("token not found")
+	}
+	return nil
+}
+
+func (s *ApiTokenService) CreateRestricted(name, scope string, expiresAt int64, allowedCidrs string) (*ApiTokenView, error) {
+	allowedCidrs, err := normalizeAllowedCidrs(allowedCidrs)
+	if err != nil {
+		return nil, err
+	}
 	name = strings.TrimSpace(name)
 	if name == "" {
 		return nil, common.NewError("token name is required")
@@ -103,11 +144,12 @@ func (s *ApiTokenService) Create(name, scope string, expiresAt int64) (*ApiToken
 	}
 	plaintext := random.Seq(apiTokenLength)
 	row := &model.ApiToken{
-		Name:      name,
-		Token:     crypto.HashTokenSHA256(plaintext),
-		Enabled:   true,
-		Scope:     normScope,
-		ExpiresAt: expiresAt,
+		Name:         name,
+		Token:        crypto.HashTokenSHA256(plaintext),
+		Enabled:      true,
+		Scope:        normScope,
+		ExpiresAt:    expiresAt,
+		AllowedCidrs: allowedCidrs,
 	}
 	if err := db.Create(row).Error; err != nil {
 		return nil, err
@@ -149,6 +191,8 @@ func (s *ApiTokenService) RecreateByName(name, scope string) (*ApiTokenView, err
 				return common.NewErrorf("token %q has expired; create a new token from the panel or the API instead", name)
 			}
 			row.ExpiresAt = replaced[0].ExpiresAt
+			// Same reasoning: a rotation must not widen where the token works from.
+			row.AllowedCidrs = replaced[0].AllowedCidrs
 		}
 		if row.Scope == "" {
 			// An empty Scope takes the column default of admin, so a rotated

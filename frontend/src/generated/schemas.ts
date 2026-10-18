@@ -1866,6 +1866,10 @@ export const SCHEMAS: Record<string, unknown> = {
   },
   "ApiToken": {
     "properties": {
+      "allowedCidrs": {
+        "description": "Comma-separated IPs/CIDRs the token may be used from; empty means any address.",
+        "type": "string"
+      },
       "createdAt": {
         "format": "int64",
         "type": "integer"
@@ -1892,6 +1896,7 @@ export const SCHEMAS: Record<string, unknown> = {
       }
     },
     "required": [
+      "allowedCidrs",
       "createdAt",
       "enabled",
       "expiresAt",
@@ -1904,6 +1909,11 @@ export const SCHEMAS: Record<string, unknown> = {
   },
   "ApiTokenView": {
     "properties": {
+      "allowedCidrs": {
+        "description": "AllowedCidrs limits where the token works from; empty means anywhere.",
+        "example": "203.0.113.0/24,198.51.100.4",
+        "type": "string"
+      },
       "createdAt": {
         "example": 1736000000,
         "format": "int64",
@@ -1936,6 +1946,7 @@ export const SCHEMAS: Record<string, unknown> = {
       }
     },
     "required": [
+      "allowedCidrs",
       "createdAt",
       "enabled",
       "expiresAt",

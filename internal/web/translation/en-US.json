@@ -1636,6 +1636,8 @@
         "apiTokenCreatedNotice": "Copy this token now. For security it is not stored in readable form and will not be shown again.",
         "decoy": "Decoy site",
         "access": "Access",
+        "apiTokenAllowedIps": "Allowed IPs",
+        "apiTokenAllowedIpsDesc": "Comma-separated IPs or CIDRs this token may be used from. Leave empty to allow any address. From anywhere else the token is rejected as if it were wrong.",
         "decoyMode": "Answer strangers with",
         "decoyModeDesc": "What the panel and subscription ports show for a path that is not theirs or a request by IP instead of your domain, so a scanner sees an ordinary website instead of 3x-ui. Takes effect after a restart.",
         "decoyOff": "Plain error (off)",

@@ -51,7 +51,9 @@ func (a *APIController) checkAPIAuth(c *gin.Context) {
 	auth := c.GetHeader("Authorization")
 	if after, ok := strings.CutPrefix(auth, "Bearer "); ok {
 		tok := after
-		if row, ok := a.apiTokenService.MatchToken(tok); ok {
+		// A token used from an unlisted address is treated as no token at all,
+		// so the caller sees the same 401 as for a wrong one.
+		if row, ok := a.apiTokenService.MatchToken(tok); ok && middleware.IPAllowlistContains(row.AllowedCidrs, getRemoteIp(c)) {
 			if u, err := a.userService.GetPrimaryOwner(); err == nil {
 				session.SetAPIAuthUser(c, u)
 			}

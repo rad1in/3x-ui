@@ -215,6 +215,8 @@ type ApiToken struct {
 	CreatedAt int64  `json:"createdAt" gorm:"autoCreateTime"`
 	Scope     string `json:"scope" gorm:"not null;default:admin"`
 	ExpiresAt int64  `json:"expiresAt" gorm:"not null;default:0"`
+	// Comma-separated IPs/CIDRs the token may be used from; empty means any address.
+	AllowedCidrs string `json:"allowedCidrs" gorm:"column:allowed_cidrs;not null;default:''"`
 }
 
 // AuditLog is one admin action: a state-changing API call or a login attempt.

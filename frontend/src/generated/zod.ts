@@ -471,6 +471,7 @@ export const AmneziaWGLogsSchema = z.object({
 export type AmneziaWGLogs = z.infer<typeof AmneziaWGLogsSchema>;
 
 export const ApiTokenSchema = z.object({
+  allowedCidrs: z.string(),
   createdAt: z.number().int(),
   enabled: z.boolean(),
   expiresAt: z.number().int(),
@@ -482,6 +483,7 @@ export const ApiTokenSchema = z.object({
 export type ApiToken = z.infer<typeof ApiTokenSchema>;
 
 export const ApiTokenViewSchema = z.object({
+  allowedCidrs: z.string(),
   createdAt: z.number().int(),
   enabled: z.boolean(),
   expiresAt: z.number().int(),

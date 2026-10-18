@@ -1892,6 +1892,10 @@
       },
       "ApiToken": {
         "properties": {
+          "allowedCidrs": {
+            "description": "Comma-separated IPs/CIDRs the token may be used from; empty means any address.",
+            "type": "string"
+          },
           "createdAt": {
             "format": "int64",
             "type": "integer"
@@ -1918,6 +1922,7 @@
           }
         },
         "required": [
+          "allowedCidrs",
           "createdAt",
           "enabled",
           "expiresAt",
@@ -1930,6 +1935,11 @@
       },
       "ApiTokenView": {
         "properties": {
+          "allowedCidrs": {
+            "description": "AllowedCidrs limits where the token works from; empty means anywhere.",
+            "example": "203.0.113.0/24,198.51.100.4",
+            "type": "string"
+          },
           "createdAt": {
             "example": 1736000000,
             "format": "int64",
@@ -1962,6 +1972,7 @@
           }
         },
         "required": [
+          "allowedCidrs",
           "createdAt",
           "enabled",
           "expiresAt",
@@ -14575,6 +14586,10 @@
                   "expiresAt": {
                     "type": "integer",
                     "description": "Future Unix milliseconds, or 0 for no expiry."
+                  },
+                  "allowedCidrs": {
+                    "type": "string",
+                    "description": "Comma-separated IPs or CIDRs the token may be used from. Empty (default) means any address; a call from elsewhere gets 401."
                   }
                 },
                 "required": [
@@ -14584,7 +14599,8 @@
               "example": {
                 "name": "central-panel-a",
                 "scope": "node-sync",
-                "expiresAt": 1798761600000
+                "expiresAt": 1798761600000,
+                "allowedCidrs": "203.0.113.0/24"
               }
             }
           }
@@ -14611,6 +14627,7 @@
                 "example": {
                   "success": true,
                   "obj": {
+                    "allowedCidrs": "203.0.113.0/24,198.51.100.4",
                     "createdAt": 1736000000,
                     "enabled": true,
                     "expiresAt": 0,
@@ -14756,6 +14773,72 @@
               "example": {
                 "enabled": false,
                 "expectedScope": "node-sync"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/setting/apiTokens/setAllowedCidrs/{id}": {
+      "post": {
+        "tags": [
+          "API Tokens"
+        ],
+        "summary": "Replace the addresses a token may be used from. An empty list lifts the restriction. Rotating a token by name keeps its list.",
+        "operationId": "post_panel_api_setting_apiTokens_setAllowedCidrs_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Token row ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "allowedCidrs": {
+                    "type": "string",
+                    "description": "Comma-separated IPs or CIDRs, e.g. \"203.0.113.0/24,198.51.100.4\"."
+                  }
+                },
+                "required": [
+                  "allowedCidrs"
+                ]
+              },
+              "example": {
+                "allowedCidrs": "203.0.113.0/24"
               }
             }
           }

@@ -27,16 +27,17 @@ const (
 // ownerOnlyRoutes manage admins or reach credentials: an admin able to call
 // them could make itself an owner (importDB replaces the users table).
 var ownerOnlyRoutes = map[string]bool{
-	"GET /admins/list":                       true,
-	"POST /admins/create":                    true,
-	"POST /admins/update/:id":                true,
-	"POST /admins/del/:id":                   true,
-	"GET /setting/apiTokens":                 true,
-	"POST /setting/apiTokens/create":         true,
-	"POST /setting/apiTokens/delete/:id":     true,
-	"POST /setting/apiTokens/setEnabled/:id": true,
-	"GET /server/getDb":                      true,
-	"POST /server/importDB":                  true,
+	"GET /admins/list":                            true,
+	"POST /admins/create":                         true,
+	"POST /admins/update/:id":                     true,
+	"POST /admins/del/:id":                        true,
+	"GET /setting/apiTokens":                      true,
+	"POST /setting/apiTokens/create":              true,
+	"POST /setting/apiTokens/delete/:id":          true,
+	"POST /setting/apiTokens/setEnabled/:id":      true,
+	"POST /setting/apiTokens/setAllowedCidrs/:id": true,
+	"GET /server/getDb":                           true,
+	"POST /server/importDB":                       true,
 }
 
 // selfServiceRoutes act only on the caller's own account, so every role may use them.

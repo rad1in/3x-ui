@@ -450,6 +450,7 @@ export interface AmneziaWGLogs {
 }
 
 export interface ApiToken {
+  allowedCidrs: string;
   createdAt: number;
   enabled: boolean;
   expiresAt: number;
@@ -460,6 +461,7 @@ export interface ApiToken {
 }
 
 export interface ApiTokenView {
+  allowedCidrs: string;
   createdAt: number;
   enabled: boolean;
   expiresAt: number;

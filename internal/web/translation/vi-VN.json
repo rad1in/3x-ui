@@ -1514,6 +1514,8 @@
         "apiTokenCreatedNotice": "Hãy sao chép token này ngay bây giờ. Vì lý do bảo mật, token không được lưu ở dạng đọc được và sẽ không hiển thị lại.",
         "decoy": "Trang ngụy trang",
         "access": "Truy cập",
+        "apiTokenAllowedIps": "IP được phép",
+        "apiTokenAllowedIpsDesc": "Các IP hoặc CIDR, cách nhau bằng dấu phẩy, được phép dùng token này. Để trống để cho phép mọi địa chỉ. Từ nơi khác, token bị từ chối như thể sai.",
         "decoyMode": "Trả lời người lạ bằng",
         "decoyModeDesc": "Những gì cổng bảng điều khiển và đăng ký hiển thị cho đường dẫn lạ hoặc yêu cầu bằng IP thay vì tên miền, để máy quét chỉ thấy một trang web thường chứ không phải 3x-ui. Áp dụng sau khi khởi động lại.",
         "decoyOff": "Lỗi thông thường (tắt)",

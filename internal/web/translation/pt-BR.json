@@ -1514,6 +1514,8 @@
         "apiTokenCreatedNotice": "Copie este token agora. Por segurança, ele não é armazenado de forma legível e não será exibido novamente.",
         "decoy": "Site de fachada",
         "access": "Acesso",
+        "apiTokenAllowedIps": "IPs permitidos",
+        "apiTokenAllowedIpsDesc": "IPs ou CIDRs, separados por vírgula, de onde este token pode ser usado. Deixe vazio para permitir qualquer endereço. De qualquer outro lugar o token é rejeitado como se estivesse errado.",
         "decoyMode": "Responder a estranhos com",
         "decoyModeDesc": "O que as portas do painel e da assinatura mostram para um caminho alheio ou um acesso por IP em vez do seu domínio, para que um scanner veja um site comum e não o 3x-ui. Vale após reiniciar.",
         "decoyOff": "Erro simples (desligado)",

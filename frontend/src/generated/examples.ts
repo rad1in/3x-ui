@@ -460,6 +460,7 @@ export const EXAMPLES: Record<string, unknown> = {
     "running": true
   },
   "ApiToken": {
+    "allowedCidrs": "",
     "createdAt": 0,
     "enabled": false,
     "expiresAt": 0,
@@ -469,6 +470,7 @@ export const EXAMPLES: Record<string, unknown> = {
     "token": ""
   },
   "ApiTokenView": {
+    "allowedCidrs": "203.0.113.0/24,198.51.100.4",
     "createdAt": 1736000000,
     "enabled": true,
     "expiresAt": 0,

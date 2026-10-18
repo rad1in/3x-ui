@@ -1514,6 +1514,8 @@
         "apiTokenCreatedNotice": "Salin token ini sekarang. Demi keamanan, token tidak disimpan dalam bentuk yang dapat dibaca dan tidak akan ditampilkan lagi.",
         "decoy": "Situs umpan",
         "access": "Akses",
+        "apiTokenAllowedIps": "IP yang diizinkan",
+        "apiTokenAllowedIpsDesc": "IP atau CIDR, dipisah koma, yang boleh memakai token ini. Kosongkan untuk mengizinkan semua alamat. Dari alamat lain, token ditolak seolah-olah salah.",
         "decoyMode": "Jawab orang asing dengan",
         "decoyModeDesc": "Yang ditampilkan port panel dan langganan untuk jalur asing atau permintaan lewat IP alih-alih domain Anda, agar pemindai melihat situs biasa, bukan 3x-ui. Berlaku setelah restart.",
         "decoyOff": "Galat biasa (mati)",

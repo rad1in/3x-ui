@@ -12,6 +12,7 @@ import {
   Spin,
   Switch,
   Tabs,
+  Tag,
   message,
 } from 'antd';
 import {
@@ -43,6 +44,7 @@ interface ApiTokenRow {
   createdAt: number;
   scope: 'admin' | 'monitor' | 'node-sync';
   expiresAt: number;
+  allowedCidrs: string;
 }
 
 interface SecurityTabProps {
@@ -98,6 +100,8 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
   const [createName, setCreateName] = useState('');
   const [creating, setCreating] = useState(false);
   const [createdToken, setCreatedToken] = useState<{ name: string; token: string } | null>(null);
+  const [createCidrs, setCreateCidrs] = useState('');
+  const [cidrsEdit, setCidrsEdit] = useState<{ row: ApiTokenRow; value: string } | null>(null);
 
   const openTfa = useCallback((opts: Omit<TfaState, 'open'>) => {
     setTfa({ ...opts, open: true });
@@ -177,6 +181,7 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
 
   function openCreateModal() {
     setCreateName('');
+    setCreateCidrs('');
     setCreateOpen(true);
   }
 
@@ -188,7 +193,10 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
     }
     setCreating(true);
     try {
-      const msg = (await HttpUtil.post('/panel/api/setting/apiTokens/create', { name })) as ApiMsg<{
+      const msg = (await HttpUtil.post('/panel/api/setting/apiTokens/create', {
+        name,
+        allowedCidrs: createCidrs.trim(),
+      })) as ApiMsg<{
         token?: string;
       }>;
       if (msg?.success) {
@@ -200,6 +208,18 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
       }
     } finally {
       setCreating(false);
+    }
+  }
+
+  async function saveTokenCidrs() {
+    if (!cidrsEdit) return;
+    const msg = (await HttpUtil.post(
+      `/panel/api/setting/apiTokens/setAllowedCidrs/${cidrsEdit.row.id}`,
+      { allowedCidrs: cidrsEdit.value.trim() },
+    )) as ApiMsg;
+    if (msg?.success) {
+      setCidrsEdit(null);
+      await loadApiTokens();
     }
   }
 
@@ -371,6 +391,18 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
                           </span>
                         </div>
                         <div className="api-token-actions">
+                          {row.allowedCidrs && (
+                            <Tag className="api-token-cidrs" bordered={false}>
+                              <span dir="ltr">{row.allowedCidrs}</span>
+                            </Tag>
+                          )}
+                          <Button
+                            size="small"
+                            type="text"
+                            onClick={() => setCidrsEdit({ row, value: row.allowedCidrs })}
+                          >
+                            {t('pages.settings.security.apiTokenAllowedIps')}
+                          </Button>
                           <Switch
                             size="small"
                             checked={row.enabled}
@@ -521,7 +553,38 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
               onPressEnter={confirmCreateToken}
             />
           </Form.Item>
+          <Form.Item
+            label={t('pages.settings.security.apiTokenAllowedIps')}
+            extra={t('pages.settings.security.apiTokenAllowedIpsDesc')}
+          >
+            <Input
+              value={createCidrs}
+              placeholder="203.0.113.0/24,198.51.100.4"
+              style={{ direction: 'ltr' }}
+              onChange={(e) => setCreateCidrs(e.target.value)}
+            />
+          </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        open={cidrsEdit !== null}
+        title={`${t('pages.settings.security.apiTokenAllowedIps')}: ${cidrsEdit?.row.name ?? ''}`}
+        okText={t('save')}
+        cancelText={t('cancel')}
+        onOk={saveTokenCidrs}
+        onCancel={() => setCidrsEdit(null)}
+      >
+        <p>{t('pages.settings.security.apiTokenAllowedIpsDesc')}</p>
+        <Input
+          value={cidrsEdit?.value ?? ''}
+          placeholder="203.0.113.0/24,198.51.100.4"
+          style={{ direction: 'ltr' }}
+          onChange={(e) =>
+            setCidrsEdit((prev) => (prev ? { ...prev, value: e.target.value } : prev))
+          }
+          onPressEnter={saveTokenCidrs}
+        />
       </Modal>
 
       <Modal

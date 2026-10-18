@@ -2106,8 +2106,15 @@ export const sections: readonly Section[] = [
             desc: 'Future Unix milliseconds, or 0 for no expiry.',
             optional: true,
           },
+          {
+            name: 'allowedCidrs',
+            in: 'body',
+            type: 'string',
+            desc: 'Comma-separated IPs or CIDRs the token may be used from. Empty (default) means any address; a call from elsewhere gets 401.',
+            optional: true,
+          },
         ],
-        body: '{\n  "name": "central-panel-a",\n  "scope": "node-sync",\n  "expiresAt": 1798761600000\n}',
+        body: '{\n  "name": "central-panel-a",\n  "scope": "node-sync",\n  "expiresAt": 1798761600000,\n  "allowedCidrs": "203.0.113.0/24"\n}',
         responseSchema: 'ApiTokenView',
         errorResponse:
           '{\n  "success": false,\n  "msg": "a token with that name already exists"\n}',
@@ -2145,6 +2152,23 @@ export const sections: readonly Section[] = [
           },
         ],
         body: '{\n  "enabled": false,\n  "expectedScope": "node-sync"\n}',
+        response: '{\n  "success": true\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/setting/apiTokens/setAllowedCidrs/:id',
+        summary:
+          'Replace the addresses a token may be used from. An empty list lifts the restriction. Rotating a token by name keeps its list.',
+        params: [
+          { name: 'id', in: 'path', type: 'number', desc: 'Token row ID.' },
+          {
+            name: 'allowedCidrs',
+            in: 'body',
+            type: 'string',
+            desc: 'Comma-separated IPs or CIDRs, e.g. "203.0.113.0/24,198.51.100.4".',
+          },
+        ],
+        body: '{\n  "allowedCidrs": "203.0.113.0/24"\n}',
         response: '{\n  "success": true\n}',
       },
     ],

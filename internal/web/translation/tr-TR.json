@@ -1514,6 +1514,8 @@
         "apiTokenCreatedNotice": "Bu token'ı şimdi kopyalayın. Güvenlik nedeniyle okunabilir biçimde saklanmaz ve tekrar gösterilmez.",
         "decoy": "Paravan site",
         "access": "Erişim",
+        "apiTokenAllowedIps": "İzin verilen IP'ler",
+        "apiTokenAllowedIpsDesc": "Bu belirtecin kullanılabileceği, virgülle ayrılmış IP veya CIDR'ler. Her adrese izin vermek için boş bırakın. Başka her yerden belirteç yanlışmış gibi reddedilir.",
         "decoyMode": "Yabancılara yanıt",
         "decoyModeDesc": "Panel ve abonelik portlarının yabancı bir yola veya alan adı yerine IP ile gelen isteğe gösterdiği şey; tarayıcı 3x-ui yerine sıradan bir site görür. Yeniden başlatınca uygulanır.",
         "decoyOff": "Düz hata (kapalı)",

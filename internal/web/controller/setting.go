@@ -81,6 +81,7 @@ func (a *SettingController) initRouter(g *gin.RouterGroup) {
 	g.POST("/apiTokens/create", a.createApiToken)
 	g.POST("/apiTokens/delete/:id", a.deleteApiToken)
 	g.POST("/apiTokens/setEnabled/:id", a.setApiTokenEnabled)
+	g.POST("/apiTokens/setAllowedCidrs/:id", a.setApiTokenAllowedCidrs)
 	g.POST("/testSmtp", a.testSmtp)
 	g.POST("/testTgBot", a.testTgBot)
 	g.POST("/testDiscord", a.testDiscord)
@@ -267,9 +268,28 @@ func (a *SettingController) getDefaultXrayConfig(c *gin.Context) {
 }
 
 type apiTokenCreateForm struct {
-	Name      string `json:"name" form:"name"`
-	Scope     string `json:"scope" form:"scope"`
-	ExpiresAt int64  `json:"expiresAt" form:"expiresAt"`
+	Name         string `json:"name" form:"name"`
+	Scope        string `json:"scope" form:"scope"`
+	ExpiresAt    int64  `json:"expiresAt" form:"expiresAt"`
+	AllowedCidrs string `json:"allowedCidrs" form:"allowedCidrs"`
+}
+
+type apiTokenCidrsForm struct {
+	AllowedCidrs string `json:"allowedCidrs" form:"allowedCidrs"`
+}
+
+func (a *SettingController) setApiTokenAllowedCidrs(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), err)
+		return
+	}
+	form := &apiTokenCidrsForm{}
+	if err := c.ShouldBind(form); err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), err)
+		return
+	}
+	jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), a.apiTokenService.SetAllowedCidrs(id, form.AllowedCidrs))
 }
 
 type apiTokenEnabledForm struct {
@@ -296,7 +316,7 @@ func (a *SettingController) createApiToken(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), err)
 		return
 	}
-	row, err := a.apiTokenService.Create(form.Name, form.Scope, form.ExpiresAt)
+	row, err := a.apiTokenService.CreateRestricted(form.Name, form.Scope, form.ExpiresAt, form.AllowedCidrs)
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), err)
 		return

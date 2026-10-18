@@ -1514,6 +1514,8 @@
         "apiTokenCreatedNotice": "请立即复制此令牌。出于安全考虑，它不会以可读形式存储，也不会再次显示。",
         "decoy": "伪装站点",
         "access": "访问",
+        "apiTokenAllowedIps": "允许的 IP",
+        "apiTokenAllowedIpsDesc": "允许使用此令牌的 IP 或 CIDR，以逗号分隔。留空表示允许任何地址。从其他地址使用时，令牌会像错误令牌一样被拒绝。",
         "decoyMode": "对陌生请求返回",
         "decoyModeDesc": "面板和订阅端口对未知路径或用 IP 而非域名访问时显示的内容，让扫描器看到普通网站而不是 3x-ui。重启后生效。",
         "decoyOff": "普通错误（关闭）",

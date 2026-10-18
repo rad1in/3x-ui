@@ -1514,6 +1514,8 @@
         "apiTokenCreatedNotice": "Copia este token ahora. Por seguridad, no se almacena de forma legible y no se volverá a mostrar.",
         "decoy": "Sitio señuelo",
         "access": "Acceso",
+        "apiTokenAllowedIps": "IP permitidas",
+        "apiTokenAllowedIpsDesc": "IP o CIDR separados por comas desde los que se puede usar este token. Déjalo vacío para permitir cualquier dirección. Desde cualquier otro sitio el token se rechaza como si fuera incorrecto.",
         "decoyMode": "Responder a desconocidos con",
         "decoyModeDesc": "Lo que muestran los puertos del panel y de la suscripción ante una ruta ajena o una petición por IP en vez de tu dominio, para que un escáner vea un sitio normal y no 3x-ui. Se aplica tras reiniciar.",
         "decoyOff": "Error simple (desactivado)",

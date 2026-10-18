@@ -24,6 +24,10 @@ _openapi:
       title: Toggle a token enabled/disabled without deleting it. Disabled tokens are
         rejected by checkAPIAuth on the next request.
       url: '#toggle-a-token-enableddisabled-without-deleting-it-disabled-tokens-are-rejected-by-checkapiauth-on-the-next-request'
+    - depth: 2
+      title: Replace the addresses a token may be used from. An empty list lifts the
+        restriction. Rotating a token by name keeps its list.
+      url: '#replace-the-addresses-a-token-may-be-used-from-an-empty-list-lifts-the-restriction-rotating-a-token-by-name-keeps-its-list'
   structuredData:
     headings:
       - content: List every API token, enabled or not. The token value is never returned
@@ -38,6 +42,9 @@ _openapi:
       - content: Toggle a token enabled/disabled without deleting it. Disabled tokens
           are rejected by checkAPIAuth on the next request.
         id: toggle-a-token-enableddisabled-without-deleting-it-disabled-tokens-are-rejected-by-checkapiauth-on-the-next-request
+      - content: Replace the addresses a token may be used from. An empty list lifts the
+          restriction. Rotating a token by name keeps its list.
+        id: replace-the-addresses-a-token-may-be-used-from-an-empty-list-lifts-the-restriction-rotating-a-token-by-name-keeps-its-list
     contents: []
 ---
 
@@ -50,7 +57,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/setting/apiTokens","method":"get"},{"path":"/panel/api/setting/apiTokens/create","method":"post"},{"path":"/panel/api/setting/apiTokens/delete/{id}","method":"post"},{"path":"/panel/api/setting/apiTokens/setEnabled/{id}","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/setting/apiTokens","method":"get"},{"path":"/panel/api/setting/apiTokens/create","method":"post"},{"path":"/panel/api/setting/apiTokens/delete/{id}","method":"post"},{"path":"/panel/api/setting/apiTokens/setEnabled/{id}","method":"post"},{"path":"/panel/api/setting/apiTokens/setAllowedCidrs/{id}","method":"post"}]} showTitle />
     </>
   );
 }
