@@ -265,6 +265,13 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 	} else {
 		engine.StaticFS(basePath+"assets", http.FS(&wrapDistFS{FS: distFS}))
 	}
+	// The public shop page loads its bundle from /shop/assets so it never has
+	// to reveal the panel base path.
+	if config.IsDebug() {
+		engine.StaticFS("/shop/assets", http.FS(os.DirFS("internal/web/dist/assets")))
+	} else {
+		engine.StaticFS("/shop/assets", http.FS(&wrapDistFS{FS: distFS}))
+	}
 
 	// Hand the embedded `dist/` filesystem to the controller package
 	// before any HTML-serving controller is constructed. Phase 8

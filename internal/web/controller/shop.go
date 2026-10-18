@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"bytes"
 	"errors"
 	"io"
+	"io/fs"
 	"net/http"
 	"sync"
 	"time"
@@ -44,6 +46,7 @@ func NewShopController(g *gin.RouterGroup, notFound gin.HandlerFunc) *ShopContro
 
 func newShopController(g *gin.RouterGroup, notFound gin.HandlerFunc, orders *service.OrderService) *ShopController {
 	a := &ShopController{orderService: orders, limiter: newWindowLimiter(shopWriteLimit, shopWriteWindow), notFound: notFound}
+	g.GET("/", a.gate, a.page)
 	api := g.Group("/api")
 	api.Use(a.gate)
 	api.GET("/plans", a.catalog)
@@ -56,6 +59,22 @@ func newShopController(g *gin.RouterGroup, notFound gin.HandlerFunc, orders *ser
 	api.GET("/callback/:gateway", a.rateLimited, a.callback)
 	api.POST("/callback/:gateway", a.rateLimited, a.callback)
 	return a
+}
+
+// page serves the shop bundle. Its assets are rewritten to /shop/assets and
+// the page is told that base path, so nothing in it names the panel's own
+// secret base path.
+func (a *ShopController) page(c *gin.Context) {
+	body, err := fs.ReadFile(distFS, "dist/shop.html")
+	if err != nil {
+		c.String(http.StatusInternalServerError, "missing embedded page: shop.html")
+		return
+	}
+	body = bytes.ReplaceAll(body, []byte(`="/assets/`), []byte(`="/shop/assets/`))
+	inject := `<script data-cfasync="false">window.X_UI_BASE_PATH="/shop/"</script></head>`
+	body = bytes.Replace(body, []byte("</head>"), []byte(inject), 1)
+	c.Header("Cache-Control", "no-store")
+	c.Data(http.StatusOK, "text/html; charset=utf-8", body)
 }
 
 func (a *ShopController) gate(c *gin.Context) {
