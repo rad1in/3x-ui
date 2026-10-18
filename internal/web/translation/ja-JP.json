@@ -179,7 +179,8 @@
         "wrongCaptcha": "セキュリティチェックの答えが違います。",
         "tgCodeSent": "ログインコードをTelegramに送信しました。",
         "tgCodeWait": "少し前にコードを送信しました。再要求の前にお待ちください。",
-        "tgCodeWrong": "Telegramコードが違うか、期限切れです。"
+        "tgCodeWrong": "Telegramコードが違うか、期限切れです。",
+        "maintenance": "パネルはメンテナンス中です。現在サインインできるのはオーナーのみです。"
       }
     },
     "index": {
@@ -1591,6 +1592,10 @@
       "restartXrayOnClientDisableDesc": "クライアントがサービス対象でなくなったとき（有効期限や通信量上限による自動無効化、または手動での無効化・削除）、接続を終わらせるため Xray を再起動します。",
       "autoDeleteDepletedDays": "使い切ったクライアントの自動削除",
       "autoDeleteDepletedDaysDesc": "通信量を使い切るか期限切れになってからこの日数後にクライアントを削除します（0 = 削除しない）。定期リセットのあるクライアントは残ります。1 時間ごとに確認します。",
+      "maintenanceMode": "メンテナンスモード",
+      "maintenanceModeDesc": "サブスクリプションサーバーは下の通知付きで 503 を返し、サインインできるのはオーナーのみになります。パネルの移行や復元の前にオンにしてください。",
+      "maintenanceMessage": "メンテナンス通知",
+      "maintenanceMessageDesc": "サブスクリプションのクライアントと、サインインを拒否された管理者に表示されます。空欄なら既定の文言です。",
       "sharedAccountWindowHours": "共有アカウント判定の期間（時間）",
       "sharedAccountWindowHoursDesc": "クライアントが接続したアドレスを、共有アカウントの判定に数え続ける時間です。",
       "sharedAccountMinIPs": "共有アカウントのアドレス数しきい値",

@@ -419,6 +419,30 @@ export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProp
                 />
               </SettingListItem>
 
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.maintenanceMode')}
+                description={t('pages.settings.maintenanceModeDesc')}
+              >
+                <Switch
+                  checked={allSetting.maintenanceMode}
+                  onChange={(v) => updateSetting({ maintenanceMode: v })}
+                />
+              </SettingListItem>
+
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.maintenanceMessage')}
+                description={t('pages.settings.maintenanceMessageDesc')}
+              >
+                <Input.TextArea
+                  value={allSetting.maintenanceMessage}
+                  maxLength={500}
+                  autoSize={{ minRows: 2, maxRows: 5 }}
+                  onChange={(e) => updateSetting({ maintenanceMessage: e.target.value })}
+                />
+              </SettingListItem>
+
               <SettingListItem paddings="small" title={t('pages.settings.language')}>
                 <Select
                   value={lang}

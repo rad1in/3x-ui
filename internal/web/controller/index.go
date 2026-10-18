@@ -195,6 +195,14 @@ func (a *IndexController) login(c *gin.Context) {
 		return
 	}
 
+	if on, message := a.settingService.GetMaintenance(); on && user.Role != model.AdminRoleOwner {
+		if message == "" {
+			message = I18nWeb(c, "pages.login.toasts.maintenance")
+		}
+		pureJsonMsg(c, http.StatusOK, false, message)
+		return
+	}
+
 	if !a.passTelegramStep(c, user, form.TgCode, remoteIP) {
 		return
 	}

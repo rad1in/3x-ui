@@ -179,7 +179,8 @@
         "wrongCaptcha": "Jawaban pemeriksaan keamanan salah.",
         "tgCodeSent": "Kode login dikirim ke Telegram Anda.",
         "tgCodeWait": "Kode baru saja dikirim, tunggu sebelum meminta lagi.",
-        "tgCodeWrong": "Kode Telegram salah atau sudah kedaluwarsa."
+        "tgCodeWrong": "Kode Telegram salah atau sudah kedaluwarsa.",
+        "maintenance": "Panel sedang dalam pemeliharaan. Saat ini hanya pemilik yang dapat masuk."
       }
     },
     "index": {
@@ -1591,6 +1592,10 @@
       "restartXrayOnClientDisableDesc": "Saat klien berhenti dilayani — dinonaktifkan otomatis karena kedaluwarsa atau batas trafik, atau dinonaktifkan maupun dihapus secara manual — mulai ulang Xray agar koneksi aktifnya berakhir.",
       "autoDeleteDepletedDays": "Hapus Otomatis Klien yang Habis",
       "autoDeleteDepletedDaysDesc": "Hapus klien sekian hari setelah trafiknya habis atau kedaluwarsa (0 = tidak pernah). Klien dengan reset trafik berkala tetap disimpan. Diperiksa tiap jam.",
+      "maintenanceMode": "Mode pemeliharaan",
+      "maintenanceModeDesc": "Server langganan menjawab 503 dengan pemberitahuan di bawah dan hanya pemilik yang dapat masuk. Aktifkan sebelum memindahkan atau memulihkan panel.",
+      "maintenanceMessage": "Pemberitahuan pemeliharaan",
+      "maintenanceMessageDesc": "Ditampilkan kepada klien langganan dan admin yang ditolak saat masuk. Kosongkan untuk teks bawaan.",
       "sharedAccountWindowHours": "Jendela akun bersama (jam)",
       "sharedAccountWindowHoursDesc": "Berapa lama alamat tempat klien terhubung tetap dihitung dalam pemeriksaan akun bersama.",
       "sharedAccountMinIPs": "Ambang alamat akun bersama",

@@ -179,7 +179,8 @@
         "wrongCaptcha": "安全驗證的答案不正確。",
         "tgCodeSent": "登入驗證碼已傳送到你的 Telegram。",
         "tgCodeWait": "剛剛已傳送過驗證碼，請稍後再試。",
-        "tgCodeWrong": "Telegram 驗證碼錯誤或已過期。"
+        "tgCodeWrong": "Telegram 驗證碼錯誤或已過期。",
+        "maintenance": "面板維護中，目前僅擁有者可以登入。"
       }
     },
     "index": {
@@ -1591,6 +1592,10 @@
       "restartXrayOnClientDisableDesc": "當用戶不再被服務時——因到期或流量上限被自動停用，或被手動停用、刪除——重新啟動 Xray 以中斷其作用中的連線。",
       "autoDeleteDepletedDays": "自動刪除已用盡的用戶端",
       "autoDeleteDepletedDaysDesc": "用戶端流量用盡或過期後這麼多天將其刪除（0 = 從不）。設定週期重設的用戶端會保留。每小時檢查一次。",
+      "maintenanceMode": "維護模式",
+      "maintenanceModeDesc": "訂閱伺服器會回傳 503 與下方通知，且只有擁有者可以登入。遷移或還原面板前請開啟。",
+      "maintenanceMessage": "維護通知",
+      "maintenanceMessageDesc": "顯示給訂閱用戶端與登入被拒絕的管理員。留空則使用預設文字。",
       "sharedAccountWindowHours": "共用帳號偵測視窗（小時）",
       "sharedAccountWindowHoursDesc": "用戶端連線過的位址在共用帳號偵測中持續計入的時間。",
       "sharedAccountMinIPs": "共用帳號位址門檻",

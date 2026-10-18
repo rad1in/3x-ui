@@ -34,6 +34,8 @@ export const AllSettingSchema = z
     trafficDiff: nonNegativeInt.max(100).optional(),
     quotaWarnPercent: nonNegativeInt.max(99).optional(),
     autoDeleteDepletedDays: nonNegativeInt.optional(),
+    maintenanceMode: z.boolean().optional(),
+    maintenanceMessage: z.string().max(500).optional(),
     sharedAccountWindowHours: z.number().int().min(1).max(168).optional(),
     sharedAccountMinIPs: nonNegativeInt.max(1000).optional(),
     sharedAccountMinCountries: nonNegativeInt.max(250).optional(),

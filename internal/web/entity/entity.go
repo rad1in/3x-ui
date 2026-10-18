@@ -93,6 +93,8 @@ type AllSetting struct {
 	TrafficDiff                int    `json:"trafficDiff" form:"trafficDiff" validate:"gte=0,lte=100"`
 	QuotaWarnPercent           int    `json:"quotaWarnPercent" form:"quotaWarnPercent" validate:"gte=0,lte=99"`
 	AutoDeleteDepletedDays     int    `json:"autoDeleteDepletedDays" form:"autoDeleteDepletedDays" validate:"gte=0"`
+	MaintenanceMode            bool   `json:"maintenanceMode" form:"maintenanceMode"`
+	MaintenanceMessage         string `json:"maintenanceMessage" form:"maintenanceMessage" validate:"max=500"`
 	SharedAccountWindowHours   int    `json:"sharedAccountWindowHours" form:"sharedAccountWindowHours" validate:"gte=1,lte=168"`
 	SharedAccountMinIPs        int    `json:"sharedAccountMinIPs" form:"sharedAccountMinIPs" validate:"gte=0,lte=1000"`
 	SharedAccountMinCountries  int    `json:"sharedAccountMinCountries" form:"sharedAccountMinCountries" validate:"gte=0,lte=250"`

@@ -297,6 +297,7 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 
 	// set per-request localizer from headers/cookies
 	engine.Use(locale.LocalizerMiddleware())
+	engine.Use(middleware.MaintenanceMiddleware(s.settingService.GetMaintenance))
 
 	// Mount the Vite-built dist/assets/ so the subscription page's JS/CSS
 	// bundles load from `/assets/...`. Also mount the same FS under the

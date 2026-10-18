@@ -90,6 +90,8 @@ var defaultValueMap = map[string]string{
 	"quotaWarnPercent":            "80",
 	"clientWarningsSeeded":        "false",
 	"autoDeleteDepletedDays":      "0",
+	"maintenanceMode":             "false",
+	"maintenanceMessage":          "",
 	"sharedAccountWindowHours":    "24",
 	"sharedAccountMinIPs":         "0",
 	"sharedAccountMinCountries":   "0",
@@ -1334,6 +1336,23 @@ func (s *SettingService) GetExternalSubUserAgent() (string, error) {
 		return DefaultExternalSubUserAgent, nil
 	}
 	return value, nil
+}
+
+// GetMaintenance reports whether maintenance mode is on and the notice to show.
+func (s *SettingService) GetMaintenance() (bool, string) {
+	on, err := s.getBool("maintenanceMode")
+	if err != nil || !on {
+		return false, ""
+	}
+	message, _ := s.getString("maintenanceMessage")
+	return true, message
+}
+
+func (s *SettingService) SetMaintenance(on bool, message string) error {
+	if err := s.setBool("maintenanceMode", on); err != nil {
+		return err
+	}
+	return s.setString("maintenanceMessage", message)
 }
 
 func (s *SettingService) GetSubEncrypt() (bool, error) {

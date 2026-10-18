@@ -326,6 +326,13 @@
             "minimum": 1,
             "type": "integer"
           },
+          "maintenanceMessage": {
+            "maxLength": 500,
+            "type": "string"
+          },
+          "maintenanceMode": {
+            "type": "boolean"
+          },
           "metricsEnable": {
             "type": "boolean"
           },
@@ -960,6 +967,8 @@
           "ldapVlessField",
           "loginLockoutMinutes",
           "loginMaxFailures",
+          "maintenanceMessage",
+          "maintenanceMode",
           "metricsEnable",
           "metricsToken",
           "ntfyEnable",
@@ -1366,6 +1375,13 @@
             "maximum": 100,
             "minimum": 1,
             "type": "integer"
+          },
+          "maintenanceMessage": {
+            "maxLength": 500,
+            "type": "string"
+          },
+          "maintenanceMode": {
+            "type": "boolean"
           },
           "metricsEnable": {
             "type": "boolean"
@@ -2014,6 +2030,8 @@
           "ldapVlessField",
           "loginLockoutMinutes",
           "loginMaxFailures",
+          "maintenanceMessage",
+          "maintenanceMode",
           "metricsEnable",
           "metricsToken",
           "ntfyEnable",

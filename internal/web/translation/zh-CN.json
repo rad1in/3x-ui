@@ -179,7 +179,8 @@
         "wrongCaptcha": "安全验证的答案不正确。",
         "tgCodeSent": "登录验证码已发送到你的 Telegram。",
         "tgCodeWait": "刚刚已发送过验证码，请稍后再试。",
-        "tgCodeWrong": "Telegram 验证码错误或已过期。"
+        "tgCodeWrong": "Telegram 验证码错误或已过期。",
+        "maintenance": "面板正在维护中，目前仅所有者可以登录。"
       }
     },
     "index": {
@@ -1591,6 +1592,10 @@
       "restartXrayOnClientDisableDesc": "当客户端不再被服务时——因到期或流量超限被自动禁用，或被手动禁用、删除——重启 Xray 以断开其活动连接。",
       "autoDeleteDepletedDays": "自动删除已用尽的客户端",
       "autoDeleteDepletedDaysDesc": "客户端流量用尽或过期后这么多天将其删除（0 = 从不）。设置了周期重置的客户端会保留。每小时检查一次。",
+      "maintenanceMode": "维护模式",
+      "maintenanceModeDesc": "订阅服务器会返回 503 和下方通知，且只有所有者可以登录。迁移或恢复面板前请开启。",
+      "maintenanceMessage": "维护通知",
+      "maintenanceMessageDesc": "显示给订阅客户端和登录被拒绝的管理员。留空则使用默认文本。",
       "sharedAccountWindowHours": "共享账号检测窗口（小时）",
       "sharedAccountWindowHoursDesc": "客户端连接过的地址在共享账号检测中持续计入的时长。",
       "sharedAccountMinIPs": "共享账号地址阈值",

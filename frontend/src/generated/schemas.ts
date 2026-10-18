@@ -300,6 +300,13 @@ export const SCHEMAS: Record<string, unknown> = {
         "minimum": 1,
         "type": "integer"
       },
+      "maintenanceMessage": {
+        "maxLength": 500,
+        "type": "string"
+      },
+      "maintenanceMode": {
+        "type": "boolean"
+      },
       "metricsEnable": {
         "type": "boolean"
       },
@@ -934,6 +941,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapVlessField",
       "loginLockoutMinutes",
       "loginMaxFailures",
+      "maintenanceMessage",
+      "maintenanceMode",
       "metricsEnable",
       "metricsToken",
       "ntfyEnable",
@@ -1340,6 +1349,13 @@ export const SCHEMAS: Record<string, unknown> = {
         "maximum": 100,
         "minimum": 1,
         "type": "integer"
+      },
+      "maintenanceMessage": {
+        "maxLength": 500,
+        "type": "string"
+      },
+      "maintenanceMode": {
+        "type": "boolean"
       },
       "metricsEnable": {
         "type": "boolean"
@@ -1988,6 +2004,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapVlessField",
       "loginLockoutMinutes",
       "loginMaxFailures",
+      "maintenanceMessage",
+      "maintenanceMode",
       "metricsEnable",
       "metricsToken",
       "ntfyEnable",

@@ -179,7 +179,8 @@
         "wrongCaptcha": "La respuesta de la comprobación de seguridad es incorrecta.",
         "tgCodeSent": "Se envió un código de acceso a tu Telegram.",
         "tgCodeWait": "Se envió un código hace un momento, espera antes de pedir otro.",
-        "tgCodeWrong": "El código de Telegram es incorrecto o ha caducado."
+        "tgCodeWrong": "El código de Telegram es incorrecto o ha caducado.",
+        "maintenance": "El panel está en mantenimiento. Ahora solo el propietario puede iniciar sesión."
       }
     },
     "index": {
@@ -1591,6 +1592,10 @@
       "restartXrayOnClientDisableDesc": "Cuando un cliente deja de atenderse — desactivado automáticamente por vencimiento o límite de tráfico, o desactivado o eliminado a mano — reiniciar Xray para que terminen sus conexiones activas.",
       "autoDeleteDepletedDays": "Borrado automático de clientes agotados",
       "autoDeleteDepletedDaysDesc": "Borra un cliente estos días después de agotar su tráfico o caducar (0 = nunca). Los clientes con reinicio periódico se conservan. Se revisa cada hora.",
+      "maintenanceMode": "Modo de mantenimiento",
+      "maintenanceModeDesc": "El servidor de suscripciones responde 503 con el aviso de abajo y solo el propietario puede iniciar sesión. Actívalo antes de mover o restaurar el panel.",
+      "maintenanceMessage": "Aviso de mantenimiento",
+      "maintenanceMessageDesc": "Se muestra a los clientes de suscripción y a los administradores rechazados al iniciar sesión. Déjalo vacío para el texto predeterminado.",
       "sharedAccountWindowHours": "Ventana de cuenta compartida (horas)",
       "sharedAccountWindowHoursDesc": "Cuánto tiempo sigue contando para la comprobación de cuenta compartida una dirección desde la que se conectó un cliente.",
       "sharedAccountMinIPs": "Umbral de direcciones de cuenta compartida",

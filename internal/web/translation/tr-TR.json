@@ -179,7 +179,8 @@
         "wrongCaptcha": "Güvenlik kontrolü yanıtı yanlış.",
         "tgCodeSent": "Giriş kodu Telegram'ınıza gönderildi.",
         "tgCodeWait": "Biraz önce bir kod gönderildi, yenisini istemeden önce bekleyin.",
-        "tgCodeWrong": "Telegram kodu yanlış veya süresi dolmuş."
+        "tgCodeWrong": "Telegram kodu yanlış veya süresi dolmuş.",
+        "maintenance": "Panel bakımda. Şu anda yalnızca sahip giriş yapabilir."
       }
     },
     "index": {
@@ -1591,6 +1592,10 @@
       "restartXrayOnClientDisableDesc": "Bir istemci artık sunulmadığında — süre dolumu veya trafik limiti nedeniyle otomatik, ya da elle devre dışı bırakıldığında veya silindiğinde — açık bağlantıları bitsin diye Xray'i yeniden başlatır.",
       "autoDeleteDepletedDays": "Biten İstemcileri Otomatik Sil",
       "autoDeleteDepletedDaysDesc": "Trafiği biten veya süresi dolan istemciyi bu kadar gün sonra sil (0 = asla). Periyodik sıfırlaması olan istemciler korunur. Saatte bir kontrol edilir.",
+      "maintenanceMode": "Bakım modu",
+      "maintenanceModeDesc": "Abonelik sunucusu aşağıdaki bildirimle 503 döndürür ve yalnızca sahip giriş yapabilir. Paneli taşımadan veya geri yüklemeden önce açın.",
+      "maintenanceMessage": "Bakım bildirimi",
+      "maintenanceMessageDesc": "Abonelik istemcilerine ve girişi reddedilen yöneticilere gösterilir. Varsayılan metin için boş bırakın.",
       "sharedAccountWindowHours": "Paylaşılan hesap penceresi (saat)",
       "sharedAccountWindowHoursDesc": "İstemcinin bağlandığı bir adresin paylaşılan hesap denetiminde ne kadar süre sayılacağı.",
       "sharedAccountMinIPs": "Paylaşılan hesap adres eşiği",

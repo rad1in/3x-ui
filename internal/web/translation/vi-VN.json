@@ -179,7 +179,8 @@
         "wrongCaptcha": "Đáp án kiểm tra bảo mật không đúng.",
         "tgCodeSent": "Mã đăng nhập đã được gửi tới Telegram của bạn.",
         "tgCodeWait": "Mã vừa được gửi, hãy chờ trước khi yêu cầu lại.",
-        "tgCodeWrong": "Mã Telegram sai hoặc đã hết hạn."
+        "tgCodeWrong": "Mã Telegram sai hoặc đã hết hạn.",
+        "maintenance": "Bảng điều khiển đang bảo trì. Hiện chỉ chủ sở hữu mới có thể đăng nhập."
       }
     },
     "index": {
@@ -1591,6 +1592,10 @@
       "restartXrayOnClientDisableDesc": "Khi một máy khách không còn được phục vụ — bị vô hiệu hóa tự động do hết hạn hoặc giới hạn lưu lượng, hoặc bị vô hiệu hóa hay xóa thủ công — hãy khởi động lại Xray để các kết nối đang mở của nó kết thúc.",
       "autoDeleteDepletedDays": "Tự động xóa khách hàng đã hết",
       "autoDeleteDepletedDaysDesc": "Xóa khách hàng sau số ngày này kể từ khi hết lưu lượng hoặc hết hạn (0 = không bao giờ). Khách hàng có đặt lại định kỳ được giữ lại. Kiểm tra mỗi giờ.",
+      "maintenanceMode": "Chế độ bảo trì",
+      "maintenanceModeDesc": "Máy chủ đăng ký trả về 503 kèm thông báo bên dưới và chỉ chủ sở hữu mới đăng nhập được. Bật trước khi di chuyển hoặc khôi phục bảng điều khiển.",
+      "maintenanceMessage": "Thông báo bảo trì",
+      "maintenanceMessageDesc": "Hiển thị cho khách hàng đăng ký và quản trị viên bị từ chối khi đăng nhập. Để trống để dùng văn bản mặc định.",
       "sharedAccountWindowHours": "Khung phát hiện tài khoản dùng chung (giờ)",
       "sharedAccountWindowHoursDesc": "Thời gian một địa chỉ mà khách hàng đã kết nối vẫn được tính trong việc kiểm tra tài khoản dùng chung.",
       "sharedAccountMinIPs": "Ngưỡng địa chỉ của tài khoản dùng chung",

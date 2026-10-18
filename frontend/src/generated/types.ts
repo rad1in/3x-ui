@@ -88,6 +88,8 @@ export interface AllSetting {
   ldapVlessField: string;
   loginLockoutMinutes: number;
   loginMaxFailures: number;
+  maintenanceMessage: string;
+  maintenanceMode: boolean;
   metricsEnable: boolean;
   metricsToken: string;
   ntfyEnable: boolean;
@@ -337,6 +339,8 @@ export interface AllSettingView {
   ldapVlessField: string;
   loginLockoutMinutes: number;
   loginMaxFailures: number;
+  maintenanceMessage: string;
+  maintenanceMode: boolean;
   metricsEnable: boolean;
   metricsToken: string;
   ntfyEnable: boolean;

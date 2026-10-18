@@ -179,7 +179,8 @@
         "wrongCaptcha": "The security check answer is wrong.",
         "tgCodeSent": "A login code was sent to your Telegram.",
         "tgCodeWait": "A code was sent a moment ago, wait before asking again.",
-        "tgCodeWrong": "The Telegram code is wrong or has expired."
+        "tgCodeWrong": "The Telegram code is wrong or has expired.",
+        "maintenance": "The panel is under maintenance. Only the owner can sign in right now."
       }
     },
     "index": {
@@ -1745,6 +1746,10 @@
       "restartXrayOnClientDisableDesc": "When a client stops being served - auto-disabled by expiration or traffic limit, or disabled or deleted by hand - restart Xray so its live connections end.",
       "autoDeleteDepletedDays": "Auto-delete Ran-out Clients",
       "autoDeleteDepletedDaysDesc": "Delete a client this many days after its traffic ran out or it expired (0 = never). Clients with a periodic traffic reset are kept. Checked hourly.",
+      "maintenanceMode": "Maintenance mode",
+      "maintenanceModeDesc": "The subscription server answers 503 with the notice below and only the owner can sign in. Turn it on before moving or restoring the panel.",
+      "maintenanceMessage": "Maintenance notice",
+      "maintenanceMessageDesc": "Shown to subscription clients and to admins who are refused at login. Leave empty for the default text.",
       "sharedAccountWindowHours": "Shared-account window (hours)",
       "sharedAccountWindowHoursDesc": "How long an address a client connected from keeps counting towards the shared-account check.",
       "sharedAccountMinIPs": "Shared-account address threshold",
