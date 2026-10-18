@@ -6525,10 +6525,14 @@
         "properties": {
           "captchaEnable": {
             "type": "boolean"
+          },
+          "newLocationAlert": {
+            "type": "boolean"
           }
         },
         "required": [
-          "captchaEnable"
+          "captchaEnable",
+          "newLocationAlert"
         ],
         "type": "object"
       },
@@ -6537,10 +6541,14 @@
         "properties": {
           "captchaEnable": {
             "type": "boolean"
+          },
+          "newLocationAlert": {
+            "type": "boolean"
           }
         },
         "required": [
-          "captchaEnable"
+          "captchaEnable",
+          "newLocationAlert"
         ],
         "type": "object"
       },
@@ -20364,7 +20372,8 @@
                 "example": {
                   "success": true,
                   "obj": {
-                    "captchaEnable": false
+                    "captchaEnable": false,
+                    "newLocationAlert": false
                   }
                 }
               }

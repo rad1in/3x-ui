@@ -4,6 +4,7 @@ package eventbus
 // text, so a new alert needs no per-channel formatting.
 var plainTitles = map[EventType]string{
 	EventResellerCreditLow: "Reseller credit is low",
+	EventLoginNewLocation:  "New login location",
 }
 
 // PlainText renders an event as a title and text lines; ok is false for events

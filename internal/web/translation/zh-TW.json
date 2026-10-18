@@ -1624,6 +1624,8 @@
           "tab": "額外防護",
           "captcha": "登入驗證碼",
           "captchaDesc": "在檢查密碼之前，先出一道由面板自己繪製成圖片的簡單算術題，不會向任何第三方傳送資料。",
+          "newLocation": "新登入位置提醒",
+          "newLocationDesc": "管理員從未見過的位址或國家登入時，透過通知管道發出提醒。首次登入只用於記錄。辨識國家需要 Xray 資料夾中的 geoip.dat。",
           "saved": "安全設定已儲存"
         },
         "show": "顯示",
@@ -1988,6 +1990,7 @@
       "eventClientExpiryWarning": "到期預警",
       "eventWeeklyReport": "每週摘要",
       "eventResellerCreditLow": "分銷商額度不足",
+      "eventLoginNewLocation": "管理員從新位置登入",
       "testDiscordDesc": "傳送測試通知以驗證您的機器人權杖與頻道 ID",
       "discordNotInitialized": "Discord 服務未初始化",
       "discordBotNotEnabled": "Discord 機器人未啟用",

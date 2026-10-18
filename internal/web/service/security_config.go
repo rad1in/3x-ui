@@ -8,7 +8,8 @@ import (
 // SecurityConfig groups the login and data protections that do not depend on
 // two-factor codes. It is one JSON setting that only owners may change.
 type SecurityConfig struct {
-	CaptchaEnable bool `json:"captchaEnable"`
+	CaptchaEnable    bool `json:"captchaEnable"`
+	NewLocationAlert bool `json:"newLocationAlert"`
 }
 
 // SecurityConfigView is the configuration as the admin API serves it.

@@ -1624,6 +1624,8 @@
           "tab": "追加の保護",
           "captcha": "ログインCAPTCHA",
           "captchaDesc": "パスワードを確認する前に、パネル自身が画像として描く簡単な計算を出題します。外部サービスには何も送信されません。",
+          "newLocation": "新しいログイン場所の通知",
+          "newLocationDesc": "管理者がこれまでにないアドレスや国からサインインしたとき、通知チャネルでアラートを送ります。最初のサインインは学習のみです。国の判定にはXrayフォルダのgeoip.datが必要です。",
           "saved": "セキュリティ設定を保存しました"
         },
         "show": "表示",
@@ -1988,6 +1990,7 @@
       "eventClientExpiryWarning": "期限の警告",
       "eventWeeklyReport": "週次サマリー",
       "eventResellerCreditLow": "リセラーのクレジット残高が少ない",
+      "eventLoginNewLocation": "管理者が新しい場所からログイン",
       "testDiscordDesc": "BotトークンとチャンネルIDを確認するためのテスト通知を送信します",
       "discordNotInitialized": "Discord サービスが初期化されていません",
       "discordBotNotEnabled": "Discord ボットが有効になっていません",

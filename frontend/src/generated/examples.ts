@@ -1675,10 +1675,12 @@ export const EXAMPLES: Record<string, unknown> = {
     }
   },
   "SecurityConfig": {
-    "captchaEnable": false
+    "captchaEnable": false,
+    "newLocationAlert": false
   },
   "SecurityConfigView": {
-    "captchaEnable": false
+    "captchaEnable": false,
+    "newLocationAlert": false
   },
   "ServerSettings": {
     "contentPaddingAddition": "",

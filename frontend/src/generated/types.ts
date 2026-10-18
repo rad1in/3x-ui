@@ -1470,10 +1470,12 @@ export interface SalesConfigView {
 
 export interface SecurityConfig {
   captchaEnable: boolean;
+  newLocationAlert: boolean;
 }
 
 export interface SecurityConfigView {
   captchaEnable: boolean;
+  newLocationAlert: boolean;
 }
 
 export interface ServerSettings {

@@ -14,6 +14,19 @@ func (d ResellerCreditData) Lines() []string {
 	}
 }
 
+// Lines renders the alert as plain text for channels without their own layout.
+func (d NewLoginLocationData) Lines() []string {
+	place := d.IP
+	if d.Country != "" {
+		place += " (" + d.Country + ")"
+	}
+	line := fmt.Sprintf("%s signed in from a new address: %s", d.Username, place)
+	if d.NewCountry {
+		line = fmt.Sprintf("%s signed in from a new country: %s", d.Username, place)
+	}
+	return []string{line}
+}
+
 // Lines renders the summary as plain text, one fact per line, for channels without their own layout.
 func (d WeeklySummaryData) Lines() []string {
 	from := time.UnixMilli(d.SinceMs).Format("2006-01-02")

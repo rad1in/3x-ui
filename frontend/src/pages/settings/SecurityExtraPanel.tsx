@@ -29,6 +29,16 @@ function ExtraForm({
           onChange={(v) => setCfg({ ...cfg, captchaEnable: v })}
         />
       </SettingListItem>
+      <SettingListItem
+        paddings="small"
+        title={t('pages.settings.security.extra.newLocation')}
+        description={t('pages.settings.security.extra.newLocationDesc')}
+      >
+        <Switch
+          checked={cfg.newLocationAlert}
+          onChange={(v) => setCfg({ ...cfg, newLocationAlert: v })}
+        />
+      </SettingListItem>
       <Button type="primary" loading={saving} onClick={() => onSave(cfg)}>
         {t('save')}
       </Button>

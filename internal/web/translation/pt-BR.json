@@ -1624,6 +1624,8 @@
           "tab": "Proteção extra",
           "captcha": "Captcha de login",
           "captchaDesc": "Pede o resultado de uma conta simples, desenhada como imagem pelo próprio painel, antes de checar a senha. Nada é enviado a terceiros.",
+          "newLocation": "Alerta de novo local de login",
+          "newLocationDesc": "Envia um alerta pelos canais de notificação quando um administrador entra de um endereço ou país nunca visto. O primeiro login serve apenas para aprender. Países exigem um geoip.dat na pasta do Xray.",
           "saved": "Configurações de segurança salvas"
         },
         "show": "Mostrar",
@@ -1988,6 +1990,7 @@
       "eventClientExpiryWarning": "Aviso de expiração",
       "eventWeeklyReport": "Resumo semanal",
       "eventResellerCreditLow": "Crédito de revendedor baixo",
+      "eventLoginNewLocation": "Login de administrador de um local novo",
       "testDiscordDesc": "Enviar uma notificação de teste para verificar o token do bot e o ID do canal",
       "discordNotInitialized": "Serviço Discord não inicializado",
       "discordBotNotEnabled": "Bot do Discord não está ativado",

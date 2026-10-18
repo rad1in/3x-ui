@@ -118,6 +118,7 @@ func allModels() []any {
 		&model.WalletEntry{},
 		&model.ReferralCode{},
 		&model.ResellerEntry{},
+		&model.LoginSeen{},
 	}
 }
 

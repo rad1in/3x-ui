@@ -6499,10 +6499,14 @@ export const SCHEMAS: Record<string, unknown> = {
     "properties": {
       "captchaEnable": {
         "type": "boolean"
+      },
+      "newLocationAlert": {
+        "type": "boolean"
       }
     },
     "required": [
-      "captchaEnable"
+      "captchaEnable",
+      "newLocationAlert"
     ],
     "type": "object"
   },
@@ -6511,10 +6515,14 @@ export const SCHEMAS: Record<string, unknown> = {
     "properties": {
       "captchaEnable": {
         "type": "boolean"
+      },
+      "newLocationAlert": {
+        "type": "boolean"
       }
     },
     "required": [
-      "captchaEnable"
+      "captchaEnable",
+      "newLocationAlert"
     ],
     "type": "object"
   },

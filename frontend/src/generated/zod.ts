@@ -1566,11 +1566,13 @@ export type SalesConfigView = z.infer<typeof SalesConfigViewSchema>;
 
 export const SecurityConfigSchema = z.object({
   captchaEnable: z.boolean(),
+  newLocationAlert: z.boolean(),
 });
 export type SecurityConfig = z.infer<typeof SecurityConfigSchema>;
 
 export const SecurityConfigViewSchema = z.object({
   captchaEnable: z.boolean(),
+  newLocationAlert: z.boolean(),
 });
 export type SecurityConfigView = z.infer<typeof SecurityConfigViewSchema>;
 

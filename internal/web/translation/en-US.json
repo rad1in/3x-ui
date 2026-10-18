@@ -1746,6 +1746,8 @@
           "tab": "Extra protection",
           "captcha": "Login captcha",
           "captchaDesc": "Asks a simple sum, drawn as a picture by the panel itself, before checking the password. Nothing is sent to a third party.",
+          "newLocation": "New login location alert",
+          "newLocationDesc": "Sends an alert through the notification channels when an admin signs in from an address or country not seen before. The first sign-in only teaches the panel. Countries need a geoip.dat in the Xray folder.",
           "saved": "Security settings saved"
         },
         "show": "Show",
@@ -2106,6 +2108,7 @@
       "eventClientExpiryWarning": "Expiry warning",
       "eventWeeklyReport": "Weekly summary",
       "eventResellerCreditLow": "Reseller credit low",
+      "eventLoginNewLocation": "Admin login from a new place",
       "testDiscordDesc": "Send a test notification to verify your bot token and channel ID",
       "discordNotInitialized": "Discord service not initialized",
       "discordBotNotEnabled": "Discord bot is not enabled",

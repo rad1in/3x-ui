@@ -36,6 +36,7 @@ type IndexController struct {
 
 	settingService service.SettingService
 	security       service.SecurityConfigService
+	alerts         service.LoginAlertService
 	userService    panel.UserService
 	sessionService panel.SessionService
 	panelService   panel.PanelService
@@ -189,6 +190,8 @@ func (a *IndexController) login(c *gin.Context) {
 		Time:     timeStr,
 		Status:   tgbot.LoginSuccess,
 	})
+
+	go a.alerts.Observe(user, remoteIP)
 
 	if err := session.SetLoginUser(c, user); err != nil {
 		logger.Warning("Unable to save session:", err)

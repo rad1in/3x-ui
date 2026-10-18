@@ -1624,6 +1624,8 @@
           "tab": "Protección extra",
           "captcha": "Captcha de inicio de sesión",
           "captchaDesc": "Pide resolver una operación sencilla, dibujada como imagen por el propio panel, antes de comprobar la contraseña. No se envía nada a terceros.",
+          "newLocation": "Alerta de nueva ubicación de acceso",
+          "newLocationDesc": "Envía una alerta por los canales de notificación cuando un administrador entra desde una dirección o país no visto antes. El primer acceso solo sirve para aprender. Los países requieren un geoip.dat en la carpeta de Xray.",
           "saved": "Ajustes de seguridad guardados"
         },
         "show": "Mostrar",
@@ -1988,6 +1990,7 @@
       "eventClientExpiryWarning": "Aviso de vencimiento",
       "eventWeeklyReport": "Resumen semanal",
       "eventResellerCreditLow": "Crédito de revendedor bajo",
+      "eventLoginNewLocation": "Acceso de administrador desde un lugar nuevo",
       "testDiscordDesc": "Enviar una notificación de prueba para verificar el token del bot y el ID del canal",
       "discordNotInitialized": "Servicio de Discord no inicializado",
       "discordBotNotEnabled": "El bot de Discord no está habilitado",

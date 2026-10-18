@@ -1624,6 +1624,8 @@
           "tab": "Perlindungan tambahan",
           "captcha": "Captcha login",
           "captchaDesc": "Meminta jawaban penjumlahan sederhana, digambar oleh panel sendiri, sebelum memeriksa kata sandi. Tidak ada yang dikirim ke pihak ketiga.",
+          "newLocation": "Peringatan lokasi login baru",
+          "newLocationDesc": "Mengirim peringatan lewat kanal notifikasi saat admin masuk dari alamat atau negara yang belum pernah terlihat. Login pertama hanya untuk belajar. Negara memerlukan geoip.dat di folder Xray.",
           "saved": "Pengaturan keamanan disimpan"
         },
         "show": "Tampilkan",
@@ -1988,6 +1990,7 @@
       "eventClientExpiryWarning": "Peringatan kedaluwarsa",
       "eventWeeklyReport": "Ringkasan mingguan",
       "eventResellerCreditLow": "Kredit reseller menipis",
+      "eventLoginNewLocation": "Login admin dari tempat baru",
       "testDiscordDesc": "Kirim notifikasi uji untuk memverifikasi token bot dan ID saluran Anda",
       "discordNotInitialized": "Layanan Discord belum diinisialisasi",
       "discordBotNotEnabled": "Bot Discord belum diaktifkan",

@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -136,6 +137,28 @@ func TestACaptchaCannotBeReplayedAcrossLogins(t *testing.T) {
 	good := credentials(url.Values{"captchaId": {ch.ID}, "captchaAnswer": {ch.Answer}})
 	if h.login(good) {
 		t.Fatal("a solved captcha was reused for a second attempt")
+	}
+}
+
+func TestASuccessfulLoginIsRememberedWhenLocationAlertsAreOn(t *testing.T) {
+	h := newLoginHarness(t)
+	if err := (&service.SecurityConfigService{}).Save(&service.SecurityConfig{NewLocationAlert: true}); err != nil {
+		t.Fatal(err)
+	}
+	if !h.login(credentials(nil)) {
+		t.Fatal("login failed")
+	}
+	deadline := time.Now().Add(3 * time.Second)
+	for {
+		var n int64
+		database.GetDB().Model(&model.LoginSeen{}).Where("kind = ? AND value = ?", model.LoginSeenIP, "127.0.0.1").Count(&n)
+		if n == 1 {
+			return
+		}
+		if time.Now().After(deadline) {
+			t.Fatal("the login address was never remembered")
+		}
+		time.Sleep(20 * time.Millisecond)
 	}
 }
 

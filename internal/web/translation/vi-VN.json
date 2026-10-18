@@ -1624,6 +1624,8 @@
           "tab": "Bảo vệ bổ sung",
           "captcha": "Captcha đăng nhập",
           "captchaDesc": "Hỏi một phép tính đơn giản do chính bảng điều khiển vẽ thành hình, trước khi kiểm tra mật khẩu. Không gửi gì cho bên thứ ba.",
+          "newLocation": "Cảnh báo vị trí đăng nhập mới",
+          "newLocationDesc": "Gửi cảnh báo qua các kênh thông báo khi quản trị viên đăng nhập từ địa chỉ hoặc quốc gia chưa từng thấy. Lần đăng nhập đầu chỉ để ghi nhớ. Xác định quốc gia cần geoip.dat trong thư mục Xray.",
           "saved": "Đã lưu cài đặt bảo mật"
         },
         "show": "Hiển thị",
@@ -1988,6 +1990,7 @@
       "eventClientExpiryWarning": "Cảnh báo hết hạn",
       "eventWeeklyReport": "Tóm tắt hằng tuần",
       "eventResellerCreditLow": "Tín dụng đại lý thấp",
+      "eventLoginNewLocation": "Quản trị viên đăng nhập từ nơi mới",
       "testDiscordDesc": "Gửi thông báo thử nghiệm để xác minh token bot và ID kênh",
       "discordNotInitialized": "Dịch vụ Discord chưa được khởi tạo",
       "discordBotNotEnabled": "Bot Discord chưa được bật",
