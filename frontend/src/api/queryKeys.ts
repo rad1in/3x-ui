@@ -31,6 +31,7 @@ export const keys = {
   server: {
     status: () => ['server', 'status'] as const,
     fail2banStatus: () => ['server', 'fail2banStatus'] as const,
+    health: () => ['server', 'health'] as const,
   },
   nodes: {
     root: () => ['nodes'] as const,

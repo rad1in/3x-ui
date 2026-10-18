@@ -553,6 +553,14 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/server/health',
+        summary:
+          'Self-check of the panel: database ping, Xray process, enabled nodes, root disk usage and the panel/subscription certificate expiry. Each check is ok, warn, fail or skip (not configured); status is the worst of them.',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "status": "warn",\n    "checkedAt": 1760000000000,\n    "checks": [\n      { "name": "database", "status": "ok" },\n      { "name": "xray", "status": "ok" },\n      { "name": "nodes", "status": "warn", "detail": "1 of 3 enabled nodes offline" },\n      { "name": "disk", "status": "ok", "detail": "41% used" },\n      { "name": "cert", "status": "skip" }\n    ]\n  }\n}',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/server/speedtestDownload',
         summary:
           'Stream the requested number of incompressible bytes (1 to 64 MiB). Called by a master panel while it speed-tests this node.',

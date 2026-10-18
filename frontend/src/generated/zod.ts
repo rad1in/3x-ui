@@ -928,6 +928,20 @@ export const HappLinkResultSchema = z.object({
 });
 export type HappLinkResult = z.infer<typeof HappLinkResultSchema>;
 
+export const HealthCheckSchema = z.object({
+  detail: z.string().optional(),
+  name: z.string(),
+  status: z.string(),
+});
+export type HealthCheck = z.infer<typeof HealthCheckSchema>;
+
+export const HealthReportSchema = z.object({
+  checkedAt: z.number().int(),
+  checks: z.array(z.lazy(() => HealthCheckSchema)),
+  status: z.string(),
+});
+export type HealthReport = z.infer<typeof HealthReportSchema>;
+
 export const HistoryOfSeedersSchema = z.object({
   id: z.number().int(),
   seederName: z.string(),

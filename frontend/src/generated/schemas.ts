@@ -3758,6 +3758,54 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "HealthCheck": {
+    "description": "HealthCheck is the outcome of one probe.",
+    "properties": {
+      "detail": {
+        "example": "3 of 3 enabled nodes online",
+        "type": "string"
+      },
+      "name": {
+        "example": "database",
+        "type": "string"
+      },
+      "status": {
+        "example": "ok",
+        "type": "string"
+      }
+    },
+    "required": [
+      "name",
+      "status"
+    ],
+    "type": "object"
+  },
+  "HealthReport": {
+    "description": "HealthReport is the panel's overall state, the worst of its checks.",
+    "properties": {
+      "checkedAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "checks": {
+        "items": {
+          "$ref": "#/components/schemas/HealthCheck"
+        },
+        "type": "array"
+      },
+      "status": {
+        "example": "ok",
+        "type": "string"
+      }
+    },
+    "required": [
+      "checkedAt",
+      "checks",
+      "status"
+    ],
+    "type": "object"
+  },
   "HistoryOfSeeders": {
     "description": "HistoryOfSeeders tracks which database seeders have been executed to prevent re-running.",
     "properties": {

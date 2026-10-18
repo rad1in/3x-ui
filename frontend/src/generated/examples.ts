@@ -943,6 +943,22 @@ export const EXAMPLES: Record<string, unknown> = {
   "HappLinkResult": {
     "encryptedLink": "happ://crypt5/example"
   },
+  "HealthCheck": {
+    "detail": "3 of 3 enabled nodes online",
+    "name": "database",
+    "status": "ok"
+  },
+  "HealthReport": {
+    "checkedAt": 1760000000000,
+    "checks": [
+      {
+        "detail": "3 of 3 enabled nodes online",
+        "name": "database",
+        "status": "ok"
+      }
+    ],
+    "status": "ok"
+  },
   "HistoryOfSeeders": {
     "id": 0,
     "seederName": ""

@@ -45,6 +45,7 @@ func NewServerController(g *gin.RouterGroup) *ServerController {
 // initRouter sets up the routes for server status, Xray management, and utility endpoints.
 func (a *ServerController) initRouter(g *gin.RouterGroup) {
 	g.GET("/status", a.status)
+	g.GET("/health", a.health)
 	g.GET("/cpuHistory/:bucket", a.getCpuHistoryBucket)
 	g.GET("/history/:metric/:bucket", a.getMetricHistoryBucket)
 	g.GET("/xrayMetricsState", a.getXrayMetricsState)
@@ -110,6 +111,11 @@ func (a *ServerController) startTask() {
 }
 
 // status returns the current server status information.
+// health runs the panel's self-checks: database, Xray, nodes, disk and certificates.
+func (a *ServerController) health(c *gin.Context) {
+	jsonObj(c, (&service.HealthService{}).Check(time.Now()), nil)
+}
+
 func (a *ServerController) status(c *gin.Context) { jsonObj(c, a.serverService.CurrentStatus(), nil) }
 
 func (a *ServerController) getFail2banStatus(c *gin.Context) {

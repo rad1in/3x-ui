@@ -15,7 +15,7 @@ export default function SharedAccountsCard() {
       <div className="ov-insight-head">
         <div className="ov-kicker">{t('pages.index.sharedAccounts')}</div>
       </div>
-      <ul className="ov-insight-list">
+      <ul className="ov-insight-list" style={{ padding: '0 20px 12px', margin: 0 }}>
         {data.map((f) => (
           <li key={f.email} className="ov-insight-row">
             <Link

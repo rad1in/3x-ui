@@ -874,6 +874,18 @@ export interface HappLinkResult {
   encryptedLink: string;
 }
 
+export interface HealthCheck {
+  detail?: string;
+  name: string;
+  status: string;
+}
+
+export interface HealthReport {
+  checkedAt: number;
+  checks: HealthCheck[];
+  status: string;
+}
+
 export interface HistoryOfSeeders {
   id: number;
   seederName: string;

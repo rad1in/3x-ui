@@ -30,6 +30,7 @@ import VitalTile from './VitalTile';
 import ThroughputCard from './ThroughputCard';
 import ConnectionsCard from './ConnectionsCard';
 import ClientsInsightCard from './ClientsInsightCard';
+import HealthCard from './HealthCard';
 import SharedAccountsCard from './SharedAccountsCard';
 import HostedUsageCard from './HostedUsageCard';
 import SystemStrip from './SystemStrip';
@@ -318,6 +319,8 @@ export default function IndexPage() {
                   )}
 
                   <ClientsInsightCard />
+
+                  <HealthCard />
 
                   <SharedAccountsCard />
 
