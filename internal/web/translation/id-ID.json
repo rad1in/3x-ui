@@ -1069,6 +1069,8 @@
       "delDepletedConfirmTitle": "Hapus klien yang habis?",
       "delDepletedConfirmContent": "Hapus setiap klien yang kuota lalu lintasnya habis atau yang masa berlakunya telah berakhir. Tidak dapat dibatalkan.",
       "exportClients": "Ekspor klien",
+      "usageReportCsv": "Laporan penggunaan (CSV)",
+      "usageReportPrint": "Laporan penggunaan siap cetak",
       "importClients": "Impor klien",
       "templates": {
         "menu": "Templat",

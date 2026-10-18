@@ -34,6 +34,7 @@ import {
   DeleteOutlined,
   DisconnectOutlined,
   DownloadOutlined,
+  PrinterOutlined,
   EditOutlined,
   FilterOutlined,
   InfoCircleOutlined,
@@ -919,6 +920,12 @@ export default function ClientsPage() {
     });
   }
 
+  function openUsageReport(format: 'csv' | 'html') {
+    const url = `${window.X_UI_BASE_PATH || ''}panel/api/clients/report?format=${format}`;
+    if (format === 'csv') window.location.href = url;
+    else window.open(url, '_blank', 'noopener');
+  }
+
   async function onExportClients() {
     const items = await exportClients();
     if (!items) return;
@@ -1533,6 +1540,18 @@ export default function ClientsPage() {
                                         icon: <DownloadOutlined />,
                                         label: t('pages.clients.exportClients'),
                                         onClick: onExportClients,
+                                      },
+                                      {
+                                        key: 'reportCsv',
+                                        icon: <DownloadOutlined />,
+                                        label: t('pages.clients.usageReportCsv'),
+                                        onClick: () => openUsageReport('csv'),
+                                      },
+                                      {
+                                        key: 'reportPrint',
+                                        icon: <PrinterOutlined />,
+                                        label: t('pages.clients.usageReportPrint'),
+                                        onClick: () => openUsageReport('html'),
                                       },
                                       {
                                         key: 'import',

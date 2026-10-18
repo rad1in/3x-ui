@@ -1069,6 +1069,8 @@
       "delDepletedConfirmTitle": "删除已耗尽的客户端？",
       "delDepletedConfirmContent": "删除所有流量配额已用尽或已过期的客户端。该操作不可撤销。",
       "exportClients": "导出客户端",
+      "usageReportCsv": "用量报告（CSV）",
+      "usageReportPrint": "可打印的用量报告",
       "importClients": "导入客户端",
       "templates": {
         "menu": "模板",

@@ -59,6 +59,7 @@ func (a *ClientController) initRouter(g *gin.RouterGroup) {
 	a.initTemplateRouter(g)
 	a.initUsageRouter(g)
 	a.initSharedRouter(g)
+	a.initReportRouter(g)
 	a.initDisconnectRouter(g)
 	a.initForeignImportRouter(g)
 	g.GET("/list", a.list)

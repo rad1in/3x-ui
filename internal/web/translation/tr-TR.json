@@ -1069,6 +1069,8 @@
       "delDepletedConfirmTitle": "Tükenmiş Kullanıcılar Silinsin Mi?",
       "delDepletedConfirmContent": "Trafik kotası dolan veya süresi geçen tüm kullanıcılar silinir. Geri alınamaz.",
       "exportClients": "Kullanıcıları Dışa Aktar",
+      "usageReportCsv": "Kullanım raporu (CSV)",
+      "usageReportPrint": "Yazdırılabilir kullanım raporu",
       "importClients": "Kullanıcıları İçe Aktar",
       "templates": {
         "menu": "Şablonlar",

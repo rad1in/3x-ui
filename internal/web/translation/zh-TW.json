@@ -1069,6 +1069,8 @@
       "delDepletedConfirmTitle": "刪除已耗盡的客戶端？",
       "delDepletedConfirmContent": "刪除所有流量配額已用盡或已過期的客戶端。此操作無法復原。",
       "exportClients": "匯出客戶端",
+      "usageReportCsv": "用量報告（CSV）",
+      "usageReportPrint": "可列印的用量報告",
       "importClients": "匯入客戶端",
       "templates": {
         "menu": "範本",

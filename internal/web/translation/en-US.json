@@ -1069,6 +1069,8 @@
       "delDepletedConfirmTitle": "Delete depleted clients?",
       "delDepletedConfirmContent": "Removes every client whose traffic quota is exhausted or whose expiry has passed. This cannot be undone.",
       "exportClients": "Export clients",
+      "usageReportCsv": "Usage report (CSV)",
+      "usageReportPrint": "Printable usage report",
       "importClients": "Import clients",
       "templates": {
         "menu": "Templates",

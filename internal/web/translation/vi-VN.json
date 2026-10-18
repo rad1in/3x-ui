@@ -1069,6 +1069,8 @@
       "delDepletedConfirmTitle": "Xóa khách hàng hết hạn mức?",
       "delDepletedConfirmContent": "Gỡ tất cả khách hàng đã dùng hết hạn mức lưu lượng hoặc đã quá hạn. Không thể hoàn tác.",
       "exportClients": "Xuất khách hàng",
+      "usageReportCsv": "Báo cáo sử dụng (CSV)",
+      "usageReportPrint": "Báo cáo sử dụng để in",
       "importClients": "Nhập khách hàng",
       "templates": {
         "menu": "Mẫu",

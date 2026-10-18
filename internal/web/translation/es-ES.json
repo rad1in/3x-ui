@@ -1069,6 +1069,8 @@
       "delDepletedConfirmTitle": "¿Eliminar clientes agotados?",
       "delDepletedConfirmContent": "Elimina todos los clientes con cuota agotada o expirados. No se puede deshacer.",
       "exportClients": "Exportar clientes",
+      "usageReportCsv": "Informe de uso (CSV)",
+      "usageReportPrint": "Informe de uso imprimible",
       "importClients": "Importar clientes",
       "templates": {
         "menu": "Plantillas",

@@ -1069,6 +1069,8 @@
       "delDepletedConfirmTitle": "حذف کلاینت‌های اتمام‌یافته؟",
       "delDepletedConfirmContent": "هر کلاینتی که سهمیه ترافیک‌اش تمام شده یا تاریخ انقضایش گذشته است حذف می‌شود. این عمل غیرقابل بازگشت است.",
       "exportClients": "خروجی گرفتن از کلاینت‌ها",
+      "usageReportCsv": "گزارش مصرف (CSV)",
+      "usageReportPrint": "گزارش مصرف قابل چاپ",
       "importClients": "ورود کلاینت‌ها",
       "templates": {
         "menu": "قالب‌ها",

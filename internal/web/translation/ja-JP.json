@@ -1069,6 +1069,8 @@
       "delDepletedConfirmTitle": "使い切ったクライアントを削除しますか?",
       "delDepletedConfirmContent": "トラフィック上限に達したか有効期限が切れたクライアントをすべて削除します。元に戻せません。",
       "exportClients": "クライアントをエクスポート",
+      "usageReportCsv": "使用量レポート（CSV）",
+      "usageReportPrint": "印刷用の使用量レポート",
       "importClients": "クライアントをインポート",
       "templates": {
         "menu": "テンプレート",

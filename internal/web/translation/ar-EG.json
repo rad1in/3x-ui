@@ -1069,6 +1069,8 @@
       "delDepletedConfirmTitle": "حذف العملاء المنتهية حصصهم؟",
       "delDepletedConfirmContent": "يُحذف كل عميل استُنفِدت حصة حركة مروره أو انتهت صلاحيته. لا يمكن التراجع.",
       "exportClients": "تصدير العملاء",
+      "usageReportCsv": "تقرير الاستخدام (CSV)",
+      "usageReportPrint": "تقرير الاستخدام للطباعة",
       "importClients": "استيراد العملاء",
       "templates": {
         "menu": "القوالب",

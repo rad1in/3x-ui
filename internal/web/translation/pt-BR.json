@@ -1069,6 +1069,8 @@
       "delDepletedConfirmTitle": "Excluir clientes esgotados?",
       "delDepletedConfirmContent": "Remove todos os clientes cuja cota de tráfego foi esgotada ou cuja expiração já passou. Não é possível desfazer.",
       "exportClients": "Exportar clientes",
+      "usageReportCsv": "Relatório de uso (CSV)",
+      "usageReportPrint": "Relatório de uso para impressão",
       "importClients": "Importar clientes",
       "templates": {
         "menu": "Modelos",

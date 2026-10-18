@@ -1069,6 +1069,8 @@
       "delDepletedConfirmTitle": "Видалити вичерпаних клієнтів?",
       "delDepletedConfirmContent": "Видаляються всі клієнти, у яких вичерпана квота трафіку або сплив термін. Цю дію неможливо скасувати.",
       "exportClients": "Експортувати клієнтів",
+      "usageReportCsv": "Звіт про використання (CSV)",
+      "usageReportPrint": "Звіт про використання для друку",
       "importClients": "Імпортувати клієнтів",
       "templates": {
         "menu": "Шаблони",

@@ -1652,6 +1652,32 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/clients/report',
+        summary:
+          'Usage report of every client you can see. format=csv (default) downloads a spreadsheet-ready file with byte counts; format=html returns a printable page that can be saved as PDF from the browser. Period columns sum the per-day usage of the last days days; cells starting with = + - or @ are quoted so spreadsheets do not run them.',
+        params: [
+          {
+            name: 'days',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 30,
+            desc: 'Window length in days, 1 to 90.',
+          },
+          {
+            name: 'format',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            defaultValue: 'csv',
+            desc: 'csv or html.',
+          },
+        ],
+        response:
+          'email,group,enabled,period_up_bytes,period_down_bytes,total_up_bytes,total_down_bytes,quota_bytes,expiry\nalice,team-a,true,1048576,5242880,10485760,52428800,107374182400,2026-12-31',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/clients/sharedAccounts',
         summary:
           'Clients currently flagged as shared: seen from at least sharedAccountMinIPs addresses or sharedAccountMinCountries countries inside the sharedAccountWindowHours window. Most addresses first; empty while both thresholds are 0.',
