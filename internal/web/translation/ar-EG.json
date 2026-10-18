@@ -1000,6 +1000,11 @@
         "result": "تم إنشاء {created}، وفشل {failed}",
         "confirmDelete": "هل تريد حذف هذا القالب؟"
       },
+      "usageHistory": {
+        "title": "الاستخدام خلال آخر 30 يوماً",
+        "upload": "الرفع",
+        "download": "التنزيل"
+      },
       "import": "استيراد",
       "delOrphans": "حذف العملاء غير المرتبطين",
       "delOrphansConfirmTitle": "حذف العملاء بلا اتصال وارد؟",

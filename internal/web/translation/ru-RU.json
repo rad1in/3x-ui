@@ -1000,6 +1000,11 @@
         "result": "Создано: {created}, ошибок: {failed}",
         "confirmDelete": "Удалить этот шаблон?"
       },
+      "usageHistory": {
+        "title": "Использование за последние 30 дней",
+        "upload": "Отдача",
+        "download": "Загрузка"
+      },
       "import": "Импорт",
       "delOrphans": "Удалить клиентов без входящего",
       "delOrphansConfirmTitle": "Удалить клиентов без входящего?",

@@ -1503,6 +1503,25 @@ export const sections: readonly Section[] = [
           '{\n  "success": true,\n  "obj": {\n    "created": ["alice"],\n    "failed": { "bob": "email already in use: bob" },\n    "needRestart": false\n  }\n}',
       },
       {
+        method: 'GET',
+        path: '/panel/api/clients/usage/:email',
+        summary:
+          'Per-day traffic history of one client, oldest day first. Only days that had traffic have a row; days is the window including today (default 30, capped at 90 — the retention). Day keys are panel-local dates.',
+        params: [
+          { name: 'email', in: 'path', type: 'string', desc: 'Client email.' },
+          {
+            name: 'days',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 30,
+            desc: 'Window length in days, 1 to 90.',
+          },
+        ],
+        response:
+          '{\n  "success": true,\n  "obj": [\n    { "email": "alice", "day": "2026-10-17", "up": 1048576, "down": 5242880 },\n    { "email": "alice", "day": "2026-10-18", "up": 2097152, "down": 8388608 }\n  ]\n}',
+      },
+      {
         method: 'POST',
         path: '/panel/api/clients/bulkAttach',
         summary:

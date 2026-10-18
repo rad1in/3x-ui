@@ -1000,6 +1000,11 @@
         "result": "已创建 {created} 个，失败 {failed} 个",
         "confirmDelete": "删除此模板？"
       },
+      "usageHistory": {
+        "title": "最近 30 天用量",
+        "upload": "上传",
+        "download": "下载"
+      },
       "import": "导入",
       "delOrphans": "删除未关联的客户端",
       "delOrphansConfirmTitle": "删除没有入站的客户端？",

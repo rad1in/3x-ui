@@ -183,6 +183,7 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 		}
 	}
 	now := time.Now().UnixMilli()
+	dailyUsage := make(map[string]usageDelta, len(dbClientTraffics))
 	// Use atomic per-row UPDATE instead of read-modify-write Save. tx.Save
 	// issues UPDATEs in slice order, which varies between concurrent callers;
 	// on PostgreSQL two transactions locking the same rows in opposite order
@@ -204,6 +205,10 @@ func (s *InboundService) addClientTraffic(tx *gorm.DB, traffics []*xray.ClientTr
 		).Error; err != nil {
 			return fmt.Errorf("update traffic for %s: %w", ct.Email, err)
 		}
+		dailyUsage[ct.Email] = usageDelta{up: t.Up, down: t.Down}
+	}
+	if err = recordClientDailyUsage(tx, dailyUsage); err != nil {
+		return fmt.Errorf("record daily usage: %w", err)
 	}
 
 	// adjustTraffics converts delayed-start rows (negative ExpiryTime → absolute
@@ -625,6 +630,9 @@ func (s *InboundService) UpdateClientStat(tx *gorm.DB, email string, client *mod
 	if err := validateClientRenewal(*client); err != nil {
 		return err
 	}
+	if err := renameClientUsage(tx, email, client.Email); err != nil {
+		return err
+	}
 	result := tx.Model(xray.ClientTraffic{}).
 		Where("email = ?", email).
 		Updates(map[string]any{
@@ -648,6 +656,9 @@ func (s *InboundService) DelClientStat(tx *gorm.DB, email string) error {
 	if err := tx.Where("email = ?", email).Delete(xray.ClientTraffic{}).Error; err != nil {
 		return err
 	}
+	if err := deleteClientUsage(tx, []string{email}); err != nil {
+		return err
+	}
 	if err := clearGlobalTraffic(tx, email); err != nil {
 		return err
 	}
@@ -656,6 +667,9 @@ func (s *InboundService) DelClientStat(tx *gorm.DB, email string) error {
 
 func (s *InboundService) delClientStatsByEmails(tx *gorm.DB, emails []string) error {
 	if err := adjustGroupBaselinesForRemovedTraffic(tx, emails); err != nil {
+		return err
+	}
+	if err := deleteClientUsage(tx, emails); err != nil {
 		return err
 	}
 	const chunk = 400

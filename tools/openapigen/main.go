@@ -44,6 +44,7 @@ func run(root, outDir string) error {
 				"SponsorRecord",
 				"HostedPanel",
 				"ClientTemplate",
+				"ClientDailyUsage",
 			),
 			AliasAllow: setOf("Protocol"),
 			Overrides: map[string][]walkOverride{

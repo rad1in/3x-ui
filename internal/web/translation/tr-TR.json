@@ -1000,6 +1000,11 @@
         "result": "{created} oluşturuldu, {failed} başarısız",
         "confirmDelete": "Bu şablon silinsin mi?"
       },
+      "usageHistory": {
+        "title": "Son 30 günün kullanımı",
+        "upload": "Yükleme",
+        "download": "İndirme"
+      },
       "import": "İçe Aktar",
       "delOrphans": "Bağsız Kullanıcıları Sil",
       "delOrphansConfirmTitle": "Gelen Bağlantısı Olmayan Kullanıcılar Silinsin Mi?",

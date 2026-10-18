@@ -2123,6 +2123,35 @@
         ],
         "type": "object"
       },
+      "ClientDailyUsage": {
+        "description": "ClientDailyUsage holds one client's up/down bytes for one calendar day\n(YYYY-MM-DD, panel local time), summed from every traffic tick.",
+        "properties": {
+          "day": {
+            "example": "2026-10-18",
+            "type": "string"
+          },
+          "down": {
+            "example": 5242880,
+            "format": "int64",
+            "type": "integer"
+          },
+          "email": {
+            "type": "string"
+          },
+          "up": {
+            "example": 1048576,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "day",
+          "down",
+          "email",
+          "up"
+        ],
+        "type": "object"
+      },
       "ClientInbound": {
         "properties": {
           "clientId": {
@@ -11045,6 +11074,74 @@
                     },
                     "needRestart": false
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/usage/{email}": {
+      "get": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Per-day traffic history of one client, oldest day first. Only days that had traffic have a row; days is the window including today (default 30, capped at 90 — the retention). Day keys are panel-local dates.",
+        "operationId": "get_panel_api_clients_usage_email",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "description": "Client email.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "description": "Window length in days, 1 to 90.",
+            "schema": {
+              "type": "integer",
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "email": "alice",
+                      "day": "2026-10-17",
+                      "up": 1048576,
+                      "down": 5242880
+                    },
+                    {
+                      "email": "alice",
+                      "day": "2026-10-18",
+                      "up": 2097152,
+                      "down": 8388608
+                    }
+                  ]
                 }
               }
             }

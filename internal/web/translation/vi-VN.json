@@ -1000,6 +1000,11 @@
         "result": "Đã tạo {created}, lỗi {failed}",
         "confirmDelete": "Xóa mẫu này?"
       },
+      "usageHistory": {
+        "title": "Mức sử dụng 30 ngày qua",
+        "upload": "Tải lên",
+        "download": "Tải xuống"
+      },
       "import": "Nhập",
       "delOrphans": "Xóa khách hàng không gắn inbound",
       "delOrphansConfirmTitle": "Xóa khách hàng không thuộc inbound nào?",

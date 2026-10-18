@@ -393,6 +393,7 @@ All registered in `web.go` → `startTask()`. Each is a struct with a `Run()` me
 | `@hourly`           | `warp_ip_job`, `periodic_traffic_reset_job("hourly")`                                            | WARP IP rotation; traffic resets                                                      |
 | `@daily`            | `clear_logs_job`, `periodic_traffic_reset_job("daily")`, `periodic_traffic_reset_job("monthly")` | IP-limit and Xray access/error log cleanup; daily resets and due monthly resets       |
 | `@daily`            | `audit_prune_job`                                                                                | Drop activity-log rows older than 90 days (`service.AuditRetention`)                  |
+| `@daily`            | `client_usage_prune_job`                                                                         | Drop per-client daily usage rows older than 90 days (`service.ClientUsageRetention`)  |
 | `@every 15s`        | `hosted_status_job`                                                                              | Hosted panels only (`XUI_HOSTED_DIR`): report usage, stop/start Xray against owner limits |
 | `@every 1m`         | `hosted_sponsors_job`                                                                            | Masters only (not hosted): copy the owner's live sponsors into each hosted panel |
 | `@every 1m`         | `client_warning_job`                                                                             | Publishes `client.quota_warning` / `client.expiry_warning` once per crossing |

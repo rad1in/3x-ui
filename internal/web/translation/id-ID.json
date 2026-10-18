@@ -1000,6 +1000,11 @@
         "result": "{created} dibuat, {failed} gagal",
         "confirmDelete": "Hapus templat ini?"
       },
+      "usageHistory": {
+        "title": "Penggunaan 30 hari terakhir",
+        "upload": "Unggah",
+        "download": "Unduh"
+      },
       "import": "Impor",
       "delOrphans": "Hapus klien tanpa inbound",
       "delOrphansConfirmTitle": "Hapus klien tanpa inbound?",

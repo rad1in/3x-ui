@@ -1085,6 +1085,18 @@ type ClientTemplate struct {
 
 func (ClientTemplate) TableName() string { return "client_templates" }
 
+// ClientDailyUsage holds one client's up/down bytes for one calendar day
+// (YYYY-MM-DD, panel local time), summed from every traffic tick.
+type ClientDailyUsage struct {
+	Id    int    `json:"-" gorm:"primaryKey;autoIncrement"`
+	Email string `json:"email" gorm:"not null;uniqueIndex:idx_client_daily_usage_email_day,priority:1"`
+	Day   string `json:"day" gorm:"not null;index;uniqueIndex:idx_client_daily_usage_email_day,priority:2" example:"2026-10-18"`
+	Up    int64  `json:"up" gorm:"default:0" example:"1048576"`
+	Down  int64  `json:"down" gorm:"default:0" example:"5242880"`
+}
+
+func (ClientDailyUsage) TableName() string { return "client_daily_usage" }
+
 // MarshalJSON emits the reverse column as a nested JSON object rather than an
 // escaped JSON-text string, matching the same convention Inbound uses for its
 // JSON-text columns. Empty storage renders as null.

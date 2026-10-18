@@ -94,6 +94,7 @@ func allModels() []any {
 		&model.ClientWarning{},
 		&model.ClientDepletion{},
 		&model.ClientTemplate{},
+		&model.ClientDailyUsage{},
 	}
 }
 

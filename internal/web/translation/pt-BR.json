@@ -1000,6 +1000,11 @@
         "result": "{created} criados, {failed} com falha",
         "confirmDelete": "Excluir este modelo?"
       },
+      "usageHistory": {
+        "title": "Uso nos últimos 30 dias",
+        "upload": "Envio",
+        "download": "Download"
+      },
       "import": "Importar",
       "delOrphans": "Excluir clientes sem inbound",
       "delOrphansConfirmTitle": "Excluir clientes sem inbound?",

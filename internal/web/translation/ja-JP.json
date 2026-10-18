@@ -1000,6 +1000,11 @@
         "result": "{created} 件作成、{failed} 件失敗",
         "confirmDelete": "このテンプレートを削除しますか？"
       },
+      "usageHistory": {
+        "title": "過去30日間の使用量",
+        "upload": "アップロード",
+        "download": "ダウンロード"
+      },
       "import": "インポート",
       "delOrphans": "未アタッチのクライアントを削除",
       "delOrphansConfirmTitle": "インバウンドのないクライアントを削除しますか?",

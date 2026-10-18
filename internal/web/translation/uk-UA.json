@@ -1000,6 +1000,11 @@
         "result": "Створено: {created}, помилок: {failed}",
         "confirmDelete": "Видалити цей шаблон?"
       },
+      "usageHistory": {
+        "title": "Використання за останні 30 днів",
+        "upload": "Відправлення",
+        "download": "Завантаження"
+      },
       "import": "Імпорт",
       "delOrphans": "Видалити клієнтів без вхідного",
       "delOrphansConfirmTitle": "Видалити клієнтів без вхідного?",

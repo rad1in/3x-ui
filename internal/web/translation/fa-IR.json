@@ -1000,6 +1000,11 @@
         "result": "{created} ساخته شد، {failed} ناموفق",
         "confirmDelete": "این قالب حذف شود؟"
       },
+      "usageHistory": {
+        "title": "مصرف ۳۰ روز گذشته",
+        "upload": "آپلود",
+        "download": "دانلود"
+      },
       "import": "ورود",
       "delOrphans": "حذف کلاینت‌های بدون اینباند",
       "delOrphansConfirmTitle": "حذف کلاینت‌های بدون اینباند؟",

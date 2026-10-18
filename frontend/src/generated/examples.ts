@@ -513,6 +513,12 @@ export const EXAMPLES: Record<string, unknown> = {
     "trafficResetDay": 1,
     "updated_at": 0
   },
+  "ClientDailyUsage": {
+    "day": "2026-10-18",
+    "down": 5242880,
+    "email": "",
+    "up": 1048576
+  },
   "ClientInbound": {
     "clientId": 0,
     "createdAt": 0,

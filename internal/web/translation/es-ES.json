@@ -1000,6 +1000,11 @@
         "result": "{created} creados, {failed} fallidos",
         "confirmDelete": "¿Eliminar esta plantilla?"
       },
+      "usageHistory": {
+        "title": "Uso en los últimos 30 días",
+        "upload": "Subida",
+        "download": "Descarga"
+      },
       "import": "Importar",
       "delOrphans": "Eliminar clientes sin entrante",
       "delOrphansConfirmTitle": "¿Eliminar clientes sin entrante?",

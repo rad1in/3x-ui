@@ -528,6 +528,14 @@ export const ClientSchema = z.object({
 });
 export type Client = z.infer<typeof ClientSchema>;
 
+export const ClientDailyUsageSchema = z.object({
+  day: z.string(),
+  down: z.number().int(),
+  email: z.string(),
+  up: z.number().int(),
+});
+export type ClientDailyUsage = z.infer<typeof ClientDailyUsageSchema>;
+
 export const ClientInboundSchema = z.object({
   clientId: z.number().int(),
   createdAt: z.number().int(),

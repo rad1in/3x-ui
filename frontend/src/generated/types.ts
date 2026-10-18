@@ -503,6 +503,13 @@ export interface Client {
   updated_at?: number;
 }
 
+export interface ClientDailyUsage {
+  day: string;
+  down: number;
+  email: string;
+  up: number;
+}
+
 export interface ClientInbound {
   clientId: number;
   createdAt: number;

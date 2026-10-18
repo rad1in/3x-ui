@@ -51,6 +51,7 @@ func NewClientController(g *gin.RouterGroup) *ClientController {
 
 func (a *ClientController) initRouter(g *gin.RouterGroup) {
 	a.initTemplateRouter(g)
+	a.initUsageRouter(g)
 	g.GET("/list", a.list)
 	g.GET("/list/paged", a.listPaged)
 	g.GET("/get/:email", a.get)

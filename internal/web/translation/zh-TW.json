@@ -1000,6 +1000,11 @@
         "result": "已建立 {created} 個，失敗 {failed} 個",
         "confirmDelete": "刪除此範本？"
       },
+      "usageHistory": {
+        "title": "最近 30 天用量",
+        "upload": "上傳",
+        "download": "下載"
+      },
       "import": "匯入",
       "delOrphans": "刪除未關聯的客戶端",
       "delOrphansConfirmTitle": "刪除沒有入站的客戶端？",

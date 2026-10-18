@@ -2097,6 +2097,35 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "ClientDailyUsage": {
+    "description": "ClientDailyUsage holds one client's up/down bytes for one calendar day\n(YYYY-MM-DD, panel local time), summed from every traffic tick.",
+    "properties": {
+      "day": {
+        "example": "2026-10-18",
+        "type": "string"
+      },
+      "down": {
+        "example": 5242880,
+        "format": "int64",
+        "type": "integer"
+      },
+      "email": {
+        "type": "string"
+      },
+      "up": {
+        "example": 1048576,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "day",
+      "down",
+      "email",
+      "up"
+    ],
+    "type": "object"
+  },
   "ClientInbound": {
     "properties": {
       "clientId": {
