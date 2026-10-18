@@ -1122,6 +1122,18 @@ export const EXAMPLES: Record<string, unknown> = {
     "scheme": "http",
     "tlsVerifyMode": "verify"
   },
+  "NodeSpeedResult": {
+    "downloadMbps": 412.5,
+    "jitterMs": 3.1,
+    "latencyAvgMs": 41.7,
+    "latencyMaxMs": 47.1,
+    "latencyMinMs": 38.2,
+    "lost": 0,
+    "nodeId": 1,
+    "samples": 5,
+    "throughputError": "",
+    "uploadMbps": 188.9
+  },
   "NodeView": {
     "activeCount": 20,
     "address": "node.example.com",

@@ -40,6 +40,7 @@ func (a *NodeController) initRouter(g *gin.RouterGroup) {
 	g.POST("/certFingerprint", a.certFingerprint)
 	g.POST("/inbounds", a.inbounds)
 	g.POST("/probe/:id", a.probe)
+	g.POST("/speedtest/:id", a.speedtest)
 	g.POST("/updatePanel", a.updatePanel)
 	g.GET("/history/:id/:metric/:bucket", a.history)
 	g.POST("/mtls/ca", a.mtlsCa)
@@ -330,6 +331,29 @@ func (a *NodeController) probe(c *gin.Context) {
 		return
 	}
 	jsonObj(c, patch.ToUI(probeErr == nil), nil)
+}
+
+// speedtest measures latency and throughput to one node on demand; the result
+// is returned, not stored, so it never disturbs the heartbeat figures.
+func (a *NodeController) speedtest(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "get"), err)
+		return
+	}
+	n, err := a.nodeService.GetById(id)
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.nodes.toasts.obtain"), err)
+		return
+	}
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 60*time.Second)
+	defer cancel()
+	res, err := a.nodeService.SpeedTest(ctx, n)
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.nodes.toasts.test"), err)
+		return
+	}
+	jsonObj(c, res, nil)
 }
 
 func (a *NodeController) updatePanel(c *gin.Context) {

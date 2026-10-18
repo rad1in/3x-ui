@@ -1078,6 +1078,20 @@ export const NodeMutationRequestSchema = z.object({
 });
 export type NodeMutationRequest = z.infer<typeof NodeMutationRequestSchema>;
 
+export const NodeSpeedResultSchema = z.object({
+  downloadMbps: z.number(),
+  jitterMs: z.number(),
+  latencyAvgMs: z.number(),
+  latencyMaxMs: z.number(),
+  latencyMinMs: z.number(),
+  lost: z.number().int(),
+  nodeId: z.number().int(),
+  samples: z.number().int(),
+  throughputError: z.string().optional(),
+  uploadMbps: z.number(),
+});
+export type NodeSpeedResult = z.infer<typeof NodeSpeedResultSchema>;
+
 export const NodeViewSchema = z.object({
   activeCount: z.number().int(),
   address: z.string(),

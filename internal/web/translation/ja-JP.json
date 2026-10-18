@@ -1154,6 +1154,17 @@
       "panelVersion": "パネルのバージョン",
       "actions": "操作",
       "probe": "今すぐプローブ",
+      "speedTest": {
+        "title": "速度テスト",
+        "running": "遅延とスループットを測定中…",
+        "failed": "速度テストに失敗しました。",
+        "latency": "遅延 (最小 / 平均 / 最大)",
+        "jitter": "ジッター",
+        "lost": "失われた ping",
+        "download": "ノードからのダウンロード",
+        "upload": "ノードへのアップロード",
+        "throughputUnavailable": "スループットを測定できませんでした。遅延の値は有効です。"
+      },
       "updatePanel": "パネルを更新",
       "updateSelected": "選択を更新 ({count})",
       "updateAvailable": "更新あり",

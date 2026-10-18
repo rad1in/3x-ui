@@ -1154,6 +1154,17 @@
       "panelVersion": "Versión del panel",
       "actions": "Acciones",
       "probe": "Sondear ahora",
+      "speedTest": {
+        "title": "Prueba de velocidad",
+        "running": "Midiendo latencia y rendimiento…",
+        "failed": "La prueba de velocidad falló.",
+        "latency": "Latencia (mín / media / máx)",
+        "jitter": "Jitter",
+        "lost": "Pings perdidos",
+        "download": "Descarga desde el nodo",
+        "upload": "Subida al nodo",
+        "throughputUnavailable": "No se pudo medir el rendimiento; la latencia sigue siendo válida."
+      },
       "updatePanel": "Actualizar panel",
       "updateSelected": "Actualizar seleccionados ({count})",
       "updateAvailable": "Actualización disponible",

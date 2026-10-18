@@ -1266,46 +1266,50 @@ func (b *outboundBridge) removeInbound() {
 // broken node from dictating the master's allocation on every heartbeat.
 const maxProbeBodyBytes = 1 << 20 // 1 MiB
 
-func (s *NodeService) probe(ctx context.Context, n *model.Node, proxyURL string) (HeartbeatPatch, error) {
-	patch := HeartbeatPatch{LastHeartbeat: time.Now().Unix()}
-
+// nodeRequest builds an authenticated request to path (relative to the node's
+// base path) together with the HTTP client that honours the node's TLS mode.
+func (s *NodeService) nodeRequest(ctx context.Context, n *model.Node, proxyURL, method, path string, body io.Reader) (*http.Request, *http.Client, error) {
 	addr, err := netsafe.NormalizeHost(n.Address)
 	if err != nil {
-		patch.LastError = err.Error()
-		return patch, err
+		return nil, nil, err
 	}
 	scheme := n.Scheme
 	if scheme != "http" && scheme != "https" {
 		scheme = "https"
 	}
 	if n.Port <= 0 || n.Port > 65535 {
-		patch.LastError = "node port must be 1-65535"
-		return patch, errors.New(patch.LastError)
+		return nil, nil, errors.New("node port must be 1-65535")
 	}
-	probeURL := &url.URL{
+	target := &url.URL{
 		Scheme: scheme,
 		Host:   net.JoinHostPort(addr, strconv.Itoa(n.Port)),
-		Path:   normalizeBasePath(n.BasePath) + "panel/api/server/status",
+		Path:   normalizeBasePath(n.BasePath) + path,
 	}
-
 	req, err := http.NewRequestWithContext(
 		netsafe.ContextWithAllowPrivate(ctx, n.AllowPrivateAddress),
-		http.MethodGet, probeURL.String(), nil)
+		method, target.String(), body)
 	if err != nil {
-		patch.LastError = err.Error()
-		return patch, err
+		return nil, nil, err
 	}
 	if n.ApiToken != "" {
 		token, derr := nodetoken.Decrypt(n.Id, n.ApiToken)
 		if derr != nil {
-			patch.LastError = derr.Error()
-			return patch, derr
+			return nil, nil, derr
 		}
 		req.Header.Set("Authorization", "Bearer "+token)
 	}
 	req.Header.Set("Accept", "application/json")
-
 	client, err := runtime.HTTPClientForNode(n, proxyURL)
+	if err != nil {
+		return nil, nil, err
+	}
+	return req, client, nil
+}
+
+func (s *NodeService) probe(ctx context.Context, n *model.Node, proxyURL string) (HeartbeatPatch, error) {
+	patch := HeartbeatPatch{LastHeartbeat: time.Now().Unix()}
+
+	req, client, err := s.nodeRequest(ctx, n, proxyURL, http.MethodGet, "panel/api/server/status", nil)
 	if err != nil {
 		patch.LastError = err.Error()
 		return patch, err

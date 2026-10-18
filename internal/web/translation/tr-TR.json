@@ -1154,6 +1154,17 @@
       "panelVersion": "Panel Sürümü",
       "actions": "İşlemler",
       "probe": "Şimdi Test Et",
+      "speedTest": {
+        "title": "Hız testi",
+        "running": "Gecikme ve verim ölçülüyor…",
+        "failed": "Hız testi başarısız oldu.",
+        "latency": "Gecikme (min / ort / maks)",
+        "jitter": "Jitter",
+        "lost": "Kayıp ping",
+        "download": "Düğümden indirme",
+        "upload": "Düğüme yükleme",
+        "throughputUnavailable": "Verim ölçülemedi; gecikme değerleri geçerli."
+      },
       "updatePanel": "Paneli Güncelle",
       "updateSelected": "Seçilenleri Güncelle ({count})",
       "updateAvailable": "Güncelleme mevcut",

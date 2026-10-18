@@ -1154,6 +1154,17 @@
       "panelVersion": "面板版本",
       "actions": "操作",
       "probe": "立即探测",
+      "speedTest": {
+        "title": "测速",
+        "running": "正在测量延迟和吞吐量…",
+        "failed": "测速失败。",
+        "latency": "延迟（最小 / 平均 / 最大）",
+        "jitter": "抖动",
+        "lost": "丢失的 ping",
+        "download": "从节点下载",
+        "upload": "上传到节点",
+        "throughputUnavailable": "无法测量吞吐量；延迟结果仍然有效。"
+      },
       "updatePanel": "更新面板",
       "updateSelected": "更新所选 ({count})",
       "updateAvailable": "有可用更新",

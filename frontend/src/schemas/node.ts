@@ -61,6 +61,21 @@ export const ProbeResultSchema = z
   })
   .loose();
 
+export const NodeSpeedResultSchema = z
+  .object({
+    nodeId: z.number(),
+    samples: z.number(),
+    lost: z.number(),
+    latencyMinMs: z.number(),
+    latencyAvgMs: z.number(),
+    latencyMaxMs: z.number(),
+    jitterMs: z.number(),
+    downloadMbps: z.number(),
+    uploadMbps: z.number(),
+    throughputError: z.string().optional(),
+  })
+  .loose();
+
 export const NodeFormSchema = z
   .object({
     id: z.number().optional(),
@@ -98,5 +113,6 @@ export const NodeFormSchema = z
   });
 
 export type NodeRecord = z.infer<typeof NodeRecordSchema>;
+export type NodeSpeedResult = z.infer<typeof NodeSpeedResultSchema>;
 export type ProbeResult = z.infer<typeof ProbeResultSchema>;
 export type NodeFormValues = z.infer<typeof NodeFormSchema>;

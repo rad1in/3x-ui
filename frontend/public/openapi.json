@@ -4458,6 +4458,65 @@
         ],
         "type": "object"
       },
+      "NodeSpeedResult": {
+        "description": "NodeSpeedResult is one on-demand measurement of the master-to-node path.",
+        "properties": {
+          "downloadMbps": {
+            "example": 412.5,
+            "type": "number"
+          },
+          "jitterMs": {
+            "description": "JitterMs is the mean absolute difference between consecutive pings.",
+            "example": 3.1,
+            "type": "number"
+          },
+          "latencyAvgMs": {
+            "example": 41.7,
+            "type": "number"
+          },
+          "latencyMaxMs": {
+            "example": 47.1,
+            "type": "number"
+          },
+          "latencyMinMs": {
+            "example": 38.2,
+            "type": "number"
+          },
+          "lost": {
+            "example": 0,
+            "type": "integer"
+          },
+          "nodeId": {
+            "example": 1,
+            "type": "integer"
+          },
+          "samples": {
+            "description": "Samples is how many latency pings answered; Lost how many did not.",
+            "example": 5,
+            "type": "integer"
+          },
+          "throughputError": {
+            "description": "ThroughputError is set when the latency part worked but the transfer did not,\ntypically a node older than the speedtest routes.",
+            "type": "string"
+          },
+          "uploadMbps": {
+            "example": 188.9,
+            "type": "number"
+          }
+        },
+        "required": [
+          "downloadMbps",
+          "jitterMs",
+          "latencyAvgMs",
+          "latencyMaxMs",
+          "latencyMinMs",
+          "lost",
+          "nodeId",
+          "samples",
+          "uploadMbps"
+        ],
+        "type": "object"
+      },
       "NodeView": {
         "description": "NodeView is the browser/API read contract for nodes. Credentials are\nwrite-only: responses expose only whether a node has a token configured.",
         "properties": {
@@ -7341,6 +7400,77 @@
                       "load5": 0.3,
                       "load15": 0.2
                     }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/server/speedtestDownload": {
+      "get": {
+        "tags": [
+          "Server"
+        ],
+        "summary": "Stream the requested number of incompressible bytes (1 to 64 MiB). Called by a master panel while it speed-tests this node.",
+        "operationId": "get_panel_api_server_speedtestDownload",
+        "parameters": [
+          {
+            "name": "bytes",
+            "in": "query",
+            "required": true,
+            "description": "Payload size in bytes.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/server/speedtestUpload": {
+      "post": {
+        "tags": [
+          "Server"
+        ],
+        "summary": "Accept and discard an upload body of up to 64 MiB so a master panel can time the upload direction.",
+        "operationId": "post_panel_api_server_speedtestUpload",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
                   }
                 }
               }
@@ -12803,6 +12933,61 @@
                       "type": "string"
                     },
                     "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/nodes/speedtest/{id}": {
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Measure the master-to-node path on demand: five latency pings (min/avg/max/jitter/loss), then an 8 MiB download and a 4 MiB upload. Nothing is stored. A node without the speed test routes still reports latency, with throughputError set.",
+        "operationId": "post_panel_api_nodes_speedtest_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Node ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "nodeId": 1,
+                    "samples": 5,
+                    "lost": 0,
+                    "latencyMinMs": 38.2,
+                    "latencyAvgMs": 41.7,
+                    "latencyMaxMs": 47.1,
+                    "jitterMs": 3.1,
+                    "downloadMbps": 412.5,
+                    "uploadMbps": 188.9
                   }
                 }
               }

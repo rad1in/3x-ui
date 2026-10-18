@@ -33,6 +33,7 @@ import { useNodeMutations } from '@/api/queries/useNodeMutations';
 import AppSidebar from '@/layouts/AppSidebar';
 import NodeList from './NodeList';
 import NodeFormModal from './NodeFormModal';
+import NodeSpeedModal from './NodeSpeedModal';
 import { setMessageInstance } from '@/utils/messageBus';
 import { HttpUtil } from '@/utils';
 import type { PanelUpdateInfo } from '../index/PanelUpdateModal';
@@ -99,6 +100,7 @@ export default function NodesPage() {
     staleTime: 5 * 60 * 1000,
   });
 
+  const [speedNode, setSpeedNode] = useState<NodeRecord | null>(null);
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [formNode, setFormNode] = useState<NodeRecord | null>(null);
@@ -358,6 +360,7 @@ export default function NodesPage() {
                       onEdit={onEdit}
                       onDelete={onDelete}
                       onProbe={onProbe}
+                      onSpeedTest={setSpeedNode}
                       onToggleEnable={onToggleEnable}
                       onUpdateNode={onUpdateNode}
                       onUpdateSelected={onUpdateSelected}
@@ -368,6 +371,8 @@ export default function NodesPage() {
             </Spin>
           </Layout.Content>
         </Layout>
+
+        <NodeSpeedModal node={speedNode} onClose={() => setSpeedNode(null)} />
 
         <NodeFormModal
           open={formOpen}

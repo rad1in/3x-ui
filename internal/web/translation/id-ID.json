@@ -1154,6 +1154,17 @@
       "panelVersion": "Versi panel",
       "actions": "Aksi",
       "probe": "Probe Sekarang",
+      "speedTest": {
+        "title": "Tes kecepatan",
+        "running": "Mengukur latensi dan throughput…",
+        "failed": "Tes kecepatan gagal.",
+        "latency": "Latensi (min / rata-rata / maks)",
+        "jitter": "Jitter",
+        "lost": "Ping hilang",
+        "download": "Unduh dari node",
+        "upload": "Unggah ke node",
+        "throughputUnavailable": "Throughput tidak dapat diukur; latensi tetap valid."
+      },
       "updatePanel": "Perbarui Panel",
       "updateSelected": "Perbarui Terpilih ({count})",
       "updateAvailable": "Pembaruan tersedia",

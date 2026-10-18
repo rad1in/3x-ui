@@ -4432,6 +4432,65 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "NodeSpeedResult": {
+    "description": "NodeSpeedResult is one on-demand measurement of the master-to-node path.",
+    "properties": {
+      "downloadMbps": {
+        "example": 412.5,
+        "type": "number"
+      },
+      "jitterMs": {
+        "description": "JitterMs is the mean absolute difference between consecutive pings.",
+        "example": 3.1,
+        "type": "number"
+      },
+      "latencyAvgMs": {
+        "example": 41.7,
+        "type": "number"
+      },
+      "latencyMaxMs": {
+        "example": 47.1,
+        "type": "number"
+      },
+      "latencyMinMs": {
+        "example": 38.2,
+        "type": "number"
+      },
+      "lost": {
+        "example": 0,
+        "type": "integer"
+      },
+      "nodeId": {
+        "example": 1,
+        "type": "integer"
+      },
+      "samples": {
+        "description": "Samples is how many latency pings answered; Lost how many did not.",
+        "example": 5,
+        "type": "integer"
+      },
+      "throughputError": {
+        "description": "ThroughputError is set when the latency part worked but the transfer did not,\ntypically a node older than the speedtest routes.",
+        "type": "string"
+      },
+      "uploadMbps": {
+        "example": 188.9,
+        "type": "number"
+      }
+    },
+    "required": [
+      "downloadMbps",
+      "jitterMs",
+      "latencyAvgMs",
+      "latencyMaxMs",
+      "latencyMinMs",
+      "lost",
+      "nodeId",
+      "samples",
+      "uploadMbps"
+    ],
+    "type": "object"
+  },
   "NodeView": {
     "description": "NodeView is the browser/API read contract for nodes. Credentials are\nwrite-only: responses expose only whether a node has a token configured.",
     "properties": {

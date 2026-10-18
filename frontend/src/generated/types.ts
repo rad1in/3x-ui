@@ -1015,6 +1015,19 @@ export interface NodeMutationRequest {
   tlsVerifyMode: string;
 }
 
+export interface NodeSpeedResult {
+  downloadMbps: number;
+  jitterMs: number;
+  latencyAvgMs: number;
+  latencyMaxMs: number;
+  latencyMinMs: number;
+  lost: number;
+  nodeId: number;
+  samples: number;
+  throughputError?: string;
+  uploadMbps: number;
+}
+
 export interface NodeView {
   activeCount: number;
   address: string;

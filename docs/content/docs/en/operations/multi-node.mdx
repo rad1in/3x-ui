@@ -68,6 +68,15 @@ certificate instead of an API token.
 
 </Steps>
 
+### Speed test
+
+The dashboard icon on a node row runs an on-demand test of the path between the
+master and that node: five latency pings (min / avg / max, jitter, lost pings),
+then an 8 MiB download and a 4 MiB upload over the same authenticated API the
+panel syncs through. Nothing is stored. A node running an older panel still
+reports latency; its throughput is shown as unavailable until you update it.
+The test moves about 12 MiB, so avoid running it repeatedly on metered links.
+
 ## Managed hosts
 
 A **managed host** is an override endpoint attached to an inbound. At

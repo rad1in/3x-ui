@@ -1154,6 +1154,17 @@
       "panelVersion": "Phiên bản panel",
       "actions": "Hành động",
       "probe": "Kiểm tra ngay",
+      "speedTest": {
+        "title": "Kiểm tra tốc độ",
+        "running": "Đang đo độ trễ và thông lượng…",
+        "failed": "Kiểm tra tốc độ thất bại.",
+        "latency": "Độ trễ (tối thiểu / trung bình / tối đa)",
+        "jitter": "Jitter",
+        "lost": "Ping bị mất",
+        "download": "Tải xuống từ nút",
+        "upload": "Tải lên nút",
+        "throughputUnavailable": "Không đo được thông lượng; độ trễ vẫn hợp lệ."
+      },
       "updatePanel": "Cập nhật bảng điều khiển",
       "updateSelected": "Cập nhật đã chọn ({count})",
       "updateAvailable": "Có bản cập nhật",

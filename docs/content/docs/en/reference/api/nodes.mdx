@@ -70,6 +70,12 @@ _openapi:
       title: Probe an existing node, updating its cached health state.
       url: '#probe-an-existing-node-updating-its-cached-health-state'
     - depth: 2
+      title: 'Measure the master-to-node path on demand: five latency pings
+        (min/avg/max/jitter/loss), then an 8 MiB download and a 4 MiB upload.
+        Nothing is stored. A node without the speed test routes still reports
+        latency, with throughputError set.'
+      url: '#measure-the-master-to-node-path-on-demand-five-latency-pings-minavgmaxjitterloss-then-an-8-mib-download-and-a-4-mib-upload-nothing-is-stored-a-node-without-the-speed-test-routes-still-reports-latency-with-throughputerror-set'
+    - depth: 2
       title: 'Trigger the official panel self-updater on each given node (downloads
         the latest release and restarts). Only enabled, online nodes are
         updated; offline/disabled ones are reported as skipped. Set "dev": true
@@ -130,6 +136,11 @@ _openapi:
         id: use-unsaved-node-connection-details-to-list-the-remote-inbounds-available-for-selective-import
       - content: Probe an existing node, updating its cached health state.
         id: probe-an-existing-node-updating-its-cached-health-state
+      - content: 'Measure the master-to-node path on demand: five latency pings
+          (min/avg/max/jitter/loss), then an 8 MiB download and a 4 MiB upload.
+          Nothing is stored. A node without the speed test routes still reports
+          latency, with throughputError set.'
+        id: measure-the-master-to-node-path-on-demand-five-latency-pings-minavgmaxjitterloss-then-an-8-mib-download-and-a-4-mib-upload-nothing-is-stored-a-node-without-the-speed-test-routes-still-reports-latency-with-throughputerror-set
       - content: 'Trigger the official panel self-updater on each given node (downloads
           the latest release and restarts). Only enabled, online nodes are
           updated; offline/disabled ones are reported as skipped. Set "dev":
@@ -151,7 +162,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/nodes/list","method":"get"},{"path":"/panel/api/nodes/mtls/ca","method":"post"},{"path":"/panel/api/nodes/mtls/trustCA","method":"post"},{"path":"/panel/api/nodes/mtls/reloadClient","method":"post"},{"path":"/panel/api/nodes/get/{id}","method":"get"},{"path":"/panel/api/nodes/webCert/{id}","method":"get"},{"path":"/panel/api/nodes/add","method":"post"},{"path":"/panel/api/nodes/update/{id}","method":"post"},{"path":"/panel/api/nodes/del/{id}","method":"post"},{"path":"/panel/api/nodes/setEnable/{id}","method":"post"},{"path":"/panel/api/nodes/test","method":"post"},{"path":"/panel/api/nodes/certFingerprint","method":"post"},{"path":"/panel/api/nodes/inbounds","method":"post"},{"path":"/panel/api/nodes/probe/{id}","method":"post"},{"path":"/panel/api/nodes/updatePanel","method":"post"},{"path":"/panel/api/nodes/history/{id}/{metric}/{bucket}","method":"get"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/nodes/list","method":"get"},{"path":"/panel/api/nodes/mtls/ca","method":"post"},{"path":"/panel/api/nodes/mtls/trustCA","method":"post"},{"path":"/panel/api/nodes/mtls/reloadClient","method":"post"},{"path":"/panel/api/nodes/get/{id}","method":"get"},{"path":"/panel/api/nodes/webCert/{id}","method":"get"},{"path":"/panel/api/nodes/add","method":"post"},{"path":"/panel/api/nodes/update/{id}","method":"post"},{"path":"/panel/api/nodes/del/{id}","method":"post"},{"path":"/panel/api/nodes/setEnable/{id}","method":"post"},{"path":"/panel/api/nodes/test","method":"post"},{"path":"/panel/api/nodes/certFingerprint","method":"post"},{"path":"/panel/api/nodes/inbounds","method":"post"},{"path":"/panel/api/nodes/probe/{id}","method":"post"},{"path":"/panel/api/nodes/speedtest/{id}","method":"post"},{"path":"/panel/api/nodes/updatePanel","method":"post"},{"path":"/panel/api/nodes/history/{id}/{metric}/{bucket}","method":"get"}]} showTitle />
     </>
   );
 }

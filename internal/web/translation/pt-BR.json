@@ -1154,6 +1154,17 @@
       "panelVersion": "Versão do painel",
       "actions": "Ações",
       "probe": "Sondar agora",
+      "speedTest": {
+        "title": "Teste de velocidade",
+        "running": "Medindo latência e vazão…",
+        "failed": "O teste de velocidade falhou.",
+        "latency": "Latência (mín / média / máx)",
+        "jitter": "Jitter",
+        "lost": "Pings perdidos",
+        "download": "Download do nó",
+        "upload": "Upload para o nó",
+        "throughputUnavailable": "Não foi possível medir a vazão; a latência continua válida."
+      },
       "updatePanel": "Atualizar painel",
       "updateSelected": "Atualizar selecionados ({count})",
       "updateAvailable": "Atualização disponível",

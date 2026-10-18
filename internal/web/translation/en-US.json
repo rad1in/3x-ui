@@ -1272,6 +1272,17 @@
       "panelVersion": "Panel Version",
       "actions": "Actions",
       "probe": "Probe Now",
+      "speedTest": {
+        "title": "Speed test",
+        "running": "Measuring latency and throughput…",
+        "failed": "The speed test failed.",
+        "latency": "Latency (min / avg / max)",
+        "jitter": "Jitter",
+        "lost": "Lost pings",
+        "download": "Download from node",
+        "upload": "Upload to node",
+        "throughputUnavailable": "Throughput could not be measured; latency is still valid."
+      },
       "updatePanel": "Update Panel",
       "updateSelected": "Update Selected ({count})",
       "updateAvailable": "Update available",
