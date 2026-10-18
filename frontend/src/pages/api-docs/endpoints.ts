@@ -1962,6 +1962,14 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/panel/api/nodes/joinCommand',
+        summary:
+          'Issue a single-use join token (valid one hour, stored hashed) and the shell command that installs 3x-ui on a new server and registers it here. The server calls POST {basePath}/join/node with the token, so the master must be reachable from it.',
+        body: '{\n  "name": "de-fra-1",\n  "masterUrl": "https://panel.example.com:2053/abc/"\n}',
+        responseSchema: 'NodeJoinCommand',
+      },
+      {
+        method: 'POST',
         path: '/panel/api/nodes/test',
         summary:
           'Probe a node without saving it. Uses the body as connection details and returns the same heartbeat snapshot a registered node would have.',

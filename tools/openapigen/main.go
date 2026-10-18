@@ -104,6 +104,7 @@ func run(root, outDir string) error {
 				"InboundOption",
 				"CleanIPStatus",
 				"RotationResult",
+				"NodeJoinCommand",
 				"OrderPage",
 				"SalesConfig",
 				"CardPayConfig",

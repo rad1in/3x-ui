@@ -312,6 +312,9 @@ var defaultValueMap = map[string]string{
 	"weeklyReportBaseline": "",
 	"weeklyReportLastSent": "0",
 
+	// Node join tokens (hashed, single use)
+	"nodeJoinTokens": "[]",
+
 	// Port probe
 	"portProbeEnable":   "false",
 	"portProbeHost":     "",

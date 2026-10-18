@@ -39,6 +39,34 @@ and emitting `node.up` / `node.down` events (see the
   those as read-only **transitive** sub-nodes (Node 1 → Node 2 → Node 3).
 </Callout>
 
+### Install a node with one command
+
+**Nodes → Install command** generates a command to run as root on a fresh server:
+
+```bash
+XUI_NONINTERACTIVE=1 XUI_JOIN_URL='https://panel.example.com:2053/abc/join/node' \
+  XUI_JOIN_TOKEN='…' XUI_NODE_NAME='de-fra-1' bash <(curl -Ls …/join-node.sh)
+```
+
+`join-node.sh` runs the normal non-interactive installer, reads the result it
+writes (`/etc/x-ui/install-result.env`: panel address, base path and API token),
+and posts them with the token to `{basePath}/join/node` on the master. The master
+checks that it can reach the new panel and then adds it as an enabled node that
+syncs all inbounds, with `verify` TLS (or `skip`/`pin` if the script is given
+`XUI_NODE_TLS_VERIFY`).
+
+The token is single-use, valid for one hour, and stored on the master only as a
+hash. A join that fails (for example the master cannot reach the new panel yet)
+keeps the token, and the script retries for about a minute. The endpoint takes
+no session, is rate limited per client IP, and refuses private or loopback node
+addresses, `mtls` and outbound bridges: set those on the node afterwards.
+
+<Callout type="info">
+  The command downloads `join-node.sh` from the address in the panel's source
+  (`JoinScriptURL`). If you run a fork, change that constant to your repository's
+  raw URL, and set `XUI_INSTALLER_URL` if you also host your own `install.sh`.
+</Callout>
+
 ### Mutual TLS (mTLS) between master and node
 
 For the strongest trust, use `tlsVerifyMode = mtls` (requires `https`):

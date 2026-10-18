@@ -34,6 +34,7 @@ import AppSidebar from '@/layouts/AppSidebar';
 import NodeList from './NodeList';
 import NodeFormModal from './NodeFormModal';
 import NodeSpeedModal from './NodeSpeedModal';
+import NodeJoinModal from './NodeJoinModal';
 import { monthlyCostTotals } from './NodeUsageCell';
 import { setMessageInstance } from '@/utils/messageBus';
 import { HttpUtil } from '@/utils';
@@ -146,6 +147,8 @@ export default function NodesPage() {
       setSavingTrustCa(false);
     }
   }, [trustCa, messageApi, t]);
+
+  const [joinOpen, setJoinOpen] = useState(false);
 
   const onAdd = useCallback(() => {
     setFormMode('add');
@@ -367,6 +370,7 @@ export default function NodesPage() {
                       selectedIds={selectedIds}
                       onSelectionChange={setSelectedIds}
                       onAdd={onAdd}
+                      onJoin={() => setJoinOpen(true)}
                       onMtls={() => setMtlsOpen(true)}
                       onEdit={onEdit}
                       onDelete={onDelete}
@@ -384,6 +388,7 @@ export default function NodesPage() {
         </Layout>
 
         <NodeSpeedModal node={speedNode} onClose={() => setSpeedNode(null)} />
+        <NodeJoinModal open={joinOpen} onClose={() => setJoinOpen(false)} />
 
         <NodeFormModal
           open={formOpen}

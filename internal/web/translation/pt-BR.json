@@ -1183,6 +1183,16 @@
     "nodes": {
       "addNode": "Adicionar nó",
       "editNode": "Editar nó",
+      "join": {
+        "button": "Comando de instalação",
+        "title": "Instale um nó com um único comando",
+        "intro": "Execute o comando abaixo como root em um servidor novo. Ele instala o 3x-ui sem perguntas e adiciona o servidor a este painel como nó.",
+        "namePlaceholder": "Nome do nó (opcional; padrão: nome do host)",
+        "generate": "Gerar comando",
+        "copied": "Comando copiado",
+        "expires": "Válido até {time}; funciona uma única vez.",
+        "note": "O servidor novo precisa alcançar este painel pelo endereço do comando, e este painel precisa alcançar o painel do servidor novo. Endereços privados e de loopback são recusados."
+      },
       "totalNodes": "Total de nós",
       "onlineNodes": "Online",
       "offlineNodes": "Offline",

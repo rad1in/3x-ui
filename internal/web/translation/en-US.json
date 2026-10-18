@@ -1333,6 +1333,16 @@
     "nodes": {
       "addNode": "Add Node",
       "editNode": "Edit Node",
+      "join": {
+        "button": "Install command",
+        "title": "Install a node with one command",
+        "intro": "Run the command below as root on a fresh server. It installs 3x-ui there without prompts and adds the server to this panel as a node.",
+        "namePlaceholder": "Node name (optional, defaults to the server's hostname)",
+        "generate": "Generate command",
+        "copied": "Command copied",
+        "expires": "Valid until {time}; it works once.",
+        "note": "The new server must be able to reach this panel at the address in the command, and this panel must be able to reach the new server's panel. Private and loopback addresses are refused."
+      },
       "totalNodes": "Total Nodes",
       "onlineNodes": "Online",
       "offlineNodes": "Offline",

@@ -1183,6 +1183,16 @@
     "nodes": {
       "addNode": "Tambah Node",
       "editNode": "Edit node",
+      "join": {
+        "button": "Perintah instalasi",
+        "title": "Pasang node dengan satu perintah",
+        "intro": "Jalankan perintah di bawah sebagai root pada server baru. Perintah ini memasang 3x-ui tanpa pertanyaan dan menambahkan server ke panel ini sebagai node.",
+        "namePlaceholder": "Nama node (opsional, default nama host server)",
+        "generate": "Buat perintah",
+        "copied": "Perintah disalin",
+        "expires": "Berlaku sampai {time}; hanya bisa dipakai sekali.",
+        "note": "Server baru harus bisa menjangkau panel ini lewat alamat di perintah, dan panel ini harus bisa menjangkau panel server baru. Alamat privat dan loopback ditolak."
+      },
       "totalNodes": "Total Node",
       "onlineNodes": "Online",
       "offlineNodes": "Offline",

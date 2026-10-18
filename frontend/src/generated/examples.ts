@@ -1292,6 +1292,11 @@ export const EXAMPLES: Record<string, unknown> = {
     "xrayState": "",
     "xrayVersion": "25.10.31"
   },
+  "NodeJoinCommand": {
+    "command": "XUI_NONINTERACTIVE=1 XUI_JOIN_URL='https://panel.example.com:2053/abc/join/node' XUI_JOIN_TOKEN='...' bash \u003c(curl -Ls ...)",
+    "expiresAt": 1760003600000,
+    "joinUrl": "https://panel.example.com:2053/abc/join/node"
+  },
   "NodeMutationRequest": {
     "address": "",
     "allowPrivateAddress": false,

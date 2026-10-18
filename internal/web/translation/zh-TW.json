@@ -1183,6 +1183,16 @@
     "nodes": {
       "addNode": "新增節點",
       "editNode": "編輯節點",
+      "join": {
+        "button": "安裝指令",
+        "title": "一行指令安裝節點",
+        "intro": "在新伺服器上以 root 執行下面的指令。它會無提示安裝 3x-ui,並把該伺服器作為節點加入此面板。",
+        "namePlaceholder": "節點名稱(選填,預設使用伺服器主機名稱)",
+        "generate": "產生指令",
+        "copied": "指令已複製",
+        "expires": "有效至 {time},只能使用一次。",
+        "note": "新伺服器必須能透過指令中的位址存取本面板,本面板也必須能存取新伺服器的面板。私有位址與迴環位址會被拒絕。"
+      },
       "totalNodes": "節點總數",
       "onlineNodes": "上線",
       "offlineNodes": "離線",

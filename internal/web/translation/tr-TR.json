@@ -1183,6 +1183,16 @@
     "nodes": {
       "addNode": "Düğüm Ekle",
       "editNode": "Düğümü Düzenle",
+      "join": {
+        "button": "Kurulum komutu",
+        "title": "Tek komutla düğüm kur",
+        "intro": "Aşağıdaki komutu yeni bir sunucuda root olarak çalıştırın. 3x-ui'yi soru sormadan kurar ve sunucuyu bu panele düğüm olarak ekler.",
+        "namePlaceholder": "Düğüm adı (isteğe bağlı, varsayılan sunucunun ana makine adı)",
+        "generate": "Komut oluştur",
+        "copied": "Komut kopyalandı",
+        "expires": "{time} saatine kadar geçerli; yalnızca bir kez çalışır.",
+        "note": "Yeni sunucu bu panele komuttaki adresten ulaşabilmeli, bu panel de yeni sunucunun paneline ulaşabilmelidir. Özel ve loopback adresler reddedilir."
+      },
       "totalNodes": "Toplam Düğüm",
       "onlineNodes": "Çevrimiçi",
       "offlineNodes": "Çevrimdışı",

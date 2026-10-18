@@ -1183,6 +1183,16 @@
     "nodes": {
       "addNode": "添加节点",
       "editNode": "编辑节点",
+      "join": {
+        "button": "安装命令",
+        "title": "一条命令安装节点",
+        "intro": "在新服务器上以 root 运行下面的命令。它会无提示安装 3x-ui,并把该服务器作为节点添加到此面板。",
+        "namePlaceholder": "节点名称(可选,默认使用服务器主机名)",
+        "generate": "生成命令",
+        "copied": "命令已复制",
+        "expires": "有效期至 {time},只能使用一次。",
+        "note": "新服务器必须能通过命令中的地址访问本面板,本面板也必须能访问新服务器的面板。私有地址和回环地址会被拒绝。"
+      },
       "totalNodes": "节点总数",
       "onlineNodes": "在线",
       "offlineNodes": "离线",

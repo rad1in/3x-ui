@@ -5224,6 +5224,30 @@
         ],
         "type": "object"
       },
+      "NodeJoinCommand": {
+        "description": "NodeJoinCommand is the join command with the token it carries and when it expires.",
+        "properties": {
+          "command": {
+            "example": "XUI_NONINTERACTIVE=1 XUI_JOIN_URL='https://panel.example.com:2053/abc/join/node' XUI_JOIN_TOKEN='...' bash <(curl -Ls ...)",
+            "type": "string"
+          },
+          "expiresAt": {
+            "example": 1760003600000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "joinUrl": {
+            "example": "https://panel.example.com:2053/abc/join/node",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "expiresAt",
+          "joinUrl"
+        ],
+        "type": "object"
+      },
       "NodeMutationRequest": {
         "description": "NodeMutationRequest is the node write/probe contract. ApiToken is accepted\nonly as input. On update, nil means keep the stored token; replacement and\nclearing are explicit and mutually exclusive.",
         "properties": {
@@ -15354,6 +15378,60 @@
                       "type": "string"
                     },
                     "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/nodes/joinCommand": {
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Issue a single-use join token (valid one hour, stored hashed) and the shell command that installs 3x-ui on a new server and registers it here. The server calls POST {basePath}/join/node with the token, so the master must be reachable from it.",
+        "operationId": "post_panel_api_nodes_joinCommand",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "name": "de-fra-1",
+                "masterUrl": "https://panel.example.com:2053/abc/"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/NodeJoinCommand"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "command": "XUI_NONINTERACTIVE=1 XUI_JOIN_URL='https://panel.example.com:2053/abc/join/node' XUI_JOIN_TOKEN='...' bash <(curl -Ls ...)",
+                    "expiresAt": 1760003600000,
+                    "joinUrl": "https://panel.example.com:2053/abc/join/node"
                   }
                 }
               }

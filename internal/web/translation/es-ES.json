@@ -1183,6 +1183,16 @@
     "nodes": {
       "addNode": "Agregar nodo",
       "editNode": "Editar nodo",
+      "join": {
+        "button": "Comando de instalación",
+        "title": "Instala un nodo con un solo comando",
+        "intro": "Ejecuta el comando de abajo como root en un servidor nuevo. Instala 3x-ui sin preguntas y añade el servidor a este panel como nodo.",
+        "namePlaceholder": "Nombre del nodo (opcional; por defecto el nombre de host)",
+        "generate": "Generar comando",
+        "copied": "Comando copiado",
+        "expires": "Válido hasta {time}; funciona una sola vez.",
+        "note": "El servidor nuevo debe poder llegar a este panel por la dirección del comando, y este panel debe poder llegar al panel del servidor nuevo. Se rechazan las direcciones privadas y de loopback."
+      },
       "totalNodes": "Total de nodos",
       "onlineNodes": "En línea",
       "offlineNodes": "Sin conexión",

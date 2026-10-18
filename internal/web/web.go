@@ -291,6 +291,7 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 	s.panel = controller.NewXUIController(g)
 	s.api = controller.NewAPIController(g)
 	controller.NewMetricsController(g)
+	controller.NewNodeJoinController(g)
 
 	decoySite := s.settingService.DecoySite().Handler()
 	controller.NewShopController(engine.Group("/shop"), decoySite)

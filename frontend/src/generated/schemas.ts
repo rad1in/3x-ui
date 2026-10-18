@@ -5198,6 +5198,30 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "NodeJoinCommand": {
+    "description": "NodeJoinCommand is the join command with the token it carries and when it expires.",
+    "properties": {
+      "command": {
+        "example": "XUI_NONINTERACTIVE=1 XUI_JOIN_URL='https://panel.example.com:2053/abc/join/node' XUI_JOIN_TOKEN='...' bash \u003c(curl -Ls ...)",
+        "type": "string"
+      },
+      "expiresAt": {
+        "example": 1760003600000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "joinUrl": {
+        "example": "https://panel.example.com:2053/abc/join/node",
+        "type": "string"
+      }
+    },
+    "required": [
+      "command",
+      "expiresAt",
+      "joinUrl"
+    ],
+    "type": "object"
+  },
   "NodeMutationRequest": {
     "description": "NodeMutationRequest is the node write/probe contract. ApiToken is accepted\nonly as input. On update, nil means keep the stored token; replacement and\nclearing are explicit and mutually exclusive.",
     "properties": {

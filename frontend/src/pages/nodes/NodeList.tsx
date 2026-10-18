@@ -16,6 +16,7 @@ import {
   MoreOutlined,
   PlusOutlined,
   RightOutlined,
+  CodeOutlined,
   SafetyCertificateOutlined,
   TeamOutlined,
   ThunderboltOutlined,
@@ -37,6 +38,7 @@ interface NodeListProps {
   selectedIds: number[];
   onSelectionChange: (ids: number[]) => void;
   onAdd: () => void;
+  onJoin: () => void;
   onMtls: () => void;
   onEdit: (node: NodeRecord) => void;
   onDelete: (node: NodeRecord) => void;
@@ -174,6 +176,7 @@ export default function NodeList({
   selectedIds,
   onSelectionChange,
   onAdd,
+  onJoin,
   onMtls,
   onEdit,
   onDelete,
@@ -602,6 +605,9 @@ export default function NodeList({
       <div className="toolbar">
         <Button type="primary" icon={<PlusOutlined />} onClick={onAdd}>
           {t('pages.nodes.addNode')}
+        </Button>
+        <Button icon={<CodeOutlined />} onClick={onJoin}>
+          {t('pages.nodes.join.button')}
         </Button>
         <Button icon={<SafetyCertificateOutlined />} onClick={onMtls}>
           {t('pages.nodes.mtls.title')}

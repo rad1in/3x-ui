@@ -1183,6 +1183,12 @@ export interface Node {
   xrayVersion: string;
 }
 
+export interface NodeJoinCommand {
+  command: string;
+  expiresAt: number;
+  joinUrl: string;
+}
+
 export interface NodeMutationRequest {
   address: string;
   allowPrivateAddress: boolean;

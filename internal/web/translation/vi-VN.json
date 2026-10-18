@@ -1183,6 +1183,16 @@
     "nodes": {
       "addNode": "Thêm nút",
       "editNode": "Sửa node",
+      "join": {
+        "button": "Lệnh cài đặt",
+        "title": "Cài node bằng một lệnh",
+        "intro": "Chạy lệnh dưới đây bằng root trên máy chủ mới. Lệnh cài 3x-ui không cần hỏi và thêm máy chủ vào bảng điều khiển này như một node.",
+        "namePlaceholder": "Tên node (tùy chọn, mặc định là hostname của máy chủ)",
+        "generate": "Tạo lệnh",
+        "copied": "Đã sao chép lệnh",
+        "expires": "Có hiệu lực đến {time}; chỉ dùng được một lần.",
+        "note": "Máy chủ mới phải truy cập được bảng điều khiển này qua địa chỉ trong lệnh, và bảng điều khiển này phải truy cập được bảng của máy chủ mới. Địa chỉ riêng và loopback bị từ chối."
+      },
       "totalNodes": "Tổng số nút",
       "onlineNodes": "Trực tuyến",
       "offlineNodes": "Ngoại tuyến",

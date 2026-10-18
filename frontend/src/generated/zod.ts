@@ -1256,6 +1256,13 @@ export const NodeSchema = z.object({
 });
 export type Node = z.infer<typeof NodeSchema>;
 
+export const NodeJoinCommandSchema = z.object({
+  command: z.string(),
+  expiresAt: z.number().int(),
+  joinUrl: z.string(),
+});
+export type NodeJoinCommand = z.infer<typeof NodeJoinCommandSchema>;
+
 export const NodeMutationRequestSchema = z.object({
   address: z.string(),
   allowPrivateAddress: z.boolean(),
