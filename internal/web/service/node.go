@@ -444,6 +444,9 @@ func (s *NodeService) normalize(n *model.Node) error {
 		}
 	}
 	n.BasePath = normalizeBasePath(n.BasePath)
+	if err := normalizeNodeFailover(n); err != nil {
+		return err
+	}
 	return normalizeNodeCap(n)
 }
 
@@ -525,6 +528,7 @@ func nodeSelectionGrew(existing, in *model.Node) bool {
 }
 
 func (s *NodeService) Update(id int, in *model.Node) error {
+	in.Id = id
 	if err := s.normalize(in); err != nil {
 		return err
 	}
@@ -566,6 +570,8 @@ func (s *NodeService) Update(id int, in *model.Node) error {
 		"billing_day":           in.BillingDay,
 		"monthly_cost":          in.MonthlyCost,
 		"cost_currency":         in.CostCurrency,
+		"failover_node_id":      in.FailoverNodeId,
+		"failover_after_sec":    in.FailoverAfterSec,
 	}
 	if nodeSelectionGrew(existing, in) {
 		updates["inbounds_adopted_at"] = 0
@@ -589,6 +595,7 @@ func (s *NodeService) UpdateFromRequest(id int, req *NodeMutationRequest) error 
 		return err
 	}
 	in := req.toNode()
+	in.Id = id
 	if err := s.normalize(in); err != nil {
 		return err
 	}
@@ -634,6 +641,8 @@ func (s *NodeService) UpdateFromRequest(id int, req *NodeMutationRequest) error 
 		"billing_day":           in.BillingDay,
 		"monthly_cost":          in.MonthlyCost,
 		"cost_currency":         in.CostCurrency,
+		"failover_node_id":      in.FailoverNodeId,
+		"failover_after_sec":    in.FailoverAfterSec,
 	}
 	if nodeSelectionGrew(existing, in) {
 		updates["inbounds_adopted_at"] = 0

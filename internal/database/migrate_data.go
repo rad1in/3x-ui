@@ -78,6 +78,8 @@ func migrationModels() []any {
 		&model.ReferralCode{},
 		&model.ResellerEntry{},
 		&model.LoginSeen{},
+		&model.CleanIPResult{},
+		&model.InboundRotation{},
 	}
 }
 

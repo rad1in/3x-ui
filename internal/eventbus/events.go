@@ -20,6 +20,11 @@ const (
 	// A node reached its monthly traffic cap; Source is the node name, Data a *NodeCapData.
 	EventNodeCapReached EventType = "node.cap_reached"
 
+	// An inbound port stopped answering the external probe, then answered again;
+	// Source is the inbound's remark and Data a *PortProbeData.
+	EventPortBlocked  EventType = "port.blocked"
+	EventPortRestored EventType = "port.restored"
+
 	// System health
 	EventCPUHigh    EventType = "cpu.high"
 	EventMemoryHigh EventType = "memory.high"
@@ -126,6 +131,17 @@ type NodeCapData struct {
 	UsedBytes int64
 	CapBytes  int64
 	Stopped   bool // true when the cap action also disabled the node's inbounds
+}
+
+// PortProbeData describes the inbound port a probe event is about. Method is
+// "tcp" (dial from the panel host) or "url" (the configured probe URL).
+type PortProbeData struct {
+	InboundId int
+	Tag       string
+	Host      string
+	Port      int
+	Method    string
+	Error     string // last probe error, empty on port.restored
 }
 
 // NodeHealthData carries heartbeat details for node events.

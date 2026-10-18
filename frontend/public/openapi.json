@@ -373,6 +373,24 @@
           "panelOutbound": {
             "type": "string"
           },
+          "portProbeEnable": {
+            "description": "Port probe: checks every public TCP inbound port from outside and publishes port.blocked / port.restored.\nWith a URL the check is that URL ({host} and {port} filled in) answering 2xx and containing Expect; without one it is a TCP dial.",
+            "type": "boolean"
+          },
+          "portProbeExpect": {
+            "type": "string"
+          },
+          "portProbeFailures": {
+            "maximum": 20,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "portProbeHost": {
+            "type": "string"
+          },
+          "portProbeUrl": {
+            "type": "string"
+          },
           "quotaWarnPercent": {
             "maximum": 99,
             "minimum": 0,
@@ -941,6 +959,11 @@
           "panelBrandLogo",
           "panelBrandName",
           "panelOutbound",
+          "portProbeEnable",
+          "portProbeExpect",
+          "portProbeFailures",
+          "portProbeHost",
+          "portProbeUrl",
           "quotaWarnPercent",
           "realityScanCandidates",
           "remarkTemplate",
@@ -1371,6 +1394,24 @@
             "type": "string"
           },
           "panelOutbound": {
+            "type": "string"
+          },
+          "portProbeEnable": {
+            "description": "Port probe: checks every public TCP inbound port from outside and publishes port.blocked / port.restored.\nWith a URL the check is that URL ({host} and {port} filled in) answering 2xx and containing Expect; without one it is a TCP dial.",
+            "type": "boolean"
+          },
+          "portProbeExpect": {
+            "type": "string"
+          },
+          "portProbeFailures": {
+            "maximum": 20,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "portProbeHost": {
+            "type": "string"
+          },
+          "portProbeUrl": {
             "type": "string"
           },
           "quotaWarnPercent": {
@@ -1954,6 +1995,11 @@
           "panelBrandLogo",
           "panelBrandName",
           "panelOutbound",
+          "portProbeEnable",
+          "portProbeExpect",
+          "portProbeFailures",
+          "portProbeHost",
+          "portProbeUrl",
           "quotaWarnPercent",
           "realityScanCandidates",
           "remarkTemplate",
@@ -2352,6 +2398,94 @@
           "enabled",
           "holderName",
           "instructions"
+        ],
+        "type": "object"
+      },
+      "CleanIPResult": {
+        "description": "CleanIPResult is the latest probe of one CDN address from the panel host.\nEach scan replaces the whole table, so a row is never older than the last scan.",
+        "properties": {
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "ip": {
+            "example": "104.16.124.96",
+            "type": "string"
+          },
+          "latencyMs": {
+            "example": 84,
+            "type": "integer"
+          },
+          "lossPct": {
+            "description": "LossPct is the share of failed attempts among the samples taken, 0-100.",
+            "example": 0,
+            "type": "integer"
+          },
+          "ok": {
+            "example": true,
+            "type": "boolean"
+          },
+          "port": {
+            "example": 443,
+            "type": "integer"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "scannedAt": {
+            "example": 1760000000000,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "ip",
+          "latencyMs",
+          "lossPct",
+          "ok",
+          "port",
+          "reason",
+          "scannedAt"
+        ],
+        "type": "object"
+      },
+      "CleanIPStatus": {
+        "description": "CleanIPStatus is the progress of the running or most recent scan.",
+        "properties": {
+          "done": {
+            "example": 256,
+            "type": "integer"
+          },
+          "error": {
+            "type": "string"
+          },
+          "finishedAt": {
+            "example": 1760000042000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "running": {
+            "example": false,
+            "type": "boolean"
+          },
+          "startedAt": {
+            "example": 1760000000000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "total": {
+            "example": 256,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "done",
+          "error",
+          "finishedAt",
+          "running",
+          "startedAt",
+          "total"
         ],
         "type": "object"
       },
@@ -4662,6 +4796,78 @@
         ],
         "type": "object"
       },
+      "InboundRotation": {
+        "description": "InboundRotation is the port/SNI rotation setup of one inbound. Port rotation\npicks a free port in [PortMin, PortMax]; SNI rotation moves a REALITY inbound\nto another entry of SniList. IntervalHours 0 means manual rotation only.",
+        "properties": {
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "inboundId": {
+            "example": 3,
+            "type": "integer"
+          },
+          "intervalHours": {
+            "example": 24,
+            "type": "integer"
+          },
+          "lastPort": {
+            "example": 23871,
+            "type": "integer"
+          },
+          "lastRotatedAt": {
+            "description": "LastRotatedAt is unix milliseconds; 0 means never rotated.",
+            "example": 1760000000000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "lastSni": {
+            "example": "www.apple.com",
+            "type": "string"
+          },
+          "nextRotationAt": {
+            "description": "NextRotationAt is unix milliseconds of the next scheduled rotation; 0 when no schedule runs.",
+            "example": 1760086400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "portMax": {
+            "example": 40000,
+            "type": "integer"
+          },
+          "portMin": {
+            "example": 20000,
+            "type": "integer"
+          },
+          "rotatePort": {
+            "example": true,
+            "type": "boolean"
+          },
+          "rotateSni": {
+            "example": true,
+            "type": "boolean"
+          },
+          "sniList": {
+            "example": "www.microsoft.com\nwww.apple.com:443",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "inboundId",
+          "intervalHours",
+          "lastPort",
+          "lastRotatedAt",
+          "lastSni",
+          "nextRotationAt",
+          "portMax",
+          "portMin",
+          "rotatePort",
+          "rotateSni",
+          "sniList"
+        ],
+        "type": "object"
+      },
       "InboundTrafficSummary": {
         "properties": {
           "down": {
@@ -4920,6 +5126,17 @@
             "example": true,
             "type": "boolean"
           },
+          "failoverAfterSec": {
+            "example": 120,
+            "maximum": 86400,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "failoverNodeId": {
+            "description": "FailoverNodeId is the node whose address subscriptions advertise for this\nnode's inbounds once it has been offline FailoverAfterSec. 0 means none.",
+            "example": 2,
+            "type": "integer"
+          },
           "guid": {
             "description": "Guid is the remote panel's stable self-identifier (its panelGuid),\nlearned from each heartbeat. It is the globally stable node identity used\nto attribute online clients/inbounds to the physical node across a chain\nof nodes (#4983); panel-local autoincrement ids don't survive a hop.\nObserved-state only — never user-edited.",
             "type": "string"
@@ -5089,6 +5306,8 @@
           "depletedCount",
           "disabledCount",
           "enable",
+          "failoverAfterSec",
+          "failoverNodeId",
           "guid",
           "id",
           "inboundCount",
@@ -5119,6 +5338,30 @@
           "xrayError",
           "xrayState",
           "xrayVersion"
+        ],
+        "type": "object"
+      },
+      "NodeJoinCommand": {
+        "description": "NodeJoinCommand is the join command with the token it carries and when it expires.",
+        "properties": {
+          "command": {
+            "example": "XUI_NONINTERACTIVE=1 XUI_JOIN_URL='https://panel.example.com:2053/abc/join/node' XUI_JOIN_TOKEN='...' bash <(curl -Ls ...)",
+            "type": "string"
+          },
+          "expiresAt": {
+            "example": 1760003600000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "joinUrl": {
+            "example": "https://panel.example.com:2053/abc/join/node",
+            "type": "string"
+          }
+        },
+        "required": [
+          "command",
+          "expiresAt",
+          "joinUrl"
         ],
         "type": "object"
       },
@@ -5158,6 +5401,15 @@
           },
           "enable": {
             "type": "boolean"
+          },
+          "failoverAfterSec": {
+            "maximum": 86400,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "failoverNodeId": {
+            "minimum": 0,
+            "type": "integer"
           },
           "id": {
             "type": "integer"
@@ -5225,6 +5477,8 @@
           "capAction",
           "costCurrency",
           "enable",
+          "failoverAfterSec",
+          "failoverNodeId",
           "id",
           "inboundSyncMode",
           "inboundTags",
@@ -5366,6 +5620,14 @@
           "enable": {
             "example": true,
             "type": "boolean"
+          },
+          "failoverAfterSec": {
+            "example": 120,
+            "type": "integer"
+          },
+          "failoverNodeId": {
+            "example": 2,
+            "type": "integer"
           },
           "guid": {
             "example": "node-guid",
@@ -5525,6 +5787,8 @@
           "depletedCount",
           "disabledCount",
           "enable",
+          "failoverAfterSec",
+          "failoverNodeId",
           "guid",
           "hasApiToken",
           "id",
@@ -6422,6 +6686,44 @@
           "toppedUp",
           "userId",
           "username"
+        ],
+        "type": "object"
+      },
+      "RotationResult": {
+        "description": "RotationResult is what one rotation changed. A zero Old/New SNI means SNI was not rotated.",
+        "properties": {
+          "inboundId": {
+            "example": 3,
+            "type": "integer"
+          },
+          "needRestart": {
+            "example": false,
+            "type": "boolean"
+          },
+          "newPort": {
+            "example": 23871,
+            "type": "integer"
+          },
+          "newSni": {
+            "example": "www.apple.com",
+            "type": "string"
+          },
+          "oldPort": {
+            "example": 8443,
+            "type": "integer"
+          },
+          "oldSni": {
+            "example": "www.microsoft.com",
+            "type": "string"
+          }
+        },
+        "required": [
+          "inboundId",
+          "needRestart",
+          "newPort",
+          "newSni",
+          "oldPort",
+          "oldSni"
         ],
         "type": "object"
       },
@@ -8853,6 +9155,196 @@
                   "success": true,
                   "obj": {
                     "deleted": 12
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/inbounds/{id}/rotation": {
+      "get": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "The inbound's port/SNI rotation setup, or the defaults (port range 20000-40000, nothing selected) when none is saved.",
+        "operationId": "get_panel_api_inbounds_id_rotation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Inbound ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/InboundRotation"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "id": 1,
+                    "inboundId": 3,
+                    "intervalHours": 24,
+                    "lastPort": 23871,
+                    "lastRotatedAt": 1760000000000,
+                    "lastSni": "www.apple.com",
+                    "nextRotationAt": 1760086400000,
+                    "portMax": 40000,
+                    "portMin": 20000,
+                    "rotatePort": true,
+                    "rotateSni": true,
+                    "sniList": "www.microsoft.com\nwww.apple.com:443"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "Save the rotation setup: rotate the port inside a range, the REALITY SNI through a list (host or host:port entries), or both, optionally every intervalHours (0 = manual only). The last-rotation fields are kept by the server.",
+        "operationId": "post_panel_api_inbounds_id_rotation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Inbound ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "rotatePort": true,
+                "portMin": 20000,
+                "portMax": 40000,
+                "rotateSni": true,
+                "sniList": "www.microsoft.com\nwww.apple.com",
+                "intervalHours": 24
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/InboundRotation"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "id": 1,
+                    "inboundId": 3,
+                    "intervalHours": 24,
+                    "lastPort": 23871,
+                    "lastRotatedAt": 1760000000000,
+                    "lastSni": "www.apple.com",
+                    "nextRotationAt": 1760086400000,
+                    "portMax": 40000,
+                    "portMin": 20000,
+                    "rotatePort": true,
+                    "rotateSni": true,
+                    "sniList": "www.microsoft.com\nwww.apple.com:443"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/inbounds/{id}/rotate": {
+      "post": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "Rotate the inbound now with its saved setup. This is an ordinary inbound update, so an inbound on a node is stored and the node sync pushes it to the node. Clients follow through their refreshed subscription.",
+        "operationId": "post_panel_api_inbounds_id_rotate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Inbound ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/RotationResult"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "inboundId": 3,
+                    "needRestart": false,
+                    "newPort": 23871,
+                    "newSni": "www.apple.com",
+                    "oldPort": 8443,
+                    "oldSni": "www.microsoft.com"
                   }
                 }
               }
@@ -15000,6 +15492,8 @@
                       "depletedCount": 1,
                       "disabledCount": 2,
                       "enable": true,
+                      "failoverAfterSec": 120,
+                      "failoverNodeId": 2,
                       "guid": "node-guid",
                       "hasApiToken": true,
                       "id": 1,
@@ -15209,6 +15703,8 @@
                     "depletedCount": 1,
                     "disabledCount": 2,
                     "enable": true,
+                    "failoverAfterSec": 120,
+                    "failoverNodeId": 2,
                     "guid": "node-guid",
                     "hasApiToken": true,
                     "id": 1,
@@ -15367,6 +15863,8 @@
                     "depletedCount": 1,
                     "disabledCount": 2,
                     "enable": true,
+                    "failoverAfterSec": 120,
+                    "failoverNodeId": 2,
                     "guid": "node-guid",
                     "hasApiToken": true,
                     "id": 1,
@@ -15560,6 +16058,60 @@
                       "type": "string"
                     },
                     "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/nodes/joinCommand": {
+      "post": {
+        "tags": [
+          "Nodes"
+        ],
+        "summary": "Issue a single-use join token (valid one hour, stored hashed) and the shell command that installs 3x-ui on a new server and registers it here. The server calls POST {basePath}/join/node with the token, so the master must be reachable from it.",
+        "operationId": "post_panel_api_nodes_joinCommand",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "name": "de-fra-1",
+                "masterUrl": "https://panel.example.com:2053/abc/"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/NodeJoinCommand"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "command": "XUI_NONINTERACTIVE=1 XUI_JOIN_URL='https://panel.example.com:2053/abc/join/node' XUI_JOIN_TOKEN='...' bash <(curl -Ls ...)",
+                    "expiresAt": 1760003600000,
+                    "joinUrl": "https://panel.example.com:2053/abc/join/node"
                   }
                 }
               }
@@ -16830,6 +17382,204 @@
                   "abc-123",
                   "def-456"
                 ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/hosts/cleanip/scan": {
+      "post": {
+        "tags": [
+          "Hosts"
+        ],
+        "summary": "Start a background probe of CDN addresses from the panel host. targets takes IPs, CIDRs and a-b IPv4 ranges; with sni set, each attempt is a verified TLS handshake.",
+        "operationId": "post_panel_api_hosts_cleanip_scan",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "targets": "104.16.0.0/24, 172.64.32.1",
+                "port": 443,
+                "sni": "cdn.example.com",
+                "samples": 3,
+                "timeoutMs": 2000
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/CleanIPStatus"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "done": 256,
+                    "error": "",
+                    "finishedAt": 1760000042000,
+                    "running": false,
+                    "startedAt": 1760000000000,
+                    "total": 256
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/hosts/cleanip/status": {
+      "get": {
+        "tags": [
+          "Hosts"
+        ],
+        "summary": "Progress of the running or most recent clean-IP scan.",
+        "operationId": "get_panel_api_hosts_cleanip_status",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/CleanIPStatus"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "done": 256,
+                    "error": "",
+                    "finishedAt": 1760000042000,
+                    "running": false,
+                    "startedAt": 1760000000000,
+                    "total": 256
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/hosts/cleanip/results": {
+      "get": {
+        "tags": [
+          "Hosts"
+        ],
+        "summary": "Results of the last clean-IP scan: reachable addresses first, by packet loss then latency.",
+        "operationId": "get_panel_api_hosts_cleanip_results",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CleanIPResult"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "id": 1,
+                      "ip": "104.16.124.96",
+                      "latencyMs": 84,
+                      "lossPct": 0,
+                      "ok": true,
+                      "port": 443,
+                      "reason": "",
+                      "scannedAt": 1760000000000
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/hosts/cleanip/apply": {
+      "post": {
+        "tags": [
+          "Hosts"
+        ],
+        "summary": "Point a subscription host at a scanned address: replace or add it on a host group, or add a new host to an inbound.",
+        "operationId": "post_panel_api_hosts_cleanip_apply",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "ip": "104.16.1.2",
+                "groupId": "abc-123",
+                "mode": "replace"
               }
             }
           }
@@ -23834,6 +24584,8 @@
                   "depletedCount": 1,
                   "disabledCount": 2,
                   "enable": true,
+                  "failoverAfterSec": 120,
+                  "failoverNodeId": 2,
                   "guid": "node-guid",
                   "hasApiToken": true,
                   "id": 1,

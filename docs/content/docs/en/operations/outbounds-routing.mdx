@@ -151,6 +151,18 @@ put specific rules above general ones.
 }
 ```
 
+### Iran routing template
+
+**Routing → Rules → More → Add Iran routing template** adds three tagged rules in
+one click: ads (`geosite:category-ads-all`) go to `blocked`, Iranian domains
+(`regexp:.*\.ir$`, `geosite:category-ir`) and Iranian IPs (`geoip:ir`) go to
+`direct`. They are placed after the `api` rule and the default block rules and
+before your own rules. Applying again replaces the earlier copy instead of
+duplicating it, and **Remove** takes them out. The template needs the `direct` and
+`blocked` outbounds of the default config, and geo files that contain these lists;
+Xray does not start with a `geoip:` or `geosite:` list it cannot find. Save the
+Xray config afterwards to apply it.
+
 ### Lua scripts
 
 Xray 26.10.10 can hand routing and DNS to Lua. **Basics → Routing Script** takes the

@@ -314,6 +314,16 @@ var defaultValueMap = map[string]string{
 	"weeklyReportBaseline": "",
 	"weeklyReportLastSent": "0",
 
+	// Node join tokens (hashed, single use)
+	"nodeJoinTokens": "[]",
+
+	// Port probe
+	"portProbeEnable":   "false",
+	"portProbeHost":     "",
+	"portProbeUrl":      "",
+	"portProbeExpect":   "",
+	"portProbeFailures": "3",
+
 	// Push channels
 	"ntfyEnable":      "false",
 	"ntfyServer":      "https://ntfy.sh",

@@ -3,6 +3,7 @@ package email
 import (
 	"fmt"
 	"html"
+	"net"
 	"os"
 	"strconv"
 	"strings"
@@ -150,6 +151,25 @@ func (s *Subscriber) formatMessage(e eventbus.Event) (subject, body string) {
 			}
 		}
 		body = wrap(i18n("tgbot.messages.eventNodeCapReached", "Name=="+e.Source), content)
+
+	case eventbus.EventPortBlocked, eventbus.EventPortRestored:
+		data, ok := e.Data.(*eventbus.PortProbeData)
+		if !ok {
+			return
+		}
+		key, status := "tgbot.messages.eventPortRestored", `<span style="color:green">`+i18n("email.statusUp")+`</span>`
+		if e.Type == eventbus.EventPortBlocked {
+			key, status = "tgbot.messages.eventPortBlocked", `<span style="color:red">`+i18n("email.statusDown")+`</span>`
+		}
+		title := i18n(key, "Name=="+e.Source, "Port=="+strconv.Itoa(data.Port))
+		subject = host + " " + title
+		content := kv(i18n("email.labelStatus"), status)
+		content += kv(i18n("email.labelInbound"), html.EscapeString(e.Source))
+		content += kv(i18n("email.labelAddress"), html.EscapeString(net.JoinHostPort(data.Host, strconv.Itoa(data.Port))))
+		if data.Error != "" {
+			content += kv(i18n("email.labelError"), html.EscapeString(data.Error))
+		}
+		body = wrap(html.EscapeString(title), content)
 
 	case eventbus.EventCPUHigh:
 		if data, ok := e.Data.(*eventbus.SystemMetricData); ok {

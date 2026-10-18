@@ -100,6 +100,11 @@ export const EXAMPLES: Record<string, unknown> = {
     "panelBrandLogo": "",
     "panelBrandName": "",
     "panelOutbound": "",
+    "portProbeEnable": false,
+    "portProbeExpect": "",
+    "portProbeFailures": 1,
+    "portProbeHost": "",
+    "portProbeUrl": "",
     "quotaWarnPercent": 0,
     "realityScanCandidates": "",
     "remarkTemplate": "",
@@ -340,6 +345,11 @@ export const EXAMPLES: Record<string, unknown> = {
     "panelBrandLogo": "",
     "panelBrandName": "",
     "panelOutbound": "",
+    "portProbeEnable": false,
+    "portProbeExpect": "",
+    "portProbeFailures": 1,
+    "portProbeHost": "",
+    "portProbeUrl": "",
     "quotaWarnPercent": 0,
     "realityScanCandidates": "",
     "remarkTemplate": "",
@@ -570,6 +580,24 @@ export const EXAMPLES: Record<string, unknown> = {
     "enabled": false,
     "holderName": "Ali Rezaei",
     "instructions": ""
+  },
+  "CleanIPResult": {
+    "id": 1,
+    "ip": "104.16.124.96",
+    "latencyMs": 84,
+    "lossPct": 0,
+    "ok": true,
+    "port": 443,
+    "reason": "",
+    "scannedAt": 1760000000000
+  },
+  "CleanIPStatus": {
+    "done": 256,
+    "error": "",
+    "finishedAt": 1760000042000,
+    "running": false,
+    "startedAt": 1760000000000,
+    "total": 256
   },
   "Client": {
     "adTag": "0123456789abcdef0123456789abcdef",
@@ -1185,6 +1213,20 @@ export const EXAMPLES: Record<string, unknown> = {
     "wgMtu": 0,
     "wgPublicKey": ""
   },
+  "InboundRotation": {
+    "id": 1,
+    "inboundId": 3,
+    "intervalHours": 24,
+    "lastPort": 23871,
+    "lastRotatedAt": 1760000000000,
+    "lastSni": "www.apple.com",
+    "nextRotationAt": 1760086400000,
+    "portMax": 40000,
+    "portMin": 20000,
+    "rotatePort": true,
+    "rotateSni": true,
+    "sniList": "www.microsoft.com\nwww.apple.com:443"
+  },
   "InboundTrafficSummary": {
     "down": 2097152,
     "enable": true,
@@ -1243,6 +1285,8 @@ export const EXAMPLES: Record<string, unknown> = {
     "depletedCount": 1,
     "disabledCount": 3,
     "enable": true,
+    "failoverAfterSec": 120,
+    "failoverNodeId": 2,
     "guid": "",
     "id": 1,
     "inboundCount": 5,
@@ -1278,6 +1322,11 @@ export const EXAMPLES: Record<string, unknown> = {
     "xrayState": "",
     "xrayVersion": "25.10.31"
   },
+  "NodeJoinCommand": {
+    "command": "XUI_NONINTERACTIVE=1 XUI_JOIN_URL='https://panel.example.com:2053/abc/join/node' XUI_JOIN_TOKEN='...' bash \u003c(curl -Ls ...)",
+    "expiresAt": 1760003600000,
+    "joinUrl": "https://panel.example.com:2053/abc/join/node"
+  },
   "NodeMutationRequest": {
     "address": "",
     "allowPrivateAddress": false,
@@ -1288,6 +1337,8 @@ export const EXAMPLES: Record<string, unknown> = {
     "clearApiToken": false,
     "costCurrency": "",
     "enable": false,
+    "failoverAfterSec": 0,
+    "failoverNodeId": 0,
     "id": 0,
     "inboundSyncMode": "all",
     "inboundTags": [
@@ -1332,6 +1383,8 @@ export const EXAMPLES: Record<string, unknown> = {
     "depletedCount": 1,
     "disabledCount": 2,
     "enable": true,
+    "failoverAfterSec": 120,
+    "failoverNodeId": 2,
     "guid": "node-guid",
     "hasApiToken": true,
     "id": 1,
@@ -1601,6 +1654,14 @@ export const EXAMPLES: Record<string, unknown> = {
     "toppedUp": 20000,
     "userId": 2,
     "username": "shop-a"
+  },
+  "RotationResult": {
+    "inboundId": 3,
+    "needRestart": false,
+    "newPort": 23871,
+    "newSni": "www.apple.com",
+    "oldPort": 8443,
+    "oldSni": "www.microsoft.com"
   },
   "SalesConfig": {
     "card": {

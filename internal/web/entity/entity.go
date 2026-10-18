@@ -166,6 +166,14 @@ type AllSetting struct {
 	WeeklyReportDay    int  `json:"weeklyReportDay" form:"weeklyReportDay" validate:"gte=0,lte=6"`
 	WeeklyReportHour   int  `json:"weeklyReportHour" form:"weeklyReportHour" validate:"gte=0,lte=23"`
 
+	// Port probe: checks every public TCP inbound port from outside and publishes port.blocked / port.restored.
+	// With a URL the check is that URL ({host} and {port} filled in) answering 2xx and containing Expect; without one it is a TCP dial.
+	PortProbeEnable   bool   `json:"portProbeEnable" form:"portProbeEnable"`
+	PortProbeHost     string `json:"portProbeHost" form:"portProbeHost"`
+	PortProbeUrl      string `json:"portProbeUrl" form:"portProbeUrl"`
+	PortProbeExpect   string `json:"portProbeExpect" form:"portProbeExpect"`
+	PortProbeFailures int    `json:"portProbeFailures" form:"portProbeFailures" validate:"gte=1,lte=20"`
+
 	// Push channels: each posts the events it has ticked to ntfy, Gotify or a Slack incoming webhook.
 	NtfyEnable      bool   `json:"ntfyEnable" form:"ntfyEnable"`
 	NtfyServer      string `json:"ntfyServer" form:"ntfyServer"`

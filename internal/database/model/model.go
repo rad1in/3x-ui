@@ -971,6 +971,11 @@ type Node struct {
 	MonthlyCost  float64 `json:"monthlyCost" form:"monthlyCost" gorm:"column:monthly_cost;default:0" validate:"gte=0" example:"5"`
 	CostCurrency string  `json:"costCurrency" form:"costCurrency" gorm:"column:cost_currency;default:''" example:"USD"`
 
+	// FailoverNodeId is the node whose address subscriptions advertise for this
+	// node's inbounds once it has been offline FailoverAfterSec. 0 means none.
+	FailoverNodeId   int `json:"failoverNodeId" form:"failoverNodeId" gorm:"column:failover_node_id;default:0" example:"2"`
+	FailoverAfterSec int `json:"failoverAfterSec" form:"failoverAfterSec" gorm:"column:failover_after_sec;default:120" validate:"gte=0,lte=86400" example:"120"`
+
 	// Observed cap state for the current billing period; never user-edited.
 	// CapLastTotal is the inbound-counter sum at the previous tick, so a counter
 	// reset cannot be mistaken for traffic.

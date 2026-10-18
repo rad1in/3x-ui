@@ -89,6 +89,8 @@ Alerts are sent as Discord Embeds with color coding and relevant diagnostics:
 | `outbound.up` | 🟢 Green | Outbound connectivity restored |
 | `node.down` | 🔴 Red | Remote sub-node offline or unreachable |
 | `node.up` | 🟢 Green | Remote sub-node reconnected and healthy |
+| `port.blocked` | 🔴 Red | An inbound port stopped answering the [port probe](/docs/operations/monitoring#port-probe) |
+| `port.restored` | 🟢 Green | The inbound port answers again |
 | `cpu.high` | 🟠 Orange | Host CPU usage exceeded configured threshold (`discordCpu`) |
 | `memory.high` | 🟠 Orange | Host memory usage exceeded configured threshold (`discordMemory`) |
 | `login.attempt` | 🟢 / 🔴 | Web panel login attempt with username, IP, and status |

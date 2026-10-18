@@ -53,6 +53,12 @@ _openapi:
       title: Pause or resume traffic sync with this node.
       url: '#pause-or-resume-traffic-sync-with-this-node'
     - depth: 2
+      title: Issue a single-use join token (valid one hour, stored hashed) and the
+        shell command that installs 3x-ui on a new server and registers it here.
+        The server calls POST {basePath}/join/node with the token, so the master
+        must be reachable from it.
+      url: '#issue-a-single-use-join-token-valid-one-hour-stored-hashed-and-the-shell-command-that-installs-3x-ui-on-a-new-server-and-registers-it-here-the-server-calls-post-basepathjoinnode-with-the-token-so-the-master-must-be-reachable-from-it'
+    - depth: 2
       title: Probe a node without saving it. Uses the body as connection details and
         returns the same heartbeat snapshot a registered node would have.
       url: '#probe-a-node-without-saving-it-uses-the-body-as-connection-details-and-returns-the-same-heartbeat-snapshot-a-registered-node-would-have'
@@ -123,6 +129,11 @@ _openapi:
         id: delete-a-node-inbounds-bound-to-it-are-not-auto-migrated
       - content: Pause or resume traffic sync with this node.
         id: pause-or-resume-traffic-sync-with-this-node
+      - content: Issue a single-use join token (valid one hour, stored hashed) and the
+          shell command that installs 3x-ui on a new server and registers it
+          here. The server calls POST {basePath}/join/node with the token, so
+          the master must be reachable from it.
+        id: issue-a-single-use-join-token-valid-one-hour-stored-hashed-and-the-shell-command-that-installs-3x-ui-on-a-new-server-and-registers-it-here-the-server-calls-post-basepathjoinnode-with-the-token-so-the-master-must-be-reachable-from-it
       - content: Probe a node without saving it. Uses the body as connection details and
           returns the same heartbeat snapshot a registered node would have.
         id: probe-a-node-without-saving-it-uses-the-body-as-connection-details-and-returns-the-same-heartbeat-snapshot-a-registered-node-would-have
@@ -162,7 +173,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/nodes/list","method":"get"},{"path":"/panel/api/nodes/mtls/ca","method":"post"},{"path":"/panel/api/nodes/mtls/trustCA","method":"post"},{"path":"/panel/api/nodes/mtls/reloadClient","method":"post"},{"path":"/panel/api/nodes/get/{id}","method":"get"},{"path":"/panel/api/nodes/webCert/{id}","method":"get"},{"path":"/panel/api/nodes/add","method":"post"},{"path":"/panel/api/nodes/update/{id}","method":"post"},{"path":"/panel/api/nodes/del/{id}","method":"post"},{"path":"/panel/api/nodes/setEnable/{id}","method":"post"},{"path":"/panel/api/nodes/test","method":"post"},{"path":"/panel/api/nodes/certFingerprint","method":"post"},{"path":"/panel/api/nodes/inbounds","method":"post"},{"path":"/panel/api/nodes/probe/{id}","method":"post"},{"path":"/panel/api/nodes/speedtest/{id}","method":"post"},{"path":"/panel/api/nodes/updatePanel","method":"post"},{"path":"/panel/api/nodes/history/{id}/{metric}/{bucket}","method":"get"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/nodes/list","method":"get"},{"path":"/panel/api/nodes/mtls/ca","method":"post"},{"path":"/panel/api/nodes/mtls/trustCA","method":"post"},{"path":"/panel/api/nodes/mtls/reloadClient","method":"post"},{"path":"/panel/api/nodes/get/{id}","method":"get"},{"path":"/panel/api/nodes/webCert/{id}","method":"get"},{"path":"/panel/api/nodes/add","method":"post"},{"path":"/panel/api/nodes/update/{id}","method":"post"},{"path":"/panel/api/nodes/del/{id}","method":"post"},{"path":"/panel/api/nodes/setEnable/{id}","method":"post"},{"path":"/panel/api/nodes/joinCommand","method":"post"},{"path":"/panel/api/nodes/test","method":"post"},{"path":"/panel/api/nodes/certFingerprint","method":"post"},{"path":"/panel/api/nodes/inbounds","method":"post"},{"path":"/panel/api/nodes/probe/{id}","method":"post"},{"path":"/panel/api/nodes/speedtest/{id}","method":"post"},{"path":"/panel/api/nodes/updatePanel","method":"post"},{"path":"/panel/api/nodes/history/{id}/{metric}/{bucket}","method":"get"}]} showTitle />
     </>
   );
 }

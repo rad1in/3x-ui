@@ -347,6 +347,24 @@ export const SCHEMAS: Record<string, unknown> = {
       "panelOutbound": {
         "type": "string"
       },
+      "portProbeEnable": {
+        "description": "Port probe: checks every public TCP inbound port from outside and publishes port.blocked / port.restored.\nWith a URL the check is that URL ({host} and {port} filled in) answering 2xx and containing Expect; without one it is a TCP dial.",
+        "type": "boolean"
+      },
+      "portProbeExpect": {
+        "type": "string"
+      },
+      "portProbeFailures": {
+        "maximum": 20,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "portProbeHost": {
+        "type": "string"
+      },
+      "portProbeUrl": {
+        "type": "string"
+      },
       "quotaWarnPercent": {
         "maximum": 99,
         "minimum": 0,
@@ -915,6 +933,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "panelBrandLogo",
       "panelBrandName",
       "panelOutbound",
+      "portProbeEnable",
+      "portProbeExpect",
+      "portProbeFailures",
+      "portProbeHost",
+      "portProbeUrl",
       "quotaWarnPercent",
       "realityScanCandidates",
       "remarkTemplate",
@@ -1345,6 +1368,24 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "string"
       },
       "panelOutbound": {
+        "type": "string"
+      },
+      "portProbeEnable": {
+        "description": "Port probe: checks every public TCP inbound port from outside and publishes port.blocked / port.restored.\nWith a URL the check is that URL ({host} and {port} filled in) answering 2xx and containing Expect; without one it is a TCP dial.",
+        "type": "boolean"
+      },
+      "portProbeExpect": {
+        "type": "string"
+      },
+      "portProbeFailures": {
+        "maximum": 20,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "portProbeHost": {
+        "type": "string"
+      },
+      "portProbeUrl": {
         "type": "string"
       },
       "quotaWarnPercent": {
@@ -1928,6 +1969,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "panelBrandLogo",
       "panelBrandName",
       "panelOutbound",
+      "portProbeEnable",
+      "portProbeExpect",
+      "portProbeFailures",
+      "portProbeHost",
+      "portProbeUrl",
       "quotaWarnPercent",
       "realityScanCandidates",
       "remarkTemplate",
@@ -2326,6 +2372,94 @@ export const SCHEMAS: Record<string, unknown> = {
       "enabled",
       "holderName",
       "instructions"
+    ],
+    "type": "object"
+  },
+  "CleanIPResult": {
+    "description": "CleanIPResult is the latest probe of one CDN address from the panel host.\nEach scan replaces the whole table, so a row is never older than the last scan.",
+    "properties": {
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "ip": {
+        "example": "104.16.124.96",
+        "type": "string"
+      },
+      "latencyMs": {
+        "example": 84,
+        "type": "integer"
+      },
+      "lossPct": {
+        "description": "LossPct is the share of failed attempts among the samples taken, 0-100.",
+        "example": 0,
+        "type": "integer"
+      },
+      "ok": {
+        "example": true,
+        "type": "boolean"
+      },
+      "port": {
+        "example": 443,
+        "type": "integer"
+      },
+      "reason": {
+        "type": "string"
+      },
+      "scannedAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "id",
+      "ip",
+      "latencyMs",
+      "lossPct",
+      "ok",
+      "port",
+      "reason",
+      "scannedAt"
+    ],
+    "type": "object"
+  },
+  "CleanIPStatus": {
+    "description": "CleanIPStatus is the progress of the running or most recent scan.",
+    "properties": {
+      "done": {
+        "example": 256,
+        "type": "integer"
+      },
+      "error": {
+        "type": "string"
+      },
+      "finishedAt": {
+        "example": 1760000042000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "running": {
+        "example": false,
+        "type": "boolean"
+      },
+      "startedAt": {
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "total": {
+        "example": 256,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "done",
+      "error",
+      "finishedAt",
+      "running",
+      "startedAt",
+      "total"
     ],
     "type": "object"
   },
@@ -4636,6 +4770,78 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "InboundRotation": {
+    "description": "InboundRotation is the port/SNI rotation setup of one inbound. Port rotation\npicks a free port in [PortMin, PortMax]; SNI rotation moves a REALITY inbound\nto another entry of SniList. IntervalHours 0 means manual rotation only.",
+    "properties": {
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "inboundId": {
+        "example": 3,
+        "type": "integer"
+      },
+      "intervalHours": {
+        "example": 24,
+        "type": "integer"
+      },
+      "lastPort": {
+        "example": 23871,
+        "type": "integer"
+      },
+      "lastRotatedAt": {
+        "description": "LastRotatedAt is unix milliseconds; 0 means never rotated.",
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "lastSni": {
+        "example": "www.apple.com",
+        "type": "string"
+      },
+      "nextRotationAt": {
+        "description": "NextRotationAt is unix milliseconds of the next scheduled rotation; 0 when no schedule runs.",
+        "example": 1760086400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "portMax": {
+        "example": 40000,
+        "type": "integer"
+      },
+      "portMin": {
+        "example": 20000,
+        "type": "integer"
+      },
+      "rotatePort": {
+        "example": true,
+        "type": "boolean"
+      },
+      "rotateSni": {
+        "example": true,
+        "type": "boolean"
+      },
+      "sniList": {
+        "example": "www.microsoft.com\nwww.apple.com:443",
+        "type": "string"
+      }
+    },
+    "required": [
+      "id",
+      "inboundId",
+      "intervalHours",
+      "lastPort",
+      "lastRotatedAt",
+      "lastSni",
+      "nextRotationAt",
+      "portMax",
+      "portMin",
+      "rotatePort",
+      "rotateSni",
+      "sniList"
+    ],
+    "type": "object"
+  },
   "InboundTrafficSummary": {
     "properties": {
       "down": {
@@ -4894,6 +5100,17 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": true,
         "type": "boolean"
       },
+      "failoverAfterSec": {
+        "example": 120,
+        "maximum": 86400,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "failoverNodeId": {
+        "description": "FailoverNodeId is the node whose address subscriptions advertise for this\nnode's inbounds once it has been offline FailoverAfterSec. 0 means none.",
+        "example": 2,
+        "type": "integer"
+      },
       "guid": {
         "description": "Guid is the remote panel's stable self-identifier (its panelGuid),\nlearned from each heartbeat. It is the globally stable node identity used\nto attribute online clients/inbounds to the physical node across a chain\nof nodes (#4983); panel-local autoincrement ids don't survive a hop.\nObserved-state only — never user-edited.",
         "type": "string"
@@ -5063,6 +5280,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "depletedCount",
       "disabledCount",
       "enable",
+      "failoverAfterSec",
+      "failoverNodeId",
       "guid",
       "id",
       "inboundCount",
@@ -5093,6 +5312,30 @@ export const SCHEMAS: Record<string, unknown> = {
       "xrayError",
       "xrayState",
       "xrayVersion"
+    ],
+    "type": "object"
+  },
+  "NodeJoinCommand": {
+    "description": "NodeJoinCommand is the join command with the token it carries and when it expires.",
+    "properties": {
+      "command": {
+        "example": "XUI_NONINTERACTIVE=1 XUI_JOIN_URL='https://panel.example.com:2053/abc/join/node' XUI_JOIN_TOKEN='...' bash \u003c(curl -Ls ...)",
+        "type": "string"
+      },
+      "expiresAt": {
+        "example": 1760003600000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "joinUrl": {
+        "example": "https://panel.example.com:2053/abc/join/node",
+        "type": "string"
+      }
+    },
+    "required": [
+      "command",
+      "expiresAt",
+      "joinUrl"
     ],
     "type": "object"
   },
@@ -5132,6 +5375,15 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "enable": {
         "type": "boolean"
+      },
+      "failoverAfterSec": {
+        "maximum": 86400,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "failoverNodeId": {
+        "minimum": 0,
+        "type": "integer"
       },
       "id": {
         "type": "integer"
@@ -5199,6 +5451,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "capAction",
       "costCurrency",
       "enable",
+      "failoverAfterSec",
+      "failoverNodeId",
       "id",
       "inboundSyncMode",
       "inboundTags",
@@ -5340,6 +5594,14 @@ export const SCHEMAS: Record<string, unknown> = {
       "enable": {
         "example": true,
         "type": "boolean"
+      },
+      "failoverAfterSec": {
+        "example": 120,
+        "type": "integer"
+      },
+      "failoverNodeId": {
+        "example": 2,
+        "type": "integer"
       },
       "guid": {
         "example": "node-guid",
@@ -5499,6 +5761,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "depletedCount",
       "disabledCount",
       "enable",
+      "failoverAfterSec",
+      "failoverNodeId",
       "guid",
       "hasApiToken",
       "id",
@@ -6396,6 +6660,44 @@ export const SCHEMAS: Record<string, unknown> = {
       "toppedUp",
       "userId",
       "username"
+    ],
+    "type": "object"
+  },
+  "RotationResult": {
+    "description": "RotationResult is what one rotation changed. A zero Old/New SNI means SNI was not rotated.",
+    "properties": {
+      "inboundId": {
+        "example": 3,
+        "type": "integer"
+      },
+      "needRestart": {
+        "example": false,
+        "type": "boolean"
+      },
+      "newPort": {
+        "example": 23871,
+        "type": "integer"
+      },
+      "newSni": {
+        "example": "www.apple.com",
+        "type": "string"
+      },
+      "oldPort": {
+        "example": 8443,
+        "type": "integer"
+      },
+      "oldSni": {
+        "example": "www.microsoft.com",
+        "type": "string"
+      }
+    },
+    "required": [
+      "inboundId",
+      "needRestart",
+      "newPort",
+      "newSni",
+      "oldPort",
+      "oldSni"
     ],
     "type": "object"
   },

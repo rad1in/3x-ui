@@ -294,6 +294,7 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 	s.panel = controller.NewXUIController(g)
 	s.api = controller.NewAPIController(g)
 	controller.NewMetricsController(g)
+	controller.NewNodeJoinController(g)
 
 	decoySite := s.settingService.DecoySite().Handler()
 	controller.NewShopController(engine.Group("/shop"), decoySite)
@@ -346,6 +347,8 @@ const (
 	cadenceNodeHeartbeat = "@every 5s"
 	cadenceNodeTraffic   = "@every 5s"
 	cadenceNodeCap       = "@every 1m"
+	cadencePortProbe     = "@every 1m"
+	cadenceInboundRotate = "@every 5m"
 	cadenceOutboundSub   = "@every 5m"
 	cadenceReapOrphans   = "@every 5m"
 	cadenceRemoteRouting = "@every 5m"
@@ -427,6 +430,10 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 	_, _ = s.cron.AddJob(cadenceNodeTraffic, job.NewNodeTrafficSyncJob())
 
 	_, _ = s.cron.AddJob(cadenceNodeCap, job.NewNodeCapJob())
+
+	_, _ = s.cron.AddJob(cadencePortProbe, job.NewPortProbeJob())
+
+	_, _ = s.cron.AddJob(cadenceInboundRotate, job.NewInboundRotationJob())
 
 	// Outbound subscription auto-refresh (respects per-sub updateInterval)
 	_, _ = s.cron.AddJob(cadenceOutboundSub, job.NewOutboundSubscriptionJob())

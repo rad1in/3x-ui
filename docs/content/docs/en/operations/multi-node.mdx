@@ -39,6 +39,34 @@ and emitting `node.up` / `node.down` events (see the
   those as read-only **transitive** sub-nodes (Node 1 → Node 2 → Node 3).
 </Callout>
 
+### Install a node with one command
+
+**Nodes → Install command** generates a command to run as root on a fresh server:
+
+```bash
+XUI_NONINTERACTIVE=1 XUI_JOIN_URL='https://panel.example.com:2053/abc/join/node' \
+  XUI_JOIN_TOKEN='…' XUI_NODE_NAME='de-fra-1' bash <(curl -Ls …/join-node.sh)
+```
+
+`join-node.sh` runs the normal non-interactive installer, reads the result it
+writes (`/etc/x-ui/install-result.env`: panel address, base path and API token),
+and posts them with the token to `{basePath}/join/node` on the master. The master
+checks that it can reach the new panel and then adds it as an enabled node that
+syncs all inbounds, with `verify` TLS (or `skip`/`pin` if the script is given
+`XUI_NODE_TLS_VERIFY`).
+
+The token is single-use, valid for one hour, and stored on the master only as a
+hash. A join that fails (for example the master cannot reach the new panel yet)
+keeps the token, and the script retries for about a minute. The endpoint takes
+no session, is rate limited per client IP, and refuses private or loopback node
+addresses, `mtls` and outbound bridges: set those on the node afterwards.
+
+<Callout type="info">
+  The command downloads `join-node.sh` from the address in the panel's source
+  (`JoinScriptURL`). If you run a fork, change that constant to your repository's
+  raw URL, and set `XUI_INSTALLER_URL` if you also host your own `install.sh`.
+</Callout>
+
 ### Mutual TLS (mTLS) between master and node
 
 For the strongest trust, use `tlsVerifyMode = mtls` (requires `https`):
@@ -92,6 +120,21 @@ cost per terabyte used so far this period (withheld until 10 GB have flowed) and
 the total cost per currency. The panel does not know what your clients pay, so
 it shows costs and traffic only and calculates no profit.
 
+### Failover to a backup node
+
+A node's **Failover** section names a **backup node** and a delay (default 120 s).
+While the node has been offline longer than the delay, the subscription links of
+its inbounds (raw, JSON and Clash, and VPN profiles) advertise the backup node's
+address instead. The moment the node is back online its own address returns.
+
+Failover only moves an address, so the backup has to be ready to serve the same
+clients: a link is moved only for an inbound that the backup also has, enabled,
+with the same protocol and port (create it with **Clone** to another node, keeping
+the same keys and clients). The backup must be enabled and online. Inbounds with a
+custom share address, and managed hosts with their own address, keep it. Clients
+already connected are not moved; they pick the new address when they refresh their
+subscription, so a short subscription update interval makes failover faster.
+
 ### Speed test
 
 The dashboard icon on a node row runs an on-demand test of the path between the
@@ -121,6 +164,22 @@ formats** or **scoped to specific nodes**.
   Hosts whose address/port point at a CDN let you keep the real server address
   private while clients connect through the CDN edge.
 </Callout>
+
+### Clean IP scanner
+
+**Hosts → Clean IP scan** probes a list of CDN addresses from the panel host and
+ranks them by packet loss and latency. Enter IPs, CIDR ranges or `a.b.c.d-e.f.g.h`
+ranges; a range larger than 2048 addresses is sampled at random. Give an SNI to
+make each attempt a TLS handshake whose certificate must match that name, so an
+address that is reachable but hijacked is reported as a certificate mismatch.
+Without an SNI only the TCP connection is tested.
+
+A reachable address can be applied to an existing host (replacing or extending
+its addresses) or added as a new host on an inbound. Loopback, private and
+link-local addresses are never probed. The scan runs on the panel host, which is
+usually outside the network that filters your clients: an address that is clean
+there may still be blocked for them, so treat the result as a shortlist and
+verify the chosen address from a client.
 
 ## Related
 

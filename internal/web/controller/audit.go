@@ -31,6 +31,7 @@ var auditSkipRoutes = map[string]bool{
 	"POST /server/getRemoteCertHash":    true,
 	"POST /server/scanRealityTarget":    true,
 	"POST /server/scanRealityTargets":   true,
+	"POST /hosts/cleanip/scan":          true,
 	"POST /server/clientIps":            true,
 	"POST /clients/renewalPreview":      true,
 	"POST /clients/ips/:email":          true,

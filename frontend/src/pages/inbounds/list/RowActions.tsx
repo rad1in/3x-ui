@@ -6,6 +6,7 @@ import {
   CopyOutlined,
   ExportOutlined,
   RetweetOutlined,
+  SwapOutlined,
   BlockOutlined,
   DeleteOutlined,
   DownloadOutlined,
@@ -79,6 +80,11 @@ export function buildRowActionsMenu({
     label: t('pages.inbounds.resetTraffic'),
   });
   items.push({ key: 'clone', icon: <BlockOutlined />, label: t('pages.inbounds.clone') });
+  items.push({
+    key: 'rotation',
+    icon: <SwapOutlined />,
+    label: t('pages.inbounds.rotation.menu'),
+  });
   if (isInboundMultiUser(record)) {
     items.push({
       key: 'attachExisting',

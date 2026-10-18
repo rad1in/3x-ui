@@ -119,6 +119,8 @@ func allModels() []any {
 		&model.ReferralCode{},
 		&model.ResellerEntry{},
 		&model.LoginSeen{},
+		&model.CleanIPResult{},
+		&model.InboundRotation{},
 	}
 }
 

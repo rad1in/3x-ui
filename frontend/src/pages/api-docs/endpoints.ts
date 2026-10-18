@@ -382,6 +382,31 @@ export const sections: readonly Section[] = [
         response: '{\n  "success": true,\n  "obj": {\n    "deleted": 12\n  }\n}',
       },
       {
+        method: 'GET',
+        path: '/panel/api/inbounds/:id/rotation',
+        summary:
+          "The inbound's port/SNI rotation setup, or the defaults (port range 20000-40000, nothing selected) when none is saved.",
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'Inbound ID.' }],
+        responseSchema: 'InboundRotation',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/inbounds/:id/rotation',
+        summary:
+          'Save the rotation setup: rotate the port inside a range, the REALITY SNI through a list (host or host:port entries), or both, optionally every intervalHours (0 = manual only). The last-rotation fields are kept by the server.',
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'Inbound ID.' }],
+        body: '{\n  "rotatePort": true,\n  "portMin": 20000,\n  "portMax": 40000,\n  "rotateSni": true,\n  "sniList": "www.microsoft.com\\nwww.apple.com",\n  "intervalHours": 24\n}',
+        responseSchema: 'InboundRotation',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/inbounds/:id/rotate',
+        summary:
+          'Rotate the inbound now with its saved setup. This is an ordinary inbound update, so an inbound on a node is stored and the node sync pushes it to the node. Clients follow through their refreshed subscription.',
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'Inbound ID.' }],
+        responseSchema: 'RotationResult',
+      },
+      {
         method: 'POST',
         path: '/panel/api/inbounds/resetAllTraffics',
         summary:
@@ -1986,6 +2011,14 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/panel/api/nodes/joinCommand',
+        summary:
+          'Issue a single-use join token (valid one hour, stored hashed) and the shell command that installs 3x-ui on a new server and registers it here. The server calls POST {basePath}/join/node with the token, so the master must be reachable from it.',
+        body: '{\n  "name": "de-fra-1",\n  "masterUrl": "https://panel.example.com:2053/abc/"\n}',
+        responseSchema: 'NodeJoinCommand',
+      },
+      {
+        method: 'POST',
         path: '/panel/api/nodes/test',
         summary:
           'Probe a node without saving it. Uses the body as connection details and returns the same heartbeat snapshot a registered node would have.',
@@ -2142,6 +2175,35 @@ export const sections: readonly Section[] = [
         path: '/panel/api/hosts/bulk/del',
         summary: 'Delete many host groups in one call.',
         body: '{\n  "ids": ["abc-123", "def-456"]\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/hosts/cleanip/scan',
+        summary:
+          'Start a background probe of CDN addresses from the panel host. targets takes IPs, CIDRs and a-b IPv4 ranges; with sni set, each attempt is a verified TLS handshake.',
+        body: '{\n  "targets": "104.16.0.0/24, 172.64.32.1",\n  "port": 443,\n  "sni": "cdn.example.com",\n  "samples": 3,\n  "timeoutMs": 2000\n}',
+        responseSchema: 'CleanIPStatus',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/hosts/cleanip/status',
+        summary: 'Progress of the running or most recent clean-IP scan.',
+        responseSchema: 'CleanIPStatus',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/hosts/cleanip/results',
+        summary:
+          'Results of the last clean-IP scan: reachable addresses first, by packet loss then latency.',
+        responseSchema: 'CleanIPResult',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/hosts/cleanip/apply',
+        summary:
+          'Point a subscription host at a scanned address: replace or add it on a host group, or add a new host to an inbound.',
+        body: '{\n  "ip": "104.16.1.2",\n  "groupId": "abc-123",\n  "mode": "replace"\n}',
       },
     ],
   },

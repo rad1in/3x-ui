@@ -120,6 +120,11 @@ export const AllSettingSchema = z.object({
   panelBrandLogo: z.string(),
   panelBrandName: z.string(),
   panelOutbound: z.string(),
+  portProbeEnable: z.boolean(),
+  portProbeExpect: z.string(),
+  portProbeFailures: z.number().int().min(1).max(20),
+  portProbeHost: z.string(),
+  portProbeUrl: z.string(),
   quotaWarnPercent: z.number().int().min(0).max(99),
   realityScanCandidates: z.string(),
   remarkTemplate: z.string(),
@@ -362,6 +367,11 @@ export const AllSettingViewSchema = z.object({
   panelBrandLogo: z.string(),
   panelBrandName: z.string(),
   panelOutbound: z.string(),
+  portProbeEnable: z.boolean(),
+  portProbeExpect: z.string(),
+  portProbeFailures: z.number().int().min(1).max(20),
+  portProbeHost: z.string(),
+  portProbeUrl: z.string(),
   quotaWarnPercent: z.number().int().min(0).max(99),
   realityScanCandidates: z.string(),
   remarkTemplate: z.string(),
@@ -583,6 +593,28 @@ export const CardPayConfigSchema = z.object({
   instructions: z.string(),
 });
 export type CardPayConfig = z.infer<typeof CardPayConfigSchema>;
+
+export const CleanIPResultSchema = z.object({
+  id: z.number().int(),
+  ip: z.string(),
+  latencyMs: z.number().int(),
+  lossPct: z.number().int(),
+  ok: z.boolean(),
+  port: z.number().int(),
+  reason: z.string(),
+  scannedAt: z.number().int(),
+});
+export type CleanIPResult = z.infer<typeof CleanIPResultSchema>;
+
+export const CleanIPStatusSchema = z.object({
+  done: z.number().int(),
+  error: z.string(),
+  finishedAt: z.number().int(),
+  running: z.boolean(),
+  startedAt: z.number().int(),
+  total: z.number().int(),
+});
+export type CleanIPStatus = z.infer<typeof CleanIPStatusSchema>;
 
 export const ClientSchema = z.object({
   adTag: z.string().optional(),
@@ -1126,6 +1158,22 @@ export const InboundOptionSchema = z.object({
 });
 export type InboundOption = z.infer<typeof InboundOptionSchema>;
 
+export const InboundRotationSchema = z.object({
+  id: z.number().int(),
+  inboundId: z.number().int(),
+  intervalHours: z.number().int(),
+  lastPort: z.number().int(),
+  lastRotatedAt: z.number().int(),
+  lastSni: z.string(),
+  nextRotationAt: z.number().int(),
+  portMax: z.number().int(),
+  portMin: z.number().int(),
+  rotatePort: z.boolean(),
+  rotateSni: z.boolean(),
+  sniList: z.string(),
+});
+export type InboundRotation = z.infer<typeof InboundRotationSchema>;
+
 export const InboundTrafficSummarySchema = z.object({
   down: z.number().int(),
   enable: z.boolean(),
@@ -1198,6 +1246,8 @@ export const NodeSchema = z.object({
   depletedCount: z.number().int(),
   disabledCount: z.number().int(),
   enable: z.boolean(),
+  failoverAfterSec: z.number().int().min(0).max(86400),
+  failoverNodeId: z.number().int(),
   guid: z.string(),
   id: z.number().int(),
   inboundCount: z.number().int(),
@@ -1233,6 +1283,13 @@ export const NodeSchema = z.object({
 });
 export type Node = z.infer<typeof NodeSchema>;
 
+export const NodeJoinCommandSchema = z.object({
+  command: z.string(),
+  expiresAt: z.number().int(),
+  joinUrl: z.string(),
+});
+export type NodeJoinCommand = z.infer<typeof NodeJoinCommandSchema>;
+
 export const NodeMutationRequestSchema = z.object({
   address: z.string(),
   allowPrivateAddress: z.boolean(),
@@ -1243,6 +1300,8 @@ export const NodeMutationRequestSchema = z.object({
   clearApiToken: z.boolean().optional(),
   costCurrency: z.string(),
   enable: z.boolean(),
+  failoverAfterSec: z.number().int().min(0).max(86400),
+  failoverNodeId: z.number().int().min(0),
   id: z.number().int(),
   inboundSyncMode: z.enum(['all', 'selected']),
   inboundTags: z.array(z.string()),
@@ -1289,6 +1348,8 @@ export const NodeViewSchema = z.object({
   depletedCount: z.number().int(),
   disabledCount: z.number().int(),
   enable: z.boolean(),
+  failoverAfterSec: z.number().int(),
+  failoverNodeId: z.number().int(),
   guid: z.string(),
   hasApiToken: z.boolean(),
   id: z.number().int(),
@@ -1535,6 +1596,16 @@ export const ResellerReportRowSchema = z.object({
   username: z.string(),
 });
 export type ResellerReportRow = z.infer<typeof ResellerReportRowSchema>;
+
+export const RotationResultSchema = z.object({
+  inboundId: z.number().int(),
+  needRestart: z.boolean(),
+  newPort: z.number().int(),
+  newSni: z.string(),
+  oldPort: z.number().int(),
+  oldSni: z.string(),
+});
+export type RotationResult = z.infer<typeof RotationResultSchema>;
 
 export const SalesConfigSchema = z.object({
   card: z.lazy(() => CardPayConfigSchema),

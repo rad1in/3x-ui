@@ -10,6 +10,7 @@ import { NotificationGroup } from '@/components/ui/notifications/NotificationGro
 import SecretInput from './SecretInput';
 import { EVENT_GROUPS } from './eventGroups';
 import WeeklyReportSettings from './WeeklyReportSettings';
+import PortProbeSettings from './PortProbeSettings';
 
 interface PushTabProps {
   allSetting: AllSetting;
@@ -147,6 +148,7 @@ export default function PushTab({ allSetting: s, updateSetting }: PushTabProps) 
   return (
     <>
       <WeeklyReportSettings allSetting={s} updateSetting={updateSetting} />
+      <PortProbeSettings allSetting={s} updateSetting={updateSetting} />
       <ChannelSection
         {...common}
         title="ntfy"

@@ -1,5 +1,6 @@
 import { InputNumber } from 'antd';
 import {
+  ApiOutlined,
   CloudServerOutlined,
   ThunderboltOutlined,
   DesktopOutlined,
@@ -49,6 +50,14 @@ const GROUPS: NotificationGroupConfig[] = [
       { key: 'node.down', label: 'eventNodeDown', settingKey: '' },
       { key: 'node.up', label: 'eventNodeUp', settingKey: '' },
       { key: 'node.cap_reached', label: 'eventNodeCapReached', settingKey: '' },
+    ],
+  },
+  {
+    icon: <ApiOutlined />,
+    title: 'eventGroupPort',
+    events: [
+      { key: 'port.blocked', label: 'eventPortBlocked', settingKey: '' },
+      { key: 'port.restored', label: 'eventPortRestored', settingKey: '' },
     ],
   },
   {

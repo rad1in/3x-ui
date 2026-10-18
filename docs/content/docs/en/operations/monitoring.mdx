@@ -62,3 +62,29 @@ through **Dashboards → New → Import** and pick your Prometheus data source. 
 shows panel/Xray state, online clients, host CPU/memory/disk, traffic rates per
 inbound, top clients and per-node CPU, memory and heartbeat latency. The **Job**
 variable filters by your scrape job name.
+
+## Port probe
+
+A port that stops answering is the usual first sign that an address or port was
+blocked. With **Settings → Push channels → Port probe** on, the panel checks
+every enabled, publicly reachable TCP inbound once a minute and publishes
+`port.blocked` after the configured run of consecutive failures (default 3) and
+`port.restored` when the port answers again. Telegram, Discord, email, webhooks
+and the push channels send them when ticked in their events.
+
+How a port is checked decides what a failure means:
+
+- **Probe URL set**: the panel calls your external checker with the host and
+  port placeholders filled in (`https://checker.example/check?host={host}&port={port}`).
+  The port counts as open when the URL answers 2xx and, if you set an expected
+  text, the response contains it. This is the only mode that sees the port from
+  outside the server.
+- **No probe URL**: the panel dials the port itself. For an inbound on a node
+  this is a real outside check from the master. For an inbound on the panel's own
+  server it is a hairpin check through the server's public address, which finds a
+  stopped listener or a local firewall rule but not a block elsewhere on the path.
+
+Inbounds that listen on loopback or a unix socket, UDP-only protocols, disabled
+inbounds, and inbounds on a node that is offline are not probed (a down node
+already raises `node.down`). Failure counts live in memory, so a panel restart
+starts the count again.

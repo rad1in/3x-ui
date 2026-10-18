@@ -40,6 +40,8 @@ export const keys = {
     list: () => ['hosts', 'list'] as const,
     byInbound: (inboundId: number) => ['hosts', 'byInbound', inboundId] as const,
     tags: () => ['hosts', 'tags'] as const,
+    cleanIpStatus: () => ['hosts', 'cleanIp', 'status'] as const,
+    cleanIpResults: (finishedAt: number) => ['hosts', 'cleanIp', 'results', finishedAt] as const,
   },
   subBalancers: {
     root: () => ['sub-balancers'] as const,

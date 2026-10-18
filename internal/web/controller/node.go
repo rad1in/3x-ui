@@ -18,6 +18,7 @@ import (
 type NodeController struct {
 	nodeService service.NodeService
 	xrayService service.XrayService
+	joinService service.NodeJoinService
 }
 
 func NewNodeController(g *gin.RouterGroup) *NodeController {
@@ -36,6 +37,7 @@ func (a *NodeController) initRouter(g *gin.RouterGroup) {
 	g.POST("/del/:id", a.del)
 	g.POST("/setEnable/:id", a.setEnable)
 
+	g.POST("/joinCommand", a.joinCommand)
 	g.POST("/test", a.test)
 	g.POST("/certFingerprint", a.certFingerprint)
 	g.POST("/inbounds", a.inbounds)

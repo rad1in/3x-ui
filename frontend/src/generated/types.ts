@@ -102,6 +102,11 @@ export interface AllSetting {
   panelBrandLogo: string;
   panelBrandName: string;
   panelOutbound: string;
+  portProbeEnable: boolean;
+  portProbeExpect: string;
+  portProbeFailures: number;
+  portProbeHost: string;
+  portProbeUrl: string;
   quotaWarnPercent: number;
   realityScanCandidates: string;
   remarkTemplate: string;
@@ -343,6 +348,11 @@ export interface AllSettingView {
   panelBrandLogo: string;
   panelBrandName: string;
   panelOutbound: string;
+  portProbeEnable: boolean;
+  portProbeExpect: string;
+  portProbeFailures: number;
+  portProbeHost: string;
+  portProbeUrl: string;
   quotaWarnPercent: number;
   realityScanCandidates: string;
   remarkTemplate: string;
@@ -555,6 +565,26 @@ export interface CardPayConfig {
   enabled: boolean;
   holderName: string;
   instructions: string;
+}
+
+export interface CleanIPResult {
+  id: number;
+  ip: string;
+  latencyMs: number;
+  lossPct: number;
+  ok: boolean;
+  port: number;
+  reason: string;
+  scannedAt: number;
+}
+
+export interface CleanIPStatus {
+  done: number;
+  error: string;
+  finishedAt: number;
+  running: boolean;
+  startedAt: number;
+  total: number;
 }
 
 export interface Client {
@@ -1061,6 +1091,21 @@ export interface InboundOption {
   wgPublicKey?: string;
 }
 
+export interface InboundRotation {
+  id: number;
+  inboundId: number;
+  intervalHours: number;
+  lastPort: number;
+  lastRotatedAt: number;
+  lastSni: string;
+  nextRotationAt: number;
+  portMax: number;
+  portMin: number;
+  rotatePort: boolean;
+  rotateSni: boolean;
+  sniList: string;
+}
+
 export interface InboundTrafficSummary {
   down: number;
   enable: boolean;
@@ -1126,6 +1171,8 @@ export interface Node {
   depletedCount: number;
   disabledCount: number;
   enable: boolean;
+  failoverAfterSec: number;
+  failoverNodeId: number;
   guid: string;
   id: number;
   inboundCount: number;
@@ -1160,6 +1207,12 @@ export interface Node {
   xrayVersion: string;
 }
 
+export interface NodeJoinCommand {
+  command: string;
+  expiresAt: number;
+  joinUrl: string;
+}
+
 export interface NodeMutationRequest {
   address: string;
   allowPrivateAddress: boolean;
@@ -1170,6 +1223,8 @@ export interface NodeMutationRequest {
   clearApiToken?: boolean;
   costCurrency: string;
   enable: boolean;
+  failoverAfterSec: number;
+  failoverNodeId: number;
   id: number;
   inboundSyncMode: string;
   inboundTags: string[];
@@ -1214,6 +1269,8 @@ export interface NodeView {
   depletedCount: number;
   disabledCount: number;
   enable: boolean;
+  failoverAfterSec: number;
+  failoverNodeId: number;
   guid: string;
   hasApiToken: boolean;
   id: number;
@@ -1440,6 +1497,15 @@ export interface ResellerReportRow {
   toppedUp: number;
   userId: number;
   username: string;
+}
+
+export interface RotationResult {
+  inboundId: number;
+  needRestart: boolean;
+  newPort: number;
+  newSni: string;
+  oldPort: number;
+  oldSni: string;
 }
 
 export interface SalesConfig {

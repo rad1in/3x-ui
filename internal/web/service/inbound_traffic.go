@@ -998,6 +998,9 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 				if err := tx.Where("inbound_id = ?", inbound.Id).Delete(&model.Host{}).Error; err != nil {
 					return err
 				}
+				if err := dropInboundRotation(tx, inbound.Id); err != nil {
+					return err
+				}
 				if err := tx.Delete(model.Inbound{}, inbound.Id).Error; err != nil {
 					return err
 				}
