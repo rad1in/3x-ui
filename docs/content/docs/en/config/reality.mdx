@@ -106,6 +106,21 @@ vless://<uuid>@<server>:443?security=reality&pbk=<public-key>&sid=<short-id>&sni
 - `spx` — spiderX path
 - `flow` — `xtls-rprx-vision`
 
+## Rotating the port and SNI
+
+**Inbounds → ⋯ → Rotate port / SNI** moves an inbound to a new random free port
+inside a range you choose and, for REALITY, to another domain from your SNI list
+(the target becomes that domain and `serverNames` is reduced to it). Run it with
+the button, or set an interval in hours to have the panel do it on a schedule;
+the clock starts when you save.
+
+The rotation is a normal inbound update: the port is checked against other
+inbounds and, for an inbound on this server, against what is already listening on
+the host. For an inbound on a node the new values are stored and the node sync
+pushes them to the node. Existing connections drop, and clients only learn the
+new port or SNI when they refresh their subscription, so rotate on a schedule
+your clients' refresh interval can follow.
+
 ## Common pitfalls
 
 <Callout type="warn">

@@ -4692,6 +4692,78 @@
         ],
         "type": "object"
       },
+      "InboundRotation": {
+        "description": "InboundRotation is the port/SNI rotation setup of one inbound. Port rotation\npicks a free port in [PortMin, PortMax]; SNI rotation moves a REALITY inbound\nto another entry of SniList. IntervalHours 0 means manual rotation only.",
+        "properties": {
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "inboundId": {
+            "example": 3,
+            "type": "integer"
+          },
+          "intervalHours": {
+            "example": 24,
+            "type": "integer"
+          },
+          "lastPort": {
+            "example": 23871,
+            "type": "integer"
+          },
+          "lastRotatedAt": {
+            "description": "LastRotatedAt is unix milliseconds; 0 means never rotated.",
+            "example": 1760000000000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "lastSni": {
+            "example": "www.apple.com",
+            "type": "string"
+          },
+          "nextRotationAt": {
+            "description": "NextRotationAt is unix milliseconds of the next scheduled rotation; 0 when no schedule runs.",
+            "example": 1760086400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "portMax": {
+            "example": 40000,
+            "type": "integer"
+          },
+          "portMin": {
+            "example": 20000,
+            "type": "integer"
+          },
+          "rotatePort": {
+            "example": true,
+            "type": "boolean"
+          },
+          "rotateSni": {
+            "example": true,
+            "type": "boolean"
+          },
+          "sniList": {
+            "example": "www.microsoft.com\nwww.apple.com:443",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "inboundId",
+          "intervalHours",
+          "lastPort",
+          "lastRotatedAt",
+          "lastSni",
+          "nextRotationAt",
+          "portMax",
+          "portMin",
+          "rotatePort",
+          "rotateSni",
+          "sniList"
+        ],
+        "type": "object"
+      },
       "InboundTrafficSummary": {
         "properties": {
           "down": {
@@ -6245,6 +6317,44 @@
         "required": [
           "bonusPercent",
           "enabled"
+        ],
+        "type": "object"
+      },
+      "RotationResult": {
+        "description": "RotationResult is what one rotation changed. A zero Old/New SNI means SNI was not rotated.",
+        "properties": {
+          "inboundId": {
+            "example": 3,
+            "type": "integer"
+          },
+          "needRestart": {
+            "example": false,
+            "type": "boolean"
+          },
+          "newPort": {
+            "example": 23871,
+            "type": "integer"
+          },
+          "newSni": {
+            "example": "www.apple.com",
+            "type": "string"
+          },
+          "oldPort": {
+            "example": 8443,
+            "type": "integer"
+          },
+          "oldSni": {
+            "example": "www.microsoft.com",
+            "type": "string"
+          }
+        },
+        "required": [
+          "inboundId",
+          "needRestart",
+          "newPort",
+          "newSni",
+          "oldPort",
+          "oldSni"
         ],
         "type": "object"
       },
@@ -8567,6 +8677,196 @@
                   "success": true,
                   "obj": {
                     "deleted": 12
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/inbounds/{id}/rotation": {
+      "get": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "The inbound's port/SNI rotation setup, or the defaults (port range 20000-40000, nothing selected) when none is saved.",
+        "operationId": "get_panel_api_inbounds_id_rotation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Inbound ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/InboundRotation"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "id": 1,
+                    "inboundId": 3,
+                    "intervalHours": 24,
+                    "lastPort": 23871,
+                    "lastRotatedAt": 1760000000000,
+                    "lastSni": "www.apple.com",
+                    "nextRotationAt": 1760086400000,
+                    "portMax": 40000,
+                    "portMin": 20000,
+                    "rotatePort": true,
+                    "rotateSni": true,
+                    "sniList": "www.microsoft.com\nwww.apple.com:443"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "Save the rotation setup: rotate the port inside a range, the REALITY SNI through a list (host or host:port entries), or both, optionally every intervalHours (0 = manual only). The last-rotation fields are kept by the server.",
+        "operationId": "post_panel_api_inbounds_id_rotation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Inbound ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "rotatePort": true,
+                "portMin": 20000,
+                "portMax": 40000,
+                "rotateSni": true,
+                "sniList": "www.microsoft.com\nwww.apple.com",
+                "intervalHours": 24
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/InboundRotation"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "id": 1,
+                    "inboundId": 3,
+                    "intervalHours": 24,
+                    "lastPort": 23871,
+                    "lastRotatedAt": 1760000000000,
+                    "lastSni": "www.apple.com",
+                    "nextRotationAt": 1760086400000,
+                    "portMax": 40000,
+                    "portMin": 20000,
+                    "rotatePort": true,
+                    "rotateSni": true,
+                    "sniList": "www.microsoft.com\nwww.apple.com:443"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/inbounds/{id}/rotate": {
+      "post": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "Rotate the inbound now with its saved setup. This is an ordinary inbound update, so an inbound on a node is stored and the node sync pushes it to the node. Clients follow through their refreshed subscription.",
+        "operationId": "post_panel_api_inbounds_id_rotate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Inbound ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/RotationResult"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "inboundId": 3,
+                    "needRestart": false,
+                    "newPort": 23871,
+                    "newSni": "www.apple.com",
+                    "oldPort": 8443,
+                    "oldSni": "www.microsoft.com"
                   }
                 }
               }

@@ -77,6 +77,7 @@ func migrationModels() []any {
 		&model.WalletEntry{},
 		&model.ReferralCode{},
 		&model.CleanIPResult{},
+		&model.InboundRotation{},
 	}
 }
 

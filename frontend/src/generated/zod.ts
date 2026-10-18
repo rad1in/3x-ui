@@ -1133,6 +1133,22 @@ export const InboundOptionSchema = z.object({
 });
 export type InboundOption = z.infer<typeof InboundOptionSchema>;
 
+export const InboundRotationSchema = z.object({
+  id: z.number().int(),
+  inboundId: z.number().int(),
+  intervalHours: z.number().int(),
+  lastPort: z.number().int(),
+  lastRotatedAt: z.number().int(),
+  lastSni: z.string(),
+  nextRotationAt: z.number().int(),
+  portMax: z.number().int(),
+  portMin: z.number().int(),
+  rotatePort: z.boolean(),
+  rotateSni: z.boolean(),
+  sniList: z.string(),
+});
+export type InboundRotation = z.infer<typeof InboundRotationSchema>;
+
 export const InboundTrafficSummarySchema = z.object({
   down: z.number().int(),
   enable: z.boolean(),
@@ -1490,6 +1506,16 @@ export const ReferralConfigSchema = z.object({
   enabled: z.boolean(),
 });
 export type ReferralConfig = z.infer<typeof ReferralConfigSchema>;
+
+export const RotationResultSchema = z.object({
+  inboundId: z.number().int(),
+  needRestart: z.boolean(),
+  newPort: z.number().int(),
+  newSni: z.string(),
+  oldPort: z.number().int(),
+  oldSni: z.string(),
+});
+export type RotationResult = z.infer<typeof RotationResultSchema>;
 
 export const SalesConfigSchema = z.object({
   card: z.lazy(() => CardPayConfigSchema),

@@ -1185,6 +1185,20 @@ export const EXAMPLES: Record<string, unknown> = {
     "wgMtu": 0,
     "wgPublicKey": ""
   },
+  "InboundRotation": {
+    "id": 1,
+    "inboundId": 3,
+    "intervalHours": 24,
+    "lastPort": 23871,
+    "lastRotatedAt": 1760000000000,
+    "lastSni": "www.apple.com",
+    "nextRotationAt": 1760086400000,
+    "portMax": 40000,
+    "portMin": 20000,
+    "rotatePort": true,
+    "rotateSni": true,
+    "sniList": "www.microsoft.com\nwww.apple.com:443"
+  },
   "InboundTrafficSummary": {
     "down": 2097152,
     "enable": true,
@@ -1534,6 +1548,14 @@ export const EXAMPLES: Record<string, unknown> = {
   "ReferralConfig": {
     "bonusPercent": 10,
     "enabled": false
+  },
+  "RotationResult": {
+    "inboundId": 3,
+    "needRestart": false,
+    "newPort": 23871,
+    "newSni": "www.apple.com",
+    "oldPort": 8443,
+    "oldSni": "www.microsoft.com"
   },
   "SalesConfig": {
     "card": {

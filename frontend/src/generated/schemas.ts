@@ -4666,6 +4666,78 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "InboundRotation": {
+    "description": "InboundRotation is the port/SNI rotation setup of one inbound. Port rotation\npicks a free port in [PortMin, PortMax]; SNI rotation moves a REALITY inbound\nto another entry of SniList. IntervalHours 0 means manual rotation only.",
+    "properties": {
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "inboundId": {
+        "example": 3,
+        "type": "integer"
+      },
+      "intervalHours": {
+        "example": 24,
+        "type": "integer"
+      },
+      "lastPort": {
+        "example": 23871,
+        "type": "integer"
+      },
+      "lastRotatedAt": {
+        "description": "LastRotatedAt is unix milliseconds; 0 means never rotated.",
+        "example": 1760000000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "lastSni": {
+        "example": "www.apple.com",
+        "type": "string"
+      },
+      "nextRotationAt": {
+        "description": "NextRotationAt is unix milliseconds of the next scheduled rotation; 0 when no schedule runs.",
+        "example": 1760086400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "portMax": {
+        "example": 40000,
+        "type": "integer"
+      },
+      "portMin": {
+        "example": 20000,
+        "type": "integer"
+      },
+      "rotatePort": {
+        "example": true,
+        "type": "boolean"
+      },
+      "rotateSni": {
+        "example": true,
+        "type": "boolean"
+      },
+      "sniList": {
+        "example": "www.microsoft.com\nwww.apple.com:443",
+        "type": "string"
+      }
+    },
+    "required": [
+      "id",
+      "inboundId",
+      "intervalHours",
+      "lastPort",
+      "lastRotatedAt",
+      "lastSni",
+      "nextRotationAt",
+      "portMax",
+      "portMin",
+      "rotatePort",
+      "rotateSni",
+      "sniList"
+    ],
+    "type": "object"
+  },
   "InboundTrafficSummary": {
     "properties": {
       "down": {
@@ -6219,6 +6291,44 @@ export const SCHEMAS: Record<string, unknown> = {
     "required": [
       "bonusPercent",
       "enabled"
+    ],
+    "type": "object"
+  },
+  "RotationResult": {
+    "description": "RotationResult is what one rotation changed. A zero Old/New SNI means SNI was not rotated.",
+    "properties": {
+      "inboundId": {
+        "example": 3,
+        "type": "integer"
+      },
+      "needRestart": {
+        "example": false,
+        "type": "boolean"
+      },
+      "newPort": {
+        "example": 23871,
+        "type": "integer"
+      },
+      "newSni": {
+        "example": "www.apple.com",
+        "type": "string"
+      },
+      "oldPort": {
+        "example": 8443,
+        "type": "integer"
+      },
+      "oldSni": {
+        "example": "www.microsoft.com",
+        "type": "string"
+      }
+    },
+    "required": [
+      "inboundId",
+      "needRestart",
+      "newPort",
+      "newSni",
+      "oldPort",
+      "oldSni"
     ],
     "type": "object"
   },

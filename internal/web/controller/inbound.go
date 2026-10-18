@@ -24,6 +24,7 @@ type InboundController struct {
 	clientService   service.ClientService
 	xrayService     service.XrayService
 	fallbackService service.FallbackService
+	rotationService service.InboundRotationService
 }
 
 // NewInboundController creates a new InboundController and sets up its routes.
@@ -82,6 +83,7 @@ func (a *InboundController) initRouter(g *gin.RouterGroup) {
 	g.GET("/:id/fallbacks", a.getFallbacks)
 	g.GET("/:id/openvpnProfile", a.openvpnProfile)
 	g.GET("/:id/ikev2Profile", a.ikev2Profile)
+	g.GET("/:id/rotation", a.getRotation)
 	g.GET("/vpnStatus", a.vpnStatus)
 
 	g.POST("/add", a.addInbound)
@@ -95,6 +97,8 @@ func (a *InboundController) initRouter(g *gin.RouterGroup) {
 	g.POST("/resetAllTraffics", a.resetAllTraffics)
 	g.POST("/import", a.importInbound)
 	g.POST("/:id/fallbacks", a.setFallbacks)
+	g.POST("/:id/rotation", a.saveRotation)
+	g.POST("/:id/rotate", a.rotateInbound)
 	g.POST("/pushClientTraffics", a.pushClientTraffics)
 }
 

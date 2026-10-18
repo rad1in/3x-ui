@@ -382,6 +382,31 @@ export const sections: readonly Section[] = [
         response: '{\n  "success": true,\n  "obj": {\n    "deleted": 12\n  }\n}',
       },
       {
+        method: 'GET',
+        path: '/panel/api/inbounds/:id/rotation',
+        summary:
+          "The inbound's port/SNI rotation setup, or the defaults (port range 20000-40000, nothing selected) when none is saved.",
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'Inbound ID.' }],
+        responseSchema: 'InboundRotation',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/inbounds/:id/rotation',
+        summary:
+          'Save the rotation setup: rotate the port inside a range, the REALITY SNI through a list (host or host:port entries), or both, optionally every intervalHours (0 = manual only). The last-rotation fields are kept by the server.',
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'Inbound ID.' }],
+        body: '{\n  "rotatePort": true,\n  "portMin": 20000,\n  "portMax": 40000,\n  "rotateSni": true,\n  "sniList": "www.microsoft.com\\nwww.apple.com",\n  "intervalHours": 24\n}',
+        responseSchema: 'InboundRotation',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/inbounds/:id/rotate',
+        summary:
+          'Rotate the inbound now with its saved setup. This is an ordinary inbound update, so an inbound on a node is stored and the node sync pushes it to the node. Clients follow through their refreshed subscription.',
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'Inbound ID.' }],
+        responseSchema: 'RotationResult',
+      },
+      {
         method: 'POST',
         path: '/panel/api/inbounds/resetAllTraffics',
         summary:

@@ -1069,6 +1069,21 @@ export interface InboundOption {
   wgPublicKey?: string;
 }
 
+export interface InboundRotation {
+  id: number;
+  inboundId: number;
+  intervalHours: number;
+  lastPort: number;
+  lastRotatedAt: number;
+  lastSni: string;
+  nextRotationAt: number;
+  portMax: number;
+  portMin: number;
+  rotatePort: boolean;
+  rotateSni: boolean;
+  sniList: string;
+}
+
 export interface InboundTrafficSummary {
   down: number;
   enable: boolean;
@@ -1402,6 +1417,15 @@ export interface RealityScanResult {
 export interface ReferralConfig {
   bonusPercent: number;
   enabled: boolean;
+}
+
+export interface RotationResult {
+  inboundId: number;
+  needRestart: boolean;
+  newPort: number;
+  newSni: string;
+  oldPort: number;
+  oldSni: string;
 }
 
 export interface SalesConfig {

@@ -344,6 +344,7 @@ const (
 	cadenceNodeTraffic   = "@every 5s"
 	cadenceNodeCap       = "@every 1m"
 	cadencePortProbe     = "@every 1m"
+	cadenceInboundRotate = "@every 5m"
 	cadenceOutboundSub   = "@every 5m"
 	cadenceReapOrphans   = "@every 5m"
 	cadenceRemoteRouting = "@every 5m"
@@ -415,6 +416,8 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 	_, _ = s.cron.AddJob(cadenceNodeCap, job.NewNodeCapJob())
 
 	_, _ = s.cron.AddJob(cadencePortProbe, job.NewPortProbeJob())
+
+	_, _ = s.cron.AddJob(cadenceInboundRotate, job.NewInboundRotationJob())
 
 	// Outbound subscription auto-refresh (respects per-sub updateInterval)
 	_, _ = s.cron.AddJob(cadenceOutboundSub, job.NewOutboundSubscriptionJob())

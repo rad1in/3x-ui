@@ -50,6 +50,7 @@ func run(root, outDir string) error {
 				"DiscountCode",
 				"WalletEntry",
 				"CleanIPResult",
+				"InboundRotation",
 			),
 			AliasAllow: setOf("Protocol"),
 			Overrides: map[string][]walkOverride{
@@ -102,6 +103,7 @@ func run(root, outDir string) error {
 			StructAllow: setOf(
 				"InboundOption",
 				"CleanIPStatus",
+				"RotationResult",
 				"OrderPage",
 				"SalesConfig",
 				"CardPayConfig",

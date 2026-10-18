@@ -84,6 +84,21 @@ _openapi:
         cleanup + SyncInbound). Destructive and cannot be undone.
       url: '#remove-every-client-attached-to-a-single-inbound-while-keeping-the-inbound-itself-collects-emails-from-settingsclients-and-feeds-them-into-the-optimized-bulk-delete-path-runtime-user-removal--traffic-row-cleanup--syncinbound-destructive-and-cannot-be-undone'
     - depth: 2
+      title: The inbound's port/SNI rotation setup, or the defaults (port range
+        20000-40000, nothing selected) when none is saved.
+      url: '#the-inbounds-portsni-rotation-setup-or-the-defaults-port-range-20000-40000-nothing-selected-when-none-is-saved'
+    - depth: 2
+      title: 'Save the rotation setup: rotate the port inside a range, the REALITY SNI
+        through a list (host or host:port entries), or both, optionally every
+        intervalHours (0 = manual only). The last-rotation fields are kept by
+        the server.'
+      url: '#save-the-rotation-setup-rotate-the-port-inside-a-range-the-reality-sni-through-a-list-host-or-hostport-entries-or-both-optionally-every-intervalhours-0--manual-only-the-last-rotation-fields-are-kept-by-the-server'
+    - depth: 2
+      title: Rotate the inbound now with its saved setup. This is an ordinary inbound
+        update, so an inbound on a node is stored and the node sync pushes it to
+        the node. Clients follow through their refreshed subscription.
+      url: '#rotate-the-inbound-now-with-its-saved-setup-this-is-an-ordinary-inbound-update-so-an-inbound-on-a-node-is-stored-and-the-node-sync-pushes-it-to-the-node-clients-follow-through-their-refreshed-subscription'
+    - depth: 2
       title: Reset upload + download counters on every inbound. Destructive —
         accounting history is lost.
       url: '#reset-upload--download-counters-on-every-inbound-destructive--accounting-history-is-lost'
@@ -191,6 +206,19 @@ _openapi:
           into the optimized bulk-delete path (runtime user removal +
           traffic-row cleanup + SyncInbound). Destructive and cannot be undone.
         id: remove-every-client-attached-to-a-single-inbound-while-keeping-the-inbound-itself-collects-emails-from-settingsclients-and-feeds-them-into-the-optimized-bulk-delete-path-runtime-user-removal--traffic-row-cleanup--syncinbound-destructive-and-cannot-be-undone
+      - content: The inbound's port/SNI rotation setup, or the defaults (port range
+          20000-40000, nothing selected) when none is saved.
+        id: the-inbounds-portsni-rotation-setup-or-the-defaults-port-range-20000-40000-nothing-selected-when-none-is-saved
+      - content: 'Save the rotation setup: rotate the port inside a range, the REALITY
+          SNI through a list (host or host:port entries), or both, optionally
+          every intervalHours (0 = manual only). The last-rotation fields are
+          kept by the server.'
+        id: save-the-rotation-setup-rotate-the-port-inside-a-range-the-reality-sni-through-a-list-host-or-hostport-entries-or-both-optionally-every-intervalhours-0--manual-only-the-last-rotation-fields-are-kept-by-the-server
+      - content: Rotate the inbound now with its saved setup. This is an ordinary
+          inbound update, so an inbound on a node is stored and the node sync
+          pushes it to the node. Clients follow through their refreshed
+          subscription.
+        id: rotate-the-inbound-now-with-its-saved-setup-this-is-an-ordinary-inbound-update-so-an-inbound-on-a-node-is-stored-and-the-node-sync-pushes-it-to-the-node-clients-follow-through-their-refreshed-subscription
       - content: Reset upload + download counters on every inbound. Destructive —
           accounting history is lost.
         id: reset-upload--download-counters-on-every-inbound-destructive--accounting-history-is-lost
@@ -241,7 +269,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/inbounds/list","method":"get"},{"path":"/panel/api/inbounds/list/slim","method":"get"},{"path":"/panel/api/inbounds/options","method":"get"},{"path":"/panel/api/inbounds/allLinks","method":"get"},{"path":"/panel/api/inbounds/get/{id}","method":"get"},{"path":"/panel/api/inbounds/add","method":"post"},{"path":"/panel/api/inbounds/del/{id}","method":"post"},{"path":"/panel/api/inbounds/bulkDel","method":"post"},{"path":"/panel/api/inbounds/update/{id}","method":"post"},{"path":"/panel/api/inbounds/setEnable/{id}","method":"post"},{"path":"/panel/api/inbounds/{id}/subSortIndex","method":"post"},{"path":"/panel/api/inbounds/{id}/resetTraffic","method":"post"},{"path":"/panel/api/inbounds/{id}/delAllClients","method":"post"},{"path":"/panel/api/inbounds/resetAllTraffics","method":"post"},{"path":"/panel/api/inbounds/import","method":"post"},{"path":"/panel/api/inbounds/pushClientTraffics","method":"post"},{"path":"/panel/api/inbounds/{id}/openvpnProfile","method":"get"},{"path":"/panel/api/inbounds/vpnStatus","method":"get"},{"path":"/panel/api/inbounds/{id}/ikev2Profile","method":"get"},{"path":"/panel/api/inbounds/{id}/fallbacks","method":"get"},{"path":"/panel/api/inbounds/{id}/fallbacks","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/inbounds/list","method":"get"},{"path":"/panel/api/inbounds/list/slim","method":"get"},{"path":"/panel/api/inbounds/options","method":"get"},{"path":"/panel/api/inbounds/allLinks","method":"get"},{"path":"/panel/api/inbounds/get/{id}","method":"get"},{"path":"/panel/api/inbounds/add","method":"post"},{"path":"/panel/api/inbounds/del/{id}","method":"post"},{"path":"/panel/api/inbounds/bulkDel","method":"post"},{"path":"/panel/api/inbounds/update/{id}","method":"post"},{"path":"/panel/api/inbounds/setEnable/{id}","method":"post"},{"path":"/panel/api/inbounds/{id}/subSortIndex","method":"post"},{"path":"/panel/api/inbounds/{id}/resetTraffic","method":"post"},{"path":"/panel/api/inbounds/{id}/delAllClients","method":"post"},{"path":"/panel/api/inbounds/{id}/rotation","method":"get"},{"path":"/panel/api/inbounds/{id}/rotation","method":"post"},{"path":"/panel/api/inbounds/{id}/rotate","method":"post"},{"path":"/panel/api/inbounds/resetAllTraffics","method":"post"},{"path":"/panel/api/inbounds/import","method":"post"},{"path":"/panel/api/inbounds/pushClientTraffics","method":"post"},{"path":"/panel/api/inbounds/{id}/openvpnProfile","method":"get"},{"path":"/panel/api/inbounds/vpnStatus","method":"get"},{"path":"/panel/api/inbounds/{id}/ikev2Profile","method":"get"},{"path":"/panel/api/inbounds/{id}/fallbacks","method":"get"},{"path":"/panel/api/inbounds/{id}/fallbacks","method":"post"}]} showTitle />
     </>
   );
 }
