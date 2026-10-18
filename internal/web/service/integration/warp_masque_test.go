@@ -125,7 +125,7 @@ func TestRegWarpMasqueEnrollsASeparateP256Device(t *testing.T) {
 	}
 
 	var stored model.Setting
-	if err := database.GetDB().Where("key = ?", "warp").First(&stored).Error; err != nil {
+	if err := database.GetDB().Where(`"key" = ?`, "warp").First(&stored).Error; err != nil {
 		t.Fatalf("reload warp setting: %v", err)
 	}
 	var data map[string]string

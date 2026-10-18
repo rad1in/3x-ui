@@ -39,12 +39,12 @@ func TestImportKeepsHostBoundSettings(t *testing.T) {
 
 	// Stand in for the import: every row now holds the source machine's value.
 	for key := range mine {
-		if err := db.Model(&model.Setting{}).Where("key = ?", key).
+		if err := db.Model(&model.Setting{}).Where(`"key" = ?`, key).
 			Update("value", "from-imported-file").Error; err != nil {
 			t.Fatalf("overwrite %s: %v", key, err)
 		}
 	}
-	if err := db.Model(&model.Setting{}).Where("key = ?", "remarkTemplate").
+	if err := db.Model(&model.Setting{}).Where(`"key" = ?`, "remarkTemplate").
 		Update("value", "from-imported-file").Error; err != nil {
 		t.Fatal(err)
 	}
@@ -53,7 +53,7 @@ func TestImportKeepsHostBoundSettings(t *testing.T) {
 
 	for key, want := range mine {
 		var got model.Setting
-		if err := db.Where("key = ?", key).First(&got).Error; err != nil {
+		if err := db.Where(`"key" = ?`, key).First(&got).Error; err != nil {
 			t.Fatalf("read back %s: %v", key, err)
 		}
 		if got.Value != want {
@@ -62,7 +62,7 @@ func TestImportKeepsHostBoundSettings(t *testing.T) {
 	}
 
 	var carried model.Setting
-	if err := db.Where("key = ?", "remarkTemplate").First(&carried).Error; err != nil {
+	if err := db.Where(`"key" = ?`, "remarkTemplate").First(&carried).Error; err != nil {
 		t.Fatal(err)
 	}
 	if carried.Value != "from-imported-file" {
@@ -88,7 +88,7 @@ func TestImportDropsHostBoundSettingsThisMachineNeverHad(t *testing.T) {
 
 	for _, key := range []string{"webCertFile", "subCertFile"} {
 		var count int64
-		if err := db.Model(&model.Setting{}).Where("key = ?", key).Count(&count).Error; err != nil {
+		if err := db.Model(&model.Setting{}).Where(`"key" = ?`, key).Count(&count).Error; err != nil {
 			t.Fatal(err)
 		}
 		if count != 0 {
@@ -115,7 +115,7 @@ func TestImportKeepsLazilyMintedMaterialThisMachineNeverHad(t *testing.T) {
 
 	for _, key := range []string{"nodeMtlsCaCertPem", "nodeMtlsCaKeyPem", "nodeMtlsClientCertPem", "nodeMtlsClientKeyPem", "nodeMtlsClientCAPem"} {
 		var got model.Setting
-		if err := db.Where("key = ?", key).First(&got).Error; err != nil {
+		if err := db.Where(`"key" = ?`, key).First(&got).Error; err != nil {
 			t.Fatalf("%s was dropped; restoring a backup onto a reinstalled panel would lose it: %v", key, err)
 		}
 	}
@@ -132,7 +132,7 @@ func TestImportRestoresEmptyLocalValueOverImported(t *testing.T) {
 	}
 	kept := captureHostBoundSettings()
 
-	if err := db.Model(&model.Setting{}).Where("key = ?", "webCertFile").
+	if err := db.Model(&model.Setting{}).Where(`"key" = ?`, "webCertFile").
 		Update("value", "/etc/ssl/source-host.pem").Error; err != nil {
 		t.Fatalf("seed imported: %v", err)
 	}
@@ -140,7 +140,7 @@ func TestImportRestoresEmptyLocalValueOverImported(t *testing.T) {
 	restoreHostBoundSettings(kept)
 
 	var got model.Setting
-	if err := db.Where("key = ?", "webCertFile").First(&got).Error; err != nil {
+	if err := db.Where(`"key" = ?`, "webCertFile").First(&got).Error; err != nil {
 		t.Fatal(err)
 	}
 	if got.Value != "" {

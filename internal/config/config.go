@@ -193,18 +193,21 @@ func GetUpdateStatusFilePath() string {
 	return filepath.Join(GetDBFolderPath(), "update-status.json")
 }
 
-// GetDBKind returns the configured database backend: "sqlite" (default) or "postgres".
+// GetDBKind returns the configured database backend: "sqlite" (default),
+// "postgres" or "mysql" (MySQL and MariaDB share one dialect).
 func GetDBKind() string {
 	v := strings.ToLower(strings.TrimSpace(os.Getenv("XUI_DB_TYPE")))
 	switch v {
 	case "postgres", "postgresql", "pg":
 		return "postgres"
+	case "mysql", "mariadb":
+		return "mysql"
 	default:
 		return "sqlite"
 	}
 }
 
-// GetDBDSN returns the PostgreSQL DSN from XUI_DB_DSN. Empty for sqlite.
+// GetDBDSN returns the PostgreSQL or MySQL DSN from XUI_DB_DSN. Empty for sqlite.
 func GetDBDSN() string {
 	return strings.TrimSpace(os.Getenv("XUI_DB_DSN"))
 }

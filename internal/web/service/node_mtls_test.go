@@ -28,7 +28,7 @@ func TestReloadMasterMtlsClientDoesNotMintMissingCredential(t *testing.T) {
 	}
 	var count int64
 	keys := []string{settingNodeMtlsCaCert, settingNodeMtlsCaKey, settingNodeMtlsClientCert, settingNodeMtlsClientKey}
-	if err := database.GetDB().Model(&model.Setting{}).Where("key IN ?", keys).Count(&count).Error; err != nil {
+	if err := database.GetDB().Model(&model.Setting{}).Where(`"key" IN ?`, keys).Count(&count).Error; err != nil {
 		t.Fatalf("count mTLS settings: %v", err)
 	}
 	if count != 0 {

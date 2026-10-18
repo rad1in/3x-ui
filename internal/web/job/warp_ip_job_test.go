@@ -20,7 +20,7 @@ func TestWarpIpJobInitializesMissingLastUpdate(t *testing.T) {
 	job.Run()
 
 	var stored model.Setting
-	if err := database.GetDB().Where("key = ?", "warpLastUpdate").First(&stored).Error; err != nil {
+	if err := database.GetDB().Where(`"key" = ?`, "warpLastUpdate").First(&stored).Error; err != nil {
 		t.Fatalf("scheduled WARP rotation did not establish its baseline: %v", err)
 	}
 	if stored.Value == "" || stored.Value == "0" {

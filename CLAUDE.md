@@ -25,7 +25,9 @@ file locations when it can answer in one hop.
   traffic reset also calls `POST /secrets/{name}/reset-quota` so a renewed client
   is not re-blocked by the sidecar's quota counter.
 - Storage: SQLite by default (`/etc/x-ui/x-ui.db` on Linux; the executable dir on
-  Windows), PostgreSQL optional (`XUI_DB_TYPE` / `XUI_DB_DSN`). The CGo SQLite
+  Windows), PostgreSQL or MySQL/MariaDB optional (`XUI_DB_TYPE` / `XUI_DB_DSN`).
+  Raw SQL must run on all three: dialect helpers live in `internal/database/dialect.go`;
+  MySQL sessions run with `ANSI_QUOTES`, so quote reserved columns as `"key"`. The CGo SQLite
   driver (`mattn/go-sqlite3`) needs a C compiler — `CGO_ENABLED=0` builds fail.
 - Frontend: React 19 + Ant Design 6 + Vite 8 + TypeScript in `frontend/`,
   built into `internal/web/dist/` (gitignored) and embedded via `embed.FS`.
@@ -170,7 +172,7 @@ file locations when it can answer in one hop.
   migrating a hand-built legacy DB. `internal/sub`'s `initSubDB(t)` is the template.
 - Code must pass `golangci-lint run` (gofumpt + goimports formatting): `make lint`.
 - Postgres, xray-gRPC-e2e, master+node, OpenVPN, IKEv2 and scale tests `t.Skip` unless
-  `XUI_TEST_PG_DSN`, `XUI_DB_TYPE`+`XUI_DB_DSN`, `XRAY_E2E_BINARY`,
+  `XUI_TEST_PG_DSN`, `XUI_TEST_MYSQL_DSN`, `XUI_DB_TYPE`+`XUI_DB_DSN`, `XRAY_E2E_BINARY`,
   `XUI_NODE_E2E_BINARY`, `OPENVPN_E2E_BINARY` (needs root), `IKEV2_E2E=1` (root, charon, ip netns) or `XUI_SCALE_TEST` is set — a green `go test ./...`
   does not mean those paths ran.
 

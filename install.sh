@@ -1170,9 +1170,12 @@ config_after_install() {
             echo -e "${green}═══════════════════════════════════════════${plain}"
             echo -e "  1) SQLite     (default — recommended for < 500 clients)"
             echo -e "  2) PostgreSQL (recommended for high client counts / many nodes)"
+            echo -e "  3) MySQL / MariaDB (an existing server — enter its DSN)"
             if [[ "$NONINTERACTIVE" == "1" ]]; then
                 if [[ "${XUI_DB_TYPE:-sqlite}" == "postgres" ]]; then
                     db_choice="2"
+                elif [[ "${XUI_DB_TYPE:-sqlite}" == "mysql" || "${XUI_DB_TYPE:-sqlite}" == "mariadb" ]]; then
+                    db_choice="3"
                 else
                     db_choice="1"
                 fi
@@ -1289,6 +1292,40 @@ EOF
                     export XUI_DB_DSN="${xui_dsn}"
                     ensure_pg_client || echo -e "${yellow}⚠ Could not install pg_dump/pg_restore. In-panel database backup/restore will be unavailable until you install the postgresql-client package.${plain}"
                 fi
+            elif [[ "$db_choice" == "3" ]]; then
+                local xui_env_file
+                case "${release}" in
+                    ubuntu | debian | armbian)
+                        xui_env_file="/etc/default/x-ui"
+                        ;;
+                    arch | manjaro | parch | alpine)
+                        xui_env_file="/etc/conf.d/x-ui"
+                        ;;
+                    *)
+                        xui_env_file="/etc/sysconfig/x-ui"
+                        ;;
+                esac
+                local xui_dsn="${XUI_DB_DSN:-}"
+                if [[ -z "$xui_dsn" && "$NONINTERACTIVE" == "1" ]]; then
+                    echo -e "${red}XUI_DB_TYPE=mysql needs XUI_DB_DSN (mysql://user:pass@host:3306/dbname); aborting.${plain}"
+                    exit 1
+                fi
+                echo -e "${yellow}The database must already exist; the panel creates its tables on first start.${plain}"
+                while [[ -z "$xui_dsn" ]]; do
+                    read -rp "Enter MySQL/MariaDB DSN (mysql://user:pass@host:3306/dbname): " xui_dsn
+                    xui_dsn="${xui_dsn// /}"
+                done
+                db_label="MySQL/MariaDB (external)"
+                install -d -m 755 "$(dirname "$xui_env_file")"
+                umask 077
+                cat > "$xui_env_file" << EOF
+XUI_DB_TYPE=mysql
+XUI_DB_DSN=${xui_dsn}
+EOF
+                chmod 600 "$xui_env_file"
+                umask 022
+                export XUI_DB_TYPE=mysql
+                export XUI_DB_DSN="${xui_dsn}"
             fi
 
             if [[ "$NONINTERACTIVE" == "1" ]]; then
@@ -1380,6 +1417,7 @@ EOF
             : "${SSL_HOST:=${server_ip}}"
             local db_type_out="sqlite"
             [[ "$db_choice" == "2" ]] && db_type_out="postgres"
+            [[ "$db_choice" == "3" ]] && db_type_out="mysql"
             write_install_result "${config_username}" "${config_password}" "${config_port}" \
                 "${config_webBasePath}" "${SSL_SCHEME}" "${SSL_HOST}" "${config_apiToken}" "${db_type_out}"
         else

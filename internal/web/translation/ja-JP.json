@@ -289,6 +289,7 @@
       "getDatabaseError": "データベースの取得中にエラーが発生しました",
       "getConfigError": "設定ファイルの取得中にエラーが発生しました",
       "backupPostgresNote": "このパネルは PostgreSQL で動作しています。「バックアップ」は pg_dump アーカイブ (.dump) をダウンロードし、「復元」は pg_restore で読み込み直します。「復元」は SQLite データベース (.db) や SQLite 移行ダンプも受け付け、そのデータを PostgreSQL に取り込みます。サーバーに PostgreSQL クライアントツール (pg_dump と pg_restore) がインストールされている必要があります。",
+      "backupMysqlNote": "このパネルは MySQL/MariaDB で動作しています。バックアップはデータのポータブルな SQLite スナップショット (.db) をダウンロードし、復元は .db ファイルまたは SQLite 移行ダンプ (.dump) を単一のトランザクションで MySQL に取り込みます。サーバーにデータベースのクライアントツールは不要です。",
       "exportDatabasePgDesc": "現在のデータベースの PostgreSQL ダンプ (.dump) を端末にダウンロードするにはクリックしてください。",
       "importDatabasePgDesc": "データベースを復元するために PostgreSQL バックアップ (.dump)、SQLite データベース (.db)、または SQLite 移行ダンプを選択してアップロードするにはクリックしてください。現在のすべてのデータが置き換えられます。",
       "migrationDownload": "移行ファイルをダウンロード",

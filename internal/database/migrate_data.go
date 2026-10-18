@@ -21,8 +21,8 @@ import (
 )
 
 // migrationModels is the FK-aware order in which tables are created and copied
-// during `x-ui migrate-db --dsn` (SQLite → PostgreSQL data migration) and in
-// related tests.
+// during `x-ui migrate-db --dsn` (SQLite → PostgreSQL/MySQL data migration) and
+// in related tests.
 //
 // Important: When adding a new top-level model (like OutboundSubscription),
 // you must add it here **in addition to** allModels() in internal/database/db.go;
@@ -68,12 +68,49 @@ func migrationModels() []any {
 	}
 }
 
-// MigrateData copies every row from the configured SQLite file at srcPath into
-// a fresh PostgreSQL database described by dstDSN. The destination tables are
-// (re)created with AutoMigrate; truncate and copy then run in one transaction,
-// so a failed migration leaves the destination data unchanged. Source data is
-// left untouched.
+// MigrateData is MigrateDataTo with the destination kind inferred from dstDSN,
+// for `x-ui migrate-db --dsn`.
 func MigrateData(srcPath, dstDSN string) error {
+	return MigrateDataTo(srcPath, DSNKind(dstDSN), dstDSN)
+}
+
+// DSNKind names the server database a DSN targets: DialectMySQL for a mysql://
+// / mariadb:// URL or a native MySQL DSN, otherwise DialectPostgres.
+func DSNKind(dsn string) string {
+	if IsMySQLDSN(dsn) {
+		return DialectMySQL
+	}
+	return DialectPostgres
+}
+
+// openServerDB opens a PostgreSQL or MySQL pool for a data copy, configured
+// the way InitDB configures the panel's own connection.
+func openServerDB(kind, dsn string) (*gorm.DB, error) {
+	switch kind {
+	case DialectPostgres:
+		conn, err := gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: logger.Discard})
+		if err != nil {
+			return nil, fmt.Errorf("open postgres: %w", err)
+		}
+		return conn, nil
+	case DialectMySQL:
+		cfg, err := ParseMySQLDSN(dsn)
+		if err != nil {
+			return nil, err
+		}
+		conn, err := gorm.Open(newMySQLDialector(cfg), &gorm.Config{Logger: logger.Discard, DisableForeignKeyConstraintWhenMigrating: true})
+		if err != nil {
+			return nil, fmt.Errorf("open mysql: %w", err)
+		}
+		return conn.Set("gorm:table_options", mysqlTableOptions).Session(&gorm.Session{}), nil
+	default:
+		return nil, fmt.Errorf("unsupported destination database %q", kind)
+	}
+}
+
+// MigrateDataTo copies the SQLite file at srcPath into a kind (postgres/mysql)
+// database; clear and copy share one transaction, so a failure changes nothing.
+func MigrateDataTo(srcPath, kind, dstDSN string) error {
 	if _, err := os.Stat(srcPath); err != nil {
 		return fmt.Errorf("source sqlite not found at %s: %w", srcPath, err)
 	}
@@ -96,9 +133,9 @@ func MigrateData(srcPath, dstDSN string) error {
 	}
 	defer srcSQL.Close()
 
-	dst, err := gorm.Open(postgres.Open(dstDSN), &gorm.Config{Logger: logger.Discard})
+	dst, err := openServerDB(kind, dstDSN)
 	if err != nil {
-		return fmt.Errorf("open postgres destination: %w", err)
+		return fmt.Errorf("destination: %w", err)
 	}
 	dstSQL, err := dst.DB()
 	if err != nil {
@@ -116,20 +153,19 @@ func MigrateData(srcPath, dstDSN string) error {
 
 	totalRows := 0
 	txErr := dst.Transaction(func(tx *gorm.DB) error {
-		// AutoMigrate re-creates the legacy client_traffics -> inbounds foreign key,
-		// but the running panel drops it (see dropLegacyForeignKeys) and tolerates
-		// client_traffics rows whose inbound was deleted. Drop it here too so copying
-		// such orphaned rows can't fail with an fk_inbounds_client_stats violation.
-		if err := tx.Exec("ALTER TABLE client_traffics DROP CONSTRAINT IF EXISTS fk_inbounds_client_stats").Error; err != nil {
-			return fmt.Errorf("drop legacy foreign key: %w", err)
+		if kind == DialectPostgres {
+			// AutoMigrate re-creates the legacy client_traffics -> inbounds foreign key,
+			// but the running panel drops it (see dropLegacyForeignKeys) and tolerates
+			// client_traffics rows whose inbound was deleted. Drop it here too so copying
+			// such orphaned rows can't fail with an fk_inbounds_client_stats violation.
+			if err := tx.Exec("ALTER TABLE client_traffics DROP CONSTRAINT IF EXISTS fk_inbounds_client_stats").Error; err != nil {
+				return fmt.Errorf("drop legacy foreign key: %w", err)
+			}
 		}
 
-		// Empty the destination tables before copying: a fresh PostgreSQL DB
-		// already holds an auto-seeded admin (id=1) from any prior panel start,
-		// so a plain INSERT with explicit ids would collide on users_pkey. Only
-		// the panel's own tables are cleared, and a failure anywhere in this
-		// transaction rolls the clear back with everything else.
-		if err := truncatePostgresTables(tx, migrationModels()); err != nil {
+		// A database a panel already started on holds a seeded admin (id=1) that
+		// the copied explicit ids would collide with; only panel tables are cleared.
+		if err := clearServerTables(tx, kind, migrationModels()); err != nil {
 			return fmt.Errorf("clear destination tables: %w", err)
 		}
 
@@ -148,21 +184,21 @@ func MigrateData(srcPath, dstDSN string) error {
 	}
 
 	// setval is never rolled back by PostgreSQL, so sequences are resynced only
-	// after the transaction has committed.
-	if err := resetPostgresSequences(dst); err != nil {
-		log.Printf("warning: failed to reset some postgres sequences: %v", err)
+	// after the transaction has committed. InnoDB advances AUTO_INCREMENT itself.
+	if kind == DialectPostgres {
+		if err := resetPostgresSequences(dst); err != nil {
+			log.Printf("warning: failed to reset some postgres sequences: %v", err)
+		}
 	}
 
 	log.Printf("Migration complete: %d rows across %d tables.", totalRows, len(migrationModels()))
-	log.Println("Set XUI_DB_TYPE=postgres and XUI_DB_DSN=... in /etc/default/x-ui, then restart x-ui.")
+	log.Printf("Set XUI_DB_TYPE=%s and XUI_DB_DSN=... in /etc/default/x-ui, then restart x-ui.", kind)
 	return nil
 }
 
-// ExportPostgresToSQLite copies every row from the PostgreSQL database described
-// by srcDSN into a fresh SQLite file at dstPath. It is the reverse of
-// MigrateData and is used to hand a PostgreSQL-backed panel a portable .db file.
-// dstPath is created/overwritten; the PostgreSQL source is left untouched.
-func ExportPostgresToSQLite(srcDSN, dstPath string) error {
+// ExportServerDBToSQLite is the reverse of MigrateDataTo: it writes a kind
+// database into a fresh portable SQLite file at dstPath (overwritten).
+func ExportServerDBToSQLite(kind, srcDSN, dstPath string) error {
 	if srcDSN == "" {
 		return errors.New("source DSN is required")
 	}
@@ -174,9 +210,9 @@ func ExportPostgresToSQLite(srcDSN, dstPath string) error {
 		return err
 	}
 
-	src, err := gorm.Open(postgres.Open(srcDSN), &gorm.Config{Logger: logger.Discard})
+	src, err := openServerDB(kind, srcDSN)
 	if err != nil {
-		return fmt.Errorf("open postgres source: %w", err)
+		return fmt.Errorf("source: %w", err)
 	}
 	srcSQL, err := src.DB()
 	if err != nil {
@@ -266,11 +302,9 @@ func copyTable(src, dst *gorm.DB, mdl any) (int, error) {
 	return total, nil
 }
 
-// truncatePostgresTables empties every migrated table on dst in a single
-// statement, resetting identity sequences. CASCADE covers the inbound/client
-// foreign keys regardless of insertion order. Only the panel's own tables are
-// touched, never the rest of the schema.
-func truncatePostgresTables(dst *gorm.DB, models []any) error {
+// clearServerTables empties the migrated tables inside the caller's transaction;
+// MySQL deletes instead of truncating because its TRUNCATE commits implicitly.
+func clearServerTables(dst *gorm.DB, kind string, models []any) error {
 	tables := make([]string, 0, len(models))
 	for _, m := range models {
 		stmt := &gorm.Statement{DB: dst}
@@ -283,6 +317,14 @@ func truncatePostgresTables(dst *gorm.DB, models []any) error {
 		return nil
 	}
 	log.Println("Clearing destination tables...")
+	if kind == DialectMySQL {
+		for _, table := range tables {
+			if err := dst.Exec("DELETE FROM " + table).Error; err != nil {
+				return err
+			}
+		}
+		return nil
+	}
 	return dst.Exec("TRUNCATE TABLE " + strings.Join(tables, ", ") + " RESTART IDENTITY CASCADE").Error
 }
 

@@ -240,21 +240,23 @@ func (s *InboundService) mergeNodeClientTraffic(tx *gorm.DB, cs xray.ClientTraff
 			deltaUp, deltaDown, cs.LastOnline, cs.Email,
 		).Error
 	}
+	// enable comes first: MySQL evaluates SET left to right on updated values,
+	// and the verdict must read the pre-merge up/down/total/expiry_time.
 	return tx.Exec(
 		fmt.Sprintf(
 			`UPDATE client_traffics
-			 SET up = %s, down = %s, enable = %s, total = ?,
+			 SET enable = %s, up = %s, down = %s, total = ?,
 			     expiry_time = %s,
 			     reset = ?, reset_day = ?, reset_weekday = ?, last_online = %s
 			 WHERE email = ?`,
+			database.ClientTrafficEnableMergeExpr(),
 			database.ClampedAddExpr("up"),
 			database.ClampedAddExpr("down"),
-			database.ClientTrafficEnableMergeExpr(),
 			database.ClientTrafficExpiryMergeExpr(),
 			database.GreatestExpr("last_online", "?"),
 		),
-		deltaUp, deltaDown,
 		cs.Enable, cs.ExpiryTime, cs.Total, now, deltaUp, deltaDown,
+		deltaUp, deltaDown,
 		cs.Total,
 		cs.ExpiryTime, cs.Reset, cs.ResetDay, cs.ResetWeekday,
 		cs.LastOnline, cs.Email,

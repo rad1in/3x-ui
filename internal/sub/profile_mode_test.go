@@ -48,7 +48,7 @@ func TestSubscriptionProfileModesFromSavedSettings(t *testing.T) {
 				settings = append(settings, model.Setting{Key: "subProfileMode", Value: config.mode})
 			}
 			for _, setting := range settings {
-				if err := database.GetDB().Where("key = ?", setting.Key).Delete(&model.Setting{}).Error; err != nil {
+				if err := database.GetDB().Where(`"key" = ?`, setting.Key).Delete(&model.Setting{}).Error; err != nil {
 					t.Fatal(err)
 				}
 				if err := database.GetDB().Create(&setting).Error; err != nil {

@@ -149,7 +149,7 @@ func saveMasterClientCredential(client crypto.CertKeyPEM, pin string) error {
 	}
 	return database.GetDB().Transaction(func(tx *gorm.DB) error {
 		for key, value := range values {
-			result := tx.Model(&model.Setting{}).Where("key = ?", key).Update("value", value)
+			result := tx.Model(&model.Setting{}).Where(`"key" = ?`, key).Update("value", value)
 			if result.Error != nil {
 				return result.Error
 			}

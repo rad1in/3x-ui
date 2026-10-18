@@ -289,6 +289,7 @@
       "getDatabaseError": "Lỗi xảy ra khi truy xuất cơ sở dữ liệu",
       "getConfigError": "Lỗi xảy ra khi truy xuất tệp cấu hình",
       "backupPostgresNote": "Bảng điều khiển này chạy trên PostgreSQL. «Sao lưu» tải xuống một tệp lưu trữ pg_dump (.dump) và «Khôi phục» nạp lại bằng pg_restore. «Khôi phục» cũng chấp nhận cơ sở dữ liệu SQLite (.db) hoặc tệp kết xuất di trú SQLite và nhập dữ liệu của chúng vào PostgreSQL. Máy chủ cần cài đặt các công cụ máy khách PostgreSQL (pg_dump và pg_restore).",
+      "backupMysqlNote": "Bảng điều khiển này chạy trên MySQL/MariaDB. Sao lưu tải xuống một bản chụp SQLite di động (.db) của dữ liệu, còn Khôi phục nhập tệp .db hoặc bản dump di chuyển SQLite (.dump) vào MySQL trong một giao dịch duy nhất. Máy chủ không cần công cụ máy khách cơ sở dữ liệu.",
       "exportDatabasePgDesc": "Nhấn để tải xuống bản kết xuất PostgreSQL (.dump) của cơ sở dữ liệu hiện tại về thiết bị của bạn.",
       "importDatabasePgDesc": "Nhấn để chọn và tải lên bản sao lưu PostgreSQL (.dump), cơ sở dữ liệu SQLite (.db) hoặc tệp kết xuất di trú SQLite nhằm khôi phục cơ sở dữ liệu của bạn. Thao tác này sẽ thay thế toàn bộ dữ liệu hiện tại.",
       "migrationDownload": "Tải tệp di trú",

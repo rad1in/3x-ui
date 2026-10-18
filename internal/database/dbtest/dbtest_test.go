@@ -19,7 +19,7 @@ func TestInitDBGivesEachTestItsOwnDatabase(t *testing.T) {
 	t.Run("next test starts clean", func(t *testing.T) {
 		InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
 		var leaked int64
-		if err := database.GetDB().Model(&model.Setting{}).Where("key = ?", "dbtestProbe").Count(&leaked).Error; err != nil {
+		if err := database.GetDB().Model(&model.Setting{}).Where(`"key" = ?`, "dbtestProbe").Count(&leaked).Error; err != nil {
 			t.Fatalf("count probe: %v", err)
 		}
 		if leaked != 0 {

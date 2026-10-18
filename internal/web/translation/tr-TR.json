@@ -289,6 +289,7 @@
       "getDatabaseError": "Veritabanı alınırken bir hata oluştu.",
       "getConfigError": "Yapılandırma dosyası alınırken bir hata oluştu.",
       "backupPostgresNote": "Bu panel PostgreSQL üzerinde çalışıyor. 'Yedekle' bir pg_dump arşivi (.dump) indirir, 'Geri Yükle' ise onu pg_restore ile geri yükler. 'Geri Yükle' ayrıca bir SQLite veritabanını (.db) veya SQLite taşıma dökümünü kabul eder ve verilerini PostgreSQL'e aktarır. Sunucuda PostgreSQL istemci araçlarının (pg_dump ve pg_restore) kurulu olması gerekir.",
+      "backupMysqlNote": "Bu panel MySQL/MariaDB üzerinde çalışıyor. Yedekle, verilerin taşınabilir bir SQLite anlık görüntüsünü (.db) indirir; Geri Yükle ise bir .db dosyasını veya SQLite taşıma dökümünü (.dump) tek bir işlemde MySQL'e aktarır. Sunucuda veritabanı istemci araçları gerekmez.",
       "exportDatabasePgDesc": "Mevcut veritabanınızın PostgreSQL dökümünü (.dump) cihazınıza indirmek için tıklayın.",
       "importDatabasePgDesc": "Veritabanınızı geri yüklemek için bir PostgreSQL yedeği (.dump), SQLite veritabanı (.db) veya SQLite taşıma dökümü seçip yüklemek üzere tıklayın. Bu, tüm mevcut verilerin yerini alır.",
       "migrationDownload": "Geçiş Dosyasını İndir",

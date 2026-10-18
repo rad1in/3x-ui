@@ -86,7 +86,7 @@ func TestUDPHopSeederMovesClientHopsToTheMask(t *testing.T) {
 	}
 
 	var subMask model.Setting
-	if err := GetDB().Where("key = ?", "subJsonFinalMask").First(&subMask).Error; err != nil {
+	if err := GetDB().Where(`"key" = ?`, "subJsonFinalMask").First(&subMask).Error; err != nil {
 		t.Fatalf("reload subJsonFinalMask: %v", err)
 	}
 	var subFinalmask any

@@ -122,7 +122,7 @@ func TestBuildURLs_DerivesJsonFromConfiguredSubURI(t *testing.T) {
 
 	// Simulate the admin having set subURI (reverse-proxy setup).
 	database.GetDB().Exec(
-		"INSERT INTO settings (key, value) VALUES (?, ?)",
+		`INSERT INTO settings ("key", value) VALUES (?, ?)`,
 		"subURI", "https://example.com/sub-xxx/")
 
 	subURL, jsonURL, clashURL := s.BuildURLs("/sub-xxx/", "/json/", "/clash/", "ABC")
@@ -147,7 +147,7 @@ func TestBuildURLs_MalformedSubURIFallsBackToRequestBase(t *testing.T) {
 
 	// A value with no scheme can't yield a usable scheme+host.
 	database.GetDB().Exec(
-		"INSERT INTO settings (key, value) VALUES (?, ?)",
+		`INSERT INTO settings ("key", value) VALUES (?, ?)`,
 		"subURI", "example.com/sub-xxx/")
 
 	_, jsonURL, clashURL := s.BuildURLs("/sub-xxx/", "/json/", "/clash/", "ABC")

@@ -1,11 +1,11 @@
 ---
 title: Database
-description: 3x-ui storage backends — SQLite (default) and PostgreSQL — the database path, connection pool, and SQLite-to-PostgreSQL migration.
+description: 3x-ui storage backends — SQLite (default), PostgreSQL and MySQL/MariaDB — the database path, connection pool, and migrating off SQLite.
 icon: Database
 ---
 
 3x-ui stores everything — inbounds, clients, settings — in a database. You choose
-the backend at install time; both are first-class.
+the backend at install time.
 
 ## SQLite (default)
 
@@ -39,12 +39,45 @@ with the profile:
 docker compose --profile postgres up -d
 ```
 
-## Migrate SQLite → PostgreSQL
+## MySQL / MariaDB
 
-Move an existing SQLite install to PostgreSQL with the built-in command:
+Supported on MySQL 8.0.21+ and MariaDB 10.6+ (tested on MySQL 8.4 and MariaDB
+10.11). Point the panel at an **existing, empty database** — it creates its
+tables on first start:
+
+```bash title="/etc/default/x-ui"
+XUI_DB_TYPE=mysql
+XUI_DB_DSN=mysql://xui:password@127.0.0.1:3306/xui
+```
+
+`XUI_DB_TYPE=mariadb` is accepted as an alias. The DSN may also be the Go
+driver's native form, `xui:password@tcp(127.0.0.1:3306)/xui?tls=true`; query
+parameters such as `tls` are passed to the driver. The panel creates its
+tables as `utf8mb4` with the `utf8mb4_bin` collation, so text compares exactly
+as on SQLite and PostgreSQL (case-sensitive), and sets `ANSI_QUOTES` and
+`NO_BACKSLASH_ESCAPES` on its own sessions only.
+
+Limits to know about:
+
+- Indexed text columns (client email, subscription ID, setting key, group
+  name) are `VARCHAR(255)`; a longer value is rejected instead of stored.
+- On MariaDB the case-insensitive email lookups cannot use an index (MariaDB
+  has no functional indexes), so they scan the clients table.
+- In-panel **Back Up** on MySQL downloads a portable SQLite `.db` snapshot of
+  the data (no `mysqldump` needed); **Restore** accepts that file, any SQLite
+  panel `.db`, or a SQLite migration `.dump`.
+
+To try it with Docker, uncomment the MariaDB `XUI_DB_*` lines in
+`docker-compose.yml` and run `docker compose --profile mariadb up -d`.
+
+## Migrate SQLite → PostgreSQL or MySQL
+
+Move an existing SQLite install with the built-in command; the destination
+type follows from the DSN:
 
 ```bash
 x-ui migrate-db --dsn "postgres://xui:password@127.0.0.1:5432/xui?sslmode=disable"
+x-ui migrate-db --dsn "mysql://xui:password@127.0.0.1:3306/xui"
 ```
 
 Then set `XUI_DB_TYPE` and `XUI_DB_DSN` in `/etc/default/x-ui` and restart:

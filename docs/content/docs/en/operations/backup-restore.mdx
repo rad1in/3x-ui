@@ -10,7 +10,8 @@ database. Back it up regularly so you can recover or migrate.
 ## What to back up
 
 - **The database** — SQLite at `/etc/x-ui/x-ui.db` by default (or your
-  PostgreSQL database if you use that backend).
+  PostgreSQL or MySQL/MariaDB database if you use that backend; on MySQL the
+  panel's Back Up downloads a SQLite `.db` snapshot of it).
 - **Certificates** — anything under `/root/cert/` (or wherever you store TLS
   certs).
 
@@ -45,7 +46,7 @@ x-ui migrate-db --dump /root/x-ui.sql       # SQLite -> SQL text
 x-ui migrate-db --restore /root/x-ui.sql     # SQL text -> SQLite
 ```
 
-To move to PostgreSQL instead, see [Database](/docs/reference/database).
+To move to PostgreSQL or MySQL instead, see [Database](/docs/reference/database).
 
 <Callout type="info">
   Whatever method you use, store backups **off the server** and test a restore

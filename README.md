@@ -40,7 +40,7 @@ Built as an enhanced fork of the original X-UI project, 3X-UI adds broader proto
 - **Telegram and Discord bots** for remote monitoring and management.
 - **RESTful API** with scoped, optionally expiring tokens and an in-panel API reference.
 - **Installable panel (PWA)** — pin 3X-UI to a desktop or phone home screen.
-- **Flexible storage** — SQLite (default) or PostgreSQL.
+- **Flexible storage** — SQLite (default), PostgreSQL or MySQL/MariaDB.
 - **13 UI languages** with dark and light themes.
 - **Fail2ban integration** for enforcing per-client IP limits.
 
@@ -113,10 +113,11 @@ zero prompts, generating random credentials and writing them to
 
 ## Database Options
 
-3X-UI supports two backends, chosen during the install:
+3X-UI supports three backends, chosen during the install:
 
 - **SQLite** (default) — a single file at `/etc/x-ui/x-ui.db`. Zero setup, ideal for small and medium deployments.
 - **PostgreSQL** — recommended for high client counts or multi-node setups. The installer can install PostgreSQL locally for you, or accept a DSN to an existing server.
+- **MySQL / MariaDB** — point the panel at an existing empty database (`XUI_DB_TYPE=mysql`, `XUI_DB_DSN=mysql://user:pass@host:3306/db`); `x-ui migrate-db --dsn` accepts a `mysql://` DSN too.
 
 At runtime the backend is selected via environment variables (the installer writes these to `/etc/default/x-ui` for you):
 
@@ -153,8 +154,8 @@ docker run -d --cap-add=NET_ADMIN --cap-add=NET_RAW ... ghcr.io/mhsanaei/3x-ui
 
 | Variable | Description | Default |
 | --- | --- | --- |
-| `XUI_DB_TYPE` | Database backend: `sqlite` or `postgres` | `sqlite` |
-| `XUI_DB_DSN` | PostgreSQL connection string (when `XUI_DB_TYPE=postgres`) | — |
+| `XUI_DB_TYPE` | Database backend: `sqlite`, `postgres` or `mysql` | `sqlite` |
+| `XUI_DB_DSN` | PostgreSQL or MySQL connection string | — |
 | `XUI_DB_FOLDER` | Directory for the SQLite database file | `/etc/x-ui` |
 | `XUI_DB_MAX_OPEN_CONNS` | Maximum open connections (PostgreSQL pool) | — |
 | `XUI_DB_MAX_IDLE_CONNS` | Maximum idle connections (PostgreSQL pool) | — |

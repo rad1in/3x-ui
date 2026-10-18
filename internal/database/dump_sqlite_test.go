@@ -120,7 +120,7 @@ func TestDumpAndRestoreSQLiteRoundTrip(t *testing.T) {
 	}
 	defer closeGorm(dst)
 	var s model.Setting
-	if err := dst.Where("key = ?", "secret").First(&s).Error; err != nil {
+	if err := dst.Where(`"key" = ?`, "secret").First(&s).Error; err != nil {
 		t.Fatalf("read back: %v", err)
 	}
 	if s.Value != "o'brien \"quote\"" {

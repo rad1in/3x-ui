@@ -608,7 +608,7 @@ func main() {
 	var migrateDump string
 	var migrateRestore string
 	var migrateOut string
-	migrateDbCmd.StringVar(&migrateDsn, "dsn", "", "Destination PostgreSQL DSN (postgres://user:pass@host:port/db?sslmode=disable)")
+	migrateDbCmd.StringVar(&migrateDsn, "dsn", "", "Destination PostgreSQL (postgres://user:pass@host:port/db?sslmode=disable) or MySQL/MariaDB (mysql://user:pass@host:3306/db) DSN")
 	migrateDbCmd.StringVar(&migrateSrc, "src", "", "Source SQLite file (defaults to the configured x-ui.db)")
 	migrateDbCmd.StringVar(&migrateDump, "dump", "", "Write a portable SQL text dump of --src to this file (.db -> .dump)")
 	migrateDbCmd.StringVar(&migrateRestore, "restore", "", "Rebuild a SQLite database from this SQL text dump (.dump -> .db); requires --out")
@@ -715,7 +715,7 @@ func main() {
 				os.Exit(1)
 			}
 		default:
-			fmt.Println("nothing to do: pass --dump <file>, --restore <file> --out <db>, or --dsn <postgres-dsn>")
+			fmt.Println("nothing to do: pass --dump <file>, --restore <file> --out <db>, or --dsn <postgres-or-mysql-dsn>")
 		}
 	case "setting":
 		err := settingCmd.Parse(os.Args[2:])
@@ -819,7 +819,7 @@ func commandHelp() string {
 Commands:
     run            run web panel
     migrate        migrate from other/old x-ui
-    migrate-db     SQLite <-> .dump (--dump/--restore) or copy into PostgreSQL (--dsn)
+    migrate-db     SQLite <-> .dump (--dump/--restore) or copy into PostgreSQL/MySQL (--dsn)
     encrypt-tokens encrypt node bearer tokens with the configured active key
     setting        set settings
     client         manage clients: list, show, add, del, enable, disable, reset

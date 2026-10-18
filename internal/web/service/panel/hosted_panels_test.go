@@ -84,7 +84,7 @@ func openChildDB(t *testing.T, id int) *gorm.DB {
 func childSetting(t *testing.T, db *gorm.DB, key string) string {
 	t.Helper()
 	var s model.Setting
-	if err := db.Where("key = ?", key).First(&s).Error; err != nil {
+	if err := db.Where(`"key" = ?`, key).First(&s).Error; err != nil {
 		t.Fatalf("child setting %s: %v", key, err)
 	}
 	return s.Value

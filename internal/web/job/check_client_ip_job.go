@@ -753,7 +753,7 @@ func (j *CheckClientIpJob) resolveXrayAPIPort() int {
 
 	db := database.GetDB()
 	var template model.Setting
-	if err := db.Where("key = ?", "xrayTemplateConfig").First(&template).Error; err == nil {
+	if err := db.Where(`"key" = ?`, "xrayTemplateConfig").First(&template).Error; err == nil {
 		if port, parseErr := getAPIPortFromConfigData([]byte(template.Value)); parseErr == nil {
 			return port
 		} else {
