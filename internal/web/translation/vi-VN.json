@@ -1409,6 +1409,9 @@
       "noisesSett": "Cài đặt Noises",
       "trustedProxyCidrs": "CIDR proxy tin cậy",
       "trustedProxyCidrsDesc": "IPs/CIDRs cách nhau bằng dấu phẩy được phép đặt header host, proto và IP client chuyển tiếp.",
+      "panelAllowedCidrs": "Danh sách IP được phép vào bảng điều khiển",
+      "panelAllowedCidrsDesc": "Các IP hoặc CIDR, cách nhau bằng dấu phẩy, được phép truy cập bảng điều khiển. Những địa chỉ khác thấy trang giả hoặc lỗi 404. Để trống để cho phép mọi địa chỉ. Địa chỉ của chính bạn phải có trong danh sách. Bị khóa ngoài? Chạy lệnh: x-ui setting -resetLoginRestrictions",
+      "panelAllowedCidrsLockout": "Danh sách này không có địa chỉ IP hiện tại của bạn, lưu lại sẽ khiến bạn bị khóa ngoài.",
       "realityScanCandidates": "Danh sách ứng viên quét Reality",
       "realityScanCandidatesDesc": "Danh sách host:port (hoặc CIDR) cách nhau bằng dấu phẩy dùng làm mặc định khi Tìm mục tiêu chạy với ô tìm kiếm trống. Tuỳ chỉnh theo các đích bạn dùng thường xuyên.",
       "ldap": {
@@ -1505,6 +1508,7 @@
         "apiTokenCreatedTitle": "Đã tạo token",
         "apiTokenCreatedNotice": "Hãy sao chép token này ngay bây giờ. Vì lý do bảo mật, token không được lưu ở dạng đọc được và sẽ không hiển thị lại.",
         "decoy": "Trang ngụy trang",
+        "access": "Truy cập",
         "decoyMode": "Trả lời người lạ bằng",
         "decoyModeDesc": "Những gì cổng bảng điều khiển và đăng ký hiển thị cho đường dẫn lạ hoặc yêu cầu bằng IP thay vì tên miền, để máy quét chỉ thấy một trang web thường chứ không phải 3x-ui. Áp dụng sau khi khởi động lại.",
         "decoyOff": "Lỗi thông thường (tắt)",

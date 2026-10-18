@@ -1409,6 +1409,9 @@
       "noisesSett": "Configurações de Noises",
       "trustedProxyCidrs": "CIDRs de proxy confiável",
       "trustedProxyCidrsDesc": "IPs/CIDRs separados por vírgula que podem definir os cabeçalhos host, proto e IP do cliente encaminhados.",
+      "panelAllowedCidrs": "Lista de IPs permitidos do painel",
+      "panelAllowedCidrsDesc": "IPs ou CIDRs, separados por vírgula, que podem acessar o painel. Os demais veem o site isca ou um 404. Deixe vazio para permitir qualquer endereço. Seu próprio endereço precisa estar na lista. Ficou de fora? Execute: x-ui setting -resetLoginRestrictions",
+      "panelAllowedCidrsLockout": "Esta lista não inclui o seu IP atual; salvá-la deixaria você de fora.",
       "realityScanCandidates": "Candidatos de varredura Reality",
       "realityScanCandidatesDesc": "Lista de alvos host:port (ou CIDRs) separados por vírgula usada como padrão quando Procurar alvos roda com a busca vazia. Personalize com destinos que você usa com frequência.",
       "ldap": {
@@ -1505,6 +1508,7 @@
         "apiTokenCreatedTitle": "Token criado",
         "apiTokenCreatedNotice": "Copie este token agora. Por segurança, ele não é armazenado de forma legível e não será exibido novamente.",
         "decoy": "Site de fachada",
+        "access": "Acesso",
         "decoyMode": "Responder a estranhos com",
         "decoyModeDesc": "O que as portas do painel e da assinatura mostram para um caminho alheio ou um acesso por IP em vez do seu domínio, para que um scanner veja um site comum e não o 3x-ui. Vale após reiniciar.",
         "decoyOff": "Erro simples (desligado)",

@@ -1409,6 +1409,9 @@
       "noisesSett": "Noises 設定",
       "trustedProxyCidrs": "信任代理 CIDR",
       "trustedProxyCidrsDesc": "允許設定轉發 host、proto 與客戶端 IP 標頭的 IP/CIDR(逗號分隔)。",
+      "panelAllowedCidrs": "面板 IP 白名單",
+      "panelAllowedCidrsDesc": "允許存取面板的 IP 或 CIDR，以逗號分隔。其他位址只會看到偽裝網站或 404。留空表示允許任何位址。你自己的位址必須在名單內。被鎖在外面了？請執行：x-ui setting -resetLoginRestrictions",
+      "panelAllowedCidrsLockout": "此名單不包含你目前的 IP 位址，儲存後你將被鎖在外面。",
       "realityScanCandidates": "Reality 掃描候選清單",
       "realityScanCandidatesDesc": "以逗號分隔的 host:port 目標（或 CIDR），作為「尋找目標」在搜尋框為空時的預設清單。可依常用目標自訂。",
       "ldap": {
@@ -1505,6 +1508,7 @@
         "apiTokenCreatedTitle": "權杖已建立",
         "apiTokenCreatedNotice": "請立即複製此權杖。基於安全考量，它不會以可讀形式儲存，也不會再次顯示。",
         "decoy": "偽裝網站",
+        "access": "存取",
         "decoyMode": "對陌生請求回應",
         "decoyModeDesc": "面板和訂閱連接埠對未知路徑或以 IP 而非網域存取時顯示的內容，讓掃描器看到普通網站而非 3x-ui。重新啟動後生效。",
         "decoyOff": "一般錯誤（關閉）",

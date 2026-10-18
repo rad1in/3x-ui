@@ -80,6 +80,7 @@ type AllSetting struct {
 	TrustedProxyCIDRs     string `json:"trustedProxyCIDRs" form:"trustedProxyCIDRs"`
 	RealityScanCandidates string `json:"realityScanCandidates" form:"realityScanCandidates"`
 	IpLimitAllowlist      string `json:"ipLimitAllowlist" form:"ipLimitAllowlist"`
+	PanelAllowedCidrs     string `json:"panelAllowedCidrs" form:"panelAllowedCidrs"`
 	PanelOutbound         string `json:"panelOutbound" form:"panelOutbound"`
 	PanelBrandName        string `json:"panelBrandName" form:"panelBrandName"`
 	PanelBrandColor       string `json:"panelBrandColor" form:"panelBrandColor"`
@@ -449,6 +450,10 @@ func (s *AllSetting) CheckValid() error {
 	// Rejected here rather than skipped at scan time: a typo in an allowlist
 	// entry silently leaves the address unprotected until a trusted network gets banned.
 	if err := CheckNetipAddrOrPrefixList(s.IpLimitAllowlist, "IP limit allowlist entry is not valid:"); err != nil {
+		return err
+	}
+
+	if err := CheckNetipAddrOrPrefixList(s.PanelAllowedCidrs, "panel IP allowlist entry is not valid:"); err != nil {
 		return err
 	}
 

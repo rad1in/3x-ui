@@ -1409,6 +1409,9 @@
       "noisesSett": "Noises Ayarları",
       "trustedProxyCidrs": "Güvenilir Proxy CIDR'leri",
       "trustedProxyCidrsDesc": "İletilen host, proto ve istemci IP başlıklarını ayarlamasına izin verilen IP'ler/CIDR'ler (virgülle ayrılmış).",
+      "panelAllowedCidrs": "Panel IP izin listesi",
+      "panelAllowedCidrsDesc": "Panele erişebilecek, virgülle ayrılmış IP veya CIDR'ler. Diğerleri tuzak siteyi veya 404 görür. Her adrese izin vermek için boş bırakın. Kendi adresiniz listede olmalıdır. Dışarıda mı kaldınız? Şunu çalıştırın: x-ui setting -resetLoginRestrictions",
+      "panelAllowedCidrsLockout": "Bu liste mevcut IP adresinizi içermiyor; kaydederseniz erişiminizi kaybedersiniz.",
       "realityScanCandidates": "Reality tarama adayları",
       "realityScanCandidatesDesc": "Arama boşken Hedef Bul için varsayılan olarak kullanılan, virgülle ayrılmış host:port hedefleri (veya CIDR). Sık kullandığınız hedeflere göre özelleştirin.",
       "ldap": {
@@ -1505,6 +1508,7 @@
         "apiTokenCreatedTitle": "Token Oluşturuldu",
         "apiTokenCreatedNotice": "Bu token'ı şimdi kopyalayın. Güvenlik nedeniyle okunabilir biçimde saklanmaz ve tekrar gösterilmez.",
         "decoy": "Paravan site",
+        "access": "Erişim",
         "decoyMode": "Yabancılara yanıt",
         "decoyModeDesc": "Panel ve abonelik portlarının yabancı bir yola veya alan adı yerine IP ile gelen isteğe gösterdiği şey; tarayıcı 3x-ui yerine sıradan bir site görür. Yeniden başlatınca uygulanır.",
         "decoyOff": "Düz hata (kapalı)",

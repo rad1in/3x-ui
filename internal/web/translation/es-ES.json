@@ -1409,6 +1409,9 @@
       "noisesSett": "Configuración de Sonidos",
       "trustedProxyCidrs": "CIDR de proxy de confianza",
       "trustedProxyCidrsDesc": "IP/CIDR separados por coma que pueden establecer las cabeceras de host, proto e IP del cliente reenviadas.",
+      "panelAllowedCidrs": "Lista de IP permitidas del panel",
+      "panelAllowedCidrsDesc": "IP o CIDR separados por comas que pueden acceder al panel. El resto ve el sitio señuelo o un 404. Déjalo vacío para permitir cualquier dirección. Tu propia dirección debe estar en la lista. ¿Te has bloqueado? Ejecuta: x-ui setting -resetLoginRestrictions",
+      "panelAllowedCidrsLockout": "Esta lista no incluye tu IP actual, así que al guardarla te quedarías fuera.",
       "realityScanCandidates": "Candidatos de escaneo Reality",
       "realityScanCandidatesDesc": "Lista de destinos host:port (o CIDR) separados por comas usada por defecto cuando Buscar objetivos se ejecuta con la búsqueda vacía. Personalízala con destinos que uses a menudo.",
       "ldap": {
@@ -1505,6 +1508,7 @@
         "apiTokenCreatedTitle": "Token creado",
         "apiTokenCreatedNotice": "Copia este token ahora. Por seguridad, no se almacena de forma legible y no se volverá a mostrar.",
         "decoy": "Sitio señuelo",
+        "access": "Acceso",
         "decoyMode": "Responder a desconocidos con",
         "decoyModeDesc": "Lo que muestran los puertos del panel y de la suscripción ante una ruta ajena o una petición por IP en vez de tu dominio, para que un escáner vea un sitio normal y no 3x-ui. Se aplica tras reiniciar.",
         "decoyOff": "Error simple (desactivado)",

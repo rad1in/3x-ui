@@ -374,7 +374,7 @@ func encryptNodeTokens() {
 }
 
 // updateSetting updates various panel settings including port, credentials, base path, listen IP, and two-factor authentication.
-func updateSetting(port int, username string, password string, webBasePath string, listenIP string, resetTwoFactor bool) error {
+func updateSetting(port int, username string, password string, webBasePath string, listenIP string, resetTwoFactor bool, resetLoginRestrictions bool) error {
 	err := database.InitDB(config.GetDBPath())
 	if err != nil {
 		fmt.Println("Database initialization failed:", err)
@@ -419,6 +419,14 @@ func updateSetting(port int, username string, password string, webBasePath strin
 		} else {
 			_ = settingService.SetTwoFactorToken("")
 			fmt.Println("Two-factor authentication reset successfully")
+		}
+	}
+
+	if resetLoginRestrictions {
+		if err := settingService.SetPanelAllowedCidrs(""); err != nil {
+			fmt.Println("Failed to clear the panel IP allowlist:", err)
+		} else {
+			fmt.Println("Panel IP allowlist cleared")
 		}
 	}
 
@@ -634,6 +642,7 @@ func main() {
 	var tokenName string
 	var tokenScope string
 	var resetTwoFactor bool
+	var resetLoginRestrictions bool
 	settingCmd.BoolVar(&reset, "reset", false, "Reset all settings")
 	settingCmd.BoolVar(&show, "show", false, "Display current settings")
 	settingCmd.IntVar(&port, "port", 0, "Set panel port number")
@@ -642,6 +651,7 @@ func main() {
 	settingCmd.StringVar(&webBasePath, "webBasePath", "", "Set base path for Panel")
 	settingCmd.StringVar(&listenIP, "listenIP", "", "set panel listenIP IP")
 	settingCmd.BoolVar(&resetTwoFactor, "resetTwoFactor", false, "Reset two-factor authentication settings")
+	settingCmd.BoolVar(&resetLoginRestrictions, "resetLoginRestrictions", false, "Clear the panel IP allowlist, e.g. after locking yourself out")
 	settingCmd.BoolVar(&getListen, "getListen", false, "Display current panel listenIP IP")
 	settingCmd.BoolVar(&getCert, "getCert", false, "Display current certificate settings")
 	settingCmd.BoolVar(&getApiToken, "getApiToken", false, "Print an API token for CLI use, regenerating it and invalidating the previous one; on a panel with no tokens yet it mints one instead")
@@ -733,7 +743,7 @@ func main() {
 				return
 			}
 		} else {
-			if err = updateSetting(port, username, password, webBasePath, listenIP, resetTwoFactor); err != nil {
+			if err = updateSetting(port, username, password, webBasePath, listenIP, resetTwoFactor, resetLoginRestrictions); err != nil {
 				return
 			}
 		}

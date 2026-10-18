@@ -19,6 +19,7 @@ export const AllSettingSchema = z
     trustedProxyCIDRs: z.string().optional(),
     realityScanCandidates: z.string().optional(),
     ipLimitAllowlist: z.string().optional(),
+    panelAllowedCidrs: z.string().optional(),
     panelOutbound: z.string().optional(),
     panelBrandName: z.string().max(32).optional(),
     panelBrandColor: z

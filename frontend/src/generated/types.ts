@@ -79,6 +79,7 @@ export interface AllSetting {
   ldapVlessField: string;
   outboundDownThreshold: number;
   pageSize: number;
+  panelAllowedCidrs: string;
   panelBrandColor: string;
   panelBrandLogo: string;
   panelBrandName: string;
@@ -290,6 +291,7 @@ export interface AllSettingView {
   ldapVlessField: string;
   outboundDownThreshold: number;
   pageSize: number;
+  panelAllowedCidrs: string;
   panelBrandColor: string;
   panelBrandLogo: string;
   panelBrandName: string;

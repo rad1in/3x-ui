@@ -13,7 +13,13 @@ import {
   Tabs,
   message,
 } from 'antd';
-import { ApiOutlined, EyeInvisibleOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  ApiOutlined,
+  EyeInvisibleOutlined,
+  LockOutlined,
+  SafetyOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { ClipboardManager, HttpUtil, IntlUtil, RandomUtil } from '@/utils';
 import type { AllSetting } from '@/models/setting';
 import { SettingListItem } from '@/components/ui';
@@ -441,6 +447,24 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
                   </SettingListItem>
                 )}
               </>
+            ),
+          },
+          {
+            key: '5',
+            label: catTabLabel(<LockOutlined />, t('pages.settings.security.access'), isMobile),
+            children: (
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.panelAllowedCidrs')}
+                description={t('pages.settings.panelAllowedCidrsDesc')}
+              >
+                <Input
+                  value={allSetting.panelAllowedCidrs}
+                  placeholder="203.0.113.0/24,2001:db8::/32"
+                  style={{ direction: 'ltr' }}
+                  onChange={(e) => updateSetting({ panelAllowedCidrs: e.target.value })}
+                />
+              </SettingListItem>
             ),
           },
         ]}

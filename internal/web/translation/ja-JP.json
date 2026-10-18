@@ -1409,6 +1409,9 @@
       "noisesSett": "Noises設定",
       "trustedProxyCidrs": "信頼できるプロキシ CIDR",
       "trustedProxyCidrsDesc": "転送される host、proto、クライアント IP ヘッダーを設定可能な IP/CIDR (カンマ区切り)。",
+      "panelAllowedCidrs": "パネルの許可 IP リスト",
+      "panelAllowedCidrsDesc": "パネルへのアクセスを許可する IP または CIDR をカンマ区切りで指定します。それ以外のアドレスにはおとりサイトまたは 404 が返ります。空欄ならすべてのアドレスを許可します。自分のアドレスを必ず含めてください。締め出された場合は次を実行します: x-ui setting -resetLoginRestrictions",
+      "panelAllowedCidrsLockout": "このリストには現在の IP アドレスが含まれていないため、保存すると自分が締め出されます。",
       "realityScanCandidates": "Reality スキャン候補",
       "realityScanCandidatesDesc": "検索が空のときに「ターゲットを探す」で使うデフォルトの host:port（または CIDR）一覧（カンマ区切り）。よく使う宛先に合わせて編集できます。",
       "ldap": {
@@ -1505,6 +1508,7 @@
         "apiTokenCreatedTitle": "トークンを作成しました",
         "apiTokenCreatedNotice": "このトークンを今すぐコピーしてください。セキュリティ上、読み取り可能な形式では保存されず、再表示されません。",
         "decoy": "偽装サイト",
+        "access": "アクセス",
         "decoyMode": "不明なアクセスへの応答",
         "decoyModeDesc": "パネルと購読のポートが、存在しないパスやドメインではなく IP でのアクセスに返す内容です。スキャナーには 3x-ui ではなく普通のサイトに見えます。再起動後に反映されます。",
         "decoyOff": "通常のエラー（オフ）",

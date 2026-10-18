@@ -257,6 +257,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "minimum": 0,
         "type": "integer"
       },
+      "panelAllowedCidrs": {
+        "type": "string"
+      },
       "panelBrandColor": {
         "type": "string"
       },
@@ -773,6 +776,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapVlessField",
       "outboundDownThreshold",
       "pageSize",
+      "panelAllowedCidrs",
       "panelBrandColor",
       "panelBrandLogo",
       "panelBrandName",
@@ -1127,6 +1131,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "maximum": 1000,
         "minimum": 0,
         "type": "integer"
+      },
+      "panelAllowedCidrs": {
+        "type": "string"
       },
       "panelBrandColor": {
         "type": "string"
@@ -1654,6 +1661,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapVlessField",
       "outboundDownThreshold",
       "pageSize",
+      "panelAllowedCidrs",
       "panelBrandColor",
       "panelBrandLogo",
       "panelBrandName",

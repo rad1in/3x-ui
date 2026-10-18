@@ -144,6 +144,10 @@ func (a *SettingController) updateSetting(c *gin.Context) {
 			return
 		}
 	}
+	if !middleware.IPAllowlistContains(allSetting.PanelAllowedCidrs, getRemoteIp(c)) {
+		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), errors.New(I18nWeb(c, "pages.settings.panelAllowedCidrsLockout")))
+		return
+	}
 	oldTwoFactor, twoFactorErr := a.settingService.GetTwoFactorEnable()
 	oldPanelOutbound, _ := a.settingService.GetPanelOutbound()
 	oldTgEnable, _ := a.settingService.GetTgbotEnabled()
@@ -174,6 +178,9 @@ func (a *SettingController) updateSetting(c *gin.Context) {
 		WebhookSecret:   form.ClearWebhookSecret,
 		BackupS3Secret:  form.ClearBackupS3Secret,
 	})
+	if err == nil {
+		middleware.InvalidateIPAllowlist()
+	}
 	if err == nil && twoFactorErr == nil && !oldTwoFactor && allSetting.TwoFactorEnable {
 		if bumpErr := a.userService.BumpLoginEpoch(); bumpErr != nil {
 			err = bumpErr
