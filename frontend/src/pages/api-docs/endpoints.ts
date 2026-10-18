@@ -2455,6 +2455,301 @@ export const sections: readonly Section[] = [
   },
 
   {
+    id: 'sales',
+    title: 'Sales',
+    description:
+      'Sell plans to customers: the plan catalogue and the order queue. Prices and amounts are integers in the currency minor unit (IRT and IRR have none, USD, EUR and USDT have two decimals); quotas are in bytes.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/sales/plans',
+        summary:
+          'Every plan, enabled or not, by sortOrder. Each plan points at a client template that supplies the inbounds and the rest of the client preset.',
+        responseSchema: 'Plan',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/plans/save',
+        summary:
+          'Create a plan (id 0) or replace the one with the given id. Names are unique, the currency must be IRT, IRR, USD, EUR or USDT and templateId must exist. Returns the saved plan.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'Plan.' }],
+        responseSchema: 'Plan',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/plans/del/:id',
+        summary:
+          'Delete a plan. Refused while an order for it is still pending or in review; clients already sold keep working.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Plan id.' }],
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/orders',
+        summary:
+          'Orders newest first, with the total for the filter. status is one of pending, review, paid, rejected, failed or canceled; empty lists all.',
+        params: [
+          {
+            name: 'status',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'Only orders in this status.',
+          },
+          {
+            name: 'limit',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 200,
+            desc: 'Page size, 1 to 200.',
+          },
+          {
+            name: 'offset',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 0,
+            desc: 'Rows to skip.',
+          },
+        ],
+        responseSchema: 'OrderPage',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/orders/approve/:id',
+        summary:
+          'Accept the payment of a pending or in-review order and deliver it: a new purchase creates the client from the plan terms the order was bought under, a renewal zeroes the usage, applies the plan quota and IP limit and adds the days after the time the client still has. Changes go through the normal client runtime, so remote nodes follow. On a paid order whose delivery failed this retries the delivery. Fails with order_state for an order already delivered, rejected or canceled.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Order id.' }],
+        responseSchema: 'Order',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/orders/reject/:id',
+        summary:
+          'Reject a pending or in-review order, with an optional reason the customer sees. A rejected order cannot be approved afterwards.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Order id.' },
+          {
+            name: 'reason',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Why the payment was not accepted, up to 300 characters.',
+          },
+        ],
+        responseSchema: 'Order',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/discounts',
+        summary:
+          'Every discount code, newest first, with uses: how many orders currently hold a use of it (orders failed, canceled or rejected give theirs back).',
+        responseSchema: 'DiscountCode',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/discounts/save',
+        summary:
+          'Create a code (id 0) or replace the one with the given id. Codes are stored upper-case, 3 to 32 letters, digits, dash or underscore. A percent code takes value percent (1 to 99) off; a fixed code takes value minor units of its currency off and only applies to plans in that currency. planIds limits the code to those plans (empty is all), maxUses 0 is unlimited, oncePerCustomer allows one order per client username, expiresAt is unix ms (0 never). A discount that would make the order free is refused at purchase time.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'DiscountCode.' }],
+        responseSchema: 'DiscountCode',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/discounts/del/:id',
+        summary: 'Delete a discount code. Orders already placed with it keep the price they got.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Discount code id.' }],
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/wallet',
+        summary:
+          'A customer wallet: the balance per currency and the latest ledger lines. The customer is the client with that username; a wallet is a ledger, so a balance is always the sum of its entries.',
+        params: [{ name: 'email', in: 'query', type: 'string', desc: 'Client username.' }],
+        responseSchema: 'WalletView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/wallet/adjust',
+        summary:
+          'Credit (positive amount) or debit (negative) a customer wallet in minor units of a currency. The client must exist and a debit cannot take the balance below zero. Wallet entries also come from referral bonuses, wallet payments and refunds of rejected wallet orders.',
+        params: [
+          { name: 'email', in: 'body (json)', type: 'string', desc: 'Client username.' },
+          {
+            name: 'currency',
+            in: 'body (json)',
+            type: 'string',
+            desc: 'IRT, IRR, USD, EUR or USDT.',
+          },
+          { name: 'amount', in: 'body (json)', type: 'integer', desc: 'Minor units, not zero.' },
+          { name: 'note', in: 'body (json)', type: 'string', optional: true },
+        ],
+        responseSchema: 'WalletEntry',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/config',
+        summary:
+          'Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto). Secrets (the Zarinpal merchant id, the IDPay API key and the NOWPayments API key and IPN secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.',
+        responseSchema: 'SalesConfigView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/config/save',
+        summary:
+          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay or crypto section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SalesConfig.' }],
+      },
+    ],
+  },
+
+  {
+    id: 'shop',
+    title: 'Public Shop',
+    description:
+      'The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed, bad_signature, amount_mismatch, discount_invalid, discount_used, referral_invalid, wallet_insufficient, proof_invalid); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/shop/api/plans',
+        summary: 'Plans on sale, by sort order, and the payment methods that are switched on.',
+        responseSchema: 'ShopCatalog',
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/quote',
+        summary:
+          'Preview the price of a plan with a discount code, without reserving the code. A refused code answers success false with discount_invalid (unknown, disabled, expired, wrong plan or currency, or it would make the order free) or discount_used (use limit reached, or already used by this client).',
+        params: [
+          { name: 'planId', in: 'body (json)', type: 'integer' },
+          { name: 'discountCode', in: 'body (json)', type: 'string', optional: true },
+          {
+            name: 'email',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Lets a once-per-customer code be checked against this client.',
+          },
+        ],
+        responseSchema: 'Quote',
+      },
+      {
+        method: 'GET',
+        path: '/shop/api/wallet',
+        summary:
+          'A client wallet for whoever holds the client subscription id (proof): balances, the latest 20 ledger lines and the client referral code to share. A wrong email or proof answers proof_invalid.',
+        params: [
+          { name: 'email', in: 'query', type: 'string', desc: 'Client username.' },
+          { name: 'proof', in: 'query', type: 'string', desc: 'The client subscription id.' },
+        ],
+        responseSchema: 'ShopWallet',
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/orders',
+        summary:
+          'Start a purchase. kind new needs a free username (3 to 32 of a-z, 0-9, dot, underscore, dash; it is lower-cased) with no open order; renew needs the exact username of an existing client. The reply is the order as the customer sees it, including the card details while a transfer is expected.',
+        params: [
+          { name: 'planId', in: 'body (json)', type: 'integer', desc: 'Plan to buy.' },
+          { name: 'kind', in: 'body (json)', type: 'string', enum: ['new', 'renew'] },
+          { name: 'email', in: 'body (json)', type: 'string', desc: 'Client username.' },
+          {
+            name: 'gateway',
+            in: 'body (json)',
+            type: 'string',
+            desc: 'Payment method: card, zarinpal, idpay, crypto or wallet. A wallet payment is for renewals only, needs proof and is delivered at once.',
+          },
+          {
+            name: 'discountCode',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Coupon; the order carries the discounted amount and the list price.',
+          },
+          {
+            name: 'referralCode',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'A referral code from an existing client, for a first purchase. The referrer is paid a share into their wallet once the order is delivered.',
+          },
+          {
+            name: 'proof',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'The client subscription id; required to pay from a wallet.',
+          },
+          {
+            name: 'contact',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'How to reach the customer, up to 100 characters.',
+          },
+        ],
+        responseSchema: 'ShopOrderView',
+      },
+      {
+        method: 'GET',
+        path: '/shop/api/orders/:token',
+        summary:
+          'Follow an order. Once it is delivered, fulfilled is true and subscriptionUrl carries the client subscription link when the subscription server is on.',
+        params: [{ name: 'token', in: 'path', type: 'string', desc: 'Order token.' }],
+        responseSchema: 'ShopOrderView',
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/orders/:token/receipt',
+        summary:
+          'Tell the shop a card transfer was made: ref is the tracking number or last numbers (up to 64 characters), note is free text (up to 500). Moves the order to review; allowed while it is pending or already in review.',
+        params: [
+          { name: 'token', in: 'path', type: 'string', desc: 'Order token.' },
+          { name: 'ref', in: 'body (json)', type: 'string' },
+          { name: 'note', in: 'body (json)', type: 'string', optional: true },
+        ],
+        responseSchema: 'ShopOrderView',
+      },
+      {
+        method: 'GET',
+        path: '/shop/api/callback/:gateway',
+        summary:
+          'Where Zarinpal (Status and Authority in the query) and IDPay (a form POST, see the POST entry) send the customer back. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.',
+        params: [
+          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay'] },
+          { name: 'order', in: 'query', type: 'string', desc: 'Order token.' },
+        ],
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/ipn/nowpayments',
+        summary:
+          'NOWPayments webhook (set as ipn_callback_url on every crypto invoice). The x-nowpayments-sig header must be the HMAC-SHA512, keyed with the IPN secret, of the body with its keys sorted at every depth; an invalid or missing signature answers 401 and changes nothing. The order is found by order_id and its price_amount and price_currency must equal the order. finished delivers the client; partially_paid parks the order in review for the admin; failed and expired fail it; a finished payment for an order already failed or canceled is parked in review instead of being lost. Orders the shop cannot use are answered 200 so the sender stops retrying, internal failures 500 so it retries. Crypto plans must be priced in USD or EUR; unpaid crypto orders are canceled after 7 days.',
+        params: [
+          {
+            name: 'x-nowpayments-sig',
+            in: 'header',
+            type: 'string',
+            desc: 'HMAC-SHA512 signature of the body.',
+          },
+        ],
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/callback/:gateway',
+        summary:
+          'The same callback for gateways that return the customer with a form POST (IDPay sends status 10 when the customer paid).',
+        params: [
+          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay'] },
+          { name: 'order', in: 'query', type: 'string', desc: 'Order token.' },
+        ],
+      },
+    ],
+  },
+
+  {
     id: 'admins',
     title: 'Admins',
     description:

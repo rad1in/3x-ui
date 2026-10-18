@@ -2267,6 +2267,37 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "CardPayConfig": {
+    "description": "CardPayConfig is the destination card for manual card-to-card payments.",
+    "properties": {
+      "bankName": {
+        "example": "Melli",
+        "type": "string"
+      },
+      "cardNumber": {
+        "example": "6037991812345678",
+        "type": "string"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "holderName": {
+        "example": "Ali Rezaei",
+        "type": "string"
+      },
+      "instructions": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "bankName",
+      "cardNumber",
+      "enabled",
+      "holderName",
+      "instructions"
+    ],
+    "type": "object"
+  },
   "Client": {
     "description": "Client represents a client configuration for Xray inbounds with traffic limits and settings.",
     "properties": {
@@ -3154,6 +3185,112 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "CryptoConfig": {
+    "description": "CryptoConfig is the NOWPayments account. ApiKey and IpnSecret are secrets.",
+    "properties": {
+      "apiKey": {
+        "type": "string"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "ipnSecret": {
+        "type": "string"
+      },
+      "sandbox": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "apiKey",
+      "enabled",
+      "ipnSecret",
+      "sandbox"
+    ],
+    "type": "object"
+  },
+  "DiscountCode": {
+    "description": "DiscountCode is a coupon. A code is stored upper-case; PlanIds empty means\nevery plan; MaxUses 0 means unlimited. Uses is filled in when listing.",
+    "properties": {
+      "code": {
+        "example": "WELCOME10",
+        "type": "string"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "currency": {
+        "example": "USD",
+        "type": "string"
+      },
+      "enabled": {
+        "example": true,
+        "type": "boolean"
+      },
+      "expiresAt": {
+        "example": 0,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "kind": {
+        "example": "percent",
+        "type": "string"
+      },
+      "maxUses": {
+        "example": 100,
+        "type": "integer"
+      },
+      "oncePerCustomer": {
+        "example": true,
+        "type": "boolean"
+      },
+      "planIds": {
+        "example": [
+          1,
+          2
+        ],
+        "items": {
+          "type": "integer"
+        },
+        "type": "array"
+      },
+      "updatedAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "uses": {
+        "example": 3,
+        "format": "int64",
+        "type": "integer"
+      },
+      "value": {
+        "example": 10,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "code",
+      "createdAt",
+      "currency",
+      "enabled",
+      "expiresAt",
+      "id",
+      "kind",
+      "maxUses",
+      "oncePerCustomer",
+      "planIds",
+      "updatedAt",
+      "uses",
+      "value"
+    ],
+    "type": "object"
+  },
   "FallbackParentInfo": {
     "description": "FallbackParentInfo carries everything the frontend needs to rewrite a\nchild inbound's client link: where to connect (the master's address\nand port) and which path matched on the master's fallbacks array.\nThe frontend already has the master inbound in its dbInbounds list,\nso we only ship identifiers + the match path here.",
     "properties": {
@@ -4030,6 +4167,26 @@ export const SCHEMAS: Record<string, unknown> = {
       "limit",
       "registered",
       "remaining"
+    ],
+    "type": "object"
+  },
+  "IDPayConfig": {
+    "description": "IDPayConfig is the IDPay account. ApiKey is a secret.",
+    "properties": {
+      "apiKey": {
+        "type": "string"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "sandbox": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "apiKey",
+      "enabled",
+      "sandbox"
     ],
     "type": "object"
   },
@@ -5272,6 +5429,166 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "Order": {
+    "description": "Order is one purchase attempt of a plan. Amount is what the customer pays in\nCurrency's minor unit; the plan name and terms are snapshots so editing a\nplan never changes what a customer already paid for. Token is the\nunguessable handle the customer uses. PaidAt set with FulfilledAt unset is a\npaid order whose client has not been created or renewed yet.",
+    "properties": {
+      "amount": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "clientEmail": {
+        "example": "alice",
+        "type": "string"
+      },
+      "contact": {
+        "example": "@alice",
+        "type": "string"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "currency": {
+        "example": "IRT",
+        "type": "string"
+      },
+      "discountCode": {
+        "example": "WELCOME10",
+        "type": "string"
+      },
+      "durationDays": {
+        "example": 30,
+        "type": "integer"
+      },
+      "fulfilledAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "gateway": {
+        "example": "card",
+        "type": "string"
+      },
+      "gatewayRef": {
+        "type": "string"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "kind": {
+        "example": "new",
+        "type": "string"
+      },
+      "limitIp": {
+        "example": 2,
+        "type": "integer"
+      },
+      "listAmount": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "paidAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "payUrl": {
+        "type": "string"
+      },
+      "planId": {
+        "example": 1,
+        "type": "integer"
+      },
+      "planName": {
+        "example": "Monthly 50 GB",
+        "type": "string"
+      },
+      "receiptNote": {
+        "type": "string"
+      },
+      "receiptRef": {
+        "example": "482913",
+        "type": "string"
+      },
+      "referralCode": {
+        "type": "string"
+      },
+      "referrerEmail": {
+        "type": "string"
+      },
+      "rejectReason": {
+        "type": "string"
+      },
+      "status": {
+        "example": "pending",
+        "type": "string"
+      },
+      "token": {
+        "example": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+        "type": "string"
+      },
+      "totalGB": {
+        "example": 53687091200,
+        "format": "int64",
+        "type": "integer"
+      },
+      "updatedAt": {
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "amount",
+      "clientEmail",
+      "contact",
+      "createdAt",
+      "currency",
+      "discountCode",
+      "durationDays",
+      "fulfilledAt",
+      "gateway",
+      "gatewayRef",
+      "id",
+      "kind",
+      "limitIp",
+      "listAmount",
+      "paidAt",
+      "payUrl",
+      "planId",
+      "planName",
+      "receiptNote",
+      "receiptRef",
+      "referralCode",
+      "referrerEmail",
+      "rejectReason",
+      "status",
+      "token",
+      "totalGB",
+      "updatedAt"
+    ],
+    "type": "object"
+  },
+  "OrderPage": {
+    "description": "OrderPage is one page of orders, newest first, with the unpaged total.",
+    "properties": {
+      "items": {
+        "items": {
+          "$ref": "#/components/schemas/Order"
+        },
+        "type": "array"
+      },
+      "total": {
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "items",
+      "total"
+    ],
+    "type": "object"
+  },
   "OutboundTraffics": {
     "description": "OutboundTraffics tracks traffic statistics for Xray outbound connections.",
     "properties": {
@@ -5438,6 +5755,81 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "Plan": {
+    "description": "Plan is a sellable package. Price is in the currency's minor unit (see\nservice.CurrencyDecimals); TotalGB is in bytes; DurationDays 0 means no\nexpiry. TemplateId supplies the inbounds and the rest of the client preset.",
+    "properties": {
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "currency": {
+        "example": "IRT",
+        "type": "string"
+      },
+      "description": {
+        "example": "Valid for 30 days",
+        "type": "string"
+      },
+      "durationDays": {
+        "example": 30,
+        "type": "integer"
+      },
+      "enabled": {
+        "example": true,
+        "type": "boolean"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "limitIp": {
+        "example": 2,
+        "type": "integer"
+      },
+      "name": {
+        "example": "Monthly 50 GB",
+        "type": "string"
+      },
+      "price": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "sortOrder": {
+        "example": 0,
+        "type": "integer"
+      },
+      "templateId": {
+        "example": 1,
+        "type": "integer"
+      },
+      "totalGB": {
+        "example": 53687091200,
+        "format": "int64",
+        "type": "integer"
+      },
+      "updatedAt": {
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "createdAt",
+      "currency",
+      "description",
+      "durationDays",
+      "enabled",
+      "id",
+      "limitIp",
+      "name",
+      "price",
+      "sortOrder",
+      "templateId",
+      "totalGB",
+      "updatedAt"
+    ],
+    "type": "object"
+  },
   "ProbeResultUI": {
     "properties": {
       "cpuPct": {
@@ -5524,6 +5916,42 @@ export const SCHEMAS: Record<string, unknown> = {
       "restarts",
       "running",
       "startedAt"
+    ],
+    "type": "object"
+  },
+  "Quote": {
+    "description": "Quote is a price preview; nothing is reserved.",
+    "properties": {
+      "currency": {
+        "example": "IRT",
+        "type": "string"
+      },
+      "discount": {
+        "example": 25000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "discountCode": {
+        "example": "WELCOME10",
+        "type": "string"
+      },
+      "final": {
+        "example": 225000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "list": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "currency",
+      "discount",
+      "discountCode",
+      "final",
+      "list"
     ],
     "type": "object"
   },
@@ -5640,6 +6068,133 @@ export const SCHEMAS: Record<string, unknown> = {
       "tls13",
       "tlsVersion",
       "x25519"
+    ],
+    "type": "object"
+  },
+  "ReferralConfig": {
+    "description": "ReferralConfig pays a customer a share of a friend's first purchase, into\ntheir wallet, in the currency of the purchase.",
+    "properties": {
+      "bonusPercent": {
+        "example": 10,
+        "type": "integer"
+      },
+      "enabled": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "bonusPercent",
+      "enabled"
+    ],
+    "type": "object"
+  },
+  "SalesConfig": {
+    "description": "SalesConfig is everything the operator configures about selling. It is one\nJSON setting. Secrets are served blank and kept when a save leaves them\nblank; ClearSecrets names the ones to empty on purpose.",
+    "properties": {
+      "card": {
+        "$ref": "#/components/schemas/CardPayConfig"
+      },
+      "clearSecrets": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "crypto": {
+        "$ref": "#/components/schemas/CryptoConfig"
+      },
+      "idpay": {
+        "$ref": "#/components/schemas/IDPayConfig"
+      },
+      "publicBaseUrl": {
+        "example": "https://shop.example.com",
+        "type": "string"
+      },
+      "publicEnabled": {
+        "type": "boolean"
+      },
+      "referral": {
+        "$ref": "#/components/schemas/ReferralConfig"
+      },
+      "walletEnabled": {
+        "type": "boolean"
+      },
+      "zarinpal": {
+        "$ref": "#/components/schemas/ZarinpalConfig"
+      }
+    },
+    "required": [
+      "card",
+      "crypto",
+      "idpay",
+      "publicBaseUrl",
+      "publicEnabled",
+      "referral",
+      "walletEnabled",
+      "zarinpal"
+    ],
+    "type": "object"
+  },
+  "SalesConfigView": {
+    "description": "SalesConfigView is the configuration as the admin API serves it: secrets are\nblank and the Has flags say which are set.",
+    "properties": {
+      "card": {
+        "$ref": "#/components/schemas/CardPayConfig"
+      },
+      "clearSecrets": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "crypto": {
+        "$ref": "#/components/schemas/CryptoConfig"
+      },
+      "hasCryptoApiKey": {
+        "type": "boolean"
+      },
+      "hasCryptoIpnSecret": {
+        "type": "boolean"
+      },
+      "hasIdpayApiKey": {
+        "type": "boolean"
+      },
+      "hasZarinpalMerchantId": {
+        "type": "boolean"
+      },
+      "idpay": {
+        "$ref": "#/components/schemas/IDPayConfig"
+      },
+      "publicBaseUrl": {
+        "example": "https://shop.example.com",
+        "type": "string"
+      },
+      "publicEnabled": {
+        "type": "boolean"
+      },
+      "referral": {
+        "$ref": "#/components/schemas/ReferralConfig"
+      },
+      "walletEnabled": {
+        "type": "boolean"
+      },
+      "zarinpal": {
+        "$ref": "#/components/schemas/ZarinpalConfig"
+      }
+    },
+    "required": [
+      "card",
+      "crypto",
+      "hasCryptoApiKey",
+      "hasCryptoIpnSecret",
+      "hasIdpayApiKey",
+      "hasZarinpalMerchantId",
+      "idpay",
+      "publicBaseUrl",
+      "publicEnabled",
+      "referral",
+      "walletEnabled",
+      "zarinpal"
     ],
     "type": "object"
   },
@@ -5854,6 +6409,191 @@ export const SCHEMAS: Record<string, unknown> = {
       "id",
       "key",
       "value"
+    ],
+    "type": "object"
+  },
+  "ShopCatalog": {
+    "description": "ShopCatalog is what the public shop lists: sellable plans and the payment\nmethods that are switched on.",
+    "properties": {
+      "methods": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "plans": {
+        "items": {
+          "$ref": "#/components/schemas/ShopPlan"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "methods",
+      "plans"
+    ],
+    "type": "object"
+  },
+  "ShopOrderView": {
+    "description": "ShopOrderView is an order as its customer sees it: no internal ids, and the\ncard details only while a transfer is still expected.",
+    "properties": {
+      "amount": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "card": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CardPayConfig"
+          }
+        ],
+        "nullable": true
+      },
+      "clientEmail": {
+        "example": "alice",
+        "type": "string"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "currency": {
+        "example": "IRT",
+        "type": "string"
+      },
+      "discountCode": {
+        "type": "string"
+      },
+      "fulfilled": {
+        "type": "boolean"
+      },
+      "gateway": {
+        "example": "card",
+        "type": "string"
+      },
+      "kind": {
+        "example": "new",
+        "type": "string"
+      },
+      "listAmount": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "payUrl": {
+        "type": "string"
+      },
+      "planName": {
+        "example": "Monthly 50 GB",
+        "type": "string"
+      },
+      "rejectReason": {
+        "type": "string"
+      },
+      "status": {
+        "example": "pending",
+        "type": "string"
+      },
+      "subscriptionUrl": {
+        "type": "string"
+      },
+      "token": {
+        "example": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+        "type": "string"
+      }
+    },
+    "required": [
+      "amount",
+      "clientEmail",
+      "createdAt",
+      "currency",
+      "discountCode",
+      "fulfilled",
+      "gateway",
+      "kind",
+      "listAmount",
+      "planName",
+      "rejectReason",
+      "status",
+      "subscriptionUrl",
+      "token"
+    ],
+    "type": "object"
+  },
+  "ShopPlan": {
+    "description": "ShopPlan is a plan as the public shop shows it.",
+    "properties": {
+      "currency": {
+        "example": "IRT",
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "durationDays": {
+        "example": 30,
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "limitIp": {
+        "example": 2,
+        "type": "integer"
+      },
+      "name": {
+        "example": "Monthly 50 GB",
+        "type": "string"
+      },
+      "price": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "totalGB": {
+        "example": 53687091200,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "currency",
+      "description",
+      "durationDays",
+      "id",
+      "limitIp",
+      "name",
+      "price",
+      "totalGB"
+    ],
+    "type": "object"
+  },
+  "ShopWallet": {
+    "description": "ShopWallet is what a customer sees of their own wallet: balances, the\nlatest ledger lines and the code to share. The balances are per currency.",
+    "properties": {
+      "balances": {
+        "items": {
+          "$ref": "#/components/schemas/WalletBalance"
+        },
+        "type": "array"
+      },
+      "entries": {
+        "items": {
+          "$ref": "#/components/schemas/WalletEntry"
+        },
+        "type": "array"
+      },
+      "referralCode": {
+        "example": "K7M2QX9P",
+        "type": "string"
+      }
+    },
+    "required": [
+      "balances",
+      "entries",
+      "referralCode"
     ],
     "type": "object"
   },
@@ -6328,6 +7068,120 @@ export const SCHEMAS: Record<string, unknown> = {
     "required": [
       "id",
       "running"
+    ],
+    "type": "object"
+  },
+  "WalletBalance": {
+    "description": "WalletBalance is a customer's balance in one currency, in its minor unit.",
+    "properties": {
+      "amount": {
+        "example": 250,
+        "format": "int64",
+        "type": "integer"
+      },
+      "currency": {
+        "example": "USD",
+        "type": "string"
+      }
+    },
+    "required": [
+      "amount",
+      "currency"
+    ],
+    "type": "object"
+  },
+  "WalletEntry": {
+    "description": "WalletEntry is one line of a customer's wallet ledger; the balance in a\ncurrency is the sum of its entries. Ref, when set, is unique so a bonus or\na debit for an order can never be booked twice.",
+    "properties": {
+      "amount": {
+        "example": 250,
+        "format": "int64",
+        "type": "integer"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "currency": {
+        "example": "USD",
+        "type": "string"
+      },
+      "email": {
+        "example": "alice",
+        "type": "string"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "kind": {
+        "example": "referral",
+        "type": "string"
+      },
+      "note": {
+        "type": "string"
+      },
+      "orderId": {
+        "example": 12,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "amount",
+      "createdAt",
+      "currency",
+      "email",
+      "id",
+      "kind",
+      "note",
+      "orderId"
+    ],
+    "type": "object"
+  },
+  "WalletView": {
+    "description": "WalletView is a customer's balances and latest ledger lines.",
+    "properties": {
+      "balances": {
+        "items": {
+          "$ref": "#/components/schemas/WalletBalance"
+        },
+        "type": "array"
+      },
+      "email": {
+        "example": "alice",
+        "type": "string"
+      },
+      "entries": {
+        "items": {
+          "$ref": "#/components/schemas/WalletEntry"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "balances",
+      "email",
+      "entries"
+    ],
+    "type": "object"
+  },
+  "ZarinpalConfig": {
+    "description": "ZarinpalConfig is the Zarinpal merchant account. MerchantId is a secret.",
+    "properties": {
+      "enabled": {
+        "type": "boolean"
+      },
+      "merchantId": {
+        "type": "string"
+      },
+      "sandbox": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "enabled",
+      "merchantId",
+      "sandbox"
     ],
     "type": "object"
   }

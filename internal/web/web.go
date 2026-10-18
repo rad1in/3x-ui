@@ -267,6 +267,13 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 	} else {
 		engine.StaticFS(basePath+"assets", http.FS(&wrapDistFS{FS: distFS}))
 	}
+	// The public shop page loads its bundle from /shop/assets so it never has
+	// to reveal the panel base path.
+	if config.IsDebug() {
+		engine.StaticFS("/shop/assets", http.FS(os.DirFS("internal/web/dist/assets")))
+	} else {
+		engine.StaticFS("/shop/assets", http.FS(&wrapDistFS{FS: distFS}))
+	}
 
 	// Hand the embedded `dist/` filesystem to the controller package
 	// before any HTML-serving controller is constructed. Phase 8
@@ -285,6 +292,9 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 	s.api = controller.NewAPIController(g)
 	controller.NewMetricsController(g)
 
+	decoySite := s.settingService.DecoySite().Handler()
+	controller.NewShopController(engine.Group("/shop"), decoySite)
+
 	// Initialize WebSocket hub
 	s.wsHub = websocket.NewHub()
 	go s.wsHub.Run()
@@ -302,7 +312,6 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 
 	// Let unknown panel document routes fall back to the SPA shell, while every
 	// non-SPA miss still returns a hard 404.
-	decoySite := s.settingService.DecoySite().Handler()
 	engine.NoRoute(func(c *gin.Context) {
 		if s.panel.HandleNoRoutePanelSPA(c) {
 			return
@@ -339,6 +348,7 @@ const (
 	cadenceRemoteRouting = "@every 5m"
 	cadenceXrayLogPrune  = "@every 10m"
 	cadenceCheckHash     = "@every 2m"
+	cadenceShopReconcile = "@every 2m"
 	// cpu.Percent samples over a full minute (blocking), so a finer cadence just
 	// stacks overlapping samplers; subscribers rate-limit alerts to 1/min anyway.
 	cadenceCPUAlarm    = "@every 1m"
@@ -421,6 +431,7 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 	_, _ = s.cron.AddJob("@every 1m", job.NewClientWarningJob())
 	_, _ = s.cron.AddJob("@hourly", job.NewClientCleanupJob())
 	_, _ = s.cron.AddJob("@hourly", job.NewWeeklySummaryJob(loc))
+	_, _ = s.cron.AddJob(cadenceShopReconcile, job.NewShopReconcileJob())
 	if spec, _ := s.settingService.GetBackupSchedule(); strings.TrimSpace(spec) != "" {
 		scheduleSettingJob(s.cron, "Scheduled backup", spec, "@daily", job.NewScheduledBackupJob())
 	}

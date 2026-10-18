@@ -236,6 +236,7 @@ var defaultValueMap = map[string]string{
 	"warpUpdateInterval":          "0",
 	"nord":                        "",
 	"pia":                         "",
+	"salesConfig":                 "",
 	"externalTrafficInformEnable": "false",
 	"externalTrafficInformURI":    "",
 	"restartXrayOnClientDisable":  "true",

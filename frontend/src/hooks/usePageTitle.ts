@@ -15,6 +15,7 @@ const TITLE_KEYS: Record<string, string> = {
   '/routing': 'menu.routing',
   '/api-docs': 'menu.apiDocs',
   '/sponsors': 'menu.sponsors',
+  '/sales': 'menu.sales',
   '/audit': 'menu.audit',
   '/admins': 'menu.admins',
   '/sessions': 'menu.sessions',

@@ -544,6 +544,14 @@ export interface BackupResult {
   pruned: number;
 }
 
+export interface CardPayConfig {
+  bankName: string;
+  cardNumber: string;
+  enabled: boolean;
+  holderName: string;
+  instructions: string;
+}
+
 export interface Client {
   adTag?: string;
   allowedIPs?: string[];
@@ -733,6 +741,29 @@ export interface ClientsSummary {
   online: string[];
   onlineCount: number;
   total: number;
+}
+
+export interface CryptoConfig {
+  apiKey: string;
+  enabled: boolean;
+  ipnSecret: string;
+  sandbox: boolean;
+}
+
+export interface DiscountCode {
+  code: string;
+  createdAt: number;
+  currency: string;
+  enabled: boolean;
+  expiresAt: number;
+  id: number;
+  kind: string;
+  maxUses: number;
+  oncePerCustomer: boolean;
+  planIds: number[];
+  updatedAt: number;
+  uses: number;
+  value: number;
 }
 
 export interface FallbackParentInfo {
@@ -928,6 +959,12 @@ export interface HwidSlotStatus {
   limit: number;
   registered: number;
   remaining: number;
+}
+
+export interface IDPayConfig {
+  apiKey: string;
+  enabled: boolean;
+  sandbox: boolean;
 }
 
 export interface Inbound {
@@ -1190,6 +1227,41 @@ export interface NodeView {
   xrayVersion: string;
 }
 
+export interface Order {
+  amount: number;
+  clientEmail: string;
+  contact: string;
+  createdAt: number;
+  currency: string;
+  discountCode: string;
+  durationDays: number;
+  fulfilledAt: number;
+  gateway: string;
+  gatewayRef: string;
+  id: number;
+  kind: string;
+  limitIp: number;
+  listAmount: number;
+  paidAt: number;
+  payUrl: string;
+  planId: number;
+  planName: string;
+  receiptNote: string;
+  receiptRef: string;
+  referralCode: string;
+  referrerEmail: string;
+  rejectReason: string;
+  status: string;
+  token: string;
+  totalGB: number;
+  updatedAt: number;
+}
+
+export interface OrderPage {
+  items: Order[];
+  total: number;
+}
+
 export interface OutboundTraffics {
   down: number;
   id: number;
@@ -1228,6 +1300,22 @@ export interface PeerActivity {
   up: number;
 }
 
+export interface Plan {
+  createdAt: number;
+  currency: string;
+  description: string;
+  durationDays: number;
+  enabled: boolean;
+  id: number;
+  limitIp: number;
+  name: string;
+  price: number;
+  sortOrder: number;
+  templateId: number;
+  totalGB: number;
+  updatedAt: number;
+}
+
 export interface ProbeResultUI {
   cpuPct: number;
   error: string;
@@ -1247,6 +1335,14 @@ export interface ProcState {
   restarts: number;
   running: boolean;
   startedAt: number;
+}
+
+export interface Quote {
+  currency: string;
+  discount: number;
+  discountCode: string;
+  final: number;
+  list: number;
 }
 
 export interface RealityScanResult {
@@ -1271,6 +1367,39 @@ export interface RealityScanResult {
   tls13: boolean;
   tlsVersion: string;
   x25519: boolean;
+}
+
+export interface ReferralConfig {
+  bonusPercent: number;
+  enabled: boolean;
+}
+
+export interface SalesConfig {
+  card: CardPayConfig;
+  clearSecrets?: string[];
+  crypto: CryptoConfig;
+  idpay: IDPayConfig;
+  publicBaseUrl: string;
+  publicEnabled: boolean;
+  referral: ReferralConfig;
+  walletEnabled: boolean;
+  zarinpal: ZarinpalConfig;
+}
+
+export interface SalesConfigView {
+  card: CardPayConfig;
+  clearSecrets?: string[];
+  crypto: CryptoConfig;
+  hasCryptoApiKey: boolean;
+  hasCryptoIpnSecret: boolean;
+  hasIdpayApiKey: boolean;
+  hasZarinpalMerchantId: boolean;
+  idpay: IDPayConfig;
+  publicBaseUrl: string;
+  publicEnabled: boolean;
+  referral: ReferralConfig;
+  walletEnabled: boolean;
+  zarinpal: ZarinpalConfig;
 }
 
 export interface ServerSettings {
@@ -1328,6 +1457,47 @@ export interface Setting {
   id: number;
   key: string;
   value: string;
+}
+
+export interface ShopCatalog {
+  methods: string[];
+  plans: ShopPlan[];
+}
+
+export interface ShopOrderView {
+  amount: number;
+  card?: CardPayConfig | null;
+  clientEmail: string;
+  createdAt: number;
+  currency: string;
+  discountCode: string;
+  fulfilled: boolean;
+  gateway: string;
+  kind: string;
+  listAmount: number;
+  payUrl?: string;
+  planName: string;
+  rejectReason: string;
+  status: string;
+  subscriptionUrl: string;
+  token: string;
+}
+
+export interface ShopPlan {
+  currency: string;
+  description: string;
+  durationDays: number;
+  id: number;
+  limitIp: number;
+  name: string;
+  price: number;
+  totalGB: number;
+}
+
+export interface ShopWallet {
+  balances: WalletBalance[];
+  entries: WalletEntry[];
+  referralCode: string;
 }
 
 export interface Sponsor {
@@ -1437,5 +1607,33 @@ export interface VPNStatus {
   id: number;
   reason?: string;
   running: boolean;
+}
+
+export interface WalletBalance {
+  amount: number;
+  currency: string;
+}
+
+export interface WalletEntry {
+  amount: number;
+  createdAt: number;
+  currency: string;
+  email: string;
+  id: number;
+  kind: string;
+  note: string;
+  orderId: number;
+}
+
+export interface WalletView {
+  balances: WalletBalance[];
+  email: string;
+  entries: WalletEntry[];
+}
+
+export interface ZarinpalConfig {
+  enabled: boolean;
+  merchantId: string;
+  sandbox: boolean;
 }
 

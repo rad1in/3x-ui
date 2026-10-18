@@ -570,6 +570,15 @@ export const BackupResultSchema = z.object({
 });
 export type BackupResult = z.infer<typeof BackupResultSchema>;
 
+export const CardPayConfigSchema = z.object({
+  bankName: z.string(),
+  cardNumber: z.string(),
+  enabled: z.boolean(),
+  holderName: z.string(),
+  instructions: z.string(),
+});
+export type CardPayConfig = z.infer<typeof CardPayConfigSchema>;
+
 export const ClientSchema = z.object({
   adTag: z.string().optional(),
   allowedIPs: z.array(z.string()).optional(),
@@ -772,6 +781,31 @@ export const ClientsSummarySchema = z.object({
   total: z.number().int(),
 });
 export type ClientsSummary = z.infer<typeof ClientsSummarySchema>;
+
+export const CryptoConfigSchema = z.object({
+  apiKey: z.string(),
+  enabled: z.boolean(),
+  ipnSecret: z.string(),
+  sandbox: z.boolean(),
+});
+export type CryptoConfig = z.infer<typeof CryptoConfigSchema>;
+
+export const DiscountCodeSchema = z.object({
+  code: z.string(),
+  createdAt: z.number().int(),
+  currency: z.string(),
+  enabled: z.boolean(),
+  expiresAt: z.number().int(),
+  id: z.number().int(),
+  kind: z.string(),
+  maxUses: z.number().int(),
+  oncePerCustomer: z.boolean(),
+  planIds: z.array(z.number().int()),
+  updatedAt: z.number().int(),
+  uses: z.number().int(),
+  value: z.number().int(),
+});
+export type DiscountCode = z.infer<typeof DiscountCodeSchema>;
 
 export const FallbackParentInfoSchema = z.object({
   masterId: z.number().int(),
@@ -983,6 +1017,13 @@ export const HwidSlotStatusSchema = z.object({
   remaining: z.number().int(),
 });
 export type HwidSlotStatus = z.infer<typeof HwidSlotStatusSchema>;
+
+export const IDPayConfigSchema = z.object({
+  apiKey: z.string(),
+  enabled: z.boolean(),
+  sandbox: z.boolean(),
+});
+export type IDPayConfig = z.infer<typeof IDPayConfigSchema>;
 
 export const InboundSchema = z.object({
   clientStats: z.array(z.lazy(() => ClientTrafficSchema)),
@@ -1259,6 +1300,43 @@ export const NodeViewSchema = z.object({
 });
 export type NodeView = z.infer<typeof NodeViewSchema>;
 
+export const OrderSchema = z.object({
+  amount: z.number().int(),
+  clientEmail: z.string(),
+  contact: z.string(),
+  createdAt: z.number().int(),
+  currency: z.string(),
+  discountCode: z.string(),
+  durationDays: z.number().int(),
+  fulfilledAt: z.number().int(),
+  gateway: z.string(),
+  gatewayRef: z.string(),
+  id: z.number().int(),
+  kind: z.string(),
+  limitIp: z.number().int(),
+  listAmount: z.number().int(),
+  paidAt: z.number().int(),
+  payUrl: z.string(),
+  planId: z.number().int(),
+  planName: z.string(),
+  receiptNote: z.string(),
+  receiptRef: z.string(),
+  referralCode: z.string(),
+  referrerEmail: z.string(),
+  rejectReason: z.string(),
+  status: z.string(),
+  token: z.string(),
+  totalGB: z.number().int(),
+  updatedAt: z.number().int(),
+});
+export type Order = z.infer<typeof OrderSchema>;
+
+export const OrderPageSchema = z.object({
+  items: z.array(z.lazy(() => OrderSchema)),
+  total: z.number().int(),
+});
+export type OrderPage = z.infer<typeof OrderPageSchema>;
+
 export const OutboundTrafficsSchema = z.object({
   down: z.number().int(),
   id: z.number().int(),
@@ -1301,6 +1379,23 @@ export const PeerActivitySchema = z.object({
 });
 export type PeerActivity = z.infer<typeof PeerActivitySchema>;
 
+export const PlanSchema = z.object({
+  createdAt: z.number().int(),
+  currency: z.string(),
+  description: z.string(),
+  durationDays: z.number().int(),
+  enabled: z.boolean(),
+  id: z.number().int(),
+  limitIp: z.number().int(),
+  name: z.string(),
+  price: z.number().int(),
+  sortOrder: z.number().int(),
+  templateId: z.number().int(),
+  totalGB: z.number().int(),
+  updatedAt: z.number().int(),
+});
+export type Plan = z.infer<typeof PlanSchema>;
+
 export const ProbeResultUISchema = z.object({
   cpuPct: z.number(),
   error: z.string(),
@@ -1323,6 +1418,15 @@ export const ProcStateSchema = z.object({
   startedAt: z.number().int(),
 });
 export type ProcState = z.infer<typeof ProcStateSchema>;
+
+export const QuoteSchema = z.object({
+  currency: z.string(),
+  discount: z.number().int(),
+  discountCode: z.string(),
+  final: z.number().int(),
+  list: z.number().int(),
+});
+export type Quote = z.infer<typeof QuoteSchema>;
 
 export const RealityScanResultSchema = z.object({
   alpn: z.string(),
@@ -1348,6 +1452,42 @@ export const RealityScanResultSchema = z.object({
   x25519: z.boolean(),
 });
 export type RealityScanResult = z.infer<typeof RealityScanResultSchema>;
+
+export const ReferralConfigSchema = z.object({
+  bonusPercent: z.number().int(),
+  enabled: z.boolean(),
+});
+export type ReferralConfig = z.infer<typeof ReferralConfigSchema>;
+
+export const SalesConfigSchema = z.object({
+  card: z.lazy(() => CardPayConfigSchema),
+  clearSecrets: z.array(z.string()).optional(),
+  crypto: z.lazy(() => CryptoConfigSchema),
+  idpay: z.lazy(() => IDPayConfigSchema),
+  publicBaseUrl: z.string(),
+  publicEnabled: z.boolean(),
+  referral: z.lazy(() => ReferralConfigSchema),
+  walletEnabled: z.boolean(),
+  zarinpal: z.lazy(() => ZarinpalConfigSchema),
+});
+export type SalesConfig = z.infer<typeof SalesConfigSchema>;
+
+export const SalesConfigViewSchema = z.object({
+  card: z.lazy(() => CardPayConfigSchema),
+  clearSecrets: z.array(z.string()).optional(),
+  crypto: z.lazy(() => CryptoConfigSchema),
+  hasCryptoApiKey: z.boolean(),
+  hasCryptoIpnSecret: z.boolean(),
+  hasIdpayApiKey: z.boolean(),
+  hasZarinpalMerchantId: z.boolean(),
+  idpay: z.lazy(() => IDPayConfigSchema),
+  publicBaseUrl: z.string(),
+  publicEnabled: z.boolean(),
+  referral: z.lazy(() => ReferralConfigSchema),
+  walletEnabled: z.boolean(),
+  zarinpal: z.lazy(() => ZarinpalConfigSchema),
+});
+export type SalesConfigView = z.infer<typeof SalesConfigViewSchema>;
 
 export const ServerSettingsSchema = z.object({
   contentPaddingAddition: z.string().optional(),
@@ -1408,6 +1548,51 @@ export const SettingSchema = z.object({
   value: z.string(),
 });
 export type Setting = z.infer<typeof SettingSchema>;
+
+export const ShopCatalogSchema = z.object({
+  methods: z.array(z.string()),
+  plans: z.array(z.lazy(() => ShopPlanSchema)),
+});
+export type ShopCatalog = z.infer<typeof ShopCatalogSchema>;
+
+export const ShopOrderViewSchema = z.object({
+  amount: z.number().int(),
+  card: z.lazy(() => CardPayConfigSchema).nullable().optional(),
+  clientEmail: z.string(),
+  createdAt: z.number().int(),
+  currency: z.string(),
+  discountCode: z.string(),
+  fulfilled: z.boolean(),
+  gateway: z.string(),
+  kind: z.string(),
+  listAmount: z.number().int(),
+  payUrl: z.string().optional(),
+  planName: z.string(),
+  rejectReason: z.string(),
+  status: z.string(),
+  subscriptionUrl: z.string(),
+  token: z.string(),
+});
+export type ShopOrderView = z.infer<typeof ShopOrderViewSchema>;
+
+export const ShopPlanSchema = z.object({
+  currency: z.string(),
+  description: z.string(),
+  durationDays: z.number().int(),
+  id: z.number().int(),
+  limitIp: z.number().int(),
+  name: z.string(),
+  price: z.number().int(),
+  totalGB: z.number().int(),
+});
+export type ShopPlan = z.infer<typeof ShopPlanSchema>;
+
+export const ShopWalletSchema = z.object({
+  balances: z.array(z.lazy(() => WalletBalanceSchema)),
+  entries: z.array(z.lazy(() => WalletEntrySchema)),
+  referralCode: z.string(),
+});
+export type ShopWallet = z.infer<typeof ShopWalletSchema>;
 
 export const SponsorSchema = z.object({
   enable: z.boolean().nullable().optional(),
@@ -1530,4 +1715,36 @@ export const VPNStatusSchema = z.object({
   running: z.boolean(),
 });
 export type VPNStatus = z.infer<typeof VPNStatusSchema>;
+
+export const WalletBalanceSchema = z.object({
+  amount: z.number().int(),
+  currency: z.string(),
+});
+export type WalletBalance = z.infer<typeof WalletBalanceSchema>;
+
+export const WalletEntrySchema = z.object({
+  amount: z.number().int(),
+  createdAt: z.number().int(),
+  currency: z.string(),
+  email: z.string(),
+  id: z.number().int(),
+  kind: z.string(),
+  note: z.string(),
+  orderId: z.number().int(),
+});
+export type WalletEntry = z.infer<typeof WalletEntrySchema>;
+
+export const WalletViewSchema = z.object({
+  balances: z.array(z.lazy(() => WalletBalanceSchema)),
+  email: z.string(),
+  entries: z.array(z.lazy(() => WalletEntrySchema)),
+});
+export type WalletView = z.infer<typeof WalletViewSchema>;
+
+export const ZarinpalConfigSchema = z.object({
+  enabled: z.boolean(),
+  merchantId: z.string(),
+  sandbox: z.boolean(),
+});
+export type ZarinpalConfig = z.infer<typeof ZarinpalConfigSchema>;
 

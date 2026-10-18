@@ -559,6 +559,13 @@ export const EXAMPLES: Record<string, unknown> = {
     "name": "panel.example.com_2026-10-17_030000.db.gz",
     "pruned": 1
   },
+  "CardPayConfig": {
+    "bankName": "Melli",
+    "cardNumber": "6037991812345678",
+    "enabled": false,
+    "holderName": "Ali Rezaei",
+    "instructions": ""
+  },
   "Client": {
     "adTag": "0123456789abcdef0123456789abcdef",
     "allowedIPs": [
@@ -790,6 +797,30 @@ export const EXAMPLES: Record<string, unknown> = {
     ],
     "onlineCount": 1,
     "total": 2000
+  },
+  "CryptoConfig": {
+    "apiKey": "",
+    "enabled": false,
+    "ipnSecret": "",
+    "sandbox": false
+  },
+  "DiscountCode": {
+    "code": "WELCOME10",
+    "createdAt": 0,
+    "currency": "USD",
+    "enabled": true,
+    "expiresAt": 0,
+    "id": 1,
+    "kind": "percent",
+    "maxUses": 100,
+    "oncePerCustomer": true,
+    "planIds": [
+      1,
+      2
+    ],
+    "updatedAt": 0,
+    "uses": 3,
+    "value": 10
   },
   "FallbackParentInfo": {
     "masterId": 0,
@@ -1032,6 +1063,11 @@ export const EXAMPLES: Record<string, unknown> = {
     "limit": 2,
     "registered": 1,
     "remaining": 1
+  },
+  "IDPayConfig": {
+    "apiKey": "",
+    "enabled": false,
+    "sandbox": false
   },
   "Inbound": {
     "clientStats": [
@@ -1304,6 +1340,69 @@ export const EXAMPLES: Record<string, unknown> = {
     "xrayState": "running",
     "xrayVersion": "25.10.31"
   },
+  "Order": {
+    "amount": 250000,
+    "clientEmail": "alice",
+    "contact": "@alice",
+    "createdAt": 0,
+    "currency": "IRT",
+    "discountCode": "WELCOME10",
+    "durationDays": 30,
+    "fulfilledAt": 0,
+    "gateway": "card",
+    "gatewayRef": "",
+    "id": 1,
+    "kind": "new",
+    "limitIp": 2,
+    "listAmount": 250000,
+    "paidAt": 0,
+    "payUrl": "",
+    "planId": 1,
+    "planName": "Monthly 50 GB",
+    "receiptNote": "",
+    "receiptRef": "482913",
+    "referralCode": "",
+    "referrerEmail": "",
+    "rejectReason": "",
+    "status": "pending",
+    "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+    "totalGB": 53687091200,
+    "updatedAt": 0
+  },
+  "OrderPage": {
+    "items": [
+      {
+        "amount": 250000,
+        "clientEmail": "alice",
+        "contact": "@alice",
+        "createdAt": 0,
+        "currency": "IRT",
+        "discountCode": "WELCOME10",
+        "durationDays": 30,
+        "fulfilledAt": 0,
+        "gateway": "card",
+        "gatewayRef": "",
+        "id": 1,
+        "kind": "new",
+        "limitIp": 2,
+        "listAmount": 250000,
+        "paidAt": 0,
+        "payUrl": "",
+        "planId": 1,
+        "planName": "Monthly 50 GB",
+        "receiptNote": "",
+        "receiptRef": "482913",
+        "referralCode": "",
+        "referrerEmail": "",
+        "rejectReason": "",
+        "status": "pending",
+        "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+        "totalGB": 53687091200,
+        "updatedAt": 0
+      }
+    ],
+    "total": 0
+  },
   "OutboundTraffics": {
     "down": 0,
     "id": 0,
@@ -1338,6 +1437,21 @@ export const EXAMPLES: Record<string, unknown> = {
     "tag": "inbound-51820",
     "up": 1048576
   },
+  "Plan": {
+    "createdAt": 0,
+    "currency": "IRT",
+    "description": "Valid for 30 days",
+    "durationDays": 30,
+    "enabled": true,
+    "id": 1,
+    "limitIp": 2,
+    "name": "Monthly 50 GB",
+    "price": 250000,
+    "sortOrder": 0,
+    "templateId": 1,
+    "totalGB": 53687091200,
+    "updatedAt": 0
+  },
   "ProbeResultUI": {
     "cpuPct": 12.5,
     "error": "",
@@ -1356,6 +1470,13 @@ export const EXAMPLES: Record<string, unknown> = {
     "restarts": 0,
     "running": true,
     "startedAt": 1760000000000
+  },
+  "Quote": {
+    "currency": "IRT",
+    "discount": 25000,
+    "discountCode": "WELCOME10",
+    "final": 225000,
+    "list": 250000
   },
   "RealityScanResult": {
     "alpn": "h2",
@@ -1381,6 +1502,84 @@ export const EXAMPLES: Record<string, unknown> = {
     "tls13": true,
     "tlsVersion": "1.3",
     "x25519": true
+  },
+  "ReferralConfig": {
+    "bonusPercent": 10,
+    "enabled": false
+  },
+  "SalesConfig": {
+    "card": {
+      "bankName": "Melli",
+      "cardNumber": "6037991812345678",
+      "enabled": false,
+      "holderName": "Ali Rezaei",
+      "instructions": ""
+    },
+    "clearSecrets": [
+      ""
+    ],
+    "crypto": {
+      "apiKey": "",
+      "enabled": false,
+      "ipnSecret": "",
+      "sandbox": false
+    },
+    "idpay": {
+      "apiKey": "",
+      "enabled": false,
+      "sandbox": false
+    },
+    "publicBaseUrl": "https://shop.example.com",
+    "publicEnabled": false,
+    "referral": {
+      "bonusPercent": 10,
+      "enabled": false
+    },
+    "walletEnabled": false,
+    "zarinpal": {
+      "enabled": false,
+      "merchantId": "",
+      "sandbox": false
+    }
+  },
+  "SalesConfigView": {
+    "card": {
+      "bankName": "Melli",
+      "cardNumber": "6037991812345678",
+      "enabled": false,
+      "holderName": "Ali Rezaei",
+      "instructions": ""
+    },
+    "clearSecrets": [
+      ""
+    ],
+    "crypto": {
+      "apiKey": "",
+      "enabled": false,
+      "ipnSecret": "",
+      "sandbox": false
+    },
+    "hasCryptoApiKey": false,
+    "hasCryptoIpnSecret": false,
+    "hasIdpayApiKey": false,
+    "hasZarinpalMerchantId": false,
+    "idpay": {
+      "apiKey": "",
+      "enabled": false,
+      "sandbox": false
+    },
+    "publicBaseUrl": "https://shop.example.com",
+    "publicEnabled": false,
+    "referral": {
+      "bonusPercent": 10,
+      "enabled": false
+    },
+    "walletEnabled": false,
+    "zarinpal": {
+      "enabled": false,
+      "merchantId": "",
+      "sandbox": false
+    }
   },
   "ServerSettings": {
     "contentPaddingAddition": "",
@@ -1435,6 +1634,72 @@ export const EXAMPLES: Record<string, unknown> = {
     "id": 0,
     "key": "",
     "value": ""
+  },
+  "ShopCatalog": {
+    "methods": [
+      ""
+    ],
+    "plans": [
+      {
+        "currency": "IRT",
+        "description": "",
+        "durationDays": 30,
+        "id": 1,
+        "limitIp": 2,
+        "name": "Monthly 50 GB",
+        "price": 250000,
+        "totalGB": 53687091200
+      }
+    ]
+  },
+  "ShopOrderView": {
+    "amount": 250000,
+    "card": null,
+    "clientEmail": "alice",
+    "createdAt": 0,
+    "currency": "IRT",
+    "discountCode": "",
+    "fulfilled": false,
+    "gateway": "card",
+    "kind": "new",
+    "listAmount": 250000,
+    "payUrl": "",
+    "planName": "Monthly 50 GB",
+    "rejectReason": "",
+    "status": "pending",
+    "subscriptionUrl": "",
+    "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f"
+  },
+  "ShopPlan": {
+    "currency": "IRT",
+    "description": "",
+    "durationDays": 30,
+    "id": 1,
+    "limitIp": 2,
+    "name": "Monthly 50 GB",
+    "price": 250000,
+    "totalGB": 53687091200
+  },
+  "ShopWallet": {
+    "balances": [
+      {
+        "amount": 250,
+        "currency": "USD"
+      }
+    ],
+    "entries": [
+      {
+        "amount": 250,
+        "createdAt": 0,
+        "currency": "USD",
+        "email": "alice",
+        "id": 1,
+        "kind": "referral",
+        "note": "",
+        "orderId": 12
+      }
+    ],
+    "referralCode": "K7M2QX9P"
   },
   "Sponsor": {
     "enable": true,
@@ -1575,5 +1840,45 @@ export const EXAMPLES: Record<string, unknown> = {
     "id": 4,
     "reason": "this kernel has no PPP support (/dev/ppp is missing), which L2TP needs",
     "running": false
+  },
+  "WalletBalance": {
+    "amount": 250,
+    "currency": "USD"
+  },
+  "WalletEntry": {
+    "amount": 250,
+    "createdAt": 0,
+    "currency": "USD",
+    "email": "alice",
+    "id": 1,
+    "kind": "referral",
+    "note": "",
+    "orderId": 12
+  },
+  "WalletView": {
+    "balances": [
+      {
+        "amount": 250,
+        "currency": "USD"
+      }
+    ],
+    "email": "alice",
+    "entries": [
+      {
+        "amount": 250,
+        "createdAt": 0,
+        "currency": "USD",
+        "email": "alice",
+        "id": 1,
+        "kind": "referral",
+        "note": "",
+        "orderId": 12
+      }
+    ]
+  },
+  "ZarinpalConfig": {
+    "enabled": false,
+    "merchantId": "",
+    "sandbox": false
   }
 };
