@@ -17,6 +17,9 @@ export const keys = {
   audit: {
     list: (params: unknown) => ['audit', 'list', params] as const,
   },
+  security: {
+    config: () => ['security', 'config'] as const,
+  },
   reseller: {
     root: () => ['reseller'] as const,
     me: () => ['reseller', 'me'] as const,

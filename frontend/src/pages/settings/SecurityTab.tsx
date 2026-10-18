@@ -28,6 +28,7 @@ import { SettingListItem } from '@/components/ui';
 import { onNumber } from '@/utils/onNumber';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { catTabLabel } from './catTabLabel';
+import SecurityExtraPanel from './SecurityExtraPanel';
 import TwoFactorModal from './TwoFactorModal';
 import './SecurityTab.css';
 
@@ -528,6 +529,15 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
                 </SettingListItem>
               </>
             ),
+          },
+          {
+            key: '6',
+            label: catTabLabel(
+              <SafetyOutlined />,
+              t('pages.settings.security.extra.tab'),
+              isMobile,
+            ),
+            children: <SecurityExtraPanel />,
           },
         ]}
       />

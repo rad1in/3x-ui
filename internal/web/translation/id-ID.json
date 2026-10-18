@@ -161,12 +161,16 @@
       "hello": "Halo",
       "title": "Selamat Datang",
       "loginAgain": "Sesi Anda telah berakhir, harap masuk kembali",
+      "captcha": "Pemeriksaan keamanan",
+      "captchaPlaceholder": "Hasil hitungan",
+      "captchaRefresh": "Tampilkan gambar lain",
       "toasts": {
         "invalidFormData": "Format data input tidak valid.",
         "emptyUsername": "Nama Pengguna diperlukan",
         "emptyPassword": "Kata Sandi diperlukan",
         "wrongUsernameOrPassword": "Username, kata sandi, atau kode dua faktor tidak valid.",
-        "successLogin": "Anda telah berhasil masuk ke akun Anda."
+        "successLogin": "Anda telah berhasil masuk ke akun Anda.",
+        "wrongCaptcha": "Jawaban pemeriksaan keamanan salah."
       }
     },
     "index": {
@@ -1616,6 +1620,12 @@
         "twoFactorModalSetSuccess": "Autentikasi dua faktor telah berhasil dibuat",
         "twoFactorModalDeleteSuccess": "Autentikasi dua faktor telah berhasil dihapus",
         "twoFactorModalError": "Kode salah",
+        "extra": {
+          "tab": "Perlindungan tambahan",
+          "captcha": "Captcha login",
+          "captchaDesc": "Meminta jawaban penjumlahan sederhana, digambar oleh panel sendiri, sebelum memeriksa kata sandi. Tidak ada yang dikirim ke pihak ketiga.",
+          "saved": "Pengaturan keamanan disimpan"
+        },
         "show": "Tampilkan",
         "hide": "Sembunyikan",
         "apiTokenNew": "Token baru",

@@ -161,12 +161,16 @@
       "hello": "Xin chào",
       "title": "Chào mừng",
       "loginAgain": "Thời hạn đăng nhập đã hết. Vui lòng đăng nhập lại.",
+      "captcha": "Kiểm tra bảo mật",
+      "captchaPlaceholder": "Kết quả phép tính",
+      "captchaRefresh": "Hiện hình khác",
       "toasts": {
         "invalidFormData": "Dạng dữ liệu nhập không hợp lệ.",
         "emptyUsername": "Vui lòng nhập tên người dùng.",
         "emptyPassword": "Vui lòng nhập mật khẩu.",
         "wrongUsernameOrPassword": "Tên người dùng, mật khẩu hoặc mã xác thực hai yếu tố không hợp lệ.",
-        "successLogin": "Bạn đã đăng nhập vào tài khoản thành công."
+        "successLogin": "Bạn đã đăng nhập vào tài khoản thành công.",
+        "wrongCaptcha": "Đáp án kiểm tra bảo mật không đúng."
       }
     },
     "index": {
@@ -1616,6 +1620,12 @@
         "twoFactorModalSetSuccess": "Xác thực hai yếu tố đã được thiết lập thành công",
         "twoFactorModalDeleteSuccess": "Xác thực hai yếu tố đã được xóa thành công",
         "twoFactorModalError": "Mã sai",
+        "extra": {
+          "tab": "Bảo vệ bổ sung",
+          "captcha": "Captcha đăng nhập",
+          "captchaDesc": "Hỏi một phép tính đơn giản do chính bảng điều khiển vẽ thành hình, trước khi kiểm tra mật khẩu. Không gửi gì cho bên thứ ba.",
+          "saved": "Đã lưu cài đặt bảo mật"
+        },
         "show": "Hiển thị",
         "hide": "Ẩn",
         "apiTokenNew": "Token mới",

@@ -2909,6 +2909,28 @@ export const sections: readonly Section[] = [
   },
 
   {
+    id: 'security',
+    title: 'Extra security',
+    description:
+      'Protections that do not depend on two-factor codes: login captcha and more. Owner only. All endpoints under /panel/api/security.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/security/config',
+        summary: 'The extra-security configuration. Secrets are never returned.',
+        responseSchema: 'SecurityConfigView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/security/config/save',
+        summary:
+          'Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SecurityConfig.' }],
+      },
+    ],
+  },
+
+  {
     id: 'sessions',
     title: 'Sessions',
     description:

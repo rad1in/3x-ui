@@ -161,12 +161,16 @@
       "hello": "Olá",
       "title": "Bem-vindo",
       "loginAgain": "Sua sessão expirou, faça login novamente",
+      "captcha": "Verificação de segurança",
+      "captchaPlaceholder": "Resultado da conta",
+      "captchaRefresh": "Mostrar outra imagem",
       "toasts": {
         "invalidFormData": "O formato dos dados de entrada é inválido.",
         "emptyUsername": "Nome de usuário é obrigatório",
         "emptyPassword": "Senha é obrigatória",
         "wrongUsernameOrPassword": "Nome de usuário, senha ou código de dois fatores inválido.",
-        "successLogin": "Você entrou na sua conta com sucesso."
+        "successLogin": "Você entrou na sua conta com sucesso.",
+        "wrongCaptcha": "A resposta da verificação de segurança está errada."
       }
     },
     "index": {
@@ -1616,6 +1620,12 @@
         "twoFactorModalSetSuccess": "A autenticação de dois fatores foi estabelecida com sucesso",
         "twoFactorModalDeleteSuccess": "A autenticação de dois fatores foi excluída com sucesso",
         "twoFactorModalError": "Código incorreto",
+        "extra": {
+          "tab": "Proteção extra",
+          "captcha": "Captcha de login",
+          "captchaDesc": "Pede o resultado de uma conta simples, desenhada como imagem pelo próprio painel, antes de checar a senha. Nada é enviado a terceiros.",
+          "saved": "Configurações de segurança salvas"
+        },
         "show": "Mostrar",
         "hide": "Ocultar",
         "apiTokenNew": "Novo token",

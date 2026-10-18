@@ -215,3 +215,16 @@
   height: 40px;
   border-radius: 10px;
 }
+
+.captcha-refresh {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.captcha-refresh img {
+  height: 32px;
+  display: block;
+}

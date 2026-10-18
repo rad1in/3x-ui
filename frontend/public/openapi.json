@@ -6520,6 +6520,30 @@
         ],
         "type": "object"
       },
+      "SecurityConfig": {
+        "description": "SecurityConfig groups the login and data protections that do not depend on\ntwo-factor codes. It is one JSON setting that only owners may change.",
+        "properties": {
+          "captchaEnable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "captchaEnable"
+        ],
+        "type": "object"
+      },
+      "SecurityConfigView": {
+        "description": "SecurityConfigView is the configuration as the admin API serves it.",
+        "properties": {
+          "captchaEnable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "captchaEnable"
+        ],
+        "type": "object"
+      },
       "ServerSettings": {
         "description": "ServerSettings is the \"server\" block of an AmneziaWG inbound's Settings\nJSON: the interface-level configuration shared by every client/peer. The\nlisten port is deliberately not duplicated here — it lives on the inbound\nrow itself (Inbound.Port), like every other protocol.",
         "properties": {
@@ -7613,6 +7637,10 @@
     {
       "name": "Reseller credit",
       "description": "Credit and sales of resellers, the admins with the operator role. A reseller is debited by its price list (credit per GiB and per day) when it creates or renews clients; amounts are credit units. The price list and top-ups are owner-only. All endpoints under /panel/api/reseller."
+    },
+    {
+      "name": "Extra security",
+      "description": "Protections that do not depend on two-factor codes: login captcha and more. Owner only. All endpoints under /panel/api/security."
     },
     {
       "name": "Sessions",
@@ -20275,6 +20303,93 @@
                   "body": {
                     "type": "object",
                     "description": "{\"pricePerGb\": 100, \"pricePerDay\": null}"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/security/config": {
+      "get": {
+        "tags": [
+          "Extra security"
+        ],
+        "summary": "The extra-security configuration. Secrets are never returned.",
+        "operationId": "get_panel_api_security_config",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SecurityConfigView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "captchaEnable": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/security/config/save": {
+      "post": {
+        "tags": [
+          "Extra security"
+        ],
+        "summary": "Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form.",
+        "operationId": "post_panel_api_security_config_save",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "SecurityConfig."
                   }
                 },
                 "required": [

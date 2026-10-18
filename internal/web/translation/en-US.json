@@ -161,12 +161,16 @@
       "hello": "Hello",
       "title": "Welcome",
       "loginAgain": "Your session has expired, please log in again",
+      "captcha": "Security check",
+      "captchaPlaceholder": "Answer of the sum",
+      "captchaRefresh": "Show another picture",
       "toasts": {
         "invalidFormData": "The input data format is invalid.",
         "emptyUsername": "Username is required",
         "emptyPassword": "Password is required",
         "wrongUsernameOrPassword": "Invalid username or password or two-factor code.",
-        "successLogin": "You have successfully logged into your account."
+        "successLogin": "You have successfully logged into your account.",
+        "wrongCaptcha": "The security check answer is wrong."
       }
     },
     "index": {
@@ -1738,6 +1742,12 @@
         "twoFactorModalSetSuccess": "Two-factor authentication has been successfully established",
         "twoFactorModalDeleteSuccess": "Two-factor authentication has been successfully deleted",
         "twoFactorModalError": "Wrong code",
+        "extra": {
+          "tab": "Extra protection",
+          "captcha": "Login captcha",
+          "captchaDesc": "Asks a simple sum, drawn as a picture by the panel itself, before checking the password. Nothing is sent to a third party.",
+          "saved": "Security settings saved"
+        },
         "show": "Show",
         "hide": "Hide",
         "apiTokenNew": "New token",

@@ -1468,6 +1468,14 @@ export interface SalesConfigView {
   zarinpal: ZarinpalConfig;
 }
 
+export interface SecurityConfig {
+  captchaEnable: boolean;
+}
+
+export interface SecurityConfigView {
+  captchaEnable: boolean;
+}
+
 export interface ServerSettings {
   contentPaddingAddition?: string;
   disableCookies: boolean;

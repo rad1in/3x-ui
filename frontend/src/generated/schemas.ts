@@ -6494,6 +6494,30 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "SecurityConfig": {
+    "description": "SecurityConfig groups the login and data protections that do not depend on\ntwo-factor codes. It is one JSON setting that only owners may change.",
+    "properties": {
+      "captchaEnable": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "captchaEnable"
+    ],
+    "type": "object"
+  },
+  "SecurityConfigView": {
+    "description": "SecurityConfigView is the configuration as the admin API serves it.",
+    "properties": {
+      "captchaEnable": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "captchaEnable"
+    ],
+    "type": "object"
+  },
   "ServerSettings": {
     "description": "ServerSettings is the \"server\" block of an AmneziaWG inbound's Settings\nJSON: the interface-level configuration shared by every client/peer. The\nlisten port is deliberately not duplicated here — it lives on the inbound\nrow itself (Inbound.Port), like every other protocol.",
     "properties": {

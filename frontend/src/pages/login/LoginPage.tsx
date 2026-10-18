@@ -28,7 +28,12 @@ import { FormField, rhfZodValidate } from '@/components/form/rhf';
 import { setMessageInstance } from '@/utils/messageBus';
 import SponsorSlot from '@/components/sponsor/SponsorSlot';
 import { pauseAnimationsUntilLeave, useTheme } from '@/hooks/useTheme';
-import { LoginFormSchema, TwoFactorCodeSchema, type LoginFormValues } from '@/schemas/login';
+import {
+  CaptchaAnswerSchema,
+  LoginFormSchema,
+  TwoFactorCodeSchema,
+  type LoginFormValues,
+} from '@/schemas/login';
 import { BrandMark } from '@/components/ui';
 import './LoginPage.css';
 
@@ -50,9 +55,10 @@ export default function LoginPage() {
   const [fetched, setFetched] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [twoFactorEnable, setTwoFactorEnable] = useState(false);
+  const [captcha, setCaptcha] = useState<{ id: string; image: string } | null>(null);
   const [headlineIndex, setHeadlineIndex] = useState(0);
   const methods = useForm<LoginForm>({
-    defaultValues: { username: '', password: '', twoFactorCode: '' },
+    defaultValues: { username: '', password: '', twoFactorCode: '', captchaAnswer: '' },
   });
   const [lang, setLang] = useState<string>(() => LanguageManager.getLanguage());
 
@@ -65,9 +71,16 @@ export default function LoginPage() {
     return () => window.clearInterval(timer);
   }, [headlineWords.length]);
 
+  const loadCaptcha = useCallback(async () => {
+    const msg = await HttpUtil.get('/captcha', undefined, { silent: true });
+    const obj = msg?.obj as { enabled?: boolean; id?: string; image?: string } | undefined;
+    setCaptcha(obj?.enabled && obj.id && obj.image ? { id: obj.id, image: obj.image } : null);
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      await loadCaptcha();
       const msg = await HttpUtil.post('/getTwoFactorEnable');
       if (cancelled) return;
       if (msg.success) setTwoFactorEnable(!!msg.obj);
@@ -76,17 +89,24 @@ export default function LoginPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [loadCaptcha]);
 
-  const onSubmit = useCallback(async (values: LoginForm) => {
-    setSubmitting(true);
-    try {
-      const msg = await HttpUtil.post('/login', values);
-      if (msg.success) window.location.href = basePath + 'panel/';
-    } finally {
-      setSubmitting(false);
-    }
-  }, []);
+  const onSubmit = useCallback(
+    async (values: LoginForm) => {
+      setSubmitting(true);
+      try {
+        const msg = await HttpUtil.post('/login', { ...values, captchaId: captcha?.id ?? '' });
+        if (msg.success) window.location.href = basePath + 'panel/';
+        else if (captcha) {
+          methods.setValue('captchaAnswer', '');
+          await loadCaptcha();
+        }
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [captcha, loadCaptcha, methods],
+  );
 
   const onLangChange = useCallback((next: string) => {
     setLang(next);
@@ -232,6 +252,31 @@ export default function LoginPage() {
                           autoComplete="one-time-code"
                           size="large"
                           placeholder={t('twoFactorCode')}
+                        />
+                      </FormField>
+                    )}
+
+                    {captcha && (
+                      <FormField
+                        name="captchaAnswer"
+                        label={t('pages.login.captcha')}
+                        rules={{ validate: rhfZodValidate(CaptchaAnswerSchema) }}
+                      >
+                        <Input
+                          size="large"
+                          autoComplete="off"
+                          inputMode="numeric"
+                          placeholder={t('pages.login.captchaPlaceholder')}
+                          addonAfter={
+                            <button
+                              type="button"
+                              className="captcha-refresh"
+                              aria-label={t('pages.login.captchaRefresh')}
+                              onClick={() => void loadCaptcha()}
+                            >
+                              <img src={captcha.image} alt="" />
+                            </button>
+                          }
                         />
                       </FormField>
                     )}

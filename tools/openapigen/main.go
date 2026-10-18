@@ -112,6 +112,8 @@ func run(root, outDir string) error {
 				"WalletBalance",
 				"ResellerAccount",
 				"ResellerPrices",
+				"SecurityConfig",
+				"SecurityConfigView",
 				"ClientTransferRequest",
 				"ClientTransferResult",
 				"ClientTransferSkip",

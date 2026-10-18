@@ -161,12 +161,16 @@
       "hello": "你好",
       "title": "欢迎",
       "loginAgain": "登录时效已过，请重新登录",
+      "captcha": "安全验证",
+      "captchaPlaceholder": "算式的答案",
+      "captchaRefresh": "换一张图片",
       "toasts": {
         "invalidFormData": "数据格式错误",
         "emptyUsername": "请输入用户名",
         "emptyPassword": "请输入密码",
         "wrongUsernameOrPassword": "用户名、密码或双重验证码无效。",
-        "successLogin": "您已成功登录您的账户。"
+        "successLogin": "您已成功登录您的账户。",
+        "wrongCaptcha": "安全验证的答案不正确。"
       }
     },
     "index": {
@@ -1616,6 +1620,12 @@
         "twoFactorModalSetSuccess": "双因素认证已成功建立",
         "twoFactorModalDeleteSuccess": "双因素认证已成功删除",
         "twoFactorModalError": "验证码错误",
+        "extra": {
+          "tab": "额外防护",
+          "captcha": "登录验证码",
+          "captchaDesc": "在校验密码之前，先出一道由面板自己绘制成图片的简单算术题，不会向任何第三方发送数据。",
+          "saved": "安全设置已保存"
+        },
         "show": "显示",
         "hide": "隐藏",
         "apiTokenNew": "新建令牌",

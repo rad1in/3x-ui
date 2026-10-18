@@ -1674,6 +1674,12 @@ export const EXAMPLES: Record<string, unknown> = {
       "sandbox": false
     }
   },
+  "SecurityConfig": {
+    "captchaEnable": false
+  },
+  "SecurityConfigView": {
+    "captchaEnable": false
+  },
   "ServerSettings": {
     "contentPaddingAddition": "",
     "disableCookies": false,

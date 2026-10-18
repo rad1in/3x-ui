@@ -1,11 +1,13 @@
 package controller
 
 import (
+	"encoding/base64"
 	"net/http"
 	"text/template"
 	"time"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
+	"github.com/mhsanaei/3x-ui/v3/internal/util/captcha"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/middleware"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
@@ -21,13 +23,19 @@ type LoginForm struct {
 	Username      string `json:"username" form:"username"`
 	Password      string `json:"password" form:"password"`
 	TwoFactorCode string `json:"twoFactorCode" form:"twoFactorCode"`
+	CaptchaId     string `json:"captchaId" form:"captchaId"`
+	CaptchaAnswer string `json:"captchaAnswer" form:"captchaAnswer"`
 }
+
+// loginCaptcha holds the open login challenges; a restart simply drops them.
+var loginCaptcha = captcha.NewStore(5*time.Minute, 5000)
 
 // IndexController handles the main index and login-related routes.
 type IndexController struct {
 	BaseController
 
 	settingService service.SettingService
+	security       service.SecurityConfigService
 	userService    panel.UserService
 	sessionService panel.SessionService
 	panelService   panel.PanelService
@@ -45,6 +53,7 @@ func NewIndexController(g *gin.RouterGroup) *IndexController {
 func (a *IndexController) initRouter(g *gin.RouterGroup) {
 	g.GET("/", a.index)
 	g.GET("/csrf-token", a.csrfToken)
+	g.GET("/captcha", a.captcha)
 	g.GET("/sponsors", a.sponsors)
 	g.GET("/sponsors/logo/:name", a.sponsorLogo)
 	g.GET("/sponsors/feed/sponsors.json", a.sponsorFeed)
@@ -145,6 +154,13 @@ func (a *IndexController) login(c *gin.Context) {
 		return
 	}
 
+	if cfg, err := a.security.Get(); err != nil || cfg.CaptchaEnable {
+		if err != nil || !loginCaptcha.Verify(form.CaptchaId, form.CaptchaAnswer) {
+			pureJsonMsg(c, http.StatusOK, false, I18nWeb(c, "pages.login.toasts.wrongCaptcha"))
+			return
+		}
+	}
+
 	user, checkErr := a.userService.CheckUser(form.Username, form.Password, form.TwoFactorCode)
 
 	if user == nil {
@@ -224,6 +240,22 @@ func (a *IndexController) csrfToken(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "obj": token})
+}
+
+// captcha hands the login page a fresh challenge when the captcha is on.
+func (a *IndexController) captcha(c *gin.Context) {
+	c.Header("Cache-Control", "no-store")
+	cfg, err := a.security.Get()
+	if err != nil || !cfg.CaptchaEnable {
+		jsonObj(c, gin.H{"enabled": false}, nil)
+		return
+	}
+	ch, err := loginCaptcha.Issue()
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	jsonObj(c, gin.H{"enabled": true, "id": ch.ID, "image": "data:image/png;base64," + base64.StdEncoding.EncodeToString(ch.PNG)}, nil)
 }
 
 // getTwoFactorEnable retrieves the current status of two-factor authentication.

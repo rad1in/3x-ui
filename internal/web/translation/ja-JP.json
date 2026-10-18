@@ -161,12 +161,16 @@
       "hello": "こんにちは",
       "title": "ようこそ",
       "loginAgain": "ログインセッションが切れました。再度ログインしてください。",
+      "captcha": "セキュリティチェック",
+      "captchaPlaceholder": "計算の答え",
+      "captchaRefresh": "別の画像を表示",
       "toasts": {
         "invalidFormData": "データ形式エラー",
         "emptyUsername": "ユーザー名を入力してください",
         "emptyPassword": "パスワードを入力してください",
         "wrongUsernameOrPassword": "ユーザー名、パスワード、または二段階認証コードが無効です。",
-        "successLogin": "アカウントに正常にログインしました。"
+        "successLogin": "アカウントに正常にログインしました。",
+        "wrongCaptcha": "セキュリティチェックの答えが違います。"
       }
     },
     "index": {
@@ -1616,6 +1620,12 @@
         "twoFactorModalSetSuccess": "二要素認証が正常に設定されました",
         "twoFactorModalDeleteSuccess": "二要素認証が正常に削除されました",
         "twoFactorModalError": "コードが間違っています",
+        "extra": {
+          "tab": "追加の保護",
+          "captcha": "ログインCAPTCHA",
+          "captchaDesc": "パスワードを確認する前に、パネル自身が画像として描く簡単な計算を出題します。外部サービスには何も送信されません。",
+          "saved": "セキュリティ設定を保存しました"
+        },
         "show": "表示",
         "hide": "非表示",
         "apiTokenNew": "新規トークン",

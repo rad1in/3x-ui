@@ -161,12 +161,16 @@
       "hello": "Hola",
       "title": "Bienvenido",
       "loginAgain": "El límite de tiempo de inicio de sesión ha expirado. Por favor, inicia sesión nuevamente.",
+      "captcha": "Comprobación de seguridad",
+      "captchaPlaceholder": "Resultado de la suma",
+      "captchaRefresh": "Mostrar otra imagen",
       "toasts": {
         "invalidFormData": "El formato de los datos de entrada es inválido.",
         "emptyUsername": "Por favor ingresa el nombre de usuario.",
         "emptyPassword": "Por favor ingresa la contraseña.",
         "wrongUsernameOrPassword": "Nombre de usuario, contraseña o código de dos factores incorrecto.",
-        "successLogin": "Has iniciado sesión en tu cuenta correctamente."
+        "successLogin": "Has iniciado sesión en tu cuenta correctamente.",
+        "wrongCaptcha": "La respuesta de la comprobación de seguridad es incorrecta."
       }
     },
     "index": {
@@ -1616,6 +1620,12 @@
         "twoFactorModalSetSuccess": "La autenticación de dos factores se ha establecido con éxito",
         "twoFactorModalDeleteSuccess": "La autenticación de dos factores se ha eliminado con éxito",
         "twoFactorModalError": "Código incorrecto",
+        "extra": {
+          "tab": "Protección extra",
+          "captcha": "Captcha de inicio de sesión",
+          "captchaDesc": "Pide resolver una operación sencilla, dibujada como imagen por el propio panel, antes de comprobar la contraseña. No se envía nada a terceros.",
+          "saved": "Ajustes de seguridad guardados"
+        },
         "show": "Mostrar",
         "hide": "Ocultar",
         "apiTokenNew": "Nuevo token",

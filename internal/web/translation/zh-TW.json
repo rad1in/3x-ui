@@ -161,12 +161,16 @@
       "hello": "你好",
       "title": "歡迎",
       "loginAgain": "登入時效已過，請重新登入",
+      "captcha": "安全驗證",
+      "captchaPlaceholder": "算式的答案",
+      "captchaRefresh": "換一張圖片",
       "toasts": {
         "invalidFormData": "資料格式錯誤",
         "emptyUsername": "請輸入使用者名稱",
         "emptyPassword": "請輸入密碼",
         "wrongUsernameOrPassword": "用戶名、密碼或雙重驗證碼無效。",
-        "successLogin": "您已成功登入您的帳戶。"
+        "successLogin": "您已成功登入您的帳戶。",
+        "wrongCaptcha": "安全驗證的答案不正確。"
       }
     },
     "index": {
@@ -1616,6 +1620,12 @@
         "twoFactorModalSetSuccess": "雙重身份驗證已成功建立",
         "twoFactorModalDeleteSuccess": "雙重身份驗證已成功刪除",
         "twoFactorModalError": "驗證碼錯誤",
+        "extra": {
+          "tab": "額外防護",
+          "captcha": "登入驗證碼",
+          "captchaDesc": "在檢查密碼之前，先出一道由面板自己繪製成圖片的簡單算術題，不會向任何第三方傳送資料。",
+          "saved": "安全設定已儲存"
+        },
         "show": "顯示",
         "hide": "隱藏",
         "apiTokenNew": "新增令牌",
