@@ -1292,6 +1292,9 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 	if err := s.normalizeSSTPSettings(inbound, ""); err != nil {
 		return inbound, false, err
 	}
+	if err := s.normalizeOCServSettings(inbound, ""); err != nil {
+		return inbound, false, err
+	}
 	if inbound.NodeID != nil {
 		if err := checkNodeCanHostProtocol(database.GetDB(), *inbound.NodeID, inbound.Protocol); err != nil {
 			return inbound, false, err
@@ -1371,7 +1374,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 	// Secure client ID
 	for _, client := range clients {
 		switch inbound.Protocol {
-		case "trojan", "masque", "openvpn", "ikev2", "l2tp", "ssh", "sstp":
+		case "trojan", "masque", "openvpn", "ikev2", "l2tp", "ssh", "sstp", "ocserv":
 			if client.Password == "" {
 				return inbound, false, common.NewError("empty client ID")
 			}
@@ -1900,7 +1903,7 @@ func (s *InboundService) validateUpdatedInboundClients(inbound *model.Inbound) e
 			if client.Auth == "" {
 				return common.NewError("empty client ID")
 			}
-		case model.MASQUE, model.OpenVPN, model.IKEv2, model.L2TP, model.SSH, model.SSTP:
+		case model.MASQUE, model.OpenVPN, model.IKEv2, model.L2TP, model.SSH, model.SSTP, model.OCServ:
 			if client.Password == "" {
 				return common.NewError("empty client ID")
 			}
@@ -1972,6 +1975,9 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 		return inbound, false, err
 	}
 	if err := s.normalizeSSTPSettings(inbound, oldInbound.Settings); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeOCServSettings(inbound, oldInbound.Settings); err != nil {
 		return inbound, false, err
 	}
 	inbound.SubSortIndex = normalizeSubSortIndex(inbound.SubSortIndex)
@@ -2282,14 +2288,14 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 // reconfigures in place where a Del+Add would drop every live session.
 func servedOutsideXray(protocol model.Protocol) bool {
 	return protocol == model.MTProto || protocol == model.TUIC || protocol == model.AmneziaWG ||
-		protocol == model.OpenVPN || protocol == model.IKEv2 || protocol == model.L2TP || protocol == model.SSH || protocol == model.SSTP
+		protocol == model.OpenVPN || protocol == model.IKEv2 || protocol == model.L2TP || protocol == model.SSH || protocol == model.SSTP || protocol == model.OCServ
 }
 
 // builtForLocalRuntime: these sidecars take an inbound with depleted clients
 // already removed, and a failed start never calls for an Xray restart.
 func builtForLocalRuntime(protocol model.Protocol) bool {
 	return protocol == model.MTProto || protocol == model.TUIC || protocol == model.OpenVPN ||
-		protocol == model.IKEv2 || protocol == model.L2TP || protocol == model.SSH || protocol == model.SSTP
+		protocol == model.IKEv2 || protocol == model.L2TP || protocol == model.SSH || protocol == model.SSTP || protocol == model.OCServ
 }
 
 // applyInboundUserOps reports whether per-user core ops moved running to next, so

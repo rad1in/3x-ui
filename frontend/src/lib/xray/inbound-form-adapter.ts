@@ -15,6 +15,7 @@ import {
   L2TPClientSchema,
   SSHClientSchema,
   SSTPClientSchema,
+  OCSERVClientSchema,
   ShadowsocksClientSchema,
   TrojanClientSchema,
   TuicClientSchema,
@@ -308,6 +309,8 @@ function clientSchemaForProtocol(protocol: string): z.ZodType | null {
       return SSHClientSchema;
     case 'sstp':
       return SSTPClientSchema;
+    case 'ocserv':
+      return OCSERVClientSchema;
     default:
       return null;
   }

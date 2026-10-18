@@ -129,6 +129,7 @@
     "l2tpHint": "Añade una VPN L2TP/IPsec (PSK) en los ajustes de VPN de tu dispositivo con el servidor, la clave precompartida, el usuario y la contraseña de abajo.",
     "sshHint": "Añade esta cuenta a una app de túnel SSH, o ejecuta ssh -N -D 1080 con el servidor, el puerto, el usuario y la contraseña de abajo. Comprueba la huella de la clave del host la primera vez que te conectes.",
     "sstpHint": "En Windows, instala el certificado CA como raíz de confianza y añade una VPN SSTP con el servidor, usuario y contraseña de abajo.",
+    "ocservHint": "En OpenConnect o Cisco Secure Client, confía en el certificado CA y conéctate al servidor y puerto de abajo con el usuario y la contraseña.",
     "outlineHint": "Claves de Outline: abre una en un dispositivo con la app Outline instalada, o cópiala y añádela en la app. La app vuelve a leer la clave, así que los cambios posteriores del servidor le llegan."
   },
   "menu": {
@@ -809,6 +810,10 @@
           "help": "Windows se conecta con su VPN SSTP integrada, que viaja sobre HTTPS. Los clientes inician sesión con su email como usuario y su contraseña. La dirección del servidor debe ser el nombre que escriben los clientes, porque el certificado se emite para él, y Windows debe confiar antes en el certificado CA de este inbound (descárgalo desde la información del cliente o la página de suscripción). Requiere un kernel con soporte PPP y el paquete pppd.",
           "poolDesc": "Rango IPv4 privado asignado a los clientes conectados. Déjalo vacío para elegir automáticamente un 10.91.x.0/24 libre.",
           "ca": "Certificado CA"
+        },
+        "ocserv": {
+          "help": "Los clientes OpenConnect y Cisco AnyConnect se conectan por TLS y DTLS en el mismo puerto. Inician sesión con su email como usuario y su contraseña. La dirección del servidor debe ser el nombre que escriben los clientes, porque el certificado se emite para él, y el cliente debe confiar en el certificado CA de este inbound (descárgalo desde la información del cliente o la página de suscripción). Usa el paquete ocserv, así que el servidor necesita tenerlo instalado y un dispositivo tun.",
+          "poolDesc": "Rango IPv4 privado asignado a los clientes conectados. Déjalo vacío para elegir automáticamente un 10.92.x.0/24 libre."
         }
       },
       "info": {

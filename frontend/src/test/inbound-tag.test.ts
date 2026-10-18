@@ -73,6 +73,11 @@ describe('composeInboundTag transport suffix parity', () => {
       'in-443-tcp',
     ],
     [
+      'ocserv listens for TLS and DTLS',
+      base({ protocol: 'ocserv', streamSettings: { network: 'kcp' } }),
+      'in-443-tcpudp',
+    ],
+    [
       'sstp is tcp whatever the stream says',
       base({ protocol: 'sstp', streamSettings: { network: 'kcp' } }),
       'in-443-tcp',

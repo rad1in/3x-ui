@@ -41,12 +41,15 @@ describe('inbound row actions', () => {
     expect(keys).toContain('subs');
   });
 
-  // IKEv2, L2TP, SSH and SSTP have no share links either; their logins are on the subscription page.
-  it.each(['ikev2', 'l2tp', 'ssh', 'sstp'])('offers no link export for %s', (protocol) => {
-    const keys = menuKeys(protocol);
-    expect(keys).not.toContain('export');
-    expect(keys).toContain('subs');
-  });
+  // IKEv2, L2TP, SSH, SSTP and ocserv have no share links either; their logins are on the subscription page.
+  it.each(['ikev2', 'l2tp', 'ssh', 'sstp', 'ocserv'])(
+    'offers no link export for %s',
+    (protocol) => {
+      const keys = menuKeys(protocol);
+      expect(keys).not.toContain('export');
+      expect(keys).toContain('subs');
+    },
+  );
 
   it('keeps link export for link-based protocols', () => {
     const keys = menuKeys('vless');

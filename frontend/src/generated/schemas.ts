@@ -4281,7 +4281,8 @@ export const SCHEMAS: Record<string, unknown> = {
           "ikev2",
           "l2tp",
           "ssh",
-          "sstp"
+          "sstp",
+          "ocserv"
         ],
         "example": "vless",
         "type": "string"

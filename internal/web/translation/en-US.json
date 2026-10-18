@@ -129,6 +129,7 @@
     "l2tpHint": "Add an L2TP/IPsec (PSK) VPN in your device's VPN settings with the server, pre-shared key, username and password below.",
     "sshHint": "Add this account to an SSH tunnel app, or run ssh -N -D 1080 with the server, port, username and password below. Check the host key fingerprint the first time you connect.",
     "sstpHint": "In Windows, install the CA certificate as a Trusted Root, then add an SSTP VPN with the server, username and password below.",
+    "ocservHint": "In OpenConnect or Cisco Secure Client, trust the CA certificate, then connect to the server and port below with the username and password.",
     "outlineHint": "Outline keys: open one on a device with the Outline app installed, or copy it and add it in the app. The app re-reads the key, so later server changes reach it."
   },
   "menu": {
@@ -810,6 +811,10 @@
           "help": "Windows connects with its built-in SSTP VPN, carried over HTTPS. Clients sign in with their email as the username and their password. The server address must be the name clients type, since the certificate is issued for it, and Windows must first trust this inbound's CA certificate (download it from the client's info or the subscription page). It needs a kernel with PPP support and the pppd package.",
           "poolDesc": "Private IPv4 range handed to connected clients. Leave empty to pick a free 10.91.x.0/24 automatically.",
           "ca": "CA certificate"
+        },
+        "ocserv": {
+          "help": "OpenConnect and Cisco AnyConnect clients connect over TLS and DTLS on the same port. Clients sign in with their email as the username and their password. The server address must be the name clients type, since the certificate is issued for it, and the client must trust this inbound's CA certificate (download it from the client's info or the subscription page). It runs the ocserv package, so a server needs ocserv installed and a tun device.",
+          "poolDesc": "Private IPv4 range handed to connected clients. Leave empty to pick a free 10.92.x.0/24 automatically."
         }
       },
       "info": {

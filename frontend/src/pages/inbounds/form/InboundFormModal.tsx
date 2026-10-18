@@ -27,6 +27,7 @@ import {
 import {
   createDefaultIKEv2InboundSettings,
   createDefaultSSTPInboundSettings,
+  createDefaultOCSERVInboundSettings,
   createDefaultInboundSettings,
 } from '@/lib/xray/inbound-defaults';
 import { generateAwgObfuscation } from '@/lib/xray/amneziawg-obfuscation';
@@ -83,6 +84,7 @@ import {
   L2TPFields,
   SSHFields,
   SSTPFields,
+  OCSERVFields,
   ShadowsocksFields,
   TuicFields,
   TunFields,
@@ -549,13 +551,15 @@ export default function InboundFormModal({
           ? createDefaultIKEv2InboundSettings(window.location.hostname)
           : next === Protocols.SSTP
             ? createDefaultSSTPInboundSettings(window.location.hostname)
-            : (createDefaultInboundSettings(next) ?? undefined);
+            : next === Protocols.OCSERV
+              ? createDefaultOCSERVInboundSettings(window.location.hostname)
+              : (createDefaultInboundSettings(next) ?? undefined);
       setV('settings', settings);
       // Native IKEv2 clients only ever dial UDP 500 (4500 behind NAT), L2TP ones 1701.
       if (next === Protocols.IKEV2) setV('port', 500);
       if (next === Protocols.L2TP) setV('port', 1701);
       if (next === Protocols.SSH) setV('port', 2222);
-      if (next === Protocols.SSTP) setV('port', 443);
+      if (next === Protocols.SSTP || next === Protocols.OCSERV) setV('port', 443);
       if (!NODE_ELIGIBLE_PROTOCOLS[next]) {
         setV('nodeId', null);
       }
@@ -876,6 +880,8 @@ export default function InboundFormModal({
       {protocol === Protocols.SSH && <SSHFields />}
 
       {protocol === Protocols.SSTP && <SSTPFields />}
+
+      {protocol === Protocols.OCSERV && <OCSERVFields />}
 
       {protocol === Protocols.SHADOWSOCKS && <ShadowsocksFields isSSWith2022={isSSWith2022} />}
 
@@ -1235,6 +1241,7 @@ export default function InboundFormModal({
                     Protocols.L2TP,
                     Protocols.SSH,
                     Protocols.SSTP,
+                    Protocols.OCSERV,
                   ] as string[]
                 ).includes(protocol) || isFallbackHost
                   ? [

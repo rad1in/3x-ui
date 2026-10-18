@@ -55,6 +55,8 @@ file locations when it can answer in one hop.
   password logins = panel clients, port forwarding only, panel-metered.
 - `internal/sstp/` — SSTP inbounds: in-process TLS/SSTP listener per inbound feeding PPP frames to
   one `pppd` per client (HDLC at the boundary); logins in a marked `chap-secrets` block (`internal/pppsecrets/`).
+- `internal/ocserv/` — OpenConnect/AnyConnect inbounds: one `ocserv` process each, logins in a
+  crypt-hashed passwd file, bytes read from `occtl`, sessions ended with it.
 - `internal/vpnnat/` — iptables masquerade/forward/MSS clamp for VPN client networks.
 - `internal/tuic/` — TUIC v5 inbounds: `tuic-server` sidecar supervisor, native Go UDP relay traffic metering.
 - `internal/amneziawg/` — AmneziaWG protocol shape: instance/peer derivation
@@ -74,7 +76,7 @@ file locations when it can answer in one hop.
   - `controller/` — panel + REST API handlers; OpenAPI at /panel/api/openapi.json.
   - `service/` — business logic (InboundService, SettingService, XrayService,
     node sync); subpackages tgbot/, discord/, email/, webhook/, outbound/, panel/, integration/.
-  - `job/` — 32 cron jobs (traffic, fail2ban IP-limit, node heartbeat/sync, LDAP,
+  - `job/` — 33 cron jobs (traffic, fail2ban IP-limit, node heartbeat/sync, LDAP,
     CPU/memory watchdogs, …); full table in `docs/architecture.md` §5.4.
   - `middleware/`, `entity/`, `global/`, `session/` (CSRF), `network/`,
     `runtime/` (master/sub-node over mTLS), `websocket/`.

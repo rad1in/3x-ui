@@ -73,6 +73,7 @@ const TRACKED_PROTOCOLS: readonly string[] = [
   Protocols.L2TP,
   Protocols.SSH,
   Protocols.SSTP,
+  Protocols.OCSERV,
 ];
 
 async function fetchSlimInbounds(): Promise<unknown[]> {

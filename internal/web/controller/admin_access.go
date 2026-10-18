@@ -72,6 +72,7 @@ var operatorRoutes = map[string]operatorRule{
 	"GET /inbounds/:id/openvpnProfile": inboundParamInScope,
 	"GET /inbounds/:id/ikev2Profile":   inboundParamInScope,
 	"GET /inbounds/:id/sstpCa":         inboundParamInScope,
+	"GET /inbounds/:id/ocservCa":       inboundParamInScope,
 	"POST /inbounds/update/:id":        inboundParamInScope,
 	"POST /inbounds/setEnable/:id":     inboundParamInScope,
 	"POST /inbounds/:id/resetTraffic":  inboundParamInScope,

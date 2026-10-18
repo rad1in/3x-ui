@@ -9,6 +9,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/ipsec"
+	"github.com/mhsanaei/3x-ui/v3/internal/ocserv"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
 	"github.com/mhsanaei/3x-ui/v3/internal/sshtunnel"
 	"github.com/mhsanaei/3x-ui/v3/internal/sstp"
@@ -243,6 +244,51 @@ func TestSSTPSubscriptionListsTheAccountAndGatesItsCA(t *testing.T) {
 		t.Fatalf("CA download = %q %q %d bytes, %v", name, mime, len(body), err)
 	}
 	if _, _, _, err := (&SubService{}).SSTPCAFile("SOMEONE-ELSE", ib.Id); err == nil {
+		t.Fatal("a subscription with no account on the inbound downloaded its CA")
+	}
+}
+
+// An OpenConnect login is the server's name, port and account, with the CA to
+// trust from the same subscription and only for one that has an account there.
+func TestOCServSubscriptionListsTheAccountAndGatesItsCA(t *testing.T) {
+	initSubDB(t)
+	pki, err := ipsec.PKIFor(ipsec.PKI{}, "vpn.example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	settings, _ := json.Marshal(map[string]any{
+		"serverAddress": "vpn.example.com", "pool": "10.92.0.0/24", "pki": pki,
+		"clients": []map[string]any{{"email": "o@e", "password": "pw-oc", "subId": "OCSUB", "enable": true}},
+	})
+	db := database.GetDB()
+	ib := &model.Inbound{UserId: 1, Tag: "ocserv-8443", Enable: true, Port: 8443, Protocol: model.OCServ, Remark: "AnyConnect", Settings: string(settings)}
+	if err := db.Create(ib).Error; err != nil {
+		t.Fatal(err)
+	}
+	client := &model.ClientRecord{Email: "o@e", SubID: "OCSUB", Password: "pw-oc", Enable: true}
+	if err := db.Create(client).Error; err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Create(&model.ClientInbound{ClientId: client.Id, InboundId: ib.Id}).Error; err != nil {
+		t.Fatal(err)
+	}
+	s := &SubService{}
+	s.PrepareForRequest("panel.example.net")
+	if subs, _, _, _, err := s.getSubs("OCSUB"); err != nil || subs == nil {
+		t.Fatalf("getSubs = %v, %v; an ocserv-only user must still have a subscription", subs, err)
+	}
+	want := VPNAccount{InboundId: ib.Id, Protocol: "ocserv", Remark: "AnyConnect", Server: "vpn.example.com", Username: "o@e", Password: "pw-oc", Port: 8443}
+	if len(s.vpnAccounts) != 1 || s.vpnAccounts[0] != want {
+		t.Fatalf("accounts = %+v, want %+v", s.vpnAccounts, want)
+	}
+
+	name, mime, body, err := (&SubService{}).OCServCAFile("OCSUB", ib.Id)
+	inst, _, _ := ocserv.ServerOf(ib)
+	ca, _ := ipsec.CACert(inst.PKI)
+	if err != nil || name != "ocserv-"+strconv.Itoa(ib.Id)+"-ca.cer" || mime != "application/pkix-cert" || string(body) != string(ca.Raw) {
+		t.Fatalf("CA download = %q %q %d bytes, %v", name, mime, len(body), err)
+	}
+	if _, _, _, err := (&SubService{}).OCServCAFile("SOMEONE-ELSE", ib.Id); err == nil {
 		t.Fatal("a subscription with no account on the inbound downloaded its CA")
 	}
 }

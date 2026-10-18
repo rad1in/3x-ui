@@ -373,6 +373,7 @@ export default function CommandPalette() {
           'l2tp',
           'ssh',
           'sstp',
+          'ocserv',
         ],
         icon: <ImportOutlined />,
       },

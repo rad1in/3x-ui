@@ -40,6 +40,7 @@ const (
 	L2TP        Protocol = "l2tp"
 	SSH         Protocol = "ssh"
 	SSTP        Protocol = "sstp"
+	OCServ      Protocol = "ocserv"
 )
 
 // Admin roles, from most to least privileged. An operator only reaches the
@@ -104,7 +105,7 @@ type Inbound struct {
 	// Xray configuration fields
 	Listen            string   `json:"listen" form:"listen"`
 	Port              int      `json:"port" form:"port" validate:"gte=0,lte=65535" example:"443"`
-	Protocol          Protocol `json:"protocol" form:"protocol" validate:"required,oneof=vmess vless trojan shadowsocks wireguard hysteria http mixed tunnel tun mtproto amneziawg tuic masque openvpn ikev2 l2tp ssh sstp" example:"vless"`
+	Protocol          Protocol `json:"protocol" form:"protocol" validate:"required,oneof=vmess vless trojan shadowsocks wireguard hysteria http mixed tunnel tun mtproto amneziawg tuic masque openvpn ikev2 l2tp ssh sstp ocserv" example:"vless"`
 	Settings          string   `json:"settings" form:"settings"`
 	StreamSettings    string   `json:"streamSettings" form:"streamSettings"`
 	Tag               string   `json:"tag" form:"tag" gorm:"unique" example:"in-443-tcp"`

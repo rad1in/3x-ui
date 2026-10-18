@@ -71,6 +71,7 @@ const MULTI_CLIENT_PROTOCOLS = new Set([
   'l2tp',
   'ssh',
   'sstp',
+  'ocserv',
 ]);
 
 const CLIENT_FORM_MODAL_Z_INDEX = 1000;

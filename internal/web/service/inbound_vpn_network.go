@@ -17,6 +17,7 @@ var vpnClientNetworkKey = map[model.Protocol]string{
 	model.IKEv2:   "pool",
 	model.L2TP:    "pool",
 	model.SSTP:    "pool",
+	model.OCServ:  "pool",
 }
 
 // vpnClientNetwork validates the requested client network, or picks the first

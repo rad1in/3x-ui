@@ -20,6 +20,7 @@ import { LinkTags, linkMetaText, parseLinkParts } from '@/lib/xray/link-label';
 import { QrPanel } from '@/pages/inbounds/qr';
 import {
   ikev2PanelProfileUrl,
+  ocservPanelCaUrl,
   openvpnPanelProfileUrl,
   sstpPanelCaUrl,
   type IKEv2ProfileFormat,
@@ -61,6 +62,7 @@ const INBOUND_PROTOCOL_COLORS: Record<string, string> = {
   l2tp: 'purple',
   ssh: 'cyan',
   sstp: 'geekblue',
+  ocserv: 'lime',
 };
 
 const INBOUND_CHIP_LIMIT = 1;
@@ -70,6 +72,7 @@ const VPN_TAGS: Record<string, { label: string; color: string }> = {
   ikev2: { label: 'IKEv2', color: 'blue' },
   l2tp: { label: 'L2TP', color: 'purple' },
   sstp: { label: 'SSTP', color: 'geekblue' },
+  ocserv: { label: 'OpenConnect', color: 'lime' },
 };
 
 const IKEV2_DOWNLOADS: { format: IKEv2ProfileFormat; labelKey: string }[] = [
@@ -264,7 +267,8 @@ export default function ClientInfoModal({
             ib?.protocol === 'openvpn' ||
             ib?.protocol === 'ikev2' ||
             ib?.protocol === 'l2tp' ||
-            ib?.protocol === 'sstp',
+            ib?.protocol === 'sstp' ||
+            ib?.protocol === 'ocserv',
         ),
     [client, inboundsById],
   );
@@ -912,6 +916,14 @@ export default function ClientInfoModal({
                             {t('pages.inbounds.form.l2tp.psk')}: <span dir="ltr">{ib.l2tpPsk}</span>
                           </Button>
                         </Tooltip>
+                      ) : ib.protocol === 'ocserv' ? (
+                        <Button
+                          size="small"
+                          icon={<DownloadOutlined />}
+                          href={ocservPanelCaUrl(ib.id)}
+                        >
+                          {t('pages.inbounds.form.sstp.ca')}
+                        </Button>
                       ) : ib.protocol === 'sstp' ? (
                         <Button
                           size="small"

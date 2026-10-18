@@ -129,6 +129,7 @@
     "l2tpHint": "Adicione uma VPN L2TP/IPsec (PSK) nas configurações de VPN do seu dispositivo com o servidor, a chave pré-compartilhada, o usuário e a senha abaixo.",
     "sshHint": "Adicione esta conta a um app de túnel SSH, ou execute ssh -N -D 1080 com o servidor, a porta, o usuário e a senha abaixo. Confira a impressão digital da chave do host na primeira conexão.",
     "sstpHint": "No Windows, instale o certificado CA como raiz confiável e adicione uma VPN SSTP com o servidor, usuário e senha abaixo.",
+    "ocservHint": "No OpenConnect ou Cisco Secure Client, confie no certificado CA e conecte-se ao servidor e à porta abaixo com o usuário e a senha.",
     "outlineHint": "Chaves do Outline: abra uma num aparelho com o app Outline instalado, ou copie e adicione no app. O app relê a chave, então mudanças futuras no servidor chegam até ele."
   },
   "menu": {
@@ -809,6 +810,10 @@
           "help": "O Windows se conecta com a VPN SSTP integrada, que trafega sobre HTTPS. Os clientes entram com o email como usuário e a senha. O endereço do servidor deve ser o nome que os clientes digitam, pois o certificado é emitido para ele, e o Windows precisa confiar antes no certificado CA deste inbound (baixe nas informações do cliente ou na página de assinatura). Requer um kernel com suporte a PPP e o pacote pppd.",
           "poolDesc": "Faixa IPv4 privada entregue aos clientes conectados. Deixe vazio para escolher automaticamente um 10.91.x.0/24 livre.",
           "ca": "Certificado CA"
+        },
+        "ocserv": {
+          "help": "Os clientes OpenConnect e Cisco AnyConnect se conectam por TLS e DTLS na mesma porta. Entram com o email como usuário e a senha. O endereço do servidor deve ser o nome que os clientes digitam, pois o certificado é emitido para ele, e o cliente precisa confiar no certificado CA deste inbound (baixe nas informações do cliente ou na página de assinatura). Usa o pacote ocserv, então o servidor precisa tê-lo instalado e um dispositivo tun.",
+          "poolDesc": "Faixa IPv4 privada entregue aos clientes conectados. Deixe vazio para escolher automaticamente um 10.92.x.0/24 livre."
         }
       },
       "info": {

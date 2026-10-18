@@ -14,6 +14,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/ipsec"
 	"github.com/mhsanaei/3x-ui/v3/internal/l2tp"
 	"github.com/mhsanaei/3x-ui/v3/internal/mtproto"
+	"github.com/mhsanaei/3x-ui/v3/internal/ocserv"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
 	"github.com/mhsanaei/3x-ui/v3/internal/sockkill"
 	"github.com/mhsanaei/3x-ui/v3/internal/sshtunnel"
@@ -55,6 +56,13 @@ func (l *Local) withAPI(fn func(api *xray.XrayAPI) error) error {
 }
 
 func (l *Local) AddInbound(_ context.Context, ib *model.Inbound) error {
+	if ib.Protocol == model.OCServ {
+		inst, ok := ocserv.InstanceFromInbound(ib)
+		if !ok {
+			return nil
+		}
+		return ocserv.GetManager().Ensure(inst)
+	}
 	if ib.Protocol == model.SSTP {
 		inst, ok := sstp.InstanceFromInbound(ib)
 		if !ok {
@@ -147,6 +155,10 @@ func (l *Local) AddInbound(_ context.Context, ib *model.Inbound) error {
 }
 
 func (l *Local) DelInbound(_ context.Context, ib *model.Inbound) error {
+	if ib.Protocol == model.OCServ {
+		ocserv.GetManager().Remove(ib.Id)
+		return nil
+	}
 	if ib.Protocol == model.SSTP {
 		sstp.GetManager().Remove(ib.Id)
 		return nil
@@ -199,6 +211,9 @@ func (l *Local) UpdateInbound(ctx context.Context, oldIb, newIb *model.Inbound) 
 	}
 	if oldIb.Protocol == model.SSTP || newIb.Protocol == model.SSTP {
 		return l.updateManagedInbound(ctx, model.SSTP, oldIb, newIb)
+	}
+	if oldIb.Protocol == model.OCServ || newIb.Protocol == model.OCServ {
+		return l.updateManagedInbound(ctx, model.OCServ, oldIb, newIb)
 	}
 	if oldIb.Protocol == model.OpenVPN || newIb.Protocol == model.OpenVPN {
 		return l.updateOpenVPNInbound(ctx, oldIb, newIb)
@@ -312,6 +327,9 @@ func managedServesAnyone(ib *model.Inbound) bool {
 		return ok
 	case model.SSTP:
 		_, ok := sstp.InstanceFromInbound(ib)
+		return ok
+	case model.OCServ:
+		_, ok := ocserv.InstanceFromInbound(ib)
 		return ok
 	}
 	return false
@@ -443,7 +461,7 @@ func (l *Local) updateTuicInbound(ctx context.Context, oldIb, newIb *model.Inbou
 // servedBySidecar: these protocols run outside Xray and take client changes by
 // re-applying the whole inbound, so Xray's per-user ops do not apply to them.
 func servedBySidecar(p model.Protocol) bool {
-	return p == model.MTProto || p == model.AmneziaWG || p == model.TUIC || p == model.OpenVPN || p == model.IKEv2 || p == model.L2TP || p == model.SSH || p == model.SSTP
+	return p == model.MTProto || p == model.AmneziaWG || p == model.TUIC || p == model.OpenVPN || p == model.IKEv2 || p == model.L2TP || p == model.SSH || p == model.SSTP || p == model.OCServ
 }
 
 func (l *Local) AddUser(_ context.Context, ib *model.Inbound, userMap map[string]any) error {
@@ -547,6 +565,8 @@ func (l *Local) DisconnectClient(ctx context.Context, ib *model.Inbound, email s
 		return sshtunnel.GetManager().KickUser(email), nil
 	case model.SSTP:
 		return sstp.GetManager().KickUser(email), nil
+	case model.OCServ:
+		return ocserv.GetManager().KickUser(email), nil
 	case model.VLESS, model.VMESS, model.Trojan, model.Shadowsocks:
 		return sockkill.Kill(ctx, ib.Port, ips)
 	default:

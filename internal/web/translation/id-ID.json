@@ -129,6 +129,7 @@
     "l2tpHint": "Tambahkan VPN L2TP/IPsec (PSK) di pengaturan VPN perangkat Anda dengan server, kunci pre-shared, nama pengguna, dan kata sandi di bawah.",
     "sshHint": "Tambahkan akun ini ke aplikasi terowongan SSH, atau jalankan ssh -N -D 1080 dengan server, port, nama pengguna, dan kata sandi di bawah. Periksa sidik jari kunci host saat pertama kali terhubung.",
     "sstpHint": "Di Windows, pasang sertifikat CA sebagai Trusted Root, lalu tambahkan VPN SSTP dengan server, nama pengguna, dan kata sandi di bawah.",
+    "ocservHint": "Di OpenConnect atau Cisco Secure Client, percayai sertifikat CA, lalu sambungkan ke server dan port di bawah dengan nama pengguna dan kata sandi.",
     "outlineHint": "Kunci Outline: buka salah satunya di perangkat yang sudah memasang aplikasi Outline, atau salin lalu tambahkan di aplikasi. Aplikasi membaca ulang kunci, jadi perubahan server berikutnya ikut sampai."
   },
   "menu": {
@@ -809,6 +810,10 @@
           "help": "Windows terhubung dengan VPN SSTP bawaannya, yang berjalan di atas HTTPS. Klien masuk dengan email sebagai nama pengguna dan kata sandinya. Alamat server harus berupa nama yang diketik klien karena sertifikat diterbitkan untuknya, dan Windows harus lebih dulu memercayai sertifikat CA inbound ini (unduh dari info klien atau halaman langganan). Butuh kernel dengan dukungan PPP dan paket pppd.",
           "poolDesc": "Rentang IPv4 privat yang diberikan ke klien yang terhubung. Kosongkan untuk memilih 10.91.x.0/24 yang bebas secara otomatis.",
           "ca": "Sertifikat CA"
+        },
+        "ocserv": {
+          "help": "Klien OpenConnect dan Cisco AnyConnect terhubung lewat TLS dan DTLS pada port yang sama. Klien masuk dengan email sebagai nama pengguna dan kata sandinya. Alamat server harus berupa nama yang diketik klien karena sertifikat diterbitkan untuknya, dan klien harus memercayai sertifikat CA inbound ini (unduh dari info klien atau halaman langganan). Layanan ini memakai paket ocserv, jadi server perlu memasangnya dan memiliki perangkat tun.",
+          "poolDesc": "Rentang IPv4 privat yang diberikan ke klien yang terhubung. Kosongkan untuk memilih 10.92.x.0/24 yang bebas secara otomatis."
         }
       },
       "info": {

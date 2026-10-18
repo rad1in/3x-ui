@@ -373,6 +373,7 @@ func (a *SUBController) initRouter(g *gin.RouterGroup) {
 	gLink.GET(":subid/outline/:inbound", a.outlineAccessKey)
 	gLink.GET(":subid/ikev2/:inbound/:format", a.ikev2Profile)
 	gLink.GET(":subid/sstp/:inbound/ca", a.sstpCA)
+	gLink.GET(":subid/ocserv/:inbound/ca", a.ocservCA)
 	if a.shortLinksOn {
 		if owner := a.configuredSubscriptionPathOwner(service.SubShortLinkPath); owner != "" {
 			logger.Warningf("Short subscription links %q are unavailable because they conflict with the configured %s path", service.SubShortLinkPath, owner)
@@ -894,6 +895,23 @@ func (a *SUBController) sstpCA(c *gin.Context) {
 		return
 	}
 	name, mime, body, err := a.subService.SSTPCAFile(c.Param("subid"), inboundId)
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	setNoCacheHeaders(c)
+	c.Header("Content-Disposition", `attachment; filename="`+name+`"`)
+	c.Data(http.StatusOK, mime, body)
+}
+
+// ocservCA serves the CA certificate of one of the subscription's OpenConnect inbounds.
+func (a *SUBController) ocservCA(c *gin.Context) {
+	inboundId, err := strconv.Atoi(c.Param("inbound"))
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	name, mime, body, err := a.subService.OCServCAFile(c.Param("subid"), inboundId)
 	if err != nil {
 		c.Status(http.StatusNotFound)
 		return

@@ -181,6 +181,8 @@ func (s *InboundService) applyLocalSidecar(protocol model.Protocol, inboundId in
 		s.applyLocalSSH(inboundId)
 	case model.SSTP:
 		s.applyLocalSSTP(inboundId)
+	case model.OCServ:
+		s.applyLocalOCServ(inboundId)
 	default:
 		return false
 	}

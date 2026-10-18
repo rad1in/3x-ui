@@ -45,6 +45,7 @@ const MULTI_CLIENT_PROTOCOLS = new Set([
   'l2tp',
   'ssh',
   'sstp',
+  'ocserv',
 ]);
 
 const EMPTY: ClientBulkAddFormValues = {

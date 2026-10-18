@@ -23,6 +23,7 @@ const MULTI_USER_PROTOCOLS = new Set([
   'l2tp',
   'ssh',
   'sstp',
+  'ocserv',
 ]);
 
 interface BulkDetachInboundsModalProps {

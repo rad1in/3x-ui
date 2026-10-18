@@ -15,3 +15,4 @@ export { default as IKEv2Fields } from './ikev2';
 export { default as L2TPFields } from './l2tp';
 export { default as SSHFields } from './ssh';
 export { default as SSTPFields } from './sstp';
+export { default as OCSERVFields } from './ocserv';

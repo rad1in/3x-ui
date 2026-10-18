@@ -10,6 +10,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/ipsec"
 	"github.com/mhsanaei/3x-ui/v3/internal/l2tp"
+	"github.com/mhsanaei/3x-ui/v3/internal/ocserv"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
 	"github.com/mhsanaei/3x-ui/v3/internal/sshtunnel"
 	"github.com/mhsanaei/3x-ui/v3/internal/sstp"
@@ -34,7 +35,7 @@ type VPNAccount struct {
 var errNoVPNProfile = errors.New("no vpn profile for this subscription")
 
 func servesVPNAccounts(p model.Protocol) bool {
-	return p == model.OpenVPN || p == model.IKEv2 || p == model.L2TP || p == model.SSH || p == model.SSTP
+	return p == model.OpenVPN || p == model.IKEv2 || p == model.L2TP || p == model.SSH || p == model.SSTP || p == model.OCServ
 }
 
 var unsafeFileChars = regexp.MustCompile(`[^A-Za-z0-9._-]+`)
@@ -48,8 +49,11 @@ func (s *SubService) addVPNAccounts(inbound *model.Inbound, clients []model.Clie
 	if inst, _, ok := ipsec.ServerOf(inbound); ok {
 		server = inst.Address
 	}
-	// An SSTP client checks the certificate against the name it dialled.
+	// SSTP and AnyConnect clients check the certificate against the name they dialled.
 	if inst, _, ok := sstp.ServerOf(inbound); ok {
+		server = inst.Address
+	}
+	if inst, _, ok := ocserv.ServerOf(inbound); ok {
 		server = inst.Address
 	}
 	var psk string
@@ -62,6 +66,9 @@ func (s *SubService) addVPNAccounts(inbound *model.Inbound, clients []model.Clie
 		port, fingerprint = inst.Port, sshtunnel.Fingerprint(inst.HostKey)
 	}
 	if inst, _, ok := sstp.ServerOf(inbound); ok {
+		port = inst.Port
+	}
+	if inst, _, ok := ocserv.ServerOf(inbound); ok {
 		port = inst.Port
 	}
 	for _, c := range clients {
@@ -116,6 +123,19 @@ func (s *SubService) SSTPCAFile(subId string, inboundId int) (name, mime string,
 		return "", "", nil, errNoVPNProfile
 	}
 	return service.SSTPCA(&ib)
+}
+
+// OCServCAFile is the CA certificate for subId's OpenConnect inbound; only a
+// subscription with an account on it may fetch it.
+func (s *SubService) OCServCAFile(subId string, inboundId int) (name, mime string, body []byte, err error) {
+	var ib model.Inbound
+	if err := database.GetDB().First(&ib, inboundId).Error; err != nil || ib.Protocol != model.OCServ {
+		return "", "", nil, errNoVPNProfile
+	}
+	if len(s.matchingClients(&ib, subId)) == 0 {
+		return "", "", nil, errNoVPNProfile
+	}
+	return service.OCServCA(&ib)
 }
 
 // IKEv2ProfileFile builds one format of the IKEv2 profile for subId's login

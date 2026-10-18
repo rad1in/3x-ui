@@ -80,6 +80,7 @@ func TestInboundTransports(t *testing.T) {
 		{"l2tp forced udp", model.L2TP, `{"network":"tcp"}`, `{}`, transportUDP},
 		{"ssh is tcp whatever the stream says", model.SSH, `{"network":"kcp"}`, `{}`, transportTCP},
 		{"sstp is tcp whatever the stream says", model.SSTP, `{"network":"kcp"}`, `{}`, transportTCP},
+		{"ocserv listens on both for TLS and DTLS", model.OCServ, `{"network":"kcp"}`, `{}`, transportTCP | transportUDP},
 
 		// MASQUE serves HTTP/3 on UDP unless the TLS ALPN offers only h2, and adds an
 		// HTTP/2 listener on TCP whenever h2 is offered.

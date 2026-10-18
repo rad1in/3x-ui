@@ -32,6 +32,7 @@ const ROW_TAGS: Record<string, { label: string; color: string }> = {
   l2tp: { label: 'L2TP', color: 'purple' },
   ssh: { label: 'SSH', color: 'cyan' },
   sstp: { label: 'SSTP', color: 'geekblue' },
+  ocserv: { label: 'OpenConnect', color: 'lime' },
 };
 
 const IKEV2_DOWNLOADS = [
@@ -79,6 +80,7 @@ export default function SubVPNTab({ subUrl, accounts, onCopy }: SubVPNTabProps) 
       {has('l2tp') && <p className="sub-openvpn-hint">{t('subscription.l2tpHint')}</p>}
       {has('ssh') && <p className="sub-openvpn-hint">{t('subscription.sshHint')}</p>}
       {has('sstp') && <p className="sub-openvpn-hint">{t('subscription.sstpHint')}</p>}
+      {has('ocserv') && <p className="sub-openvpn-hint">{t('subscription.ocservHint')}</p>}
       {accounts.map((a) => (
         <div key={`${a.protocol}-${a.inboundId}-${a.username}`} className="sub-row sub-openvpn-row">
           <Tag color={ROW_TAGS[a.protocol]?.color} className="sub-row-tag">
@@ -92,7 +94,7 @@ export default function SubVPNTab({ subUrl, accounts, onCopy }: SubVPNTabProps) 
               {a.protocol !== 'openvpn' &&
                 field(t('pages.inbounds.form.ikev2.serverAddress'), a.server)}
               {a.protocol === 'l2tp' && field(t('pages.inbounds.form.l2tp.psk'), a.psk ?? '')}
-              {(a.protocol === 'ssh' || a.protocol === 'sstp') &&
+              {(a.protocol === 'ssh' || a.protocol === 'sstp' || a.protocol === 'ocserv') &&
                 field(t('pages.inbounds.port'), String(a.port ?? ''))}
               {field(t('username'), a.username)}
               {field(t('password'), a.password)}
@@ -102,7 +104,8 @@ export default function SubVPNTab({ subUrl, accounts, onCopy }: SubVPNTabProps) 
             </dl>
           </div>
           <div className="sub-row-actions">
-            {a.protocol === 'l2tp' || a.protocol === 'ssh' ? null : a.protocol === 'sstp' ? (
+            {a.protocol === 'l2tp' || a.protocol === 'ssh' ? null : a.protocol === 'sstp' ||
+              a.protocol === 'ocserv' ? (
               <Button
                 type="primary"
                 href={vpnProfileUrl(subUrl, a.protocol, a.inboundId, 'ca')}

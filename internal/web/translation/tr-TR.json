@@ -129,6 +129,7 @@
     "l2tpHint": "Cihazınızın VPN ayarlarında bir L2TP/IPsec (PSK) VPN ekleyin ve aşağıdaki sunucu, ön paylaşımlı anahtar, kullanıcı adı ve şifreyi girin.",
     "sshHint": "Bu hesabı bir SSH tünel uygulamasına ekleyin veya aşağıdaki sunucu, port, kullanıcı adı ve parola ile ssh -N -D 1080 komutunu çalıştırın. İlk bağlantıda ana makine anahtarının parmak izini kontrol edin.",
     "sstpHint": "Windows'ta CA sertifikasını Güvenilen Kök olarak yükleyin, ardından aşağıdaki sunucu, kullanıcı adı ve parola ile bir SSTP VPN ekleyin.",
+    "ocservHint": "OpenConnect veya Cisco Secure Client'ta CA sertifikasına güvenin, ardından aşağıdaki sunucu ve porta kullanıcı adı ve parola ile bağlanın.",
     "outlineHint": "Outline anahtarları: birini Outline uygulaması yüklü bir cihazda açın ya da kopyalayıp uygulamaya ekleyin. Uygulama anahtarı yeniden okur, böylece sonraki sunucu değişiklikleri ona ulaşır."
   },
   "menu": {
@@ -809,6 +810,10 @@
           "help": "Windows, HTTPS üzerinden çalışan yerleşik SSTP VPN ile bağlanır. İstemciler e-postalarını kullanıcı adı, şifrelerini parola olarak girerek bağlanır. Sertifika sunucu adresi için düzenlendiğinden, adres istemcilerin yazdığı ad olmalıdır ve Windows önce bu inbound'un CA sertifikasına güvenmelidir (istemci bilgisinden veya abonelik sayfasından indirin). PPP destekli bir çekirdek ve pppd paketi gerekir.",
           "poolDesc": "Bağlanan istemcilere verilen özel IPv4 aralığı. Boş bırakırsanız boş bir 10.91.x.0/24 otomatik seçilir.",
           "ca": "CA sertifikası"
+        },
+        "ocserv": {
+          "help": "OpenConnect ve Cisco AnyConnect istemcileri aynı portta TLS ve DTLS ile bağlanır. İstemciler e-postalarını kullanıcı adı, şifrelerini parola olarak girerek bağlanır. Sertifika sunucu adresi için düzenlendiğinden, adres istemcilerin yazdığı ad olmalıdır ve istemci bu inbound'un CA sertifikasına güvenmelidir (istemci bilgisinden veya abonelik sayfasından indirin). ocserv paketini kullanır; sunucuda ocserv kurulu ve bir tun aygıtı olmalıdır.",
+          "poolDesc": "Bağlanan istemcilere verilen özel IPv4 aralığı. Boş bırakırsanız boş bir 10.92.x.0/24 otomatik seçilir."
         }
       },
       "info": {

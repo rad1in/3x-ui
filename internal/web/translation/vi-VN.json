@@ -129,6 +129,7 @@
     "l2tpHint": "Thêm VPN L2TP/IPsec (PSK) trong cài đặt VPN của thiết bị với máy chủ, khóa chia sẻ trước, tên người dùng và mật khẩu bên dưới.",
     "sshHint": "Thêm tài khoản này vào ứng dụng đường hầm SSH, hoặc chạy ssh -N -D 1080 với máy chủ, cổng, tên người dùng và mật khẩu bên dưới. Hãy kiểm tra dấu vân tay khóa máy chủ ở lần kết nối đầu tiên.",
     "sstpHint": "Trong Windows, cài chứng chỉ CA làm Trusted Root, rồi thêm VPN SSTP với máy chủ, tên người dùng và mật khẩu bên dưới.",
+    "ocservHint": "Trong OpenConnect hoặc Cisco Secure Client, hãy tin cậy chứng chỉ CA rồi kết nối tới máy chủ và cổng bên dưới bằng tên người dùng và mật khẩu.",
     "outlineHint": "Khóa Outline: mở một khóa trên thiết bị đã cài ứng dụng Outline, hoặc sao chép rồi thêm vào ứng dụng. Ứng dụng đọc lại khóa nên các thay đổi máy chủ sau này vẫn được cập nhật."
   },
   "menu": {
@@ -809,6 +810,10 @@
           "help": "Windows kết nối bằng VPN SSTP tích hợp, chạy trên HTTPS. Máy khách đăng nhập với email làm tên người dùng và mật khẩu của mình. Địa chỉ máy chủ phải là tên mà máy khách nhập vì chứng chỉ được cấp cho tên đó, và Windows phải tin cậy chứng chỉ CA của inbound này trước (tải từ thông tin máy khách hoặc trang đăng ký). Cần nhân hệ điều hành hỗ trợ PPP và gói pppd.",
           "poolDesc": "Dải IPv4 riêng cấp cho máy khách đang kết nối. Để trống để tự chọn một 10.91.x.0/24 còn trống.",
           "ca": "Chứng chỉ CA"
+        },
+        "ocserv": {
+          "help": "Máy khách OpenConnect và Cisco AnyConnect kết nối qua TLS và DTLS trên cùng một cổng. Họ đăng nhập với email làm tên người dùng và mật khẩu của mình. Địa chỉ máy chủ phải là tên mà máy khách nhập vì chứng chỉ được cấp cho tên đó, và máy khách phải tin cậy chứng chỉ CA của inbound này (tải từ thông tin máy khách hoặc trang đăng ký). Dịch vụ dùng gói ocserv nên máy chủ cần cài ocserv và có thiết bị tun.",
+          "poolDesc": "Dải IPv4 riêng cấp cho máy khách đang kết nối. Để trống để tự chọn một 10.92.x.0/24 còn trống."
         }
       },
       "info": {

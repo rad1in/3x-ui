@@ -20,6 +20,7 @@ export const ProtocolSchema = z.enum([
   'l2tp',
   'ssh',
   'sstp',
+  'ocserv',
 ]);
 export type Protocol = z.infer<typeof ProtocolSchema>;
 
@@ -49,4 +50,5 @@ export const Protocols = Object.freeze({
   L2TP: 'l2tp',
   SSH: 'ssh',
   SSTP: 'sstp',
+  OCSERV: 'ocserv',
 });

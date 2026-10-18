@@ -98,6 +98,7 @@ export function isInboundMultiUser(record: { protocol: string }): boolean {
     case 'l2tp':
     case 'ssh':
     case 'sstp':
+    case 'ocserv':
       return true;
     default:
       return false;
@@ -111,12 +112,17 @@ export function hasShareLinks(protocol: string): boolean {
     protocol !== 'ikev2' &&
     protocol !== 'l2tp' &&
     protocol !== 'ssh' &&
-    protocol !== 'sstp'
+    protocol !== 'sstp' &&
+    protocol !== 'ocserv'
   );
 }
 
 export function sstpPanelCaUrl(inboundId: number): string {
   return `${window.X_UI_BASE_PATH || '/'}panel/api/inbounds/${inboundId}/sstpCa`;
+}
+
+export function ocservPanelCaUrl(inboundId: number): string {
+  return `${window.X_UI_BASE_PATH || '/'}panel/api/inbounds/${inboundId}/ocservCa`;
 }
 
 export type IKEv2ProfileFormat = 'mobileconfig' | 'sswan' | 'ca';
