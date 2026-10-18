@@ -1977,6 +1977,7 @@
       "eventClientQuotaWarning": "Aviso de cuota",
       "eventClientExpiryWarning": "Aviso de vencimiento",
       "eventWeeklyReport": "Resumen semanal",
+      "eventResellerCreditLow": "Crédito de revendedor bajo",
       "testDiscordDesc": "Enviar una notificación de prueba para verificar el token del bot y el ID del canal",
       "discordNotInitialized": "Servicio de Discord no inicializado",
       "discordBotNotEnabled": "El bot de Discord no está habilitado",
@@ -2800,6 +2801,10 @@
       "note": "Nota",
       "topup": "Aplicar",
       "pricesTitle": "Lista de precios",
+      "wholesale": "Lista de precios mayorista",
+      "wholesaleHint": "Los revendedores sin precios propios se facturan con esta lista. El crédito es la unidad propia del panel; fija el nivel de alerta para saber cuándo un revendedor se queda corto (0 = desactivado).",
+      "lowCredit": "Alertar por debajo de",
+      "priceFallback": "Deja un precio vacío para seguir la lista de precios del panel.",
       "ranges": {
         "all": "Todo el tiempo",
         "7": "7 días",
@@ -2829,7 +2834,8 @@
       },
       "toasts": {
         "toppedUp": "Crédito actualizado",
-        "pricesSaved": "Lista de precios guardada"
+        "pricesSaved": "Lista de precios guardada",
+        "configSaved": "Lista de precios guardada"
       }
     },
     "sales": {

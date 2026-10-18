@@ -112,6 +112,7 @@ func run(root, outDir string) error {
 				"WalletBalance",
 				"ResellerAccount",
 				"ResellerPrices",
+				"ResellerConfig",
 				"ResellerReport",
 				"ResellerReportRow",
 				"Quote",

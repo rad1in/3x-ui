@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
 	"math"
 	"math/big"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/eventbus"
 )
 
 var (
@@ -31,7 +33,9 @@ var resellerMu sync.Mutex
 
 // ResellerService keeps the credit of resellers, the admins with the operator
 // role, and bills what they create and renew by a per-GiB and per-day price list.
-type ResellerService struct{}
+type ResellerService struct {
+	settings SettingService
+}
 
 // ResellerPrices is a price list in credit units; a zero price makes that dimension free.
 type ResellerPrices struct {
@@ -52,16 +56,53 @@ type TermsChange struct {
 	After ClientTerms
 }
 
-// Prices returns the price list the reseller is billed by.
-func (s *ResellerService) Prices(u *model.User) ResellerPrices {
-	var p ResellerPrices
+// ResellerConfig is the panel's wholesale price list, which every reseller
+// without its own price follows, and the credit level that raises an alert.
+type ResellerConfig struct {
+	PricePerGB  int64 `json:"pricePerGb" example:"100"`
+	PricePerDay int64 `json:"pricePerDay" example:"10"`
+	LowCredit   int64 `json:"lowCredit" example:"1000"`
+}
+
+const resellerConfigKey = "resellerConfig"
+
+// Config returns the stored wholesale price list and alert level.
+func (s *ResellerService) Config() (ResellerConfig, error) {
+	var cfg ResellerConfig
+	raw, err := s.settings.getString(resellerConfigKey)
+	if err != nil || strings.TrimSpace(raw) == "" {
+		return cfg, err
+	}
+	return cfg, json.Unmarshal([]byte(raw), &cfg)
+}
+
+// SaveConfig stores the wholesale price list and alert level.
+func (s *ResellerService) SaveConfig(cfg ResellerConfig) error {
+	if cfg.PricePerGB < 0 || cfg.PricePerDay < 0 || cfg.LowCredit < 0 {
+		return errors.New("prices and the alert level cannot be negative")
+	}
+	raw, err := json.Marshal(cfg)
+	if err != nil {
+		return err
+	}
+	return s.settings.saveSetting(resellerConfigKey, string(raw))
+}
+
+// Prices returns the price list the reseller is billed by: its own where set,
+// the panel's list otherwise.
+func (s *ResellerService) Prices(u *model.User) (ResellerPrices, error) {
+	cfg, err := s.Config()
+	if err != nil {
+		return ResellerPrices{}, err
+	}
+	p := ResellerPrices{PerGB: cfg.PricePerGB, PerDay: cfg.PricePerDay}
 	if u.PricePerGB != nil {
 		p.PerGB = max(*u.PricePerGB, 0)
 	}
 	if u.PricePerDay != nil {
 		p.PerDay = max(*u.PricePerDay, 0)
 	}
-	return p
+	return p, nil
 }
 
 func isReseller(u *model.User) bool {
@@ -154,7 +195,11 @@ func (s *ResellerService) Reserve(actor *model.User, changes []TermsChange) (*Re
 	if !isReseller(actor) {
 		return nil, nil
 	}
-	res := &ResellerReservation{svc: s, prices: s.Prices(actor), userId: actor.Id, now: time.Now().UnixMilli()}
+	prices, err := s.Prices(actor)
+	if err != nil {
+		return nil, err
+	}
+	res := &ResellerReservation{svc: s, prices: prices, userId: actor.Id, now: time.Now().UnixMilli()}
 	if res.prices == (ResellerPrices{}) {
 		return res, nil
 	}
@@ -172,7 +217,7 @@ func (s *ResellerService) Reserve(actor *model.User, changes []TermsChange) (*Re
 	changes = unique
 	resellerMu.Lock()
 	defer resellerMu.Unlock()
-	err := database.GetDB().Transaction(func(tx *gorm.DB) error {
+	err = database.GetDB().Transaction(func(tx *gorm.DB) error {
 		before, err := clientTermsByEmail(tx, emails)
 		if err != nil {
 			return err
@@ -270,9 +315,19 @@ func (r *ResellerReservation) Settle() error {
 	if r == nil {
 		return nil
 	}
+	var spent int64
+	err := r.settle(&spent)
+	if err == nil {
+		r.svc.alertIfLow(r.userId, spent)
+	}
+	return err
+}
+
+func (r *ResellerReservation) settle(spent *int64) error {
 	resellerMu.Lock()
 	defer resellerMu.Unlock()
 	return database.GetDB().Transaction(func(tx *gorm.DB) error {
+		*spent = 0
 		emails := make([]string, 0, len(r.lines))
 		for _, l := range r.lines {
 			if l.entryId != 0 {
@@ -296,6 +351,7 @@ func (r *ResellerReservation) Settle() error {
 				bytes, days, _, _ = termsDelta(l.before, l.existed, after, r.now)
 			}
 			cost, _ := priceOf(r.prices, bytes, days)
+			*spent += cost
 			if cost == 0 {
 				if err := tx.Delete(&model.ResellerEntry{}, l.entryId).Error; err != nil {
 					return err
@@ -309,6 +365,29 @@ func (r *ResellerReservation) Settle() error {
 			}
 		}
 		return nil
+	})
+}
+
+// alertIfLow publishes the low-credit alert when spending just took the balance
+// below the alert level, so a reseller already below it is not alerted again.
+func (s *ResellerService) alertIfLow(userId int, spent int64) {
+	cfg, err := s.Config()
+	if err != nil || cfg.LowCredit <= 0 || spent <= 0 || eventBus == nil {
+		return
+	}
+	balance, err := s.Balance(userId)
+	if err != nil || balance >= cfg.LowCredit || balance+spent < cfg.LowCredit {
+		return
+	}
+	var user model.User
+	if err := database.GetDB().Select("username").Where("id = ?", userId).First(&user).Error; err != nil {
+		return
+	}
+	eventBus.Publish(eventbus.Event{
+		Type:      eventbus.EventResellerCreditLow,
+		Source:    user.Username,
+		Data:      &eventbus.ResellerCreditData{Username: user.Username, Balance: balance, Threshold: cfg.LowCredit},
+		Timestamp: time.Now(),
 	})
 }
 
@@ -389,8 +468,11 @@ type ResellerAccount struct {
 
 // Account returns the credit, price list and latest ledger lines of a reseller.
 func (s *ResellerService) Account(u *model.User) (*ResellerAccount, error) {
-	acc := &ResellerAccount{UserId: u.Id, Prices: s.Prices(u), Entries: []model.ResellerEntry{}}
-	var err error
+	prices, err := s.Prices(u)
+	if err != nil {
+		return nil, err
+	}
+	acc := &ResellerAccount{UserId: u.Id, Prices: prices, Entries: []model.ResellerEntry{}}
 	if acc.Balance, err = s.Balance(u.Id); err != nil {
 		return nil, err
 	}

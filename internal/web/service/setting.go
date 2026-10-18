@@ -237,6 +237,7 @@ var defaultValueMap = map[string]string{
 	"nord":                        "",
 	"pia":                         "",
 	"salesConfig":                 "",
+	"resellerConfig":              "",
 	"externalTrafficInformEnable": "false",
 	"externalTrafficInformURI":    "",
 	"restartXrayOnClientDisable":  "true",

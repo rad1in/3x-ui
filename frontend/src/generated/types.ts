@@ -1384,6 +1384,12 @@ export interface ResellerAccount {
   userId: number;
 }
 
+export interface ResellerConfig {
+  lowCredit: number;
+  pricePerDay: number;
+  pricePerGb: number;
+}
+
 export interface ResellerEntry {
   amount: number;
   bytes: number;

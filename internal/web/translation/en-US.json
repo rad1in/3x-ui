@@ -2095,6 +2095,7 @@
       "eventClientQuotaWarning": "Quota warning",
       "eventClientExpiryWarning": "Expiry warning",
       "eventWeeklyReport": "Weekly summary",
+      "eventResellerCreditLow": "Reseller credit low",
       "testDiscordDesc": "Send a test notification to verify your bot token and channel ID",
       "discordNotInitialized": "Discord service not initialized",
       "discordBotNotEnabled": "Discord bot is not enabled",
@@ -2800,6 +2801,10 @@
       "note": "Note",
       "topup": "Apply",
       "pricesTitle": "Price list",
+      "wholesale": "Wholesale price list",
+      "wholesaleHint": "Resellers without their own prices are billed by this list. Credit is the panel's own unit; set the alert level to be notified when a reseller runs low (0 = off).",
+      "lowCredit": "Alert below",
+      "priceFallback": "Leave a price empty to follow the panel's price list.",
       "ranges": {
         "all": "All time",
         "7": "7 days",
@@ -2829,7 +2834,8 @@
       },
       "toasts": {
         "toppedUp": "Credit updated",
-        "pricesSaved": "Price list saved"
+        "pricesSaved": "Price list saved",
+        "configSaved": "Price list saved"
       }
     },
     "sales": {

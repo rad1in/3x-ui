@@ -235,6 +235,15 @@ func (s *Subscriber) formatMessage(e eventbus.Event) (subject, body string) {
 			content += kv(i18n("email.labelSource"), e.Source)
 			body = wrap(i18n("tgbot.messages.loginFailed"), content)
 		}
+
+	default:
+		if title, lines, ok := eventbus.PlainText(e); ok {
+			for i := range lines {
+				lines[i] = html.EscapeString(lines[i])
+			}
+			subject = host + " " + title
+			body = wrap(html.EscapeString(title), strings.Join(lines, "<br>"))
+		}
 	}
 
 	return

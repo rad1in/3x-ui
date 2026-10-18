@@ -41,7 +41,18 @@ const (
 
 	// Weekly summary; Data is a *WeeklySummaryData.
 	EventWeeklyReport EventType = "report.weekly"
+
+	// A reseller's credit fell below the alert threshold; Source is the
+	// reseller's username, Data a *ResellerCreditData.
+	EventResellerCreditLow EventType = "reseller.credit_low"
 )
+
+// ResellerCreditData is a reseller's credit when it dropped below Threshold.
+type ResellerCreditData struct {
+	Username  string `json:"username"`
+	Balance   int64  `json:"balance"`
+	Threshold int64  `json:"threshold"`
+}
 
 // TopUser is one client's traffic over the report window.
 type TopUser struct {

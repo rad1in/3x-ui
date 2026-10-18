@@ -1977,6 +1977,7 @@
       "eventClientQuotaWarning": "流量预警",
       "eventClientExpiryWarning": "到期预警",
       "eventWeeklyReport": "每周摘要",
+      "eventResellerCreditLow": "分销商额度不足",
       "testDiscordDesc": "发送测试通知以验证您的机器人令牌和频道 ID",
       "discordNotInitialized": "Discord 服务未初始化",
       "discordBotNotEnabled": "Discord 机器人未启用",
@@ -2800,6 +2801,10 @@
       "note": "备注",
       "topup": "应用",
       "pricesTitle": "价格表",
+      "wholesale": "批发价格表",
+      "wholesaleHint": "没有自定义价格的分销商按此价格表计费。额度是面板自己的单位；设置提醒线，可在分销商额度不足时收到通知（0 = 关闭）。",
+      "lowCredit": "低于此值时提醒",
+      "priceFallback": "价格留空则沿用面板价格表。",
       "ranges": {
         "all": "全部时间",
         "7": "7 天",
@@ -2829,7 +2834,8 @@
       },
       "toasts": {
         "toppedUp": "额度已更新",
-        "pricesSaved": "价格表已保存"
+        "pricesSaved": "价格表已保存",
+        "configSaved": "价格表已保存"
       }
     },
     "sales": {

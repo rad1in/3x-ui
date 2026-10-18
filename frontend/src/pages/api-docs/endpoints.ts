@@ -2856,6 +2856,26 @@ export const sections: readonly Section[] = [
         responseSchema: 'ResellerEntry',
       },
       {
+        method: 'GET',
+        path: '/panel/api/reseller/config',
+        summary:
+          "The panel's wholesale price list, which every reseller without its own price follows, and the credit level that raises the reseller.credit_low alert (0 = off). Owner only.",
+        responseSchema: 'ResellerConfig',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/reseller/config/save',
+        summary: 'Save the wholesale price list and the low-credit alert level. Owner only.',
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{"pricePerGb": 100, "pricePerDay": 10, "lowCredit": 1000}',
+          },
+        ],
+      },
+      {
         method: 'POST',
         path: '/panel/api/reseller/prices/:id',
         summary:

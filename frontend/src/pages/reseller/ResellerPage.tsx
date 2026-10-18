@@ -25,6 +25,7 @@ import AppSidebar from '@/layouts/AppSidebar';
 import { SizeFormatter } from '@/utils';
 import { setMessageInstance } from '@/utils/messageBus';
 import { formatCredit, REPORT_RANGES, rangeStart, type ReportRange } from './credit';
+import ResellerConfigCard from './ResellerConfigCard';
 import ResellerCreditModal from './ResellerCreditModal';
 import ResellerLedger from './ResellerLedger';
 import './ResellerPage.css';
@@ -127,6 +128,7 @@ export default function ResellerPage() {
                 <ResellerLedger entries={mine.data.entries} loading={mine.isLoading} />
               </Card>
             )}
+            {isOwner && <ResellerConfigCard />}
             <Card
               size="small"
               title={

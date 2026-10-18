@@ -20,6 +20,7 @@ export const keys = {
   reseller: {
     root: () => ['reseller'] as const,
     me: () => ['reseller', 'me'] as const,
+    config: () => ['reseller', 'config'] as const,
     report: (from: number, to: number) => ['reseller', 'report', from, to] as const,
     account: (id: number) => ['reseller', 'account', id] as const,
   },

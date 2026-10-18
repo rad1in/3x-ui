@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Divider, Input, InputNumber, Modal, Space, Statistic } from 'antd';
 
-import { useResellerAccount, useResellerActions } from '@/api/queries/useReseller';
+import {
+  useResellerAccount,
+  useResellerActions,
+  useResellerConfig,
+} from '@/api/queries/useReseller';
 import ResellerLedger from './ResellerLedger';
 
 interface ResellerCreditModalProps {
@@ -18,6 +22,7 @@ interface ResellerCreditModalProps {
 export default function ResellerCreditModal({ reseller, onClose }: ResellerCreditModalProps) {
   const { t } = useTranslation();
   const account = useResellerAccount(reseller.id);
+  const { config } = useResellerConfig(true);
   const { topup, toppingUp, setPrices, savingPrices } = useResellerActions();
   const [amount, setAmount] = useState<number | null>(null);
   const [note, setNote] = useState('');
@@ -62,11 +67,15 @@ export default function ResellerCreditModal({ reseller, onClose }: ResellerCredi
         </Button>
       </Space.Compact>
       <Divider titlePlacement="start">{t('pages.reseller.pricesTitle')}</Divider>
+      <p className="reseller-hint" dir="auto">
+        {t('pages.reseller.priceFallback')}
+      </p>
       <Space wrap>
         <InputNumber
           min={0}
           precision={0}
           value={perGb}
+          placeholder={String(config?.pricePerGb ?? '')}
           addonBefore={t('pages.reseller.pricePerGb')}
           onChange={setPerGb}
         />
@@ -74,6 +83,7 @@ export default function ResellerCreditModal({ reseller, onClose }: ResellerCredi
           min={0}
           precision={0}
           value={perDay}
+          placeholder={String(config?.pricePerDay ?? '')}
           addonBefore={t('pages.reseller.pricePerDay')}
           onChange={setPerDay}
         />

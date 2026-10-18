@@ -1531,6 +1531,11 @@ export const EXAMPLES: Record<string, unknown> = {
     },
     "userId": 2
   },
+  "ResellerConfig": {
+    "lowCredit": 1000,
+    "pricePerDay": 10,
+    "pricePerGb": 100
+  },
   "ResellerEntry": {
     "amount": -1500,
     "bytes": 53687091200,

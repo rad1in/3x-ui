@@ -9,5 +9,6 @@ export const CLIENT_WARNING_GROUP: NotificationGroupConfig = {
     { key: 'client.quota_warning', label: 'eventClientQuotaWarning', settingKey: '' },
     { key: 'client.expiry_warning', label: 'eventClientExpiryWarning', settingKey: '' },
     { key: 'report.weekly', label: 'eventWeeklyReport', settingKey: '' },
+    { key: 'reseller.credit_low', label: 'eventResellerCreditLow', settingKey: '' },
   ],
 };

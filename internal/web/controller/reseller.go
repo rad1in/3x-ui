@@ -24,7 +24,23 @@ func NewResellerController(g *gin.RouterGroup) *ResellerController {
 	g.GET("/account/:id", a.account)
 	g.POST("/topup/:id", a.topup)
 	g.POST("/prices/:id", a.setPrices)
+	g.GET("/config", a.getConfig)
+	g.POST("/config/save", a.saveConfig)
 	return a
+}
+
+func (a *ResellerController) getConfig(c *gin.Context) {
+	cfg, err := a.reseller.Config()
+	jsonObj(c, cfg, err)
+}
+
+func (a *ResellerController) saveConfig(c *gin.Context) {
+	var cfg service.ResellerConfig
+	if err := c.ShouldBindJSON(&cfg); err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	respondDone(c, "pages.reseller.toasts.configSaved", nil, a.reseller.SaveConfig(cfg))
 }
 
 func (a *ResellerController) me(c *gin.Context) {

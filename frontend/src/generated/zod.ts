@@ -1470,6 +1470,13 @@ export const ResellerAccountSchema = z.object({
 });
 export type ResellerAccount = z.infer<typeof ResellerAccountSchema>;
 
+export const ResellerConfigSchema = z.object({
+  lowCredit: z.number().int(),
+  pricePerDay: z.number().int(),
+  pricePerGb: z.number().int(),
+});
+export type ResellerConfig = z.infer<typeof ResellerConfigSchema>;
+
 export const ResellerEntrySchema = z.object({
   amount: z.number().int(),
   bytes: z.number().int(),

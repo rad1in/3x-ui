@@ -26,6 +26,14 @@ _openapi:
         balance never goes below zero). Owner only.
       url: '#add-credit-to-a-reseller-or-take-it-back-with-a-negative-amount-the-balance-never-goes-below-zero-owner-only'
     - depth: 2
+      title: The panel's wholesale price list, which every reseller without its own
+        price follows, and the credit level that raises the reseller.credit_low
+        alert (0 = off). Owner only.
+      url: '#the-panels-wholesale-price-list-which-every-reseller-without-its-own-price-follows-and-the-credit-level-that-raises-the-resellercredit_low-alert-0--off-owner-only'
+    - depth: 2
+      title: Save the wholesale price list and the low-credit alert level. Owner only.
+      url: '#save-the-wholesale-price-list-and-the-low-credit-alert-level-owner-only'
+    - depth: 2
       title: Set a reseller's own price list. A null price falls back to the panel's
         list; 0 makes that dimension free. Owner only.
       url: '#set-a-resellers-own-price-list-a-null-price-falls-back-to-the-panels-list-0-makes-that-dimension-free-owner-only'
@@ -43,6 +51,13 @@ _openapi:
       - content: Add credit to a reseller, or take it back with a negative amount (the
           balance never goes below zero). Owner only.
         id: add-credit-to-a-reseller-or-take-it-back-with-a-negative-amount-the-balance-never-goes-below-zero-owner-only
+      - content: The panel's wholesale price list, which every reseller without its own
+          price follows, and the credit level that raises the
+          reseller.credit_low alert (0 = off). Owner only.
+        id: the-panels-wholesale-price-list-which-every-reseller-without-its-own-price-follows-and-the-credit-level-that-raises-the-resellercredit_low-alert-0--off-owner-only
+      - content: Save the wholesale price list and the low-credit alert level. Owner
+          only.
+        id: save-the-wholesale-price-list-and-the-low-credit-alert-level-owner-only
       - content: Set a reseller's own price list. A null price falls back to the panel's
           list; 0 makes that dimension free. Owner only.
         id: set-a-resellers-own-price-list-a-null-price-falls-back-to-the-panels-list-0-makes-that-dimension-free-owner-only
@@ -58,7 +73,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/reseller/me","method":"get"},{"path":"/panel/api/reseller/report","method":"get"},{"path":"/panel/api/reseller/account/{id}","method":"get"},{"path":"/panel/api/reseller/topup/{id}","method":"post"},{"path":"/panel/api/reseller/prices/{id}","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/reseller/me","method":"get"},{"path":"/panel/api/reseller/report","method":"get"},{"path":"/panel/api/reseller/account/{id}","method":"get"},{"path":"/panel/api/reseller/topup/{id}","method":"post"},{"path":"/panel/api/reseller/config","method":"get"},{"path":"/panel/api/reseller/config/save","method":"post"},{"path":"/panel/api/reseller/prices/{id}","method":"post"}]} showTitle />
     </>
   );
 }

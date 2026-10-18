@@ -6137,6 +6137,32 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "ResellerConfig": {
+    "description": "ResellerConfig is the panel's wholesale price list, which every reseller\nwithout its own price follows, and the credit level that raises an alert.",
+    "properties": {
+      "lowCredit": {
+        "example": 1000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "pricePerDay": {
+        "example": 10,
+        "format": "int64",
+        "type": "integer"
+      },
+      "pricePerGb": {
+        "example": 100,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "lowCredit",
+      "pricePerDay",
+      "pricePerGb"
+    ],
+    "type": "object"
+  },
   "ResellerEntry": {
     "description": "ResellerEntry is one line of a reseller's credit ledger; the balance is the\nsum of the Amount column. Create and renew lines name the client and the\ntraffic and days that were billed.",
     "properties": {

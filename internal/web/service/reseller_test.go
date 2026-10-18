@@ -2,11 +2,13 @@ package service
 
 import (
 	"errors"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/eventbus"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 )
 
@@ -290,6 +292,98 @@ func TestResellerTopupMayNotOverdraw(t *testing.T) {
 	}
 	if got := resellerBalance(t, s, u.Id); got != 300 {
 		t.Fatalf("balance = %d, want 300", got)
+	}
+}
+
+func TestResellerWithoutOwnPricesFollowsThePanelList(t *testing.T) {
+	setupBulkDB(t)
+	s := &ResellerService{}
+	if err := s.SaveConfig(ResellerConfig{PricePerGB: 50, PricePerDay: 5}); err != nil {
+		t.Fatalf("SaveConfig: %v", err)
+	}
+	followers := &model.User{Username: "follow", Password: "x", Role: model.AdminRoleOperator, ScopeInboundIds: "[]", ScopeGroups: "[]"}
+	own := mkReseller(t, "own", 0, 0, 1000)
+	if err := database.GetDB().Create(followers).Error; err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.Topup(followers.Id, 1000, ""); err != nil {
+		t.Fatal(err)
+	}
+	change := []TermsChange{{Email: "c1", After: ClientTerms{TotalGB: resellerGiB, ExpiryTime: resellerInDays(9)}}}
+
+	if _, err := s.Reserve(followers, change); err != nil {
+		t.Fatalf("reserve: %v", err)
+	}
+	if got, want := resellerBalance(t, s, followers.Id), int64(1000-(50+10*5)); got != want {
+		t.Fatalf("follower balance = %d, want %d from the panel list", got, want)
+	}
+	if _, err := s.Reserve(own, change); err != nil {
+		t.Fatalf("reserve: %v", err)
+	}
+	if got := resellerBalance(t, s, own.Id); got != 1000 {
+		t.Fatalf("balance = %d: an explicit price of 0 must override the panel list", got)
+	}
+}
+
+func TestResellerConfigRejectsNegativePrices(t *testing.T) {
+	setupBulkDB(t)
+	s := &ResellerService{}
+	for _, cfg := range []ResellerConfig{{PricePerGB: -1}, {PricePerDay: -1}, {LowCredit: -1}} {
+		if err := s.SaveConfig(cfg); err == nil {
+			t.Fatalf("SaveConfig(%+v) accepted a negative value", cfg)
+		}
+	}
+}
+
+func collectResellerEvents(t *testing.T) *[]eventbus.Event {
+	t.Helper()
+	bus := eventbus.New(0)
+	got := &[]eventbus.Event{}
+	var mu sync.Mutex
+	bus.Subscribe("reseller-test", func(e eventbus.Event) {
+		mu.Lock()
+		*got = append(*got, e)
+		mu.Unlock()
+	})
+	SetEventBus(bus)
+	t.Cleanup(func() {
+		SetEventBus(nil)
+		bus.Stop()
+	})
+	return got
+}
+
+func TestResellerLowCreditAlertFiresOnceWhenCreditCrossesTheThreshold(t *testing.T) {
+	setupBulkDB(t)
+	events := collectResellerEvents(t)
+	s := &ResellerService{}
+	if err := s.SaveConfig(ResellerConfig{LowCredit: 1000}); err != nil {
+		t.Fatal(err)
+	}
+	u := mkReseller(t, "shop", 0, 10, 1500)
+	spend := func(email string, days int) {
+		t.Helper()
+		res, err := s.Reserve(u, []TermsChange{{Email: email, After: ClientTerms{ExpiryTime: resellerInDays(days - 1)}}})
+		if err != nil {
+			t.Fatal(err)
+		}
+		seedResellerClient(t, email, 0, resellerInDays(days-1))
+		if err := res.Settle(); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	spend("a", 30)
+	spend("b", 25)
+	spend("c", 5)
+	time.Sleep(100 * time.Millisecond)
+	if len(*events) != 1 {
+		t.Fatalf("%d events, want exactly one for the crossing", len(*events))
+	}
+	e := (*events)[0]
+	data, ok := e.Data.(*eventbus.ResellerCreditData)
+	if e.Type != eventbus.EventResellerCreditLow || e.Source != "shop" || !ok || data.Balance != 1500-300-250 || data.Threshold != 1000 {
+		t.Fatalf("event = %+v (%+v), want reseller.credit_low for shop at balance 950, below 1000", e, data)
 	}
 }
 

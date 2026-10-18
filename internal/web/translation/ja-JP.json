@@ -1977,6 +1977,7 @@
       "eventClientQuotaWarning": "通信量の警告",
       "eventClientExpiryWarning": "期限の警告",
       "eventWeeklyReport": "週次サマリー",
+      "eventResellerCreditLow": "リセラーのクレジット残高が少ない",
       "testDiscordDesc": "BotトークンとチャンネルIDを確認するためのテスト通知を送信します",
       "discordNotInitialized": "Discord サービスが初期化されていません",
       "discordBotNotEnabled": "Discord ボットが有効になっていません",
@@ -2800,6 +2801,10 @@
       "note": "メモ",
       "topup": "適用",
       "pricesTitle": "価格表",
+      "wholesale": "卸価格表",
+      "wholesaleHint": "独自の価格を持たないリセラーにはこの価格表が適用されます。クレジットはパネル独自の単位です。警告レベルを設定すると、残高が少なくなったときに通知されます（0 = 無効）。",
+      "lowCredit": "この値を下回ったら警告",
+      "priceFallback": "価格を空欄にするとパネルの価格表に従います。",
       "ranges": {
         "all": "全期間",
         "7": "7日間",
@@ -2829,7 +2834,8 @@
       },
       "toasts": {
         "toppedUp": "クレジットを更新しました",
-        "pricesSaved": "価格表を保存しました"
+        "pricesSaved": "価格表を保存しました",
+        "configSaved": "卸価格表を保存しました"
       }
     },
     "sales": {

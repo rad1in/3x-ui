@@ -37,6 +37,8 @@ var ownerOnlyRoutes = map[string]bool{
 	"POST /setting/apiTokens/setEnabled/:id":      true,
 	"POST /setting/apiTokens/setAllowedCidrs/:id": true,
 	"GET /reseller/account/:id":                   true,
+	"GET /reseller/config":                        true,
+	"POST /reseller/config/save":                  true,
 	"POST /reseller/topup/:id":                    true,
 	"POST /reseller/prices/:id":                   true,
 	"GET /sales/config":                           true,

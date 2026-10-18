@@ -404,5 +404,8 @@ func (s *Subscriber) FormatEmbed(e eventbus.Event) (Embed, bool) {
 		}, true
 	}
 
+	if title, lines, ok := eventbus.PlainText(e); ok {
+		return Embed{Title: title, Description: truncateUnits(strings.Join(lines, "\n"), 4000), Color: ColorOrange, Timestamp: ts, Footer: footer}, true
+	}
 	return Embed{}, false
 }

@@ -7,6 +7,13 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 )
 
+// Lines renders the alert as plain text for channels without their own layout.
+func (d ResellerCreditData) Lines() []string {
+	return []string{
+		fmt.Sprintf("Reseller %s is low on credit: %d left, alert level %d", d.Username, d.Balance, d.Threshold),
+	}
+}
+
 // Lines renders the summary as plain text, one fact per line, for channels without their own layout.
 func (d WeeklySummaryData) Lines() []string {
 	from := time.UnixMilli(d.SinceMs).Format("2006-01-02")

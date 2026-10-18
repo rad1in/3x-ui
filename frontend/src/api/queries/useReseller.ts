@@ -3,8 +3,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { keys } from '@/api/queryKeys';
 import {
   ResellerAccountSchema,
+  ResellerConfigSchema,
   ResellerReportSchema,
   type ResellerAccount,
+  type ResellerConfig,
   type ResellerReport,
 } from '@/generated/zod';
 import { HttpUtil } from '@/utils';
@@ -48,6 +50,27 @@ export function useResellerReport(from: number, to: number) {
       return parseMsg(msg, ResellerReportSchema, 'reseller/report').obj as ResellerReport;
     },
   });
+}
+
+export function useResellerConfig(enabled: boolean) {
+  const queryClient = useQueryClient();
+  const query = useQuery({
+    queryKey: keys.reseller.config(),
+    enabled,
+    queryFn: async (): Promise<ResellerConfig> => {
+      const msg = await HttpUtil.get('/panel/api/reseller/config', undefined, { silent: true });
+      if (!msg?.success) throw new Error(msg?.msg || 'Failed to load the price list');
+      return parseMsg(msg, ResellerConfigSchema, 'reseller/config').obj as ResellerConfig;
+    },
+  });
+  const save = useMutation({
+    mutationFn: (cfg: ResellerConfig) =>
+      HttpUtil.post('/panel/api/reseller/config/save', cfg, JSON_HEADERS),
+    onSuccess: (msg) => {
+      if (msg?.success) void queryClient.invalidateQueries({ queryKey: keys.reseller.root() });
+    },
+  });
+  return { config: query.data, save: save.mutateAsync, saving: save.isPending };
 }
 
 export function useResellerActions() {

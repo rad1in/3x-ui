@@ -1977,6 +1977,7 @@
       "eventClientQuotaWarning": "流量預警",
       "eventClientExpiryWarning": "到期預警",
       "eventWeeklyReport": "每週摘要",
+      "eventResellerCreditLow": "分銷商額度不足",
       "testDiscordDesc": "傳送測試通知以驗證您的機器人權杖與頻道 ID",
       "discordNotInitialized": "Discord 服務未初始化",
       "discordBotNotEnabled": "Discord 機器人未啟用",
@@ -2800,6 +2801,10 @@
       "note": "備註",
       "topup": "套用",
       "pricesTitle": "價格表",
+      "wholesale": "批發價格表",
+      "wholesaleHint": "沒有自訂價格的分銷商依此價格表計費。額度是面板自己的單位；設定提醒線，可在分銷商額度不足時收到通知（0 = 關閉）。",
+      "lowCredit": "低於此值時提醒",
+      "priceFallback": "價格留空則沿用面板價格表。",
       "ranges": {
         "all": "全部時間",
         "7": "7 天",
@@ -2829,7 +2834,8 @@
       },
       "toasts": {
         "toppedUp": "額度已更新",
-        "pricesSaved": "價格表已儲存"
+        "pricesSaved": "價格表已儲存",
+        "configSaved": "價格表已儲存"
       }
     },
     "sales": {
