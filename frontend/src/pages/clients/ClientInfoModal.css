@@ -147,3 +147,13 @@
 .link-row-title-anchor:hover {
   text-decoration-color: var(--ant-color-primary);
 }
+
+.sub-fetch-list {
+  margin: 8px 0;
+}
+
+.sub-fetch-title {
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--ant-color-text-secondary);
+}

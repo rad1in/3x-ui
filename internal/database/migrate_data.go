@@ -50,6 +50,7 @@ func migrationModels() []any {
 		&model.ClientInbound{},
 		&model.ClientHwid{},
 		&model.SubShortLink{},
+		&model.SubFetch{},
 		&model.ClientExternalLink{},
 		&model.ClientGroup{},
 		&model.InboundFallback{},

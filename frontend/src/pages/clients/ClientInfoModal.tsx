@@ -37,6 +37,7 @@ import {
 } from './amneziawgConfig';
 import { tunnelConfigEndpoints, tunnelEndpointLabel } from './tunnelEndpoints';
 import type { HostRecord } from '@/schemas/api/host';
+import SubFetchList from './SubFetchList';
 import SubShortLinkRow from './SubShortLinkRow';
 import './ClientInfoModal.css';
 
@@ -664,6 +665,7 @@ export default function ClientInfoModal({
                 {subSettings.shortLinkEnable && client.subId && (
                   <SubShortLinkRow subId={client.subId} email={client.email} onCopy={copyValue} />
                 )}
+                {client.subId && <SubFetchList subId={client.subId} datepicker={datepicker} />}
                 {subJsonLink && (
                   <div className="link-row">
                     <Tag color="purple" className="link-row-tag">

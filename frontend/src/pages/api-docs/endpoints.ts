@@ -1703,6 +1703,17 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/clients/subFetches/:subId',
+        summary:
+          'List which apps fetched a subscription: one entry per distinct IP, User-Agent and served format (raw, json, clash, singbox, surge, quanx, loon, outline) with the fetch count and first/last time in milliseconds, newest first. The newest 20 entries are kept per subscription.',
+        params: [
+          { name: 'subId', in: 'path', type: 'string', desc: "The client's subscription ID." },
+        ],
+        responseSchema: 'SubFetchInfo',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'GET',
         path: '/panel/api/clients/subShortLink/:subId',
         summary:
           'Return the short subscription link (/s/<token> on the subscription server) of a subscription ID, or obj null when it has none. The URL origin is the configured subURI origin, else the subscription server address.',

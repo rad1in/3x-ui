@@ -98,6 +98,7 @@ func run(root, outDir string) error {
 				"BackupResult",
 				"HappLinkResult",
 				"SubShortLinkView",
+				"SubFetchInfo",
 				"ClientSlim",
 				"ClientRenewalPreviewRequest",
 				"ClientRenewalPreview",

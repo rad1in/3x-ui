@@ -41,6 +41,7 @@ type ClientController struct {
 	settingService service.SettingService
 	happGenerator  service.HappLinkGenerator
 	shortLinks     service.SubShortLinkService
+	subFetches     service.SubFetchService
 }
 
 func NewClientController(g *gin.RouterGroup) *ClientController {
@@ -59,6 +60,7 @@ func (a *ClientController) initRouter(g *gin.RouterGroup) {
 	g.GET("/subLinks/:subId", a.getSubLinks)
 	g.GET("/links/:email", a.getClientLinks)
 	g.POST("/happLink/:id", a.generateHappLink)
+	g.GET("/subFetches/:subId", a.getSubFetches)
 	g.GET("/subShortLink/:subId", a.getSubShortLink)
 	g.POST("/subShortLink/:subId", a.createSubShortLink)
 	g.POST("/subShortLink/:subId/revoke", a.revokeSubShortLink)
@@ -689,6 +691,11 @@ func (a *ClientController) generateHappLink(c *gin.Context) {
 		return
 	}
 	jsonObj(c, result, nil)
+}
+
+func (a *ClientController) getSubFetches(c *gin.Context) {
+	fetches, err := a.subFetches.List(c.Param("subId"))
+	jsonObj(c, fetches, err)
 }
 
 // getSubShortLink answers obj null when the subscription has no short link yet.

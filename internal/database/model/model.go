@@ -1127,6 +1127,20 @@ type SubShortLink struct {
 
 func (SubShortLink) TableName() string { return "sub_short_links" }
 
+// SubFetch counts the fetches of one subscription by one app from one address.
+type SubFetch struct {
+	Id        int    `json:"id" gorm:"primaryKey;autoIncrement"`
+	SubID     string `json:"subId" gorm:"column:sub_id;not null;uniqueIndex:idx_sub_fetches_key,priority:1"`
+	IP        string `json:"ip" gorm:"column:ip;not null;uniqueIndex:idx_sub_fetches_key,priority:2"`
+	UserAgent string `json:"userAgent" gorm:"column:user_agent;not null;uniqueIndex:idx_sub_fetches_key,priority:3"`
+	Format    string `json:"format" gorm:"column:format;not null;uniqueIndex:idx_sub_fetches_key,priority:4"`
+	Count     int    `json:"count" gorm:"column:count;not null"`
+	FirstSeen int64  `json:"firstSeen" gorm:"column:first_seen;not null"`
+	LastSeen  int64  `json:"lastSeen" gorm:"column:last_seen;not null;index"`
+}
+
+func (SubFetch) TableName() string { return "sub_fetches" }
+
 // ClientExternalLink is a per-client entry surfaced in the client's
 // subscription. Two kinds:
 //   - "link": a single third-party share link (vless://, vmess://, trojan://,

@@ -89,6 +89,7 @@ type SUBController struct {
 	clientService   service.ClientService
 	settingService  service.SettingService
 	shortLinks      service.SubShortLinkService
+	fetchLog        service.SubFetchService
 	shortLinksOn    bool
 	ipLimiter       *fixedWindowLimiter
 	profileAliases  []profileFormat
@@ -615,9 +616,44 @@ func (a *SUBController) recordSubscriptionFetch(c *gin.Context) {
 	if c.Request == nil || c.Request.Method != http.MethodGet || c.Writer.Status() != http.StatusOK {
 		return
 	}
-	if err := a.subService.RecordSubscriptionFetch(c.Param("subid")); err != nil {
+	subID := c.Param("subid")
+	if err := a.subService.RecordSubscriptionFetch(subID); err != nil {
 		logger.Warning("Failed to record subscription fetch:", err)
 	}
+	ip, ua := a.subService.VisitorIP(c), c.GetHeader("User-Agent")
+	if err := a.fetchLog.Record(subID, ip, ua, a.fetchFormat(c), time.Now()); err != nil {
+		logger.Warning("Failed to log subscription fetch:", err)
+	}
+}
+
+// fetchFormat names what was served: the alias path decides, and the plain
+// subscription URL is told apart by the body type it auto-selected.
+func (a *SUBController) fetchFormat(c *gin.Context) string {
+	path := c.Request.URL.Path
+	for _, alias := range []struct{ prefix, name string }{
+		{subSingboxPath, "singbox"}, {surgeFormat.path, "surge"}, {quanxFormat.path, "quanx"}, {loonFormat.path, "loon"},
+		{subMihomoPath, "clash"}, {subClashLegacyPath, "clash"},
+	} {
+		if strings.HasPrefix(path, alias.prefix) {
+			return alias.name
+		}
+	}
+	switch {
+	case strings.Contains(c.FullPath(), "/outline/"):
+		return "outline"
+	case a.jsonEnabled && strings.HasPrefix(path, a.subJsonPath):
+		return "json"
+	case a.clashEnabled && strings.HasPrefix(path, a.subClashPath):
+		return "clash"
+	}
+	contentType := c.Writer.Header().Get("Content-Type")
+	switch {
+	case strings.HasPrefix(contentType, "application/yaml"):
+		return "clash"
+	case strings.HasPrefix(contentType, "application/json"):
+		return "json"
+	}
+	return "raw"
 }
 
 func shouldAutoServeClash(autoDetect, clashEnabled, wantsHTML bool, userAgent string, userAgentRegex *regexp.Regexp) bool {

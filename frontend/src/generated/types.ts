@@ -1245,6 +1245,15 @@ export interface SubBalancer {
   updatedAt: number;
 }
 
+export interface SubFetchInfo {
+  count: number;
+  firstSeen: number;
+  format: string;
+  ip: string;
+  lastSeen: number;
+  userAgent: string;
+}
+
 export interface SubShortLinkView {
   token: string;
   url: string;

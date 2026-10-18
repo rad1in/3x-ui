@@ -5459,6 +5459,46 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "SubFetchInfo": {
+    "description": "SubFetchInfo is one app/IP that fetched a subscription.",
+    "properties": {
+      "count": {
+        "example": 12,
+        "type": "integer"
+      },
+      "firstSeen": {
+        "example": 1735680000000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "format": {
+        "example": "raw",
+        "type": "string"
+      },
+      "ip": {
+        "example": "198.51.100.7",
+        "type": "string"
+      },
+      "lastSeen": {
+        "example": 1735766400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "userAgent": {
+        "example": "v2rayNG/1.10.2",
+        "type": "string"
+      }
+    },
+    "required": [
+      "count",
+      "firstSeen",
+      "format",
+      "ip",
+      "lastSeen",
+      "userAgent"
+    ],
+    "type": "object"
+  },
   "SubShortLinkView": {
     "description": "SubShortLinkView is a subscription's short link as the panel shows it.",
     "properties": {

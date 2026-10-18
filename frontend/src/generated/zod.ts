@@ -1324,6 +1324,16 @@ export const SubBalancerSchema = z.object({
 });
 export type SubBalancer = z.infer<typeof SubBalancerSchema>;
 
+export const SubFetchInfoSchema = z.object({
+  count: z.number().int(),
+  firstSeen: z.number().int(),
+  format: z.string(),
+  ip: z.string(),
+  lastSeen: z.number().int(),
+  userAgent: z.string(),
+});
+export type SubFetchInfo = z.infer<typeof SubFetchInfoSchema>;
+
 export const SubShortLinkViewSchema = z.object({
   token: z.string(),
   url: z.string(),

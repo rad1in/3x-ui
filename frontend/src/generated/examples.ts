@@ -1382,6 +1382,14 @@ export const EXAMPLES: Record<string, unknown> = {
     "strategy": "random",
     "updatedAt": 1710000000000
   },
+  "SubFetchInfo": {
+    "count": 12,
+    "firstSeen": 1735680000000,
+    "format": "raw",
+    "ip": "198.51.100.7",
+    "lastSeen": 1735766400000,
+    "userAgent": "v2rayNG/1.10.2"
+  },
   "SubShortLinkView": {
     "token": "Ab3dE5gH9k",
     "url": "https://sub.example.com:2096/s/Ab3dE5gH9k"
