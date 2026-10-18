@@ -1005,6 +1005,10 @@
         "upload": "Subida",
         "download": "Descarga"
       },
+      "disconnect": "Desconectar ahora",
+      "disconnectConfirm": "Cierra las conexiones activas de este cliente. El cliente sigue habilitado y puede volver a conectarse enseguida; deshabilítalo para impedirlo.",
+      "disconnectResult": "{count} conexión(es) cerrada(s)",
+      "disconnectUnsupported": "No se pueden desconectar las sesiones activas en: {inbounds}",
       "import": "Importar",
       "delOrphans": "Eliminar clientes sin entrante",
       "delOrphansConfirmTitle": "¿Eliminar clientes sin entrante?",

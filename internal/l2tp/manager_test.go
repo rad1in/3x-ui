@@ -44,6 +44,25 @@ func exited(t *testing.T, cmd *exec.Cmd) bool {
 	}
 }
 
+func TestKickUserEndsEveryLinkOfThatUserOnly(t *testing.T) {
+	t.Setenv("XUI_BIN_FOLDER", t.TempDir())
+	links := map[string]*exec.Cmd{}
+	for ifname, user := range map[string]string{"ppp0": "alice", "ppp1": "bob", "ppp2": "alice"} {
+		cmd := fakePPPD(t, "pppd")
+		writeSpool(t, runDir(), "sessions", ifname, strconv.Itoa(cmd.Process.Pid)+" 10.90.0.9 "+user+"\n")
+		links[ifname] = cmd
+	}
+
+	if got := (&Manager{}).KickUser("alice"); got != 2 {
+		t.Fatalf("KickUser(alice) = %d, want 2", got)
+	}
+	for ifname, want := range map[string]bool{"ppp0": true, "ppp1": false, "ppp2": true} {
+		if got := exited(t, links[ifname]); got != want {
+			t.Errorf("%s ended = %v, want %v", ifname, got, want)
+		}
+	}
+}
+
 func TestKickEndsRevokedChangedAndExcessLinks(t *testing.T) {
 	t.Setenv("XUI_BIN_FOLDER", t.TempDir())
 	links := map[string]*exec.Cmd{}

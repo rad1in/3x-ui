@@ -380,6 +380,36 @@ func overLimit(sas []ikeSA, insts map[string]Instance) []uint64 {
 	return ids
 }
 
+func userSessionIDs(sas []ikeSA, user string) []uint64 {
+	var ids []uint64
+	for _, sa := range sas {
+		if strings.HasPrefix(sa.conn, "ikev2-") && sa.user == user {
+			ids = append(ids, sa.id)
+		}
+	}
+	return ids
+}
+
+// KickUser terminates the live IKEv2 sessions of one login and returns how
+// many; the login stays valid, so the client may reconnect at once.
+func (m *Manager) KickUser(user string) int {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if m.d == nil || !m.d.running() {
+		return 0
+	}
+	sas, err := m.listSAsLocked()
+	if err != nil {
+		logger.Debug("ipsec: list sessions:", err)
+		return 0
+	}
+	ids := userSessionIDs(sas, user)
+	for _, id := range ids {
+		m.terminateLocked(id)
+	}
+	return len(ids)
+}
+
 func (m *Manager) terminateLocked(id uint64) {
 	msg := vici.NewMessage()
 	_ = msg.Set("ike-id", strconv.FormatUint(id, 10))

@@ -235,6 +235,13 @@ func TestMasterNodeContract(t *testing.T) {
 						t.Fatalf("node c3 total = %d, want %d", ct.Total, int64(5<<30))
 					}
 				}},
+				{"DisconnectClient reaches the node and finds nothing live", []string{"DisconnectClient"}, func() error {
+					n, err := master.DisconnectClient(ctx, masterInbound("updated", false), "c3", nil)
+					if err == nil && n != 0 {
+						t.Errorf("DisconnectClient closed %d connections on an idle node, want 0", n)
+					}
+					return err
+				}, func(t *testing.T) {}},
 				{"ResetClientTraffic zeroes one client", []string{"ResetClientTraffic"}, func() error {
 					seedNodeTraffic(t, "c0")
 					return master.ResetClientTraffic(ctx, nil, "c0")

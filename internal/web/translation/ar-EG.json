@@ -1005,6 +1005,10 @@
         "upload": "الرفع",
         "download": "التنزيل"
       },
+      "disconnect": "قطع الاتصال الآن",
+      "disconnectConfirm": "يُنهي الاتصالات الحالية لهذا العميل. يبقى العميل مفعّلاً ويمكنه إعادة الاتصال فوراً؛ عطّله لمنعه.",
+      "disconnectResult": "تم إغلاق {count} اتصال",
+      "disconnectUnsupported": "لا يمكن قطع الجلسات الحالية على: {inbounds}",
       "import": "استيراد",
       "delOrphans": "حذف العملاء غير المرتبطين",
       "delOrphansConfirmTitle": "حذف العملاء بلا اتصال وارد؟",

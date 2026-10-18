@@ -15,6 +15,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/l2tp"
 	"github.com/mhsanaei/3x-ui/v3/internal/mtproto"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
+	"github.com/mhsanaei/3x-ui/v3/internal/sockkill"
 	"github.com/mhsanaei/3x-ui/v3/internal/tuic"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 )
@@ -469,6 +470,25 @@ func wgKeepAlive(seconds int) string {
 		return ""
 	}
 	return strconv.Itoa(seconds)
+}
+
+// ErrDisconnectUnsupported marks protocols whose live sessions cannot be ended
+// one client at a time: UDP transports and sidecars without a kick command.
+var ErrDisconnectUnsupported = errors.New("live connections of this protocol cannot be disconnected")
+
+func (l *Local) DisconnectClient(ctx context.Context, ib *model.Inbound, email string, ips []string) (int, error) {
+	switch ib.Protocol {
+	case model.OpenVPN:
+		return openvpn.GetManager().KickUser(email), nil
+	case model.IKEv2:
+		return ipsec.GetManager().KickUser(email), nil
+	case model.L2TP:
+		return l2tp.GetManager().KickUser(email), nil
+	case model.VLESS, model.VMESS, model.Trojan, model.Shadowsocks:
+		return sockkill.Kill(ctx, ib.Port, ips)
+	default:
+		return 0, ErrDisconnectUnsupported
+	}
 }
 
 func (l *Local) RestartXray(_ context.Context) error {

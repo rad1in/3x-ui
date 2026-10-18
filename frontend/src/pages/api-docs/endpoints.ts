@@ -1523,6 +1523,15 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/panel/api/clients/disconnect/:email',
+        summary:
+          'End the live connections of a client without disabling it; the client may reconnect at once. OpenVPN, IKEv2 and L2TP sessions are terminated through their servers. For Xray (VLESS, VMess, Trojan, Shadowsocks over TCP) the core cannot drop an authenticated session, so the established sockets from the IPs the client was last seen on are destroyed. UDP protocols (Hysteria, WireGuard, TUIC, AmneziaWG) and MTProto cannot be disconnected and are listed under unsupported. Inbounds on a node are handled by the node, asked once per node.',
+        params: [{ name: 'email', in: 'path', type: 'string', desc: 'Client email.' }],
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "disconnected": 2,\n    "unsupported": ["inbound-8443"],\n    "failed": {}\n  }\n}',
+      },
+      {
+        method: 'POST',
         path: '/panel/api/clients/bulkAttach',
         summary:
           'Attach many existing clients to many inbounds in one call. Each client keeps its identity (email/UUID/password/subId) and a shared traffic row; all clients are added to a target inbound in a single AddInboundClient call. Clients already present on a target are reported under skipped. Returns per-email attached/skipped/errors lists and triggers a single Xray restart if any target inbound was running.',

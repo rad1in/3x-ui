@@ -1005,6 +1005,10 @@
         "upload": "上傳",
         "download": "下載"
       },
+      "disconnect": "立即中斷",
+      "disconnectConfirm": "結束該用戶端目前的連線。用戶端仍保持啟用，可立即重新連線；如需阻止請將其停用。",
+      "disconnectResult": "已關閉 {count} 個連線",
+      "disconnectUnsupported": "無法中斷以下入站上的線上連線：{inbounds}",
       "import": "匯入",
       "delOrphans": "刪除未關聯的客戶端",
       "delOrphansConfirmTitle": "刪除沒有入站的客戶端？",

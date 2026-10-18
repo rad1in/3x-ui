@@ -11149,6 +11149,57 @@
         }
       }
     },
+    "/panel/api/clients/disconnect/{email}": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "End the live connections of a client without disabling it; the client may reconnect at once. OpenVPN, IKEv2 and L2TP sessions are terminated through their servers. For Xray (VLESS, VMess, Trojan, Shadowsocks over TCP) the core cannot drop an authenticated session, so the established sockets from the IPs the client was last seen on are destroyed. UDP protocols (Hysteria, WireGuard, TUIC, AmneziaWG) and MTProto cannot be disconnected and are listed under unsupported. Inbounds on a node are handled by the node, asked once per node.",
+        "operationId": "post_panel_api_clients_disconnect_email",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "description": "Client email.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "disconnected": 2,
+                    "unsupported": [
+                      "inbound-8443"
+                    ],
+                    "failed": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/panel/api/clients/bulkAttach": {
       "post": {
         "tags": [

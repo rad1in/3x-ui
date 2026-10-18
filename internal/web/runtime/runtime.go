@@ -30,6 +30,12 @@ type Runtime interface {
 	// no client store of its own, so it is a no-op there.
 	DeleteClient(ctx context.Context, email string) error
 
+	// DisconnectClient ends the client's live connections on the inbound and
+	// returns how many it closed; the client stays enabled and may reconnect.
+	// ips are the addresses it was last seen on (used for Xray inbounds only);
+	// Remote asks the node, which uses its own records.
+	DisconnectClient(ctx context.Context, ib *model.Inbound, email string, ips []string) (int, error)
+
 	RestartXray(ctx context.Context) error
 
 	ResetClientTraffic(ctx context.Context, ib *model.Inbound, email string) error

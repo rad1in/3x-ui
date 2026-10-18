@@ -1005,6 +1005,10 @@
         "upload": "Envio",
         "download": "Download"
       },
+      "disconnect": "Desconectar agora",
+      "disconnectConfirm": "Encerra as conexões ativas deste cliente. O cliente continua habilitado e pode se reconectar imediatamente; desabilite-o para impedir.",
+      "disconnectResult": "{count} conexão(ões) encerrada(s)",
+      "disconnectUnsupported": "Não é possível desconectar sessões ativas em: {inbounds}",
       "import": "Importar",
       "delOrphans": "Excluir clientes sem inbound",
       "delOrphansConfirmTitle": "Excluir clientes sem inbound?",

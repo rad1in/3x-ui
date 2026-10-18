@@ -1005,6 +1005,10 @@
         "upload": "Unggah",
         "download": "Unduh"
       },
+      "disconnect": "Putuskan sekarang",
+      "disconnectConfirm": "Mengakhiri koneksi aktif klien ini. Klien tetap aktif dan dapat langsung tersambung lagi; nonaktifkan untuk menahannya.",
+      "disconnectResult": "{count} koneksi ditutup",
+      "disconnectUnsupported": "Sesi aktif tidak dapat diputus pada: {inbounds}",
       "import": "Impor",
       "delOrphans": "Hapus klien tanpa inbound",
       "delOrphansConfirmTitle": "Hapus klien tanpa inbound?",

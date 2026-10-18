@@ -1005,6 +1005,10 @@
         "upload": "Yükleme",
         "download": "İndirme"
       },
+      "disconnect": "Şimdi bağlantıyı kes",
+      "disconnectConfirm": "Bu istemcinin canlı bağlantılarını sonlandırır. İstemci etkin kalır ve hemen yeniden bağlanabilir; engellemek için devre dışı bırakın.",
+      "disconnectResult": "{count} bağlantı kapatıldı",
+      "disconnectUnsupported": "Şurada canlı oturumlar kesilemez: {inbounds}",
       "import": "İçe Aktar",
       "delOrphans": "Bağsız Kullanıcıları Sil",
       "delOrphansConfirmTitle": "Gelen Bağlantısı Olmayan Kullanıcılar Silinsin Mi?",

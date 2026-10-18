@@ -1005,6 +1005,10 @@
         "upload": "Tải lên",
         "download": "Tải xuống"
       },
+      "disconnect": "Ngắt kết nối ngay",
+      "disconnectConfirm": "Kết thúc các kết nối đang hoạt động của khách hàng này. Khách hàng vẫn được bật và có thể kết nối lại ngay; hãy tắt để chặn.",
+      "disconnectResult": "Đã đóng {count} kết nối",
+      "disconnectUnsupported": "Không thể ngắt phiên đang hoạt động trên: {inbounds}",
       "import": "Nhập",
       "delOrphans": "Xóa khách hàng không gắn inbound",
       "delOrphansConfirmTitle": "Xóa khách hàng không thuộc inbound nào?",

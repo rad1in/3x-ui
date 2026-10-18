@@ -110,6 +110,7 @@ var nodeSyncScopeAllow = map[string]map[string]struct{}{
 	"/server/descendants":          {http.MethodGet: {}},
 	"/clients/resetTraffic/:email": {http.MethodPost: {}},
 	"/clients/bulkResetTraffic":    {http.MethodPost: {}},
+	"/clients/disconnect/:email":   {http.MethodPost: {}},
 	"/inbounds/resetAllTraffics":   {http.MethodPost: {}},
 	"/inbounds/:id/resetTraffic":   {http.MethodPost: {}},
 	"/clients/onlinesByGuid":       {http.MethodPost: {}},

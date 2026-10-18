@@ -364,6 +364,7 @@ export default function ClientsPage() {
     detach,
     bulkDetach,
     resetTraffic,
+    disconnect,
     resetAllTraffics,
     delDepleted,
     delOrphans,
@@ -745,6 +746,32 @@ export default function ClientsPage() {
       });
     },
     [modal, t, remove, messageApi],
+  );
+
+  const onDisconnect = useCallback(
+    (email: string) => {
+      modal.confirm({
+        title: `${t('pages.clients.disconnect')} — ${email}`,
+        content: t('pages.clients.disconnectConfirm'),
+        okText: t('pages.clients.disconnect'),
+        cancelText: t('cancel'),
+        onOk: async () => {
+          const msg = await disconnect(email);
+          const result = msg?.obj;
+          if (!msg?.success || !result) return;
+          messageApi.success(t('pages.clients.disconnectResult', { count: result.disconnected }));
+          if (result.unsupported.length > 0) {
+            messageApi.warning(
+              t('pages.clients.disconnectUnsupported', { inbounds: result.unsupported.join(', ') }),
+            );
+          }
+          for (const [inbound, reason] of Object.entries(result.failed)) {
+            messageApi.error(`${inbound}: ${reason}`);
+          }
+        },
+      });
+    },
+    [modal, t, disconnect, messageApi],
   );
 
   const onResetTraffic = useCallback(
@@ -1837,6 +1864,16 @@ export default function ClientsPage() {
                                                 </>
                                               ),
                                               onClick: () => onResetTraffic(row.email),
+                                            },
+                                            {
+                                              key: 'disconnect',
+                                              label: (
+                                                <>
+                                                  <DisconnectOutlined />{' '}
+                                                  {t('pages.clients.disconnect')}
+                                                </>
+                                              ),
+                                              onClick: () => onDisconnect(row.email),
                                             },
                                             {
                                               key: 'edit',

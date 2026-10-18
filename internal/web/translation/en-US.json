@@ -1005,6 +1005,10 @@
         "upload": "Upload",
         "download": "Download"
       },
+      "disconnect": "Disconnect now",
+      "disconnectConfirm": "Ends this client's live connections. The client stays enabled and can reconnect right away; disable it to keep it out.",
+      "disconnectResult": "{count} connection(s) closed",
+      "disconnectUnsupported": "Cannot disconnect live sessions on: {inbounds}",
       "import": "Import",
       "delOrphans": "Delete unattached clients",
       "delOrphansConfirmTitle": "Delete clients without an inbound?",

@@ -1005,6 +1005,10 @@
         "upload": "アップロード",
         "download": "ダウンロード"
       },
+      "disconnect": "今すぐ切断",
+      "disconnectConfirm": "このクライアントの接続中のセッションを終了します。クライアントは有効のままで、すぐに再接続できます。接続させない場合は無効にしてください。",
+      "disconnectResult": "{count} 件の接続を切断しました",
+      "disconnectUnsupported": "次では接続中のセッションを切断できません: {inbounds}",
       "import": "インポート",
       "delOrphans": "未アタッチのクライアントを削除",
       "delOrphansConfirmTitle": "インバウンドのないクライアントを削除しますか?",
