@@ -159,6 +159,13 @@
     "subFormats": "Abonelik Formatları",
     "panels": "Paneller"
   },
+  "shortcuts": {
+    "title": "Klavye kısayolları",
+    "focusSearch": "Arama kutusuna odaklan",
+    "openHelp": "Bu yardımı göster",
+    "openPalette": "Komut paletini aç",
+    "goTo": "Git"
+  },
   "pages": {
     "login": {
       "hello": "Merhaba",

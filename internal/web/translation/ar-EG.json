@@ -159,6 +159,13 @@
     "subFormats": "Sub Formats",
     "panels": "اللوحات"
   },
+  "shortcuts": {
+    "title": "اختصارات لوحة المفاتيح",
+    "focusSearch": "التركيز على مربع البحث",
+    "openHelp": "عرض هذه المساعدة",
+    "openPalette": "فتح لوحة الأوامر",
+    "goTo": "الانتقال إلى"
+  },
   "pages": {
     "login": {
       "hello": "أهلا",

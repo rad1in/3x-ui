@@ -3,6 +3,7 @@ import { Outlet } from 'react-router';
 import { useWebSocketBridge } from '@/api/websocketBridge';
 import { usePageTitle } from '@/hooks/usePageTitle';
 import CommandPalette from '@/components/command-palette/CommandPalette';
+import KeyboardShortcuts from '@/components/KeyboardShortcuts';
 
 export default function PanelLayout() {
   useWebSocketBridge();
@@ -11,6 +12,7 @@ export default function PanelLayout() {
     <>
       <Outlet />
       <CommandPalette />
+      <KeyboardShortcuts />
     </>
   );
 }

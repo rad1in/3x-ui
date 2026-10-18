@@ -159,6 +159,13 @@
     "subFormats": "Sub Formats",
     "panels": "Panels"
   },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "focusSearch": "Focus the search box",
+    "openHelp": "Show this help",
+    "openPalette": "Open the command palette",
+    "goTo": "Go to"
+  },
   "pages": {
     "login": {
       "hello": "Hello",

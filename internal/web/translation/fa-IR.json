@@ -159,6 +159,13 @@
     "subFormats": "Sub Formats",
     "panels": "پنل‌ها"
   },
+  "shortcuts": {
+    "title": "میانبرهای صفحه‌کلید",
+    "focusSearch": "رفتن به کادر جستجو",
+    "openHelp": "نمایش این راهنما",
+    "openPalette": "باز کردن پالت فرمان",
+    "goTo": "رفتن به"
+  },
   "pages": {
     "login": {
       "hello": "سلام",

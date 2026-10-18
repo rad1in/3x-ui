@@ -159,6 +159,13 @@
     "subFormats": "Sub Formats",
     "panels": "Painéis"
   },
+  "shortcuts": {
+    "title": "Atalhos de teclado",
+    "focusSearch": "Focar na caixa de busca",
+    "openHelp": "Mostrar esta ajuda",
+    "openPalette": "Abrir a paleta de comandos",
+    "goTo": "Ir para"
+  },
   "pages": {
     "login": {
       "hello": "Olá",

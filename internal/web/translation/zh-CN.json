@@ -159,6 +159,13 @@
     "subFormats": "Sub Formats",
     "panels": "面板"
   },
+  "shortcuts": {
+    "title": "键盘快捷键",
+    "focusSearch": "聚焦搜索框",
+    "openHelp": "显示此帮助",
+    "openPalette": "打开命令面板",
+    "goTo": "前往"
+  },
   "pages": {
     "login": {
       "hello": "你好",

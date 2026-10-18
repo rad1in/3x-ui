@@ -159,6 +159,13 @@
     "subFormats": "Sub Formats",
     "panels": "パネル"
   },
+  "shortcuts": {
+    "title": "キーボードショートカット",
+    "focusSearch": "検索ボックスにフォーカス",
+    "openHelp": "このヘルプを表示",
+    "openPalette": "コマンドパレットを開く",
+    "goTo": "移動"
+  },
   "pages": {
     "login": {
       "hello": "こんにちは",

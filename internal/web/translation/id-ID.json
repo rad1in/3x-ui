@@ -159,6 +159,13 @@
     "subFormats": "Sub Formats",
     "panels": "Panel"
   },
+  "shortcuts": {
+    "title": "Pintasan keyboard",
+    "focusSearch": "Fokus ke kotak pencarian",
+    "openHelp": "Tampilkan bantuan ini",
+    "openPalette": "Buka palet perintah",
+    "goTo": "Buka"
+  },
   "pages": {
     "login": {
       "hello": "Halo",

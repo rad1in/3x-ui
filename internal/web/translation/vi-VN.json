@@ -159,6 +159,13 @@
     "subFormats": "Sub Formats",
     "panels": "Bảng điều khiển"
   },
+  "shortcuts": {
+    "title": "Phím tắt",
+    "focusSearch": "Chuyển đến ô tìm kiếm",
+    "openHelp": "Hiện trợ giúp này",
+    "openPalette": "Mở bảng lệnh",
+    "goTo": "Đi đến"
+  },
   "pages": {
     "login": {
       "hello": "Xin chào",
