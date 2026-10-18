@@ -10,6 +10,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { catTabLabel } from './catTabLabel';
 import { NotifyTimeField } from './NotifyTimeField';
 import SecretInput from './SecretInput';
+import { BALE_API_SERVER, botPlatformOf, type BotPlatform } from './telegramPlatform';
 
 interface TelegramTabProps {
   allSetting: AllSetting;
@@ -19,6 +20,9 @@ interface TelegramTabProps {
 export default function TelegramTab({ allSetting, updateSetting }: TelegramTabProps) {
   const { t } = useTranslation();
   const { isMobile } = useMediaQuery();
+  const [customMode, setCustomMode] = useState(false);
+  const detected = botPlatformOf(allSetting.tgBotAPIServer);
+  const platform: BotPlatform = detected === 'telegram' && customMode ? 'custom' : detected;
   const [testLoading, setTestLoading] = useState(false);
   const [testResult, setTestResult] = useState<{ success: boolean; msg: string } | null>(null);
 
@@ -120,15 +124,41 @@ export default function TelegramTab({ allSetting, updateSetting }: TelegramTabPr
 
               <SettingListItem
                 paddings="small"
-                title={t('pages.settings.telegramAPIServer')}
-                description={t('pages.settings.telegramAPIServerDesc')}
+                title={t('pages.settings.telegramPlatform')}
+                description={
+                  platform === 'bale' ? t('pages.settings.telegramPlatformBaleHint') : undefined
+                }
               >
-                <Input
-                  value={allSetting.tgBotAPIServer}
-                  placeholder="https://api.example.com"
-                  onChange={(e) => updateSetting({ tgBotAPIServer: e.target.value })}
+                <Select<BotPlatform>
+                  value={platform}
+                  style={{ width: '100%' }}
+                  onChange={(v) => {
+                    setCustomMode(v === 'custom');
+                    updateSetting({
+                      tgBotAPIServer: v === 'telegram' ? '' : v === 'bale' ? BALE_API_SERVER : '',
+                    });
+                  }}
+                  options={[
+                    { value: 'telegram', label: t('pages.settings.telegramPlatformTelegram') },
+                    { value: 'bale', label: t('pages.settings.telegramPlatformBale') },
+                    { value: 'custom', label: t('pages.settings.telegramPlatformCustom') },
+                  ]}
                 />
               </SettingListItem>
+
+              {platform === 'custom' && (
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.telegramAPIServer')}
+                  description={t('pages.settings.telegramAPIServerDesc')}
+                >
+                  <Input
+                    value={allSetting.tgBotAPIServer}
+                    placeholder="https://api.example.com"
+                    onChange={(e) => updateSetting({ tgBotAPIServer: e.target.value })}
+                  />
+                </SettingListItem>
+              )}
 
               <Space orientation="vertical" size={8} style={{ width: '100%', marginTop: 16 }}>
                 <Button

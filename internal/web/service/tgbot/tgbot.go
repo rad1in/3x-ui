@@ -371,6 +371,9 @@ func (t *Tgbot) Start(i18nFS embed.FS) error {
 }
 
 func (t *Tgbot) trySetBotCommands(bot *telego.Bot) {
+	if baleMode.Load() {
+		return // Bale's Bot API has no setMyCommands
+	}
 	defer func() {
 		if r := recover(); r != nil {
 			logger.Warning("Failed to register bot commands (Telegram may be rate-limiting); bot will continue without them:", r)
@@ -470,6 +473,8 @@ func (t *Tgbot) NewBot(token string, proxyUrl string, apiServerUrl string) (*tel
 			apiServerUrl = safeURL
 		}
 	}
+
+	baleMode.Store(isBaleServer(apiServerUrl))
 
 	// Create robust fasthttp client
 	client := t.createRobustFastHTTPClient(proxyUrl, t.settingService.PanelEgressProxyURL)

@@ -396,11 +396,12 @@ func (t *Tgbot) broadcastSummaryText(result broadcastResult) string {
 // finalizeBroadcastCard turns the progress card into the summary; false means
 // the card is gone and the summary needs its own message to be seen at all.
 func (t *Tgbot) finalizeBroadcastCard(runner *broadcastRunner, summary string) bool {
+	text, parseMode := platformText(summary)
 	params := telego.EditMessageTextParams{
 		ChatID:      tu.ID(runner.chatID),
 		MessageID:   runner.messageID,
-		Text:        summary,
-		ParseMode:   "HTML",
+		Text:        text,
+		ParseMode:   parseMode,
 		ReplyMarkup: &telego.InlineKeyboardMarkup{InlineKeyboard: [][]telego.InlineKeyboardButton{}},
 	}
 	_, err := bot.EditMessageText(context.Background(), &params)
