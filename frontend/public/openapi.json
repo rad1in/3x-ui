@@ -6521,9 +6521,15 @@
         "type": "object"
       },
       "SecurityConfig": {
-        "description": "SecurityConfig groups the login and data protections that do not depend on\ntwo-factor codes. It is one JSON setting that only owners may change.",
+        "description": "SecurityConfig groups the login and data protections that do not depend on\ntwo-factor codes. It is one JSON setting that only owners may change.\nBackupPassphrase is a secret: stored encrypted, served blank, and kept when a\nsave leaves it blank (ClearBackupPassphrase empties it on purpose).",
         "properties": {
+          "backupPassphrase": {
+            "type": "string"
+          },
           "captchaEnable": {
+            "type": "boolean"
+          },
+          "clearBackupPassphrase": {
             "type": "boolean"
           },
           "newLocationAlert": {
@@ -6531,15 +6537,25 @@
           }
         },
         "required": [
+          "backupPassphrase",
           "captchaEnable",
           "newLocationAlert"
         ],
         "type": "object"
       },
       "SecurityConfigView": {
-        "description": "SecurityConfigView is the configuration as the admin API serves it.",
+        "description": "SecurityConfigView is the configuration as the admin API serves it: secrets\nare blank and the Has flags say which are set.",
         "properties": {
+          "backupPassphrase": {
+            "type": "string"
+          },
           "captchaEnable": {
+            "type": "boolean"
+          },
+          "clearBackupPassphrase": {
+            "type": "boolean"
+          },
+          "hasBackupPassphrase": {
             "type": "boolean"
           },
           "newLocationAlert": {
@@ -6547,7 +6563,9 @@
           }
         },
         "required": [
+          "backupPassphrase",
           "captchaEnable",
+          "hasBackupPassphrase",
           "newLocationAlert"
         ],
         "type": "object"
@@ -10709,7 +10727,7 @@
         "tags": [
           "Server"
         ],
-        "summary": "Restore the panel DB from an uploaded backup (multipart form, field name \"db\"). SQLite panels accept a SQLite database (.db) or a SQLite migration dump (.dump); PostgreSQL panels accept a pg_dump archive (.dump), a SQLite database (.db), or a SQLite migration dump. The panel restarts after restore. Destructive.",
+        "summary": "Restore the panel DB from an uploaded backup (multipart form, field name \"db\"). SQLite panels accept a SQLite database (.db) or a SQLite migration dump (.dump); PostgreSQL panels accept a pg_dump archive (.dump), a SQLite database (.db), or a SQLite migration dump. An encrypted backup (.enc, made when a backup passphrase is set) is decrypted first. The panel restarts after restore. Destructive.",
         "operationId": "post_panel_api_server_importDB",
         "requestBody": {
           "required": true,
@@ -10722,6 +10740,10 @@
                     "type": "string",
                     "format": "binary",
                     "description": "Database backup or migration file to upload."
+                  },
+                  "passphrase": {
+                    "type": "string",
+                    "description": "Passphrase of an encrypted backup (.enc). Optional; the configured backup passphrase is used when omitted."
                   },
                   "keepHostSettings": {
                     "type": "boolean",
@@ -20372,7 +20394,10 @@
                 "example": {
                   "success": true,
                   "obj": {
+                    "backupPassphrase": "",
                     "captchaEnable": false,
+                    "clearBackupPassphrase": false,
+                    "hasBackupPassphrase": false,
                     "newLocationAlert": false
                   }
                 }

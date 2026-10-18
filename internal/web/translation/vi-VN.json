@@ -327,6 +327,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Giữ cài đặt của máy này",
+      "importPassphrase": "Cụm mật khẩu bản sao lưu (chỉ cho bản sao lưu mã hóa)",
       "importKeepHostSettingsDesc": "Giữ nguyên địa chỉ lắng nghe, cổng, đường dẫn cơ sở, chứng chỉ và danh tính node của bảng điều khiển này thay vì lấy chúng từ tệp đã tải lên.",
       "hosted": {
         "title": "Gói của bạn",
@@ -1626,6 +1627,10 @@
           "captchaDesc": "Hỏi một phép tính đơn giản do chính bảng điều khiển vẽ thành hình, trước khi kiểm tra mật khẩu. Không gửi gì cho bên thứ ba.",
           "newLocation": "Cảnh báo vị trí đăng nhập mới",
           "newLocationDesc": "Gửi cảnh báo qua các kênh thông báo khi quản trị viên đăng nhập từ địa chỉ hoặc quốc gia chưa từng thấy. Lần đăng nhập đầu chỉ để ghi nhớ. Xác định quốc gia cần geoip.dat trong thư mục Xray.",
+          "backupPassphrase": "Cụm mật khẩu mã hóa sao lưu",
+          "backupPassphraseDesc": "Bản sao lưu theo lịch, bản tải về và bản gửi tới Telegram hoặc Discord được mã hóa AES-256-GCM bằng cụm mật khẩu này và có đuôi .enc. Hãy giữ kỹ: không có nó thì không thể khôi phục. Để trống nếu muốn bản sao lưu thường.",
+          "backupPassphraseSet": "Đã đặt cụm mật khẩu; nhập cụm mới để thay thế",
+          "backupPassphraseClear": "Xóa cụm mật khẩu",
           "saved": "Đã lưu cài đặt bảo mật"
         },
         "show": "Hiển thị",

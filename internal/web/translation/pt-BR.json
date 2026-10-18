@@ -327,6 +327,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Manter as configurações desta máquina",
+      "importPassphrase": "Frase secreta do backup (apenas para backup criptografado)",
       "importKeepHostSettingsDesc": "Mantém os endereços de escuta, as portas, o caminho base, os certificados e a identidade de nó deste painel em vez de obtê-los do arquivo enviado.",
       "hosted": {
         "title": "Seu plano",
@@ -1626,6 +1627,10 @@
           "captchaDesc": "Pede o resultado de uma conta simples, desenhada como imagem pelo próprio painel, antes de checar a senha. Nada é enviado a terceiros.",
           "newLocation": "Alerta de novo local de login",
           "newLocationDesc": "Envia um alerta pelos canais de notificação quando um administrador entra de um endereço ou país nunca visto. O primeiro login serve apenas para aprender. Países exigem um geoip.dat na pasta do Xray.",
+          "backupPassphrase": "Frase secreta de criptografia de backup",
+          "backupPassphraseDesc": "Backups agendados, baixados e enviados ao Telegram ou Discord são criptografados com AES-256-GCM sob esta frase e recebem o sufixo .enc. Guarde-a bem: sem ela o backup não pode ser restaurado. Deixe vazio para backups simples.",
+          "backupPassphraseSet": "Há uma frase definida; digite outra para substituí-la",
+          "backupPassphraseClear": "Remover a frase",
           "saved": "Configurações de segurança salvas"
         },
         "show": "Mostrar",

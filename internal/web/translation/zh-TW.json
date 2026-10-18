@@ -327,6 +327,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "保留本機設定",
+      "importPassphrase": "備份口令（僅用於加密備份）",
       "importKeepHostSettingsDesc": "保留本面板的監聽位址、連接埠、基礎路徑、憑證與節點身分，而不是使用上傳檔案中的值。",
       "hosted": {
         "title": "你的方案",
@@ -1626,6 +1627,10 @@
           "captchaDesc": "在檢查密碼之前，先出一道由面板自己繪製成圖片的簡單算術題，不會向任何第三方傳送資料。",
           "newLocation": "新登入位置提醒",
           "newLocationDesc": "管理員從未見過的位址或國家登入時，透過通知管道發出提醒。首次登入只用於記錄。辨識國家需要 Xray 資料夾中的 geoip.dat。",
+          "backupPassphrase": "備份加密口令",
+          "backupPassphraseDesc": "排程備份、下載的備份以及傳送到 Telegram 或 Discord 的備份，都會用此口令以 AES-256-GCM 加密，並帶 .enc 後綴。請妥善保管：沒有口令無法還原備份。留空則不加密。",
+          "backupPassphraseSet": "已設定口令；輸入新口令可取代",
+          "backupPassphraseClear": "移除口令",
           "saved": "安全設定已儲存"
         },
         "show": "顯示",

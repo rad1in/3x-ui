@@ -54,6 +54,12 @@ func (t *Tgbot) SendBackupToAdmins() {
 		logger.Error("Error in getting db backup: ", err)
 	}
 	dbFilename := t.serverService.BackupFilename("")
+	if dbData != nil {
+		if dbFilename, dbData, err = service.ProtectBackup(dbFilename, dbData); err != nil {
+			logger.Error("Error in protecting db backup: ", err)
+			return
+		}
+	}
 	admins := adminSnapshot()
 	for i, adminId := range admins {
 		t.sendBackupData(adminId, dbData, dbFilename)
@@ -418,7 +424,14 @@ func (t *Tgbot) sendBackup(chatId int64) {
 	if err != nil {
 		logger.Error("Error in getting db backup: ", err)
 	}
-	t.sendBackupData(chatId, dbData, t.serverService.BackupFilename(""))
+	dbFilename := t.serverService.BackupFilename("")
+	if dbData != nil {
+		if dbFilename, dbData, err = service.ProtectBackup(dbFilename, dbData); err != nil {
+			logger.Error("Error in protecting db backup: ", err)
+			return
+		}
+	}
+	t.sendBackupData(chatId, dbData, dbFilename)
 }
 
 func (t *Tgbot) sendBackupData(chatId int64, dbData []byte, dbFilename string) {

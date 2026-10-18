@@ -1469,12 +1469,17 @@ export interface SalesConfigView {
 }
 
 export interface SecurityConfig {
+  backupPassphrase: string;
   captchaEnable: boolean;
+  clearBackupPassphrase?: boolean;
   newLocationAlert: boolean;
 }
 
 export interface SecurityConfigView {
+  backupPassphrase: string;
   captchaEnable: boolean;
+  clearBackupPassphrase?: boolean;
+  hasBackupPassphrase: boolean;
   newLocationAlert: boolean;
 }
 

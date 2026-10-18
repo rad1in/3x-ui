@@ -327,6 +327,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "このマシンの設定を保持する",
+      "importPassphrase": "バックアップのパスフレーズ（暗号化バックアップの場合のみ）",
       "importKeepHostSettingsDesc": "アップロードしたファイルの値ではなく、このパネルのリッスンアドレス、ポート、ベースパス、証明書、ノード ID を保持します。",
       "hosted": {
         "title": "ご契約プラン",
@@ -1626,6 +1627,10 @@
           "captchaDesc": "パスワードを確認する前に、パネル自身が画像として描く簡単な計算を出題します。外部サービスには何も送信されません。",
           "newLocation": "新しいログイン場所の通知",
           "newLocationDesc": "管理者がこれまでにないアドレスや国からサインインしたとき、通知チャネルでアラートを送ります。最初のサインインは学習のみです。国の判定にはXrayフォルダのgeoip.datが必要です。",
+          "backupPassphrase": "バックアップ暗号化パスフレーズ",
+          "backupPassphraseDesc": "スケジュールバックアップ、ダウンロードしたバックアップ、TelegramやDiscordに送るバックアップは、このパスフレーズでAES-256-GCM暗号化され、拡張子.encが付きます。紛失するとバックアップを復元できません。空欄なら暗号化しません。",
+          "backupPassphraseSet": "パスフレーズは設定済みです。置き換えるには新しいものを入力してください",
+          "backupPassphraseClear": "パスフレーズを削除",
           "saved": "セキュリティ設定を保存しました"
         },
         "show": "表示",

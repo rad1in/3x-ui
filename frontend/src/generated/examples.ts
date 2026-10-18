@@ -1675,11 +1675,16 @@ export const EXAMPLES: Record<string, unknown> = {
     }
   },
   "SecurityConfig": {
+    "backupPassphrase": "",
     "captchaEnable": false,
+    "clearBackupPassphrase": false,
     "newLocationAlert": false
   },
   "SecurityConfigView": {
+    "backupPassphrase": "",
     "captchaEnable": false,
+    "clearBackupPassphrase": false,
+    "hasBackupPassphrase": false,
     "newLocationAlert": false
   },
   "ServerSettings": {

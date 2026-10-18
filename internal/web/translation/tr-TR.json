@@ -327,6 +327,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Bu makinenin ayarlarını koru",
+      "importPassphrase": "Yedek parolası (yalnızca şifreli yedek için)",
       "importKeepHostSettingsDesc": "Yüklenen dosyadan almak yerine bu panelin dinleme adreslerini, portlarını, temel yolunu, sertifikalarını ve düğüm kimliğini korur.",
       "hosted": {
         "title": "Paketiniz",
@@ -1626,6 +1627,10 @@
           "captchaDesc": "Parola kontrolünden önce panelin kendi çizdiği basit bir işlemin sonucunu sorar. Üçüncü taraflara hiçbir şey gönderilmez.",
           "newLocation": "Yeni giriş konumu uyarısı",
           "newLocationDesc": "Bir yönetici daha önce görülmemiş bir adresten veya ülkeden giriş yaptığında bildirim kanallarından uyarı gönderir. İlk giriş yalnızca öğrenme içindir. Ülke tespiti için Xray klasöründe geoip.dat gerekir.",
+          "backupPassphrase": "Yedek şifreleme parolası",
+          "backupPassphraseDesc": "Zamanlanmış, indirilen ve Telegram veya Discord'a gönderilen yedekler bu parolayla AES-256-GCM ile şifrelenir ve .enc uzantısı alır. Güvende tutun: parola olmadan yedek geri yüklenemez. Düz yedek için boş bırakın.",
+          "backupPassphraseSet": "Bir parola ayarlı; değiştirmek için yenisini yazın",
+          "backupPassphraseClear": "Parolayı kaldır",
           "saved": "Güvenlik ayarları kaydedildi"
         },
         "show": "Göster",

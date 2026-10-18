@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Checkbox, Modal } from 'antd';
+import { Button, Checkbox, Input, Modal } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 
 import { HttpUtil, PromiseUtil } from '@/utils';
@@ -28,6 +28,7 @@ export default function BackupModal({
   const isPostgres = window.X_UI_DB_TYPE === 'postgres';
   const isMySQL = window.X_UI_DB_TYPE === 'mysql';
   const [keepHostSettings, setKeepHostSettings] = useState(true);
+  const [passphrase, setPassphrase] = useState('');
 
   function exportDb() {
     window.location.href = (window.X_UI_BASE_PATH || '') + 'panel/api/server/getDb';
@@ -40,7 +41,7 @@ export default function BackupModal({
   function importDb() {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
-    fileInput.accept = '.dump,.db';
+    fileInput.accept = '.dump,.db,.enc';
     fileInput.addEventListener('change', async (e) => {
       const dbFile = (e.target as HTMLInputElement).files?.[0];
       if (!dbFile) return;
@@ -48,6 +49,7 @@ export default function BackupModal({
       const formData = new FormData();
       formData.append('db', dbFile);
       formData.append('keepHostSettings', String(keepHostSettings));
+      if (passphrase) formData.append('passphrase', passphrase);
 
       onClose();
       onBusy({ busy: true, tip: `${t('pages.index.importDatabase')}…` });
@@ -128,6 +130,17 @@ export default function BackupModal({
             onClick={importDb}
             icon={<UploadOutlined />}
           />
+        </div>
+
+        <div className="backup-item">
+          <div className="backup-meta">
+            <Input.Password
+              value={passphrase}
+              autoComplete="off"
+              placeholder={t('pages.index.importPassphrase')}
+              onChange={(e) => setPassphrase(e.target.value)}
+            />
+          </div>
         </div>
 
         <div className="backup-item">

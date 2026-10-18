@@ -350,7 +350,11 @@ func (a *ServerController) getDb(c *gin.Context) {
 		return
 	}
 
-	filename := a.serverService.BackupFilename(c.Request.Host)
+	filename, db, err := service.ProtectBackup(a.serverService.BackupFilename(c.Request.Host), db)
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.index.getDatabaseError"), err)
+		return
+	}
 	if !filenameRegex.MatchString(filename) {
 		_ = c.AbortWithError(http.StatusBadRequest, fmt.Errorf("invalid filename"))
 		return
@@ -387,6 +391,11 @@ func (a *ServerController) importDB(c *gin.Context) {
 		return
 	}
 	defer file.Close()
+	file, err = openBackupUpload(file, c.Request.FormValue("passphrase"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.index.readDatabaseError"), err)
+		return
+	}
 	// Absent field keeps this machine's own listen addresses, certificates and
 	// node identity: the safe default for the common case of moving a config to
 	// a new host. Send keepHostSettings=false to clone a machine wholesale.

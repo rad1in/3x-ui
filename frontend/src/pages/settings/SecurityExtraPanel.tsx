@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Switch } from 'antd';
+import { Button, Checkbox, Input, Switch } from 'antd';
 
 import { useSecurityConfig } from '@/api/queries/useSecurityConfig';
 import { SettingListItem } from '@/components/ui';
@@ -38,6 +38,30 @@ function ExtraForm({
           checked={cfg.newLocationAlert}
           onChange={(v) => setCfg({ ...cfg, newLocationAlert: v })}
         />
+      </SettingListItem>
+      <SettingListItem
+        paddings="small"
+        title={t('pages.settings.security.extra.backupPassphrase')}
+        description={t('pages.settings.security.extra.backupPassphraseDesc')}
+      >
+        <Input.Password
+          value={cfg.backupPassphrase}
+          autoComplete="new-password"
+          placeholder={
+            initial.hasBackupPassphrase
+              ? t('pages.settings.security.extra.backupPassphraseSet')
+              : ''
+          }
+          onChange={(e) => setCfg({ ...cfg, backupPassphrase: e.target.value })}
+        />
+        {initial.hasBackupPassphrase && (
+          <Checkbox
+            checked={cfg.clearBackupPassphrase ?? false}
+            onChange={(e) => setCfg({ ...cfg, clearBackupPassphrase: e.target.checked })}
+          >
+            {t('pages.settings.security.extra.backupPassphraseClear')}
+          </Checkbox>
+        )}
       </SettingListItem>
       <Button type="primary" loading={saving} onClick={() => onSave(cfg)}>
         {t('save')}

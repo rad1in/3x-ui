@@ -327,6 +327,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "保留本机设置",
+      "importPassphrase": "备份口令（仅用于加密备份）",
       "importKeepHostSettingsDesc": "保留本面板的监听地址、端口、基础路径、证书和节点身份，而不是使用上传文件中的值。",
       "hosted": {
         "title": "你的套餐",
@@ -1626,6 +1627,10 @@
           "captchaDesc": "在校验密码之前，先出一道由面板自己绘制成图片的简单算术题，不会向任何第三方发送数据。",
           "newLocation": "新登录位置提醒",
           "newLocationDesc": "管理员从未见过的地址或国家登录时，通过通知渠道发出提醒。首次登录只用于记录。识别国家需要 Xray 目录中的 geoip.dat。",
+          "backupPassphrase": "备份加密口令",
+          "backupPassphraseDesc": "定时备份、下载的备份以及发送到 Telegram 或 Discord 的备份，都会用此口令以 AES-256-GCM 加密，并带 .enc 后缀。请妥善保管：没有口令无法恢复备份。留空则不加密。",
+          "backupPassphraseSet": "已设置口令；输入新口令可替换",
+          "backupPassphraseClear": "移除口令",
           "saved": "安全设置已保存"
         },
         "show": "显示",

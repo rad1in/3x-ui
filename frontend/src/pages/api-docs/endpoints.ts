@@ -874,13 +874,20 @@ export const sections: readonly Section[] = [
         method: 'POST',
         path: '/panel/api/server/importDB',
         summary:
-          'Restore the panel DB from an uploaded backup (multipart form, field name "db"). SQLite panels accept a SQLite database (.db) or a SQLite migration dump (.dump); PostgreSQL panels accept a pg_dump archive (.dump), a SQLite database (.db), or a SQLite migration dump. The panel restarts after restore. Destructive.',
+          'Restore the panel DB from an uploaded backup (multipart form, field name "db"). SQLite panels accept a SQLite database (.db) or a SQLite migration dump (.dump); PostgreSQL panels accept a pg_dump archive (.dump), a SQLite database (.db), or a SQLite migration dump. An encrypted backup (.enc, made when a backup passphrase is set) is decrypted first. The panel restarts after restore. Destructive.',
         params: [
           {
             name: 'db',
             in: 'body (multipart)',
             type: 'file',
             desc: 'Database backup or migration file to upload.',
+          },
+          {
+            name: 'passphrase',
+            in: 'body (multipart)',
+            type: 'string',
+            desc: 'Passphrase of an encrypted backup (.enc). Optional; the configured backup passphrase is used when omitted.',
+            optional: true,
           },
           {
             name: 'keepHostSettings',

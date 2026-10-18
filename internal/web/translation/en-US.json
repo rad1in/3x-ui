@@ -327,6 +327,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Keep this machine's settings",
+      "importPassphrase": "Backup passphrase (only for an encrypted backup)",
       "importKeepHostSettingsDesc": "Keeps this panel's listen addresses, ports, base path, certificates and node identity instead of taking them from the uploaded file.",
       "hosted": {
         "title": "Your plan",
@@ -1748,6 +1749,10 @@
           "captchaDesc": "Asks a simple sum, drawn as a picture by the panel itself, before checking the password. Nothing is sent to a third party.",
           "newLocation": "New login location alert",
           "newLocationDesc": "Sends an alert through the notification channels when an admin signs in from an address or country not seen before. The first sign-in only teaches the panel. Countries need a geoip.dat in the Xray folder.",
+          "backupPassphrase": "Backup encryption passphrase",
+          "backupPassphraseDesc": "Scheduled backups, downloaded backups and those sent to Telegram or Discord are encrypted with AES-256-GCM under this passphrase and get an .enc suffix. Keep it safe: a backup cannot be restored without it. Leave empty for plain backups.",
+          "backupPassphraseSet": "A passphrase is set; type a new one to replace it",
+          "backupPassphraseClear": "Remove the passphrase",
           "saved": "Security settings saved"
         },
         "show": "Show",

@@ -6495,9 +6495,15 @@ export const SCHEMAS: Record<string, unknown> = {
     "type": "object"
   },
   "SecurityConfig": {
-    "description": "SecurityConfig groups the login and data protections that do not depend on\ntwo-factor codes. It is one JSON setting that only owners may change.",
+    "description": "SecurityConfig groups the login and data protections that do not depend on\ntwo-factor codes. It is one JSON setting that only owners may change.\nBackupPassphrase is a secret: stored encrypted, served blank, and kept when a\nsave leaves it blank (ClearBackupPassphrase empties it on purpose).",
     "properties": {
+      "backupPassphrase": {
+        "type": "string"
+      },
       "captchaEnable": {
+        "type": "boolean"
+      },
+      "clearBackupPassphrase": {
         "type": "boolean"
       },
       "newLocationAlert": {
@@ -6505,15 +6511,25 @@ export const SCHEMAS: Record<string, unknown> = {
       }
     },
     "required": [
+      "backupPassphrase",
       "captchaEnable",
       "newLocationAlert"
     ],
     "type": "object"
   },
   "SecurityConfigView": {
-    "description": "SecurityConfigView is the configuration as the admin API serves it.",
+    "description": "SecurityConfigView is the configuration as the admin API serves it: secrets\nare blank and the Has flags say which are set.",
     "properties": {
+      "backupPassphrase": {
+        "type": "string"
+      },
       "captchaEnable": {
+        "type": "boolean"
+      },
+      "clearBackupPassphrase": {
+        "type": "boolean"
+      },
+      "hasBackupPassphrase": {
         "type": "boolean"
       },
       "newLocationAlert": {
@@ -6521,7 +6537,9 @@ export const SCHEMAS: Record<string, unknown> = {
       }
     },
     "required": [
+      "backupPassphrase",
       "captchaEnable",
+      "hasBackupPassphrase",
       "newLocationAlert"
     ],
     "type": "object"

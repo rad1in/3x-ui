@@ -1565,13 +1565,18 @@ export const SalesConfigViewSchema = z.object({
 export type SalesConfigView = z.infer<typeof SalesConfigViewSchema>;
 
 export const SecurityConfigSchema = z.object({
+  backupPassphrase: z.string(),
   captchaEnable: z.boolean(),
+  clearBackupPassphrase: z.boolean().optional(),
   newLocationAlert: z.boolean(),
 });
 export type SecurityConfig = z.infer<typeof SecurityConfigSchema>;
 
 export const SecurityConfigViewSchema = z.object({
+  backupPassphrase: z.string(),
   captchaEnable: z.boolean(),
+  clearBackupPassphrase: z.boolean().optional(),
+  hasBackupPassphrase: z.boolean(),
   newLocationAlert: z.boolean(),
 });
 export type SecurityConfigView = z.infer<typeof SecurityConfigViewSchema>;

@@ -178,10 +178,11 @@ func (s *DiscordService) BuildReport(ctx context.Context, server ServerProvider,
 			if filename == "" {
 				filename = "x-ui.db"
 			}
-			files = append(files, FileAttachment{
-				Filename: filename,
-				Data:     dbData,
-			})
+			if sealed, data, perr := service.ProtectBackup(filename, dbData); perr != nil {
+				logger.Warning("Discord report: failed to protect DB backup: ", perr)
+			} else {
+				files = append(files, FileAttachment{Filename: sealed, Data: data})
+			}
 		}
 
 		configPath := xray.GetConfigPath()
