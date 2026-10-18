@@ -293,6 +293,13 @@ var defaultValueMap = map[string]string{
 	"webhookSecret": "",
 	"webhookEvents": "client.created,client.deleted,client.depleted,client.expired,client.renewed,client.quota_warning,client.expiry_warning",
 
+	// Weekly summary
+	"weeklyReportEnable":   "false",
+	"weeklyReportDay":      "1",
+	"weeklyReportHour":     "9",
+	"weeklyReportBaseline": "",
+	"weeklyReportLastSent": "0",
+
 	// Push channels
 	"ntfyEnable":      "false",
 	"ntfyServer":      "https://ntfy.sh",

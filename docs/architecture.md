@@ -397,6 +397,7 @@ All registered in `web.go` → `startTask()`. Each is a struct with a `Run()` me
 | `@every 1m`         | `hosted_sponsors_job`                                                                            | Masters only (not hosted): copy the owner's live sponsors into each hosted panel |
 | `@every 1m`         | `client_warning_job`                                                                             | Publishes `client.quota_warning` / `client.expiry_warning` once per crossing |
 | `@hourly`           | `client_cleanup_job`                                                                             | Deletes clients out of quota/time for `autoDeleteDepletedDays` (0 = off) |
+| `@hourly`           | `weekly_summary_job`                                                                               | Publishes `report.weekly` in the weekday and hour set by `weeklyReportDay`/`weeklyReportHour`, if enabled |
 | `backupSchedule`    | `scheduled_backup_job`                                                                             | Only if `backupSchedule` is set; gzipped DB to a local folder and/or S3, keeps `backupKeep` |
 | `@weekly`           | `periodic_traffic_reset_job("weekly")`                                                           | Weekly traffic resets                                                                 |
 | default `@every 1m` | `ldap_sync_job`                                                                                  | Only if LDAP enabled; schedule configurable                                           |

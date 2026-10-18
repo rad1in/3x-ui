@@ -236,6 +236,9 @@ export const AllSettingSchema = z.object({
   webhookEvents: z.string(),
   webhookSecret: z.string(),
   webhookUrls: z.string(),
+  weeklyReportDay: z.number().int().min(0).max(6),
+  weeklyReportEnable: z.boolean(),
+  weeklyReportHour: z.number().int().min(0).max(23),
 });
 export type AllSetting = z.infer<typeof AllSettingSchema>;
 
@@ -464,6 +467,9 @@ export const AllSettingViewSchema = z.object({
   webhookEvents: z.string(),
   webhookSecret: z.string(),
   webhookUrls: z.string(),
+  weeklyReportDay: z.number().int().min(0).max(6),
+  weeklyReportEnable: z.boolean(),
+  weeklyReportHour: z.number().int().min(0).max(23),
 });
 export type AllSettingView = z.infer<typeof AllSettingViewSchema>;
 

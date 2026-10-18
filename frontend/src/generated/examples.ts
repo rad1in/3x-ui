@@ -211,7 +211,10 @@ export const EXAMPLES: Record<string, unknown> = {
     "webhookEnable": false,
     "webhookEvents": "",
     "webhookSecret": "",
-    "webhookUrls": ""
+    "webhookUrls": "",
+    "weeklyReportDay": 0,
+    "weeklyReportEnable": false,
+    "weeklyReportHour": 0
   },
   "AllSettingView": {
     "autoDeleteDepletedDays": 0,
@@ -437,7 +440,10 @@ export const EXAMPLES: Record<string, unknown> = {
     "webhookEnable": false,
     "webhookEvents": "",
     "webhookSecret": "",
-    "webhookUrls": ""
+    "webhookUrls": "",
+    "weeklyReportDay": 0,
+    "weeklyReportEnable": false,
+    "weeklyReportHour": 0
   },
   "AmneziaWGLogs": {
     "events": [

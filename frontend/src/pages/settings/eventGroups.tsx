@@ -24,6 +24,7 @@ export const EVENT_GROUPS: NotificationGroupConfig[] = [
       { key: 'client.traffic_reset', label: 'eventClientTrafficReset', settingKey: '' },
       { key: 'client.quota_warning', label: 'eventClientQuotaWarning', settingKey: '' },
       { key: 'client.expiry_warning', label: 'eventClientExpiryWarning', settingKey: '' },
+      { key: 'report.weekly', label: 'eventWeeklyReport', settingKey: '' },
     ],
   },
   {

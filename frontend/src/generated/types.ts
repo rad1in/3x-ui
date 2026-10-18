@@ -220,6 +220,9 @@ export interface AllSetting {
   webhookEvents: string;
   webhookSecret: string;
   webhookUrls: string;
+  weeklyReportDay: number;
+  weeklyReportEnable: boolean;
+  weeklyReportHour: number;
 }
 
 export interface AllSettingView {
@@ -447,6 +450,9 @@ export interface AllSettingView {
   webhookEvents: string;
   webhookSecret: string;
   webhookUrls: string;
+  weeklyReportDay: number;
+  weeklyReportEnable: boolean;
+  weeklyReportHour: number;
 }
 
 export interface AmneziaWGLogs {

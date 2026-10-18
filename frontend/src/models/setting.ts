@@ -222,6 +222,9 @@ export class AllSetting {
     'client.created,client.deleted,client.depleted,client.expired,client.renewed,client.quota_warning,client.expiry_warning';
   hasWebhookSecret = false;
   clearWebhookSecret = false;
+  weeklyReportEnable = false;
+  weeklyReportDay = 1;
+  weeklyReportHour = 9;
   ntfyEnable = false;
   ntfyServer = 'https://ntfy.sh';
   ntfyTopic = '';

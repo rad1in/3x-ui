@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -170,6 +171,22 @@ func TestRetriesServerErrorsOnly(t *testing.T) {
 	time.Sleep(50 * time.Millisecond)
 	if len(bad.hits) != 1 {
 		t.Fatalf("400 was retried: %d hits", len(bad.hits))
+	}
+}
+
+// The weekly summary reaches a channel as one readable message, not an empty body.
+func TestWeeklySummaryIsFormattedForPush(t *testing.T) {
+	msg, ok := Format(eventbus.Event{Type: eventbus.EventWeeklyReport, Data: &eventbus.WeeklySummaryData{
+		SinceMs: 1760000000000, UntilMs: 1760600000000, Bytes: 3 << 30, TotalClients: 9, NewClients: 2,
+		TopUsers: []eventbus.TopUser{{Email: "ali", Bytes: 2 << 30}},
+	}}, "h")
+	if !ok || msg.Title != "[h] Weekly summary" {
+		t.Fatalf("msg = %+v ok=%v", msg, ok)
+	}
+	for _, want := range []string{"Traffic: 3.00GB", "Clients: 9 (new 2,", "1. ali - 2.00GB"} {
+		if !strings.Contains(msg.Body, want) {
+			t.Errorf("body lacks %q:\n%s", want, msg.Body)
+		}
 	}
 }
 

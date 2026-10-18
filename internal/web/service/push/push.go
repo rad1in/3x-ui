@@ -251,6 +251,8 @@ func Format(e eventbus.Event, host string) (Message, bool) {
 		if d, ok := e.Data.(eventbus.LoginEventData); ok && d.Status == "fail" {
 			msg.Priority = 4
 		}
+	case eventbus.EventWeeklyReport:
+		msg.Title = "Weekly summary"
 	case eventbus.EventClientCreated:
 		msg.Title = "Client created"
 	case eventbus.EventClientDeleted:
@@ -299,6 +301,8 @@ func body(e eventbus.Event) string {
 		if d.XrayError != "" {
 			lines = append(lines, d.XrayError)
 		}
+	case *eventbus.WeeklySummaryData:
+		return strings.Join(d.Lines(), "\n")
 	case string:
 		lines = append(lines, d)
 	}

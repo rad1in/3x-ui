@@ -166,6 +166,18 @@ func (s *Subscriber) formatMessage(e eventbus.Event) (subject, body string) {
 			body = wrap(subject, content)
 		}
 
+	case eventbus.EventWeeklyReport:
+		data, ok := e.Data.(*eventbus.WeeklySummaryData)
+		if !ok {
+			return
+		}
+		lines := data.Lines()
+		for i := range lines {
+			lines[i] = html.EscapeString(lines[i])
+		}
+		subject = host + " Weekly summary"
+		body = wrap(subject, strings.Join(lines, "<br>"))
+
 	case eventbus.EventClientQuotaWarning, eventbus.EventClientExpiryWarning:
 		data, ok := e.Data.(*eventbus.ClientEventData)
 		if !ok {

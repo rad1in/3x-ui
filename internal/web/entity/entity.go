@@ -154,6 +154,11 @@ type AllSetting struct {
 	WebhookSecret string `json:"webhookSecret" form:"webhookSecret"`
 	WebhookEvents string `json:"webhookEvents" form:"webhookEvents"`
 
+	// Weekly summary: published as report.weekly on that weekday (0 = Sunday) and hour, panel time.
+	WeeklyReportEnable bool `json:"weeklyReportEnable" form:"weeklyReportEnable"`
+	WeeklyReportDay    int  `json:"weeklyReportDay" form:"weeklyReportDay" validate:"gte=0,lte=6"`
+	WeeklyReportHour   int  `json:"weeklyReportHour" form:"weeklyReportHour" validate:"gte=0,lte=23"`
+
 	// Push channels: each posts the events it has ticked to ntfy, Gotify or a Slack incoming webhook.
 	NtfyEnable      bool   `json:"ntfyEnable" form:"ntfyEnable"`
 	NtfyServer      string `json:"ntfyServer" form:"ntfyServer"`

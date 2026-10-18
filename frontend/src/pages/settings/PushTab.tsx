@@ -9,6 +9,7 @@ import { NotificationLayout } from '@/components/ui/notifications/NotificationLa
 import { NotificationGroup } from '@/components/ui/notifications/NotificationGroup';
 import SecretInput from './SecretInput';
 import { EVENT_GROUPS } from './eventGroups';
+import WeeklyReportSettings from './WeeklyReportSettings';
 
 interface PushTabProps {
   allSetting: AllSetting;
@@ -145,6 +146,7 @@ export default function PushTab({ allSetting: s, updateSetting }: PushTabProps) 
   const common = { allSetting: s, updateSetting };
   return (
     <>
+      <WeeklyReportSettings allSetting={s} updateSetting={updateSetting} />
       <ChannelSection
         {...common}
         title="ntfy"

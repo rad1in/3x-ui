@@ -400,6 +400,7 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 	_, _ = s.cron.AddJob("@daily", job.NewPruneAuditLogJob())
 	_, _ = s.cron.AddJob("@every 1m", job.NewClientWarningJob())
 	_, _ = s.cron.AddJob("@hourly", job.NewClientCleanupJob())
+	_, _ = s.cron.AddJob("@hourly", job.NewWeeklySummaryJob(loc))
 	if spec, _ := s.settingService.GetBackupSchedule(); strings.TrimSpace(spec) != "" {
 		scheduleSettingJob(s.cron, "Scheduled backup", spec, "@daily", job.NewScheduledBackupJob())
 	}

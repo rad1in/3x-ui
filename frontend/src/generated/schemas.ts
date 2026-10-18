@@ -678,6 +678,20 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "webhookUrls": {
         "type": "string"
+      },
+      "weeklyReportDay": {
+        "maximum": 6,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "weeklyReportEnable": {
+        "description": "Weekly summary: published as report.weekly on that weekday (0 = Sunday) and hour, panel time.",
+        "type": "boolean"
+      },
+      "weeklyReportHour": {
+        "maximum": 23,
+        "minimum": 0,
+        "type": "integer"
       }
     },
     "required": [
@@ -891,7 +905,10 @@ export const SCHEMAS: Record<string, unknown> = {
       "webhookEnable",
       "webhookEvents",
       "webhookSecret",
-      "webhookUrls"
+      "webhookUrls",
+      "weeklyReportDay",
+      "weeklyReportEnable",
+      "weeklyReportHour"
     ],
     "type": "object"
   },
@@ -1612,6 +1629,20 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "webhookUrls": {
         "type": "string"
+      },
+      "weeklyReportDay": {
+        "maximum": 6,
+        "minimum": 0,
+        "type": "integer"
+      },
+      "weeklyReportEnable": {
+        "description": "Weekly summary: published as report.weekly on that weekday (0 = Sunday) and hour, panel time.",
+        "type": "boolean"
+      },
+      "weeklyReportHour": {
+        "maximum": 23,
+        "minimum": 0,
+        "type": "integer"
       }
     },
     "required": [
@@ -1838,7 +1869,10 @@ export const SCHEMAS: Record<string, unknown> = {
       "webhookEnable",
       "webhookEvents",
       "webhookSecret",
-      "webhookUrls"
+      "webhookUrls",
+      "weeklyReportDay",
+      "weeklyReportEnable",
+      "weeklyReportHour"
     ],
     "type": "object"
   },
