@@ -71,7 +71,12 @@ type User struct {
 	// JSON arrays; read only for operators.
 	ScopeInboundIds string `json:"-" gorm:"column:scope_inbound_ids;not null;default:'[]'"`
 	ScopeGroups     string `json:"-" gorm:"column:scope_groups;not null;default:'[]'"`
-	CreatedAt       int64  `json:"createdAt" gorm:"not null;default:0"`
+	// A reseller's own price list in credit units; nil falls back to the panel's list.
+	// The Telegram chat that receives this admin's login codes; 0 means none.
+	TgChatId    int64  `json:"-" gorm:"column:tg_chat_id;not null;default:0"`
+	PricePerGB  *int64 `json:"-" gorm:"column:price_per_gb"`
+	PricePerDay *int64 `json:"-" gorm:"column:price_per_day"`
+	CreatedAt   int64  `json:"createdAt" gorm:"not null;default:0"`
 }
 
 // AdminSession is one signed-in browser. The cookie carries only Id; deleting

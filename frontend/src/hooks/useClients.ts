@@ -60,6 +60,7 @@ interface SubSettings {
   subClashEnable: boolean;
   publicHost: string;
   shortLinkEnable: boolean;
+  signedLinkEnable: boolean;
 }
 
 export interface ClientQueryParams {
@@ -280,6 +281,7 @@ export function useClients(options: UseClientsOptions = {}) {
       subClashEnable: !!defaults.subClashEnable,
       publicHost: (defaults.subDomain as string) || (defaults.webDomain as string) || '',
       shortLinkEnable: defaults.subShortLinkEnable === true,
+      signedLinkEnable: defaults.subSigningEnable === true,
     }),
     [
       defaults.subEnable,
@@ -292,6 +294,7 @@ export function useClients(options: UseClientsOptions = {}) {
       defaults.subDomain,
       defaults.webDomain,
       defaults.subShortLinkEnable,
+      defaults.subSigningEnable,
     ],
   );
 

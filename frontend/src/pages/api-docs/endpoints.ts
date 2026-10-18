@@ -890,13 +890,20 @@ export const sections: readonly Section[] = [
         method: 'POST',
         path: '/panel/api/server/importDB',
         summary:
-          'Restore the panel DB from an uploaded backup (multipart form, field name "db"). SQLite panels accept a SQLite database (.db) or a SQLite migration dump (.dump); PostgreSQL panels accept a pg_dump archive (.dump), a SQLite database (.db), or a SQLite migration dump. The panel restarts after restore. Destructive.',
+          'Restore the panel DB from an uploaded backup (multipart form, field name "db"). SQLite panels accept a SQLite database (.db) or a SQLite migration dump (.dump); PostgreSQL panels accept a pg_dump archive (.dump), a SQLite database (.db), or a SQLite migration dump. An encrypted backup (.enc, made when a backup passphrase is set) is decrypted first. The panel restarts after restore. Destructive.',
         params: [
           {
             name: 'db',
             in: 'body (multipart)',
             type: 'file',
             desc: 'Database backup or migration file to upload.',
+          },
+          {
+            name: 'passphrase',
+            in: 'body (multipart)',
+            type: 'string',
+            desc: 'Passphrase of an encrypted backup (.enc). Optional; the configured backup passphrase is used when omitted.',
+            optional: true,
           },
           {
             name: 'keepHostSettings',
@@ -1445,6 +1452,32 @@ export const sections: readonly Section[] = [
         body: '{\n  "emails": ["alice", "bob"],\n  "addDays": 30,\n  "addBytes": 53687091200,\n  "flow": "xtls-rprx-vision",\n  "limitHwid": 2,\n  "adTag": "0123456789abcdef0123456789abcdef"\n}',
         response:
           '{\n  "success": true,\n  "obj": {\n    "adjusted": 2,\n    "skipped": [\n      { "email": "carol", "reason": "unlimited expiry" }\n    ]\n  }\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/transfer',
+        summary:
+          "Hand clients from one operator to another. Without emails every client the source can see moves. A client in the source's group joins the target's group (group names it; optional when the target has one group); a client on the source's inbounds is attached to the target's inbounds and detached from the source's. A client on an inbound both operators share, or without a usable target group or inbound, stays and is reported in skipped. Owners and admins only.",
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: 'ClientTransferRequest.',
+          },
+        ],
+        responseSchema: 'ClientTransferResult',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/signedSubLink/:subId',
+        summary:
+          'Issue a signed subscription URL (?exp=<unix s>&sig=<HMAC>) for a subscription id. ttlSeconds 0 never expires. Requires signed subscription links to be enabled under /panel/api/security; once they are, the subscription server answers 404 to any raw, JSON, Clash or sing-box link without a valid signature.',
+        params: [
+          { name: 'subId', in: 'path', type: 'string', desc: 'Subscription id of the client.' },
+          { name: 'body', in: 'body (json)', type: 'object', desc: '{"ttlSeconds": 604800}' },
+        ],
+        responseSchema: 'SignedSubLink',
       },
       {
         method: 'POST',
@@ -2810,6 +2843,123 @@ export const sections: readonly Section[] = [
         summary:
           'Delete an admin and close its live connections. The last owner and yourself cannot be deleted.',
         params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Admin id.' }],
+      },
+    ],
+  },
+
+  {
+    id: 'reseller',
+    title: 'Reseller credit',
+    description:
+      'Credit and sales of resellers, the admins with the operator role. A reseller is debited by its price list (credit per GiB and per day) when it creates or renews clients; amounts are credit units. The price list and top-ups are owner-only. All endpoints under /panel/api/reseller.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/reseller/me',
+        summary:
+          "The signed-in reseller's credit, price list and latest ledger lines. Any other role gets an empty account.",
+        responseSchema: 'ResellerAccount',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/reseller/report',
+        summary:
+          'Sales per reseller between from and to: clients created and renewed, credit spent, traffic and days sold, credit added and the balance. A reseller only sees its own row.',
+        params: [
+          {
+            name: 'from',
+            in: 'query',
+            type: 'integer',
+            desc: 'Window start, unix ms. Omit for no start.',
+          },
+          {
+            name: 'to',
+            in: 'query',
+            type: 'integer',
+            desc: 'Window end, unix ms. Omit for no end.',
+          },
+        ],
+        responseSchema: 'ResellerReport',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/reseller/account/:id',
+        summary: "One reseller's credit, price list and latest ledger lines. Owner only.",
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Admin id of an operator.' }],
+        responseSchema: 'ResellerAccount',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/reseller/topup/:id',
+        summary:
+          'Add credit to a reseller, or take it back with a negative amount (the balance never goes below zero). Owner only.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Admin id of an operator.' },
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{"amount": 5000, "note": "paid by card"}',
+          },
+        ],
+        responseSchema: 'ResellerEntry',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/reseller/config',
+        summary:
+          "The panel's wholesale price list, which every reseller without its own price follows, and the credit level that raises the reseller.credit_low alert (0 = off). Owner only.",
+        responseSchema: 'ResellerConfig',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/reseller/config/save',
+        summary: 'Save the wholesale price list and the low-credit alert level. Owner only.',
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{"pricePerGb": 100, "pricePerDay": 10, "lowCredit": 1000}',
+          },
+        ],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/reseller/prices/:id',
+        summary:
+          "Set a reseller's own price list. A null price falls back to the panel's list; 0 makes that dimension free. Owner only.",
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Admin id of an operator.' },
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{"pricePerGb": 100, "pricePerDay": null}',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'security',
+    title: 'Extra security',
+    description:
+      'Protections that do not depend on two-factor codes: login captcha and more. Owner only. All endpoints under /panel/api/security.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/security/config',
+        summary: 'The extra-security configuration. Secrets are never returned.',
+        responseSchema: 'SecurityConfigView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/security/config/save',
+        summary:
+          'Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SecurityConfig.' }],
       },
     ],
   },

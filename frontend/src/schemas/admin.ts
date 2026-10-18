@@ -15,6 +15,7 @@ export function adminFormSchema(isNew: boolean) {
       role: z.enum(ADMIN_ROLES),
       inboundIds: z.array(z.number().int()),
       groups: z.array(z.string()),
+      tgChatId: z.number().int().min(0),
     })
     .superRefine((v, ctx) => {
       if (isNew && v.password === '') {
@@ -24,3 +25,12 @@ export function adminFormSchema(isNew: boolean) {
 }
 
 export type AdminFormValues = z.infer<ReturnType<typeof adminFormSchema>>;
+
+// Mirrors ClientTransferRequest; emails empty means every client of the source.
+export const transferFormSchema = z.object({
+  toAdminId: z.number().int().positive('pages.admins.transfer.errTarget'),
+  group: z.string(),
+  emails: z.array(z.string()),
+});
+
+export type TransferFormValues = z.infer<typeof transferFormSchema>;

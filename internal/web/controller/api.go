@@ -224,6 +224,8 @@ func (a *APIController) initRouter(g *gin.RouterGroup) {
 	NewSessionController(api.Group("/sessions"))
 	NewSponsorAdminController(api.Group("/sponsors"))
 	NewSalesController(api.Group("/sales"))
+	NewResellerController(api.Group("/reseller"))
+	NewSecurityController(api.Group("/security"))
 	NewHostedController(api.Group("/hosted"))
 	NewHostedPanelController(api.Group("/hostedPanels"))
 

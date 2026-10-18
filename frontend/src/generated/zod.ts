@@ -29,16 +29,21 @@ export const AdminInputSchema = z.object({
   inboundIds: z.array(z.number().int()),
   password: z.string(),
   role: z.string(),
+  tgChatId: z.number().int(),
   username: z.string(),
 });
 export type AdminInput = z.infer<typeof AdminInputSchema>;
 
 export const AdminViewSchema = z.object({
   createdAt: z.number().int(),
+  credit: z.number().int(),
   groups: z.array(z.string()),
   id: z.number().int(),
   inboundIds: z.array(z.number().int()),
+  pricePerDay: z.number().int().nullable().optional(),
+  pricePerGb: z.number().int().nullable().optional(),
   role: z.string(),
+  tgChatId: z.number().int(),
   username: z.string(),
 });
 export type AdminView = z.infer<typeof AdminViewSchema>;
@@ -768,6 +773,26 @@ export const ClientTrafficSchema = z.object({
 });
 export type ClientTraffic = z.infer<typeof ClientTrafficSchema>;
 
+export const ClientTransferRequestSchema = z.object({
+  emails: z.array(z.string()),
+  fromAdminId: z.number().int(),
+  group: z.string(),
+  toAdminId: z.number().int(),
+});
+export type ClientTransferRequest = z.infer<typeof ClientTransferRequestSchema>;
+
+export const ClientTransferResultSchema = z.object({
+  moved: z.array(z.string()),
+  skipped: z.array(z.lazy(() => ClientTransferSkipSchema)),
+});
+export type ClientTransferResult = z.infer<typeof ClientTransferResultSchema>;
+
+export const ClientTransferSkipSchema = z.object({
+  email: z.string(),
+  reason: z.string(),
+});
+export type ClientTransferSkip = z.infer<typeof ClientTransferSkipSchema>;
+
 export const ClientsSummarySchema = z.object({
   active: z.number().int(),
   deactive: z.array(z.string()),
@@ -1459,6 +1484,58 @@ export const ReferralConfigSchema = z.object({
 });
 export type ReferralConfig = z.infer<typeof ReferralConfigSchema>;
 
+export const ResellerAccountSchema = z.object({
+  balance: z.number().int(),
+  entries: z.array(z.lazy(() => ResellerEntrySchema)),
+  prices: z.lazy(() => ResellerPricesSchema),
+  userId: z.number().int(),
+});
+export type ResellerAccount = z.infer<typeof ResellerAccountSchema>;
+
+export const ResellerConfigSchema = z.object({
+  lowCredit: z.number().int(),
+  pricePerDay: z.number().int(),
+  pricePerGb: z.number().int(),
+});
+export type ResellerConfig = z.infer<typeof ResellerConfigSchema>;
+
+export const ResellerEntrySchema = z.object({
+  amount: z.number().int(),
+  bytes: z.number().int(),
+  clientEmail: z.string(),
+  createdAt: z.number().int(),
+  days: z.number().int(),
+  id: z.number().int(),
+  kind: z.string(),
+  note: z.string(),
+  userId: z.number().int(),
+});
+export type ResellerEntry = z.infer<typeof ResellerEntrySchema>;
+
+export const ResellerPricesSchema = z.object({
+  pricePerDay: z.number().int(),
+  pricePerGb: z.number().int(),
+});
+export type ResellerPrices = z.infer<typeof ResellerPricesSchema>;
+
+export const ResellerReportSchema = z.object({
+  rows: z.array(z.lazy(() => ResellerReportRowSchema)),
+});
+export type ResellerReport = z.infer<typeof ResellerReportSchema>;
+
+export const ResellerReportRowSchema = z.object({
+  balance: z.number().int(),
+  bytes: z.number().int(),
+  created: z.number().int(),
+  days: z.number().int(),
+  renewed: z.number().int(),
+  spent: z.number().int(),
+  toppedUp: z.number().int(),
+  userId: z.number().int(),
+  username: z.string(),
+});
+export type ResellerReportRow = z.infer<typeof ResellerReportRowSchema>;
+
 export const SalesConfigSchema = z.object({
   card: z.lazy(() => CardPayConfigSchema),
   clearSecrets: z.array(z.string()).optional(),
@@ -1488,6 +1565,31 @@ export const SalesConfigViewSchema = z.object({
   zarinpal: z.lazy(() => ZarinpalConfigSchema),
 });
 export type SalesConfigView = z.infer<typeof SalesConfigViewSchema>;
+
+export const SecurityConfigSchema = z.object({
+  backupPassphrase: z.string(),
+  captchaEnable: z.boolean(),
+  clearBackupPassphrase: z.boolean().optional(),
+  newLocationAlert: z.boolean(),
+  rotateSubSigningKey: z.boolean().optional(),
+  subSigningEnable: z.boolean(),
+  subSigningKey: z.string(),
+  tgLoginEnable: z.boolean(),
+});
+export type SecurityConfig = z.infer<typeof SecurityConfigSchema>;
+
+export const SecurityConfigViewSchema = z.object({
+  backupPassphrase: z.string(),
+  captchaEnable: z.boolean(),
+  clearBackupPassphrase: z.boolean().optional(),
+  hasBackupPassphrase: z.boolean(),
+  newLocationAlert: z.boolean(),
+  rotateSubSigningKey: z.boolean().optional(),
+  subSigningEnable: z.boolean(),
+  subSigningKey: z.string(),
+  tgLoginEnable: z.boolean(),
+});
+export type SecurityConfigView = z.infer<typeof SecurityConfigViewSchema>;
 
 export const ServerSettingsSchema = z.object({
   contentPaddingAddition: z.string().optional(),
@@ -1593,6 +1695,12 @@ export const ShopWalletSchema = z.object({
   referralCode: z.string(),
 });
 export type ShopWallet = z.infer<typeof ShopWalletSchema>;
+
+export const SignedSubLinkSchema = z.object({
+  expiresAt: z.number().int(),
+  url: z.string(),
+});
+export type SignedSubLink = z.infer<typeof SignedSubLinkSchema>;
 
 export const SponsorSchema = z.object({
   enable: z.boolean().nullable().optional(),

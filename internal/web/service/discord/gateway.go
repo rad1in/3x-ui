@@ -546,6 +546,11 @@ func (g *GatewayClient) sendBackup(ctx context.Context) {
 		filename = "x-ui.db"
 	}
 
+	filename, dbData, err = service.ProtectBackup(filename, dbData)
+	if err != nil {
+		_ = g.discordService.SendMessage(ctx, MessagePayload{Content: tr("discord.commands.backupFailed", "Error=="+err.Error())})
+		return
+	}
 	files := []FileAttachment{
 		{Filename: filename, Data: dbData},
 	}

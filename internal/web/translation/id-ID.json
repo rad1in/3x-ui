@@ -149,6 +149,7 @@
     "audit": "Aktivitas",
     "admins": "Admin",
     "sessions": "Sesi",
+    "reseller": "Reseller",
     "sales": "Penjualan",
     "hosts": "Host",
     "docs": "Dokumentasi",
@@ -163,12 +164,22 @@
       "hello": "Halo",
       "title": "Selamat Datang",
       "loginAgain": "Sesi Anda telah berakhir, harap masuk kembali",
+      "captcha": "Pemeriksaan keamanan",
+      "captchaPlaceholder": "Hasil hitungan",
+      "captchaRefresh": "Tampilkan gambar lain",
+      "tgCode": "Kode Telegram",
+      "tgCodePlaceholder": "Kode 6 digit dari Telegram",
+      "tgCodeMessage": "Kode login panel Anda:",
       "toasts": {
         "invalidFormData": "Format data input tidak valid.",
         "emptyUsername": "Nama Pengguna diperlukan",
         "emptyPassword": "Kata Sandi diperlukan",
         "wrongUsernameOrPassword": "Username, kata sandi, atau kode dua faktor tidak valid.",
-        "successLogin": "Anda telah berhasil masuk ke akun Anda."
+        "successLogin": "Anda telah berhasil masuk ke akun Anda.",
+        "wrongCaptcha": "Jawaban pemeriksaan keamanan salah.",
+        "tgCodeSent": "Kode login dikirim ke Telegram Anda.",
+        "tgCodeWait": "Kode baru saja dikirim, tunggu sebelum meminta lagi.",
+        "tgCodeWrong": "Kode Telegram salah atau sudah kedaluwarsa."
       }
     },
     "index": {
@@ -325,6 +336,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Pertahankan pengaturan mesin ini",
+      "importPassphrase": "Frasa sandi cadangan (hanya untuk cadangan terenkripsi)",
       "importKeepHostSettingsDesc": "Mempertahankan alamat dengar, port, path dasar, sertifikat, dan identitas node panel ini alih-alih mengambilnya dari berkas yang diunggah.",
       "hosted": {
         "title": "Paket Anda",
@@ -916,6 +928,14 @@
       "subIdDesc": "Juga berfungsi sebagai kode undangan bot Telegram untuk klien ini: siapa pun yang mengirimkannya ke bot akan ditautkan ke klien ini. Buat panjang dan acak — ID yang pendek atau mudah ditebak bisa diklaim orang lain.",
       "shortLinkNone": "Belum ada tautan pendek",
       "shortLinkCreate": "Buat tautan pendek",
+      "signedLinkNone": "Belum ada tautan bertanda tangan",
+      "signedLinkCreate": "Buat tautan bertanda tangan",
+      "signedExpires": "Berakhir {date}",
+      "signedTtl1h": "1 jam",
+      "signedTtl1d": "1 hari",
+      "signedTtl7d": "7 hari",
+      "signedTtl30d": "30 hari",
+      "signedTtlNever": "Tidak pernah",
       "shortLinkRevoke": "Cabut tautan pendek",
       "shortLinkRevokeConfirm": "Cabut tautan pendek ini? Aplikasi yang memakainya berhenti diperbarui; tautan baru akan punya alamat berbeda.",
       "shortLinkRevoked": "Tautan pendek dicabut",
@@ -1635,6 +1655,23 @@
         "twoFactorModalSetSuccess": "Autentikasi dua faktor telah berhasil dibuat",
         "twoFactorModalDeleteSuccess": "Autentikasi dua faktor telah berhasil dihapus",
         "twoFactorModalError": "Kode salah",
+        "extra": {
+          "tab": "Perlindungan tambahan",
+          "captcha": "Captcha login",
+          "captchaDesc": "Meminta jawaban penjumlahan sederhana, digambar oleh panel sendiri, sebelum memeriksa kata sandi. Tidak ada yang dikirim ke pihak ketiga.",
+          "newLocation": "Peringatan lokasi login baru",
+          "newLocationDesc": "Mengirim peringatan lewat kanal notifikasi saat admin masuk dari alamat atau negara yang belum pernah terlihat. Login pertama hanya untuk belajar. Negara memerlukan geoip.dat di folder Xray.",
+          "backupPassphrase": "Frasa sandi enkripsi cadangan",
+          "backupPassphraseDesc": "Cadangan terjadwal, cadangan yang diunduh, dan yang dikirim ke Telegram atau Discord dienkripsi dengan AES-256-GCM memakai frasa sandi ini dan berakhiran .enc. Simpan baik-baik: cadangan tidak dapat dipulihkan tanpanya. Kosongkan untuk cadangan biasa.",
+          "backupPassphraseSet": "Frasa sandi sudah diatur; ketik yang baru untuk menggantinya",
+          "backupPassphraseClear": "Hapus frasa sandi",
+          "subSigning": "Tautan langganan bertanda tangan",
+          "subSigningDesc": "Server langganan hanya menjawab tautan dengan tanda tangan sah; tautan biasa mendapat 404. Tautan yang ada berhenti bekerja, jadi buat yang baru dari jendela info tiap klien. Tautan dapat kedaluwarsa.",
+          "subSigningRotate": "Putar kunci tanda tangan (membatalkan semua tautan yang telah dibuat)",
+          "tgLogin": "Kode login Telegram",
+          "tgLoginDesc": "Meminta admin yang memiliki obrolan Telegram tertaut sebuah kode sekali pakai, dikirim oleh bot, setelah kata sandi. Dilewati selama bot Telegram tidak berjalan agar bot rusak tidak mengunci Anda. Admin tanpa obrolan tertaut tidak diminta.",
+          "saved": "Pengaturan keamanan disimpan"
+        },
         "show": "Tampilkan",
         "hide": "Sembunyikan",
         "apiTokenNew": "Token baru",
@@ -1996,6 +2033,8 @@
       "eventClientQuotaWarning": "Peringatan kuota",
       "eventClientExpiryWarning": "Peringatan kedaluwarsa",
       "eventWeeklyReport": "Ringkasan mingguan",
+      "eventResellerCreditLow": "Kredit reseller menipis",
+      "eventLoginNewLocation": "Login admin dari tempat baru",
       "testDiscordDesc": "Kirim notifikasi uji untuk memverifikasi token bot dan ID saluran Anda",
       "discordNotInitialized": "Layanan Discord belum diinisialisasi",
       "discordBotNotEnabled": "Bot Discord belum diaktifkan",
@@ -2795,6 +2834,28 @@
       "you": "Anda",
       "passwordKeep": "Biarkan kosong untuk mempertahankan kata sandi saat ini.",
       "selfNote": "Anda tidak dapat mengubah peran atau akses Anda sendiri.",
+      "tgChatId": "ID obrolan Telegram",
+      "tgChatIdHint": "Opsional. Obrolan yang menerima kode login admin ini saat kode login Telegram aktif. Kirim /id ke bot untuk mengetahuinya. 0 berarti tidak ada.",
+      "transfer": {
+        "title": "Pindahkan klien",
+        "action": "Pindahkan klien",
+        "hint": "Memindahkan klien dari operator ini ke operator lain. Klien di grup operator ini masuk ke grup tujuan; klien di inbound operator ini dihubungkan ke inbound tujuan dan dilepas dari inbound operator ini.",
+        "target": "Pindahkan ke",
+        "group": "Grup tujuan",
+        "groupHint": "Diperlukan saat klien berada di grup operator ini dan tujuan memiliki lebih dari satu grup.",
+        "emails": "Hanya klien ini",
+        "emailsHint": "Kosongkan untuk memindahkan semua klien yang terlihat oleh operator ini. Pisahkan email dengan koma atau spasi.",
+        "submit": "Pindahkan",
+        "errTarget": "Pilih operator tujuan.",
+        "moved": "{count} klien dipindahkan",
+        "reasons": {
+          "not_source_client": "Bukan klien operator ini",
+          "shared_inbound": "Berada di inbound yang dipakai bersama kedua operator",
+          "no_target_inbound": "Tujuan tidak punya inbound",
+          "needs_group": "Pilih salah satu grup tujuan",
+          "failed": "Tidak dapat dipindahkan"
+        }
+      },
       "deleteConfirm": "Hapus admin ini? Sesinya langsung diakhiri.",
       "errUsername": "Masukkan nama pengguna paling banyak 64 karakter.",
       "errPassword": "Masukkan kata sandi.",
@@ -2803,6 +2864,57 @@
       "toasts": {
         "saved": "Admin disimpan",
         "deleted": "Admin dihapus"
+      }
+    },
+    "reseller": {
+      "title": "Kredit reseller",
+      "mine": "Kredit saya",
+      "hint": "Reseller dipotong sesuai daftar harganya saat membuat atau memperpanjang klien. Isi ulang kredit mereka dan pantau penjualannya.",
+      "hintSelf": "Kredit Anda dipotong sesuai daftar harga Anda saat membuat atau memperpanjang klien.",
+      "credit": "Kredit",
+      "pricePerGb": "Harga per GB",
+      "pricePerDay": "Harga per hari",
+      "manage": "Kelola",
+      "topupTitle": "Tambah atau kurangi kredit",
+      "amountHint": "Jumlah (negatif mengurangi)",
+      "note": "Catatan",
+      "topup": "Terapkan",
+      "pricesTitle": "Daftar harga",
+      "wholesale": "Daftar harga grosir",
+      "wholesaleHint": "Reseller tanpa harga sendiri ditagih menurut daftar ini. Kredit adalah satuan milik panel; atur tingkat peringatan agar Anda diberi tahu saat kredit reseller menipis (0 = nonaktif).",
+      "lowCredit": "Peringatan di bawah",
+      "priceFallback": "Kosongkan harga untuk mengikuti daftar harga panel.",
+      "ranges": {
+        "all": "Semua waktu",
+        "7": "7 hari",
+        "30": "30 hari",
+        "90": "90 hari"
+      },
+      "report": {
+        "reseller": "Reseller",
+        "created": "Dibuat",
+        "renewed": "Diperpanjang",
+        "spent": "Terpakai",
+        "traffic": "Trafik terjual",
+        "days": "Hari terjual",
+        "toppedUp": "Kredit ditambahkan"
+      },
+      "ledger": {
+        "title": "Riwayat kredit",
+        "time": "Waktu",
+        "kind": "Jenis",
+        "amount": "Jumlah",
+        "client": "Klien"
+      },
+      "kinds": {
+        "topup": "Isi ulang",
+        "create": "Klien baru",
+        "renew": "Perpanjangan"
+      },
+      "toasts": {
+        "toppedUp": "Kredit diperbarui",
+        "pricesSaved": "Daftar harga disimpan",
+        "configSaved": "Daftar harga disimpan"
       }
     },
     "sales": {

@@ -237,6 +237,8 @@ var defaultValueMap = map[string]string{
 	"nord":                        "",
 	"pia":                         "",
 	"salesConfig":                 "",
+	"resellerConfig":              "",
+	"securityConfig":              "",
 	"externalTrafficInformEnable": "false",
 	"externalTrafficInformURI":    "",
 	"restartXrayOnClientDisable":  "true",
@@ -2241,13 +2243,20 @@ func (s *SettingService) GetDefaultSettings(host string) (any, error) {
 		"subJsonURI":         func() (any, error) { return s.GetSubJsonURI() },
 		"subClashURI":        func() (any, error) { return s.GetSubClashURI() },
 		"subShortLinkEnable": func() (any, error) { return s.GetSubShortLinkEnable() },
-		"datepicker":         func() (any, error) { return s.GetDatepicker() },
-		"ipLimitEnable":      func() (any, error) { return s.GetIpLimitEnable() },
-		"accessLogEnable":    func() (any, error) { return s.GetAccessLogEnable() },
-		"webDomain":          func() (any, error) { return s.GetWebDomain() },
-		"subDomain":          func() (any, error) { return s.GetSubDomain() },
-		"devChannelEnable":   func() (any, error) { return s.GetDevChannelEnable() },
-		"isDevBuild":         func() (any, error) { return config.IsDevBuild(), nil },
+		"subSigningEnable": func() (any, error) {
+			cfg, err := (&SecurityConfigService{}).Get()
+			if err != nil {
+				return false, err
+			}
+			return cfg.SubSigningEnable, nil
+		},
+		"datepicker":       func() (any, error) { return s.GetDatepicker() },
+		"ipLimitEnable":    func() (any, error) { return s.GetIpLimitEnable() },
+		"accessLogEnable":  func() (any, error) { return s.GetAccessLogEnable() },
+		"webDomain":        func() (any, error) { return s.GetWebDomain() },
+		"subDomain":        func() (any, error) { return s.GetSubDomain() },
+		"devChannelEnable": func() (any, error) { return s.GetDevChannelEnable() },
+		"isDevBuild":       func() (any, error) { return config.IsDevBuild(), nil },
 	}
 
 	result := make(map[string]any)

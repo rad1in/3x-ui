@@ -9,10 +9,12 @@ export const EXAMPLES: Record<string, unknown> = {
     ],
     "password": "a-long-password",
     "role": "operator",
+    "tgChatId": 123456789,
     "username": "support"
   },
   "AdminView": {
     "createdAt": 1760684400000,
+    "credit": 8500,
     "groups": [
       ""
     ],
@@ -20,7 +22,10 @@ export const EXAMPLES: Record<string, unknown> = {
     "inboundIds": [
       0
     ],
+    "pricePerDay": 10,
+    "pricePerGb": 100,
     "role": "operator",
+    "tgChatId": 123456789,
     "username": "support"
   },
   "AllSetting": {
@@ -782,6 +787,29 @@ export const EXAMPLES: Record<string, unknown> = {
     "up": 1048576,
     "uuid": "e18c9a96-71bf-48d4-933f-8b9a46d4290c"
   },
+  "ClientTransferRequest": {
+    "emails": [
+      ""
+    ],
+    "fromAdminId": 2,
+    "group": "team-b",
+    "toAdminId": 3
+  },
+  "ClientTransferResult": {
+    "moved": [
+      ""
+    ],
+    "skipped": [
+      {
+        "email": "alice",
+        "reason": "shared_inbound"
+      }
+    ]
+  },
+  "ClientTransferSkip": {
+    "email": "alice",
+    "reason": "shared_inbound"
+  },
   "ClientsSummary": {
     "active": 1850,
     "deactive": [
@@ -1507,6 +1535,73 @@ export const EXAMPLES: Record<string, unknown> = {
     "bonusPercent": 10,
     "enabled": false
   },
+  "ResellerAccount": {
+    "balance": 8500,
+    "entries": [
+      {
+        "amount": -1500,
+        "bytes": 53687091200,
+        "clientEmail": "alice",
+        "createdAt": 1760684400000,
+        "days": 30,
+        "id": 1,
+        "kind": "create",
+        "note": "",
+        "userId": 2
+      }
+    ],
+    "prices": {
+      "pricePerDay": 10,
+      "pricePerGb": 100
+    },
+    "userId": 2
+  },
+  "ResellerConfig": {
+    "lowCredit": 1000,
+    "pricePerDay": 10,
+    "pricePerGb": 100
+  },
+  "ResellerEntry": {
+    "amount": -1500,
+    "bytes": 53687091200,
+    "clientEmail": "alice",
+    "createdAt": 1760684400000,
+    "days": 30,
+    "id": 1,
+    "kind": "create",
+    "note": "",
+    "userId": 2
+  },
+  "ResellerPrices": {
+    "pricePerDay": 10,
+    "pricePerGb": 100
+  },
+  "ResellerReport": {
+    "rows": [
+      {
+        "balance": 8500,
+        "bytes": 1073741824000,
+        "created": 12,
+        "days": 570,
+        "renewed": 7,
+        "spent": 15000,
+        "toppedUp": 20000,
+        "userId": 2,
+        "username": "shop-a"
+      }
+    ]
+  },
+  "ResellerReportRow": {
+    "balance": 8500,
+    "bytes": 1073741824000,
+    "created": 12,
+    "days": 570,
+    "renewed": 7,
+    "spent": 15000,
+    "toppedUp": 20000,
+    "userId": 2,
+    "username": "shop-a"
+  },
   "SalesConfig": {
     "card": {
       "bankName": "Melli",
@@ -1580,6 +1675,27 @@ export const EXAMPLES: Record<string, unknown> = {
       "merchantId": "",
       "sandbox": false
     }
+  },
+  "SecurityConfig": {
+    "backupPassphrase": "",
+    "captchaEnable": false,
+    "clearBackupPassphrase": false,
+    "newLocationAlert": false,
+    "rotateSubSigningKey": false,
+    "subSigningEnable": false,
+    "subSigningKey": "",
+    "tgLoginEnable": false
+  },
+  "SecurityConfigView": {
+    "backupPassphrase": "",
+    "captchaEnable": false,
+    "clearBackupPassphrase": false,
+    "hasBackupPassphrase": false,
+    "newLocationAlert": false,
+    "rotateSubSigningKey": false,
+    "subSigningEnable": false,
+    "subSigningKey": "",
+    "tgLoginEnable": false
   },
   "ServerSettings": {
     "contentPaddingAddition": "",
@@ -1700,6 +1816,10 @@ export const EXAMPLES: Record<string, unknown> = {
       }
     ],
     "referralCode": "K7M2QX9P"
+  },
+  "SignedSubLink": {
+    "expiresAt": 1792411200000,
+    "url": "https://sub.example.com:2096/sub/Ab3dE5gH9k?exp=1792411200\u0026sig=Zk3Wq1"
   },
   "Sponsor": {
     "enable": true,

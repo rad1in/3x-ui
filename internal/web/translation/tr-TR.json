@@ -149,6 +149,7 @@
     "audit": "Etkinlik",
     "admins": "Yöneticiler",
     "sessions": "Oturumlar",
+    "reseller": "Bayiler",
     "sales": "Satışlar",
     "hosts": "Host'lar",
     "docs": "Belgeler",
@@ -163,12 +164,22 @@
       "hello": "Merhaba",
       "title": "Hoş Geldiniz",
       "loginAgain": "Oturum süreniz doldu, lütfen tekrar giriş yapın.",
+      "captcha": "Güvenlik kontrolü",
+      "captchaPlaceholder": "İşlemin sonucu",
+      "captchaRefresh": "Başka bir resim göster",
+      "tgCode": "Telegram kodu",
+      "tgCodePlaceholder": "Telegram'dan 6 haneli kod",
+      "tgCodeMessage": "Panel giriş kodunuz:",
       "toasts": {
         "invalidFormData": "Veri formatı geçersiz.",
         "emptyUsername": "Kullanıcı adı zorunludur",
         "emptyPassword": "Şifre zorunludur",
         "wrongUsernameOrPassword": "Geçersiz kullanıcı adı, şifre veya iki adımlı doğrulama kodu.",
-        "successLogin": "Hesabınıza başarıyla giriş yaptınız."
+        "successLogin": "Hesabınıza başarıyla giriş yaptınız.",
+        "wrongCaptcha": "Güvenlik kontrolü yanıtı yanlış.",
+        "tgCodeSent": "Giriş kodu Telegram'ınıza gönderildi.",
+        "tgCodeWait": "Biraz önce bir kod gönderildi, yenisini istemeden önce bekleyin.",
+        "tgCodeWrong": "Telegram kodu yanlış veya süresi dolmuş."
       }
     },
     "index": {
@@ -325,6 +336,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Bu makinenin ayarlarını koru",
+      "importPassphrase": "Yedek parolası (yalnızca şifreli yedek için)",
       "importKeepHostSettingsDesc": "Yüklenen dosyadan almak yerine bu panelin dinleme adreslerini, portlarını, temel yolunu, sertifikalarını ve düğüm kimliğini korur.",
       "hosted": {
         "title": "Paketiniz",
@@ -916,6 +928,14 @@
       "subIdDesc": "Bu istemcinin Telegram botu davet kodu olarak da kullanılır: bunu bota gönderen kişi bu istemciye bağlanır. Uzun ve rastgele tutun — kısa veya tahmin edilebilir bir kimlik başkası tarafından sahiplenilebilir.",
       "shortLinkNone": "Henüz kısa bağlantı yok",
       "shortLinkCreate": "Kısa bağlantı oluştur",
+      "signedLinkNone": "Henüz imzalı bağlantı yok",
+      "signedLinkCreate": "İmzalı bağlantı oluştur",
+      "signedExpires": "Bitiş: {date}",
+      "signedTtl1h": "1 saat",
+      "signedTtl1d": "1 gün",
+      "signedTtl7d": "7 gün",
+      "signedTtl30d": "30 gün",
+      "signedTtlNever": "Süresiz",
       "shortLinkRevoke": "Kısa bağlantıyı iptal et",
       "shortLinkRevokeConfirm": "Bu kısa bağlantı iptal edilsin mi? Onu kullanan uygulamalar güncellenemez; yenisi farklı bir adres alır.",
       "shortLinkRevoked": "Kısa bağlantı iptal edildi",
@@ -1635,6 +1655,23 @@
         "twoFactorModalSetSuccess": "İki faktörlü kimlik doğrulama başarıyla kuruldu.",
         "twoFactorModalDeleteSuccess": "İki faktörlü kimlik doğrulama başarıyla silindi.",
         "twoFactorModalError": "Yanlış kod",
+        "extra": {
+          "tab": "Ek koruma",
+          "captcha": "Giriş captcha'sı",
+          "captchaDesc": "Parola kontrolünden önce panelin kendi çizdiği basit bir işlemin sonucunu sorar. Üçüncü taraflara hiçbir şey gönderilmez.",
+          "newLocation": "Yeni giriş konumu uyarısı",
+          "newLocationDesc": "Bir yönetici daha önce görülmemiş bir adresten veya ülkeden giriş yaptığında bildirim kanallarından uyarı gönderir. İlk giriş yalnızca öğrenme içindir. Ülke tespiti için Xray klasöründe geoip.dat gerekir.",
+          "backupPassphrase": "Yedek şifreleme parolası",
+          "backupPassphraseDesc": "Zamanlanmış, indirilen ve Telegram veya Discord'a gönderilen yedekler bu parolayla AES-256-GCM ile şifrelenir ve .enc uzantısı alır. Güvende tutun: parola olmadan yedek geri yüklenemez. Düz yedek için boş bırakın.",
+          "backupPassphraseSet": "Bir parola ayarlı; değiştirmek için yenisini yazın",
+          "backupPassphraseClear": "Parolayı kaldır",
+          "subSigning": "İmzalı abonelik bağlantıları",
+          "subSigningDesc": "Abonelik sunucusu yalnızca geçerli imzalı bağlantılara yanıt verir; düz bağlantılar 404 alır. Mevcut bağlantılar çalışmaz, bu yüzden her istemcinin bilgi penceresinden yenisini oluşturun. Bağlantı süresi dolabilir.",
+          "subSigningRotate": "İmza anahtarını yenile (verilen tüm bağlantıları geçersiz kılar)",
+          "tgLogin": "Telegram giriş kodu",
+          "tgLoginDesc": "Telegram sohbeti bağlı yöneticilerden, parolanın ardından botun gönderdiği tek kullanımlık bir kod ister. Telegram botu çalışmadığı sürece atlanır, böylece bozuk bir bot sizi dışarıda bırakmaz. Bağlı sohbeti olmayan yöneticilere sorulmaz.",
+          "saved": "Güvenlik ayarları kaydedildi"
+        },
         "show": "Göster",
         "hide": "Gizle",
         "apiTokenNew": "Yeni Token",
@@ -1996,6 +2033,8 @@
       "eventClientQuotaWarning": "Kota uyarısı",
       "eventClientExpiryWarning": "Süre uyarısı",
       "eventWeeklyReport": "Haftalık özet",
+      "eventResellerCreditLow": "Bayi kredisi düşük",
+      "eventLoginNewLocation": "Yöneticinin yeni bir yerden girişi",
       "testDiscordDesc": "Bot belirtecinizi ve kanal kimliğinizi doğrulamak için bir test bildirimi gönderin",
       "discordNotInitialized": "Discord servisi başlatılmadı",
       "discordBotNotEnabled": "Discord botu etkin değil",
@@ -2795,6 +2834,28 @@
       "you": "siz",
       "passwordKeep": "Mevcut şifreyi korumak için boş bırakın.",
       "selfNote": "Kendi rolünüzü veya erişiminizi değiştiremezsiniz.",
+      "tgChatId": "Telegram sohbet kimliği",
+      "tgChatIdHint": "İsteğe bağlı. Telegram giriş kodu açıkken bu yöneticinin giriş kodlarını alan sohbet. Öğrenmek için bota /id gönderin. 0 yok demektir.",
+      "transfer": {
+        "title": "İstemcileri devret",
+        "action": "İstemcileri devret",
+        "hint": "İstemcileri bu operatörden bir başkasına taşır. Bu operatörün gruplarındaki istemciler hedefin grubuna katılır; bu operatörün gelen bağlantılarındakiler hedefin gelen bağlantılarına eklenir ve bu operatörünkilerden çıkarılır.",
+        "target": "Şuna taşı",
+        "group": "Hedef grup",
+        "groupHint": "İstemciler bu operatörün gruplarındaysa ve hedefin birden fazla grubu varsa gereklidir.",
+        "emails": "Yalnızca bu istemciler",
+        "emailsHint": "Bu operatörün gördüğü tüm istemcileri taşımak için boş bırakın. E-postaları virgül veya boşlukla ayırın.",
+        "submit": "Devret",
+        "errTarget": "İstemcilerin taşınacağı operatörü seçin.",
+        "moved": "{count} istemci taşındı",
+        "reasons": {
+          "not_source_client": "Bu operatörün istemcisi değil",
+          "shared_inbound": "İki operatörün paylaştığı bir gelen bağlantıda",
+          "no_target_inbound": "Hedefin gelen bağlantısı yok",
+          "needs_group": "Hedefin gruplarından birini seçin",
+          "failed": "Taşınamadı"
+        }
+      },
       "deleteConfirm": "Bu yönetici silinsin mi? Oturumu hemen kapatılır.",
       "errUsername": "En fazla 64 karakterlik bir kullanıcı adı girin.",
       "errPassword": "Bir şifre girin.",
@@ -2803,6 +2864,57 @@
       "toasts": {
         "saved": "Yönetici kaydedildi",
         "deleted": "Yönetici silindi"
+      }
+    },
+    "reseller": {
+      "title": "Bayi kredisi",
+      "mine": "Kredim",
+      "hint": "Bayilerden istemci oluşturduklarında veya yenilediklerinde fiyat listelerine göre kesinti yapılır. Kredilerini yükleyin ve satışlarını izleyin.",
+      "hintSelf": "İstemci oluşturduğunuzda veya yenilediğinizde fiyat listenize göre krediniz düşer.",
+      "credit": "Kredi",
+      "pricePerGb": "GB başına fiyat",
+      "pricePerDay": "Gün başına fiyat",
+      "manage": "Yönet",
+      "topupTitle": "Kredi ekle veya düş",
+      "amountHint": "Tutar (negatif düşer)",
+      "note": "Not",
+      "topup": "Uygula",
+      "pricesTitle": "Fiyat listesi",
+      "wholesale": "Toptan fiyat listesi",
+      "wholesaleHint": "Kendi fiyatı olmayan bayilere bu liste uygulanır. Kredi panelin kendi birimidir; bir bayinin kredisi azaldığında haber almak için uyarı seviyesini ayarlayın (0 = kapalı).",
+      "lowCredit": "Şu değerin altında uyar",
+      "priceFallback": "Panelin fiyat listesini izlemek için fiyatı boş bırakın.",
+      "ranges": {
+        "all": "Tüm zamanlar",
+        "7": "7 gün",
+        "30": "30 gün",
+        "90": "90 gün"
+      },
+      "report": {
+        "reseller": "Bayi",
+        "created": "Oluşturulan",
+        "renewed": "Yenilenen",
+        "spent": "Harcanan",
+        "traffic": "Satılan trafik",
+        "days": "Satılan gün",
+        "toppedUp": "Eklenen kredi"
+      },
+      "ledger": {
+        "title": "Kredi geçmişi",
+        "time": "Zaman",
+        "kind": "Tür",
+        "amount": "Tutar",
+        "client": "İstemci"
+      },
+      "kinds": {
+        "topup": "Yükleme",
+        "create": "Yeni istemci",
+        "renew": "Yenileme"
+      },
+      "toasts": {
+        "toppedUp": "Kredi güncellendi",
+        "pricesSaved": "Fiyat listesi kaydedildi",
+        "configSaved": "Fiyat listesi kaydedildi"
       }
     },
     "sales": {

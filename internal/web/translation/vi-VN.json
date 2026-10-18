@@ -149,6 +149,7 @@
     "audit": "Hoạt động",
     "admins": "Quản trị viên",
     "sessions": "Phiên",
+    "reseller": "Đại lý",
     "sales": "Bán hàng",
     "hosts": "Hosts",
     "docs": "Tài liệu",
@@ -163,12 +164,22 @@
       "hello": "Xin chào",
       "title": "Chào mừng",
       "loginAgain": "Thời hạn đăng nhập đã hết. Vui lòng đăng nhập lại.",
+      "captcha": "Kiểm tra bảo mật",
+      "captchaPlaceholder": "Kết quả phép tính",
+      "captchaRefresh": "Hiện hình khác",
+      "tgCode": "Mã Telegram",
+      "tgCodePlaceholder": "Mã 6 chữ số từ Telegram",
+      "tgCodeMessage": "Mã đăng nhập bảng điều khiển của bạn:",
       "toasts": {
         "invalidFormData": "Dạng dữ liệu nhập không hợp lệ.",
         "emptyUsername": "Vui lòng nhập tên người dùng.",
         "emptyPassword": "Vui lòng nhập mật khẩu.",
         "wrongUsernameOrPassword": "Tên người dùng, mật khẩu hoặc mã xác thực hai yếu tố không hợp lệ.",
-        "successLogin": "Bạn đã đăng nhập vào tài khoản thành công."
+        "successLogin": "Bạn đã đăng nhập vào tài khoản thành công.",
+        "wrongCaptcha": "Đáp án kiểm tra bảo mật không đúng.",
+        "tgCodeSent": "Mã đăng nhập đã được gửi tới Telegram của bạn.",
+        "tgCodeWait": "Mã vừa được gửi, hãy chờ trước khi yêu cầu lại.",
+        "tgCodeWrong": "Mã Telegram sai hoặc đã hết hạn."
       }
     },
     "index": {
@@ -325,6 +336,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Giữ cài đặt của máy này",
+      "importPassphrase": "Cụm mật khẩu bản sao lưu (chỉ cho bản sao lưu mã hóa)",
       "importKeepHostSettingsDesc": "Giữ nguyên địa chỉ lắng nghe, cổng, đường dẫn cơ sở, chứng chỉ và danh tính node của bảng điều khiển này thay vì lấy chúng từ tệp đã tải lên.",
       "hosted": {
         "title": "Gói của bạn",
@@ -916,6 +928,14 @@
       "subIdDesc": "Cũng được dùng làm mã mời bot Telegram của client này: ai gửi mã này cho bot sẽ được liên kết với client. Hãy để mã dài và ngẫu nhiên — ID ngắn hoặc dễ đoán có thể bị người khác chiếm.",
       "shortLinkNone": "Chưa có liên kết rút gọn",
       "shortLinkCreate": "Tạo liên kết rút gọn",
+      "signedLinkNone": "Chưa có liên kết có chữ ký",
+      "signedLinkCreate": "Tạo liên kết có chữ ký",
+      "signedExpires": "Hết hạn {date}",
+      "signedTtl1h": "1 giờ",
+      "signedTtl1d": "1 ngày",
+      "signedTtl7d": "7 ngày",
+      "signedTtl30d": "30 ngày",
+      "signedTtlNever": "Không bao giờ",
       "shortLinkRevoke": "Thu hồi liên kết rút gọn",
       "shortLinkRevokeConfirm": "Thu hồi liên kết rút gọn này? Các ứng dụng đang dùng sẽ ngừng cập nhật; liên kết mới sẽ có địa chỉ khác.",
       "shortLinkRevoked": "Đã thu hồi liên kết rút gọn",
@@ -1635,6 +1655,23 @@
         "twoFactorModalSetSuccess": "Xác thực hai yếu tố đã được thiết lập thành công",
         "twoFactorModalDeleteSuccess": "Xác thực hai yếu tố đã được xóa thành công",
         "twoFactorModalError": "Mã sai",
+        "extra": {
+          "tab": "Bảo vệ bổ sung",
+          "captcha": "Captcha đăng nhập",
+          "captchaDesc": "Hỏi một phép tính đơn giản do chính bảng điều khiển vẽ thành hình, trước khi kiểm tra mật khẩu. Không gửi gì cho bên thứ ba.",
+          "newLocation": "Cảnh báo vị trí đăng nhập mới",
+          "newLocationDesc": "Gửi cảnh báo qua các kênh thông báo khi quản trị viên đăng nhập từ địa chỉ hoặc quốc gia chưa từng thấy. Lần đăng nhập đầu chỉ để ghi nhớ. Xác định quốc gia cần geoip.dat trong thư mục Xray.",
+          "backupPassphrase": "Cụm mật khẩu mã hóa sao lưu",
+          "backupPassphraseDesc": "Bản sao lưu theo lịch, bản tải về và bản gửi tới Telegram hoặc Discord được mã hóa AES-256-GCM bằng cụm mật khẩu này và có đuôi .enc. Hãy giữ kỹ: không có nó thì không thể khôi phục. Để trống nếu muốn bản sao lưu thường.",
+          "backupPassphraseSet": "Đã đặt cụm mật khẩu; nhập cụm mới để thay thế",
+          "backupPassphraseClear": "Xóa cụm mật khẩu",
+          "subSigning": "Liên kết đăng ký có chữ ký",
+          "subSigningDesc": "Máy chủ đăng ký chỉ trả lời các liên kết có chữ ký hợp lệ; liên kết thường nhận 404. Các liên kết hiện có sẽ ngừng hoạt động, hãy tạo liên kết mới từ cửa sổ thông tin của từng khách. Liên kết có thể hết hạn.",
+          "subSigningRotate": "Xoay khóa ký (vô hiệu mọi liên kết đã cấp)",
+          "tgLogin": "Mã đăng nhập Telegram",
+          "tgLoginDesc": "Yêu cầu quản trị viên có cuộc trò chuyện Telegram được liên kết nhập mã dùng một lần do bot gửi, sau mật khẩu. Bỏ qua khi bot Telegram không chạy để bot hỏng không khóa bạn. Quản trị viên chưa liên kết thì không bị hỏi.",
+          "saved": "Đã lưu cài đặt bảo mật"
+        },
         "show": "Hiển thị",
         "hide": "Ẩn",
         "apiTokenNew": "Token mới",
@@ -1996,6 +2033,8 @@
       "eventClientQuotaWarning": "Cảnh báo hạn mức",
       "eventClientExpiryWarning": "Cảnh báo hết hạn",
       "eventWeeklyReport": "Tóm tắt hằng tuần",
+      "eventResellerCreditLow": "Tín dụng đại lý thấp",
+      "eventLoginNewLocation": "Quản trị viên đăng nhập từ nơi mới",
       "testDiscordDesc": "Gửi thông báo thử nghiệm để xác minh token bot và ID kênh",
       "discordNotInitialized": "Dịch vụ Discord chưa được khởi tạo",
       "discordBotNotEnabled": "Bot Discord chưa được bật",
@@ -2795,6 +2834,28 @@
       "you": "bạn",
       "passwordKeep": "Để trống để giữ mật khẩu hiện tại.",
       "selfNote": "Bạn không thể thay đổi vai trò hoặc quyền truy cập của chính mình.",
+      "tgChatId": "ID cuộc trò chuyện Telegram",
+      "tgChatIdHint": "Tùy chọn. Cuộc trò chuyện nhận mã đăng nhập của quản trị viên này khi bật mã đăng nhập Telegram. Gửi /id cho bot để biết. 0 nghĩa là không có.",
+      "transfer": {
+        "title": "Chuyển khách hàng",
+        "action": "Chuyển khách hàng",
+        "hint": "Chuyển khách hàng từ operator này sang operator khác. Khách trong nhóm của operator này vào nhóm của bên nhận; khách trên inbound của operator này được gắn vào inbound của bên nhận và gỡ khỏi inbound của operator này.",
+        "target": "Chuyển đến",
+        "group": "Nhóm đích",
+        "groupHint": "Cần khi khách nằm trong nhóm của operator này và bên nhận có nhiều hơn một nhóm.",
+        "emails": "Chỉ những khách này",
+        "emailsHint": "Để trống để chuyển mọi khách mà operator này thấy. Phân tách email bằng dấu phẩy hoặc dấu cách.",
+        "submit": "Chuyển",
+        "errTarget": "Chọn operator sẽ nhận khách hàng.",
+        "moved": "Đã chuyển {count} khách hàng",
+        "reasons": {
+          "not_source_client": "Không phải khách của operator này",
+          "shared_inbound": "Nằm trên inbound mà cả hai operator cùng dùng",
+          "no_target_inbound": "Bên nhận không có inbound",
+          "needs_group": "Hãy chọn một nhóm của bên nhận",
+          "failed": "Không thể chuyển"
+        }
+      },
       "deleteConfirm": "Xóa quản trị viên này? Họ sẽ bị đăng xuất ngay.",
       "errUsername": "Nhập tên người dùng tối đa 64 ký tự.",
       "errPassword": "Nhập mật khẩu.",
@@ -2803,6 +2864,57 @@
       "toasts": {
         "saved": "Đã lưu quản trị viên",
         "deleted": "Đã xóa quản trị viên"
+      }
+    },
+    "reseller": {
+      "title": "Tín dụng đại lý",
+      "mine": "Tín dụng của tôi",
+      "hint": "Đại lý bị trừ tín dụng theo bảng giá khi tạo hoặc gia hạn khách hàng. Nạp tín dụng cho họ và theo dõi doanh số.",
+      "hintSelf": "Bạn bị trừ tín dụng theo bảng giá của mình khi tạo hoặc gia hạn khách hàng.",
+      "credit": "Tín dụng",
+      "pricePerGb": "Giá mỗi GB",
+      "pricePerDay": "Giá mỗi ngày",
+      "manage": "Quản lý",
+      "topupTitle": "Cộng hoặc trừ tín dụng",
+      "amountHint": "Số tiền (số âm sẽ trừ)",
+      "note": "Ghi chú",
+      "topup": "Áp dụng",
+      "pricesTitle": "Bảng giá",
+      "wholesale": "Bảng giá sỉ",
+      "wholesaleHint": "Đại lý không có giá riêng sẽ bị tính theo bảng này. Tín dụng là đơn vị riêng của bảng điều khiển; đặt mức cảnh báo để được báo khi tín dụng của đại lý sắp hết (0 = tắt).",
+      "lowCredit": "Cảnh báo khi dưới",
+      "priceFallback": "Để trống giá để theo bảng giá của bảng điều khiển.",
+      "ranges": {
+        "all": "Toàn bộ thời gian",
+        "7": "7 ngày",
+        "30": "30 ngày",
+        "90": "90 ngày"
+      },
+      "report": {
+        "reseller": "Đại lý",
+        "created": "Đã tạo",
+        "renewed": "Đã gia hạn",
+        "spent": "Đã chi",
+        "traffic": "Lưu lượng đã bán",
+        "days": "Số ngày đã bán",
+        "toppedUp": "Tín dụng đã nạp"
+      },
+      "ledger": {
+        "title": "Lịch sử tín dụng",
+        "time": "Thời gian",
+        "kind": "Loại",
+        "amount": "Số tiền",
+        "client": "Khách hàng"
+      },
+      "kinds": {
+        "topup": "Nạp tiền",
+        "create": "Khách mới",
+        "renew": "Gia hạn"
+      },
+      "toasts": {
+        "toppedUp": "Đã cập nhật tín dụng",
+        "pricesSaved": "Đã lưu bảng giá",
+        "configSaved": "Đã lưu bảng giá"
       }
     },
     "sales": {

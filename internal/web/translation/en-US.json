@@ -150,6 +150,7 @@
     "audit": "Activity",
     "admins": "Admins",
     "sessions": "Sessions",
+    "reseller": "Resellers",
     "sales": "Sales",
     "docs": "Documentation",
     "openMenu": "Open menu",
@@ -163,12 +164,22 @@
       "hello": "Hello",
       "title": "Welcome",
       "loginAgain": "Your session has expired, please log in again",
+      "captcha": "Security check",
+      "captchaPlaceholder": "Answer of the sum",
+      "captchaRefresh": "Show another picture",
+      "tgCode": "Telegram code",
+      "tgCodePlaceholder": "6-digit code from Telegram",
+      "tgCodeMessage": "Your panel login code:",
       "toasts": {
         "invalidFormData": "The input data format is invalid.",
         "emptyUsername": "Username is required",
         "emptyPassword": "Password is required",
         "wrongUsernameOrPassword": "Invalid username or password or two-factor code.",
-        "successLogin": "You have successfully logged into your account."
+        "successLogin": "You have successfully logged into your account.",
+        "wrongCaptcha": "The security check answer is wrong.",
+        "tgCodeSent": "A login code was sent to your Telegram.",
+        "tgCodeWait": "A code was sent a moment ago, wait before asking again.",
+        "tgCodeWrong": "The Telegram code is wrong or has expired."
       }
     },
     "index": {
@@ -325,6 +336,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Keep this machine's settings",
+      "importPassphrase": "Backup passphrase (only for an encrypted backup)",
       "importKeepHostSettingsDesc": "Keeps this panel's listen addresses, ports, base path, certificates and node identity instead of taking them from the uploaded file.",
       "hosted": {
         "title": "Your plan",
@@ -916,6 +928,14 @@
       "subIdDesc": "Also works as this client's Telegram bot invite code: whoever sends it to the bot is linked to this client. Keep it long and random — a short or guessable ID can be claimed by someone else.",
       "shortLinkNone": "No short link yet",
       "shortLinkCreate": "Create short link",
+      "signedLinkNone": "No signed link yet",
+      "signedLinkCreate": "Create signed link",
+      "signedExpires": "Expires {date}",
+      "signedTtl1h": "1 hour",
+      "signedTtl1d": "1 day",
+      "signedTtl7d": "7 days",
+      "signedTtl30d": "30 days",
+      "signedTtlNever": "Never",
       "shortLinkRevoke": "Revoke short link",
       "shortLinkRevokeConfirm": "Revoke this short link? Apps using it stop updating; a new one gets a different address.",
       "shortLinkRevoked": "Short link revoked",
@@ -1757,6 +1777,23 @@
         "twoFactorModalSetSuccess": "Two-factor authentication has been successfully established",
         "twoFactorModalDeleteSuccess": "Two-factor authentication has been successfully deleted",
         "twoFactorModalError": "Wrong code",
+        "extra": {
+          "tab": "Extra protection",
+          "captcha": "Login captcha",
+          "captchaDesc": "Asks a simple sum, drawn as a picture by the panel itself, before checking the password. Nothing is sent to a third party.",
+          "newLocation": "New login location alert",
+          "newLocationDesc": "Sends an alert through the notification channels when an admin signs in from an address or country not seen before. The first sign-in only teaches the panel. Countries need a geoip.dat in the Xray folder.",
+          "backupPassphrase": "Backup encryption passphrase",
+          "backupPassphraseDesc": "Scheduled backups, downloaded backups and those sent to Telegram or Discord are encrypted with AES-256-GCM under this passphrase and get an .enc suffix. Keep it safe: a backup cannot be restored without it. Leave empty for plain backups.",
+          "backupPassphraseSet": "A passphrase is set; type a new one to replace it",
+          "backupPassphraseClear": "Remove the passphrase",
+          "subSigning": "Signed subscription links",
+          "subSigningDesc": "Only links carrying a valid signature are answered by the subscription server; plain links get 404. Existing links stop working, so issue new ones from each client's info window. A link can expire.",
+          "subSigningRotate": "Rotate the signing key (voids every issued link)",
+          "tgLogin": "Telegram login code",
+          "tgLoginDesc": "Asks admins who have a Telegram chat linked for a one-time code, sent by the bot, after the password. Skipped while the Telegram bot is not running so a broken bot never locks you out. Admins without a linked chat are not asked.",
+          "saved": "Security settings saved"
+        },
         "show": "Show",
         "hide": "Hide",
         "apiTokenNew": "New token",
@@ -2114,6 +2151,8 @@
       "eventClientQuotaWarning": "Quota warning",
       "eventClientExpiryWarning": "Expiry warning",
       "eventWeeklyReport": "Weekly summary",
+      "eventResellerCreditLow": "Reseller credit low",
+      "eventLoginNewLocation": "Admin login from a new place",
       "testDiscordDesc": "Send a test notification to verify your bot token and channel ID",
       "discordNotInitialized": "Discord service not initialized",
       "discordBotNotEnabled": "Discord bot is not enabled",
@@ -2795,6 +2834,28 @@
       "you": "you",
       "passwordKeep": "Leave empty to keep the current password.",
       "selfNote": "You cannot change your own role or access.",
+      "tgChatId": "Telegram chat ID",
+      "tgChatIdHint": "Optional. The chat that receives this admin's login codes when the Telegram login code is on. Send /id to the bot to find it. 0 means none.",
+      "transfer": {
+        "title": "Transfer clients",
+        "action": "Transfer clients",
+        "hint": "Moves clients from this operator to another one. Clients in this operator's groups join the target's group; clients on this operator's inbounds are attached to the target's inbounds and detached from this operator's.",
+        "target": "Move to",
+        "group": "Target group",
+        "groupHint": "Needed when the clients are in this operator's groups and the target has more than one group.",
+        "emails": "Only these clients",
+        "emailsHint": "Leave empty to move every client this operator can see. Separate emails with a comma or a space.",
+        "submit": "Transfer",
+        "errTarget": "Choose the operator to move the clients to.",
+        "moved": "{count} clients moved",
+        "reasons": {
+          "not_source_client": "Not a client of this operator",
+          "shared_inbound": "Sits on an inbound both operators share",
+          "no_target_inbound": "The target has no inbound",
+          "needs_group": "Choose one of the target's groups",
+          "failed": "Could not be moved"
+        }
+      },
       "deleteConfirm": "Delete this admin? They are signed out at once.",
       "errUsername": "Enter a username of at most 64 characters.",
       "errPassword": "Enter a password.",
@@ -2803,6 +2864,57 @@
       "toasts": {
         "saved": "Admin saved",
         "deleted": "Admin deleted"
+      }
+    },
+    "reseller": {
+      "title": "Reseller credit",
+      "mine": "My credit",
+      "hint": "Resellers are debited by their price list when they create or renew clients. Top up their credit and follow what they sell.",
+      "hintSelf": "You are debited by your price list when you create or renew clients.",
+      "credit": "Credit",
+      "pricePerGb": "Price per GB",
+      "pricePerDay": "Price per day",
+      "manage": "Manage",
+      "topupTitle": "Add or remove credit",
+      "amountHint": "Amount (negative removes)",
+      "note": "Note",
+      "topup": "Apply",
+      "pricesTitle": "Price list",
+      "wholesale": "Wholesale price list",
+      "wholesaleHint": "Resellers without their own prices are billed by this list. Credit is the panel's own unit; set the alert level to be notified when a reseller runs low (0 = off).",
+      "lowCredit": "Alert below",
+      "priceFallback": "Leave a price empty to follow the panel's price list.",
+      "ranges": {
+        "all": "All time",
+        "7": "7 days",
+        "30": "30 days",
+        "90": "90 days"
+      },
+      "report": {
+        "reseller": "Reseller",
+        "created": "Created",
+        "renewed": "Renewed",
+        "spent": "Spent",
+        "traffic": "Traffic sold",
+        "days": "Days sold",
+        "toppedUp": "Credit added"
+      },
+      "ledger": {
+        "title": "Credit history",
+        "time": "Time",
+        "kind": "Type",
+        "amount": "Amount",
+        "client": "Client"
+      },
+      "kinds": {
+        "topup": "Top-up",
+        "create": "New client",
+        "renew": "Renewal"
+      },
+      "toasts": {
+        "toppedUp": "Credit updated",
+        "pricesSaved": "Price list saved",
+        "configSaved": "Price list saved"
       }
     },
     "sales": {

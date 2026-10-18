@@ -274,7 +274,11 @@ func Format(e eventbus.Event, host string) (Message, bool) {
 	case eventbus.EventClientExpiryWarning:
 		msg.Title = "Client near expiry"
 	default:
-		return Message{}, false
+		title, lines, ok := eventbus.PlainText(e)
+		if !ok {
+			return Message{}, false
+		}
+		return Message{Title: prefix + title, Body: strings.Join(lines, "\n"), Priority: 4}, true
 	}
 	msg.Title = prefix + msg.Title
 	msg.Body = body(e)

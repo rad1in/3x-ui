@@ -49,6 +49,11 @@
             "example": "operator",
             "type": "string"
           },
+          "tgChatId": {
+            "example": 123456789,
+            "format": "int64",
+            "type": "integer"
+          },
           "username": {
             "example": "support",
             "type": "string"
@@ -59,6 +64,7 @@
           "inboundIds",
           "password",
           "role",
+          "tgChatId",
           "username"
         ],
         "type": "object"
@@ -68,6 +74,12 @@
         "properties": {
           "createdAt": {
             "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "credit": {
+            "description": "A reseller's credit and own price list; a nil price follows the panel's list.",
+            "example": 8500,
             "format": "int64",
             "type": "integer"
           },
@@ -87,9 +99,26 @@
             },
             "type": "array"
           },
+          "pricePerDay": {
+            "example": 10,
+            "format": "int64",
+            "nullable": true,
+            "type": "integer"
+          },
+          "pricePerGb": {
+            "example": 100,
+            "format": "int64",
+            "nullable": true,
+            "type": "integer"
+          },
           "role": {
             "example": "operator",
             "type": "string"
+          },
+          "tgChatId": {
+            "example": 123456789,
+            "format": "int64",
+            "type": "integer"
           },
           "username": {
             "example": "support",
@@ -98,10 +127,12 @@
         },
         "required": [
           "createdAt",
+          "credit",
           "groups",
           "id",
           "inboundIds",
           "role",
+          "tgChatId",
           "username"
         ],
         "type": "object"
@@ -3137,6 +3168,76 @@
         ],
         "type": "object"
       },
+      "ClientTransferRequest": {
+        "description": "ClientTransferRequest hands clients from one operator to another. Emails\nempty means every client the source can see; Group is the target's group the\nsource's group clients move into (optional when the target has only one).",
+        "properties": {
+          "emails": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "fromAdminId": {
+            "example": 2,
+            "type": "integer"
+          },
+          "group": {
+            "example": "team-b",
+            "type": "string"
+          },
+          "toAdminId": {
+            "example": 3,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "emails",
+          "fromAdminId",
+          "group",
+          "toAdminId"
+        ],
+        "type": "object"
+      },
+      "ClientTransferResult": {
+        "description": "ClientTransferResult lists what moved and what stayed.",
+        "properties": {
+          "moved": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "skipped": {
+            "items": {
+              "$ref": "#/components/schemas/ClientTransferSkip"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "moved",
+          "skipped"
+        ],
+        "type": "object"
+      },
+      "ClientTransferSkip": {
+        "description": "ClientTransferSkip names a client left with the source and why.",
+        "properties": {
+          "email": {
+            "example": "alice",
+            "type": "string"
+          },
+          "reason": {
+            "example": "shared_inbound",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "reason"
+        ],
+        "type": "object"
+      },
       "ClientsSummary": {
         "description": "ClientsSummary collects per-bucket counts plus the matching email lists so\nthe clients page can render the dashboard stat cards and their hover\npopovers without shipping the full client array. The counters are exact;\nthe lists stop at clientSummaryEmailCap entries and only back the popovers.",
         "properties": {
@@ -6117,6 +6218,213 @@
         ],
         "type": "object"
       },
+      "ResellerAccount": {
+        "description": "ResellerAccount is a reseller's standing and latest ledger lines.",
+        "properties": {
+          "balance": {
+            "example": 8500,
+            "format": "int64",
+            "type": "integer"
+          },
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/ResellerEntry"
+            },
+            "type": "array"
+          },
+          "prices": {
+            "$ref": "#/components/schemas/ResellerPrices"
+          },
+          "userId": {
+            "example": 2,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "balance",
+          "entries",
+          "prices",
+          "userId"
+        ],
+        "type": "object"
+      },
+      "ResellerConfig": {
+        "description": "ResellerConfig is the panel's wholesale price list, which every reseller\nwithout its own price follows, and the credit level that raises an alert.",
+        "properties": {
+          "lowCredit": {
+            "example": 1000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "pricePerDay": {
+            "example": 10,
+            "format": "int64",
+            "type": "integer"
+          },
+          "pricePerGb": {
+            "example": 100,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "lowCredit",
+          "pricePerDay",
+          "pricePerGb"
+        ],
+        "type": "object"
+      },
+      "ResellerEntry": {
+        "description": "ResellerEntry is one line of a reseller's credit ledger; the balance is the\nsum of the Amount column. Create and renew lines name the client and the\ntraffic and days that were billed.",
+        "properties": {
+          "amount": {
+            "example": -1500,
+            "format": "int64",
+            "type": "integer"
+          },
+          "bytes": {
+            "example": 53687091200,
+            "format": "int64",
+            "type": "integer"
+          },
+          "clientEmail": {
+            "example": "alice",
+            "type": "string"
+          },
+          "createdAt": {
+            "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "days": {
+            "example": 30,
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "kind": {
+            "example": "create",
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "userId": {
+            "example": 2,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "amount",
+          "bytes",
+          "clientEmail",
+          "createdAt",
+          "days",
+          "id",
+          "kind",
+          "note",
+          "userId"
+        ],
+        "type": "object"
+      },
+      "ResellerPrices": {
+        "description": "ResellerPrices is a price list in credit units; a zero price makes that dimension free.",
+        "properties": {
+          "pricePerDay": {
+            "example": 10,
+            "format": "int64",
+            "type": "integer"
+          },
+          "pricePerGb": {
+            "example": 100,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "pricePerDay",
+          "pricePerGb"
+        ],
+        "type": "object"
+      },
+      "ResellerReport": {
+        "description": "ResellerReport lists every reseller, or one, with sales between from and to (unix ms, 0 = open).",
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/ResellerReportRow"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "rows"
+        ],
+        "type": "object"
+      },
+      "ResellerReportRow": {
+        "description": "ResellerReportRow is one reseller's sales in the reported window. Spent is\ncredit used on clients; ToppedUp is credit added by the owner.",
+        "properties": {
+          "balance": {
+            "example": 8500,
+            "format": "int64",
+            "type": "integer"
+          },
+          "bytes": {
+            "example": 1073741824000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "created": {
+            "example": 12,
+            "format": "int64",
+            "type": "integer"
+          },
+          "days": {
+            "example": 570,
+            "format": "int64",
+            "type": "integer"
+          },
+          "renewed": {
+            "example": 7,
+            "format": "int64",
+            "type": "integer"
+          },
+          "spent": {
+            "example": 15000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "toppedUp": {
+            "example": 20000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "userId": {
+            "example": 2,
+            "type": "integer"
+          },
+          "username": {
+            "example": "shop-a",
+            "type": "string"
+          }
+        },
+        "required": [
+          "balance",
+          "bytes",
+          "created",
+          "days",
+          "renewed",
+          "spent",
+          "toppedUp",
+          "userId",
+          "username"
+        ],
+        "type": "object"
+      },
       "SalesConfig": {
         "description": "SalesConfig is everything the operator configures about selling. It is one\nJSON setting. Secrets are served blank and kept when a save leaves them\nblank; ClearSecrets names the ones to empty on purpose.",
         "properties": {
@@ -6224,6 +6532,88 @@
           "referral",
           "walletEnabled",
           "zarinpal"
+        ],
+        "type": "object"
+      },
+      "SecurityConfig": {
+        "description": "SecurityConfig groups the login and data protections that do not depend on\ntwo-factor codes. It is one JSON setting that only owners may change.\nBackupPassphrase is a secret: stored encrypted, served blank, and kept when a\nsave leaves it blank (ClearBackupPassphrase empties it on purpose).",
+        "properties": {
+          "backupPassphrase": {
+            "type": "string"
+          },
+          "captchaEnable": {
+            "type": "boolean"
+          },
+          "clearBackupPassphrase": {
+            "type": "boolean"
+          },
+          "newLocationAlert": {
+            "type": "boolean"
+          },
+          "rotateSubSigningKey": {
+            "type": "boolean"
+          },
+          "subSigningEnable": {
+            "type": "boolean"
+          },
+          "subSigningKey": {
+            "type": "string"
+          },
+          "tgLoginEnable": {
+            "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.\nTgLoginEnable asks admins with a linked Telegram chat for a one-time code\nafter the password, while the Telegram bot is running.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "backupPassphrase",
+          "captchaEnable",
+          "newLocationAlert",
+          "subSigningEnable",
+          "subSigningKey",
+          "tgLoginEnable"
+        ],
+        "type": "object"
+      },
+      "SecurityConfigView": {
+        "description": "SecurityConfigView is the configuration as the admin API serves it: secrets\nare blank and the Has flags say which are set.",
+        "properties": {
+          "backupPassphrase": {
+            "type": "string"
+          },
+          "captchaEnable": {
+            "type": "boolean"
+          },
+          "clearBackupPassphrase": {
+            "type": "boolean"
+          },
+          "hasBackupPassphrase": {
+            "type": "boolean"
+          },
+          "newLocationAlert": {
+            "type": "boolean"
+          },
+          "rotateSubSigningKey": {
+            "type": "boolean"
+          },
+          "subSigningEnable": {
+            "type": "boolean"
+          },
+          "subSigningKey": {
+            "type": "string"
+          },
+          "tgLoginEnable": {
+            "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.\nTgLoginEnable asks admins with a linked Telegram chat for a one-time code\nafter the password, while the Telegram bot is running.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "backupPassphrase",
+          "captchaEnable",
+          "hasBackupPassphrase",
+          "newLocationAlert",
+          "subSigningEnable",
+          "subSigningKey",
+          "tgLoginEnable"
         ],
         "type": "object"
       },
@@ -6623,6 +7013,25 @@
           "balances",
           "entries",
           "referralCode"
+        ],
+        "type": "object"
+      },
+      "SignedSubLink": {
+        "description": "SignedSubLink is a subscription URL carrying its signature. ExpiresAt is unix\nms, 0 for a link that never expires.",
+        "properties": {
+          "expiresAt": {
+            "example": 1792411200000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "url": {
+            "example": "https://sub.example.com:2096/sub/Ab3dE5gH9k?exp=1792411200&sig=Zk3Wq1",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expiresAt",
+          "url"
         ],
         "type": "object"
       },
@@ -7316,6 +7725,14 @@
     {
       "name": "Admins",
       "description": "Admin accounts and their roles. owner: everything; admin: everything except managing admins, API tokens, the database file and security settings; operator: only the inbounds and client groups in its scope; viewer: read-only. Every endpoint except /me is owner-only. API tokens are not admins and keep their own scopes. All endpoints under /panel/api/admins."
+    },
+    {
+      "name": "Reseller credit",
+      "description": "Credit and sales of resellers, the admins with the operator role. A reseller is debited by its price list (credit per GiB and per day) when it creates or renews clients; amounts are credit units. The price list and top-ups are owner-only. All endpoints under /panel/api/reseller."
+    },
+    {
+      "name": "Extra security",
+      "description": "Protections that do not depend on two-factor codes: login captcha and more. Owner only. All endpoints under /panel/api/security."
     },
     {
       "name": "Sessions",
@@ -10458,7 +10875,7 @@
         "tags": [
           "Server"
         ],
-        "summary": "Restore the panel DB from an uploaded backup (multipart form, field name \"db\"). SQLite panels accept a SQLite database (.db) or a SQLite migration dump (.dump); PostgreSQL panels accept a pg_dump archive (.dump), a SQLite database (.db), or a SQLite migration dump. The panel restarts after restore. Destructive.",
+        "summary": "Restore the panel DB from an uploaded backup (multipart form, field name \"db\"). SQLite panels accept a SQLite database (.db) or a SQLite migration dump (.dump); PostgreSQL panels accept a pg_dump archive (.dump), a SQLite database (.db), or a SQLite migration dump. An encrypted backup (.enc, made when a backup passphrase is set) is decrypted first. The panel restarts after restore. Destructive.",
         "operationId": "post_panel_api_server_importDB",
         "requestBody": {
           "required": true,
@@ -10471,6 +10888,10 @@
                     "type": "string",
                     "format": "binary",
                     "description": "Database backup or migration file to upload."
+                  },
+                  "passphrase": {
+                    "type": "string",
+                    "description": "Passphrase of an encrypted backup (.enc). Optional; the configured backup passphrase is used when omitted."
                   },
                   "keepHostSettings": {
                     "type": "boolean",
@@ -12167,6 +12588,140 @@
                         "reason": "unlimited expiry"
                       }
                     ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/transfer": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Hand clients from one operator to another. Without emails every client the source can see moves. A client in the source's group joins the target's group (group names it; optional when the target has one group); a client on the source's inbounds is attached to the target's inbounds and detached from the source's. A client on an inbound both operators share, or without a usable target group or inbound, stays and is reported in skipped. Owners and admins only.",
+        "operationId": "post_panel_api_clients_transfer",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "ClientTransferRequest."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/ClientTransferResult"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "moved": [
+                      ""
+                    ],
+                    "skipped": [
+                      {
+                        "email": "alice",
+                        "reason": "shared_inbound"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/signedSubLink/{subId}": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Issue a signed subscription URL (?exp=<unix s>&sig=<HMAC>) for a subscription id. ttlSeconds 0 never expires. Requires signed subscription links to be enabled under /panel/api/security; once they are, the subscription server answers 404 to any raw, JSON, Clash or sing-box link without a valid signature.",
+        "operationId": "post_panel_api_clients_signedSubLink_subId",
+        "parameters": [
+          {
+            "name": "subId",
+            "in": "path",
+            "required": true,
+            "description": "Subscription id of the client.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{\"ttlSeconds\": 604800}"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SignedSubLink"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "expiresAt": 1792411200000,
+                    "url": "https://sub.example.com:2096/sub/Ab3dE5gH9k?exp=1792411200&sig=Zk3Wq1"
                   }
                 }
               }
@@ -19344,6 +19899,7 @@
                   "success": true,
                   "obj": {
                     "createdAt": 1760684400000,
+                    "credit": 8500,
                     "groups": [
                       ""
                     ],
@@ -19351,7 +19907,10 @@
                     "inboundIds": [
                       0
                     ],
+                    "pricePerDay": 10,
+                    "pricePerGb": 100,
                     "role": "operator",
+                    "tgChatId": 123456789,
                     "username": "support"
                   }
                 }
@@ -19395,6 +19954,7 @@
                   "obj": [
                     {
                       "createdAt": 1760684400000,
+                      "credit": 8500,
                       "groups": [
                         ""
                       ],
@@ -19402,7 +19962,10 @@
                       "inboundIds": [
                         0
                       ],
+                      "pricePerDay": 10,
+                      "pricePerGb": 100,
                       "role": "operator",
+                      "tgChatId": 123456789,
                       "username": "support"
                     }
                   ]
@@ -19462,6 +20025,7 @@
                   "success": true,
                   "obj": {
                     "createdAt": 1760684400000,
+                    "credit": 8500,
                     "groups": [
                       ""
                     ],
@@ -19469,7 +20033,10 @@
                     "inboundIds": [
                       0
                     ],
+                    "pricePerDay": 10,
+                    "pricePerGb": 100,
                     "role": "operator",
+                    "tgChatId": 123456789,
                     "username": "support"
                   }
                 }
@@ -19539,6 +20106,7 @@
                   "success": true,
                   "obj": {
                     "createdAt": 1760684400000,
+                    "credit": 8500,
                     "groups": [
                       ""
                     ],
@@ -19546,7 +20114,10 @@
                     "inboundIds": [
                       0
                     ],
+                    "pricePerDay": 10,
+                    "pricePerGb": 100,
                     "role": "operator",
+                    "tgChatId": 123456789,
                     "username": "support"
                   }
                 }
@@ -19574,6 +20145,519 @@
             }
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/reseller/me": {
+      "get": {
+        "tags": [
+          "Reseller credit"
+        ],
+        "summary": "The signed-in reseller's credit, price list and latest ledger lines. Any other role gets an empty account.",
+        "operationId": "get_panel_api_reseller_me",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/ResellerAccount"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "balance": 8500,
+                    "entries": [
+                      {
+                        "amount": -1500,
+                        "bytes": 53687091200,
+                        "clientEmail": "alice",
+                        "createdAt": 1760684400000,
+                        "days": 30,
+                        "id": 1,
+                        "kind": "create",
+                        "note": "",
+                        "userId": 2
+                      }
+                    ],
+                    "prices": {
+                      "pricePerDay": 10,
+                      "pricePerGb": 100
+                    },
+                    "userId": 2
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/reseller/report": {
+      "get": {
+        "tags": [
+          "Reseller credit"
+        ],
+        "summary": "Sales per reseller between from and to: clients created and renewed, credit spent, traffic and days sold, credit added and the balance. A reseller only sees its own row.",
+        "operationId": "get_panel_api_reseller_report",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "description": "Window start, unix ms. Omit for no start.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "description": "Window end, unix ms. Omit for no end.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/ResellerReport"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "rows": [
+                      {
+                        "balance": 8500,
+                        "bytes": 1073741824000,
+                        "created": 12,
+                        "days": 570,
+                        "renewed": 7,
+                        "spent": 15000,
+                        "toppedUp": 20000,
+                        "userId": 2,
+                        "username": "shop-a"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/reseller/account/{id}": {
+      "get": {
+        "tags": [
+          "Reseller credit"
+        ],
+        "summary": "One reseller's credit, price list and latest ledger lines. Owner only.",
+        "operationId": "get_panel_api_reseller_account_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Admin id of an operator.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/ResellerAccount"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "balance": 8500,
+                    "entries": [
+                      {
+                        "amount": -1500,
+                        "bytes": 53687091200,
+                        "clientEmail": "alice",
+                        "createdAt": 1760684400000,
+                        "days": 30,
+                        "id": 1,
+                        "kind": "create",
+                        "note": "",
+                        "userId": 2
+                      }
+                    ],
+                    "prices": {
+                      "pricePerDay": 10,
+                      "pricePerGb": 100
+                    },
+                    "userId": 2
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/reseller/topup/{id}": {
+      "post": {
+        "tags": [
+          "Reseller credit"
+        ],
+        "summary": "Add credit to a reseller, or take it back with a negative amount (the balance never goes below zero). Owner only.",
+        "operationId": "post_panel_api_reseller_topup_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Admin id of an operator.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{\"amount\": 5000, \"note\": \"paid by card\"}"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/ResellerEntry"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "amount": -1500,
+                    "bytes": 53687091200,
+                    "clientEmail": "alice",
+                    "createdAt": 1760684400000,
+                    "days": 30,
+                    "id": 1,
+                    "kind": "create",
+                    "note": "",
+                    "userId": 2
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/reseller/config": {
+      "get": {
+        "tags": [
+          "Reseller credit"
+        ],
+        "summary": "The panel's wholesale price list, which every reseller without its own price follows, and the credit level that raises the reseller.credit_low alert (0 = off). Owner only.",
+        "operationId": "get_panel_api_reseller_config",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/ResellerConfig"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "lowCredit": 1000,
+                    "pricePerDay": 10,
+                    "pricePerGb": 100
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/reseller/config/save": {
+      "post": {
+        "tags": [
+          "Reseller credit"
+        ],
+        "summary": "Save the wholesale price list and the low-credit alert level. Owner only.",
+        "operationId": "post_panel_api_reseller_config_save",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{\"pricePerGb\": 100, \"pricePerDay\": 10, \"lowCredit\": 1000}"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/reseller/prices/{id}": {
+      "post": {
+        "tags": [
+          "Reseller credit"
+        ],
+        "summary": "Set a reseller's own price list. A null price falls back to the panel's list; 0 makes that dimension free. Owner only.",
+        "operationId": "post_panel_api_reseller_prices_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Admin id of an operator.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{\"pricePerGb\": 100, \"pricePerDay\": null}"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/security/config": {
+      "get": {
+        "tags": [
+          "Extra security"
+        ],
+        "summary": "The extra-security configuration. Secrets are never returned.",
+        "operationId": "get_panel_api_security_config",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SecurityConfigView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "backupPassphrase": "",
+                    "captchaEnable": false,
+                    "clearBackupPassphrase": false,
+                    "hasBackupPassphrase": false,
+                    "newLocationAlert": false,
+                    "rotateSubSigningKey": false,
+                    "subSigningEnable": false,
+                    "subSigningKey": "",
+                    "tgLoginEnable": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/security/config/save": {
+      "post": {
+        "tags": [
+          "Extra security"
+        ],
+        "summary": "Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.",
+        "operationId": "post_panel_api_security_config_save",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "SecurityConfig."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successful response",

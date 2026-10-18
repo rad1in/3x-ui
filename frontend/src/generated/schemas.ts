@@ -23,6 +23,11 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": "operator",
         "type": "string"
       },
+      "tgChatId": {
+        "example": 123456789,
+        "format": "int64",
+        "type": "integer"
+      },
       "username": {
         "example": "support",
         "type": "string"
@@ -33,6 +38,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "inboundIds",
       "password",
       "role",
+      "tgChatId",
       "username"
     ],
     "type": "object"
@@ -42,6 +48,12 @@ export const SCHEMAS: Record<string, unknown> = {
     "properties": {
       "createdAt": {
         "example": 1760684400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "credit": {
+        "description": "A reseller's credit and own price list; a nil price follows the panel's list.",
+        "example": 8500,
         "format": "int64",
         "type": "integer"
       },
@@ -61,9 +73,26 @@ export const SCHEMAS: Record<string, unknown> = {
         },
         "type": "array"
       },
+      "pricePerDay": {
+        "example": 10,
+        "format": "int64",
+        "nullable": true,
+        "type": "integer"
+      },
+      "pricePerGb": {
+        "example": 100,
+        "format": "int64",
+        "nullable": true,
+        "type": "integer"
+      },
       "role": {
         "example": "operator",
         "type": "string"
+      },
+      "tgChatId": {
+        "example": 123456789,
+        "format": "int64",
+        "type": "integer"
       },
       "username": {
         "example": "support",
@@ -72,10 +101,12 @@ export const SCHEMAS: Record<string, unknown> = {
     },
     "required": [
       "createdAt",
+      "credit",
       "groups",
       "id",
       "inboundIds",
       "role",
+      "tgChatId",
       "username"
     ],
     "type": "object"
@@ -3111,6 +3142,76 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "ClientTransferRequest": {
+    "description": "ClientTransferRequest hands clients from one operator to another. Emails\nempty means every client the source can see; Group is the target's group the\nsource's group clients move into (optional when the target has only one).",
+    "properties": {
+      "emails": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "fromAdminId": {
+        "example": 2,
+        "type": "integer"
+      },
+      "group": {
+        "example": "team-b",
+        "type": "string"
+      },
+      "toAdminId": {
+        "example": 3,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "emails",
+      "fromAdminId",
+      "group",
+      "toAdminId"
+    ],
+    "type": "object"
+  },
+  "ClientTransferResult": {
+    "description": "ClientTransferResult lists what moved and what stayed.",
+    "properties": {
+      "moved": {
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "skipped": {
+        "items": {
+          "$ref": "#/components/schemas/ClientTransferSkip"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "moved",
+      "skipped"
+    ],
+    "type": "object"
+  },
+  "ClientTransferSkip": {
+    "description": "ClientTransferSkip names a client left with the source and why.",
+    "properties": {
+      "email": {
+        "example": "alice",
+        "type": "string"
+      },
+      "reason": {
+        "example": "shared_inbound",
+        "type": "string"
+      }
+    },
+    "required": [
+      "email",
+      "reason"
+    ],
+    "type": "object"
+  },
   "ClientsSummary": {
     "description": "ClientsSummary collects per-bucket counts plus the matching email lists so\nthe clients page can render the dashboard stat cards and their hover\npopovers without shipping the full client array. The counters are exact;\nthe lists stop at clientSummaryEmailCap entries and only back the popovers.",
     "properties": {
@@ -6091,6 +6192,213 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "ResellerAccount": {
+    "description": "ResellerAccount is a reseller's standing and latest ledger lines.",
+    "properties": {
+      "balance": {
+        "example": 8500,
+        "format": "int64",
+        "type": "integer"
+      },
+      "entries": {
+        "items": {
+          "$ref": "#/components/schemas/ResellerEntry"
+        },
+        "type": "array"
+      },
+      "prices": {
+        "$ref": "#/components/schemas/ResellerPrices"
+      },
+      "userId": {
+        "example": 2,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "balance",
+      "entries",
+      "prices",
+      "userId"
+    ],
+    "type": "object"
+  },
+  "ResellerConfig": {
+    "description": "ResellerConfig is the panel's wholesale price list, which every reseller\nwithout its own price follows, and the credit level that raises an alert.",
+    "properties": {
+      "lowCredit": {
+        "example": 1000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "pricePerDay": {
+        "example": 10,
+        "format": "int64",
+        "type": "integer"
+      },
+      "pricePerGb": {
+        "example": 100,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "lowCredit",
+      "pricePerDay",
+      "pricePerGb"
+    ],
+    "type": "object"
+  },
+  "ResellerEntry": {
+    "description": "ResellerEntry is one line of a reseller's credit ledger; the balance is the\nsum of the Amount column. Create and renew lines name the client and the\ntraffic and days that were billed.",
+    "properties": {
+      "amount": {
+        "example": -1500,
+        "format": "int64",
+        "type": "integer"
+      },
+      "bytes": {
+        "example": 53687091200,
+        "format": "int64",
+        "type": "integer"
+      },
+      "clientEmail": {
+        "example": "alice",
+        "type": "string"
+      },
+      "createdAt": {
+        "example": 1760684400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "days": {
+        "example": 30,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "kind": {
+        "example": "create",
+        "type": "string"
+      },
+      "note": {
+        "type": "string"
+      },
+      "userId": {
+        "example": 2,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "amount",
+      "bytes",
+      "clientEmail",
+      "createdAt",
+      "days",
+      "id",
+      "kind",
+      "note",
+      "userId"
+    ],
+    "type": "object"
+  },
+  "ResellerPrices": {
+    "description": "ResellerPrices is a price list in credit units; a zero price makes that dimension free.",
+    "properties": {
+      "pricePerDay": {
+        "example": 10,
+        "format": "int64",
+        "type": "integer"
+      },
+      "pricePerGb": {
+        "example": 100,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "pricePerDay",
+      "pricePerGb"
+    ],
+    "type": "object"
+  },
+  "ResellerReport": {
+    "description": "ResellerReport lists every reseller, or one, with sales between from and to (unix ms, 0 = open).",
+    "properties": {
+      "rows": {
+        "items": {
+          "$ref": "#/components/schemas/ResellerReportRow"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "rows"
+    ],
+    "type": "object"
+  },
+  "ResellerReportRow": {
+    "description": "ResellerReportRow is one reseller's sales in the reported window. Spent is\ncredit used on clients; ToppedUp is credit added by the owner.",
+    "properties": {
+      "balance": {
+        "example": 8500,
+        "format": "int64",
+        "type": "integer"
+      },
+      "bytes": {
+        "example": 1073741824000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "created": {
+        "example": 12,
+        "format": "int64",
+        "type": "integer"
+      },
+      "days": {
+        "example": 570,
+        "format": "int64",
+        "type": "integer"
+      },
+      "renewed": {
+        "example": 7,
+        "format": "int64",
+        "type": "integer"
+      },
+      "spent": {
+        "example": 15000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "toppedUp": {
+        "example": 20000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "userId": {
+        "example": 2,
+        "type": "integer"
+      },
+      "username": {
+        "example": "shop-a",
+        "type": "string"
+      }
+    },
+    "required": [
+      "balance",
+      "bytes",
+      "created",
+      "days",
+      "renewed",
+      "spent",
+      "toppedUp",
+      "userId",
+      "username"
+    ],
+    "type": "object"
+  },
   "SalesConfig": {
     "description": "SalesConfig is everything the operator configures about selling. It is one\nJSON setting. Secrets are served blank and kept when a save leaves them\nblank; ClearSecrets names the ones to empty on purpose.",
     "properties": {
@@ -6198,6 +6506,88 @@ export const SCHEMAS: Record<string, unknown> = {
       "referral",
       "walletEnabled",
       "zarinpal"
+    ],
+    "type": "object"
+  },
+  "SecurityConfig": {
+    "description": "SecurityConfig groups the login and data protections that do not depend on\ntwo-factor codes. It is one JSON setting that only owners may change.\nBackupPassphrase is a secret: stored encrypted, served blank, and kept when a\nsave leaves it blank (ClearBackupPassphrase empties it on purpose).",
+    "properties": {
+      "backupPassphrase": {
+        "type": "string"
+      },
+      "captchaEnable": {
+        "type": "boolean"
+      },
+      "clearBackupPassphrase": {
+        "type": "boolean"
+      },
+      "newLocationAlert": {
+        "type": "boolean"
+      },
+      "rotateSubSigningKey": {
+        "type": "boolean"
+      },
+      "subSigningEnable": {
+        "type": "boolean"
+      },
+      "subSigningKey": {
+        "type": "string"
+      },
+      "tgLoginEnable": {
+        "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.\nTgLoginEnable asks admins with a linked Telegram chat for a one-time code\nafter the password, while the Telegram bot is running.",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "backupPassphrase",
+      "captchaEnable",
+      "newLocationAlert",
+      "subSigningEnable",
+      "subSigningKey",
+      "tgLoginEnable"
+    ],
+    "type": "object"
+  },
+  "SecurityConfigView": {
+    "description": "SecurityConfigView is the configuration as the admin API serves it: secrets\nare blank and the Has flags say which are set.",
+    "properties": {
+      "backupPassphrase": {
+        "type": "string"
+      },
+      "captchaEnable": {
+        "type": "boolean"
+      },
+      "clearBackupPassphrase": {
+        "type": "boolean"
+      },
+      "hasBackupPassphrase": {
+        "type": "boolean"
+      },
+      "newLocationAlert": {
+        "type": "boolean"
+      },
+      "rotateSubSigningKey": {
+        "type": "boolean"
+      },
+      "subSigningEnable": {
+        "type": "boolean"
+      },
+      "subSigningKey": {
+        "type": "string"
+      },
+      "tgLoginEnable": {
+        "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.\nTgLoginEnable asks admins with a linked Telegram chat for a one-time code\nafter the password, while the Telegram bot is running.",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "backupPassphrase",
+      "captchaEnable",
+      "hasBackupPassphrase",
+      "newLocationAlert",
+      "subSigningEnable",
+      "subSigningKey",
+      "tgLoginEnable"
     ],
     "type": "object"
   },
@@ -6597,6 +6987,25 @@ export const SCHEMAS: Record<string, unknown> = {
       "balances",
       "entries",
       "referralCode"
+    ],
+    "type": "object"
+  },
+  "SignedSubLink": {
+    "description": "SignedSubLink is a subscription URL carrying its signature. ExpiresAt is unix\nms, 0 for a link that never expires.",
+    "properties": {
+      "expiresAt": {
+        "example": 1792411200000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "url": {
+        "example": "https://sub.example.com:2096/sub/Ab3dE5gH9k?exp=1792411200\u0026sig=Zk3Wq1",
+        "type": "string"
+      }
+    },
+    "required": [
+      "expiresAt",
+      "url"
     ],
     "type": "object"
   },

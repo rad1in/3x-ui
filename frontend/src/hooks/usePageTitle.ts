@@ -19,6 +19,7 @@ const TITLE_KEYS: Record<string, string> = {
   '/audit': 'menu.audit',
   '/admins': 'menu.admins',
   '/sessions': 'menu.sessions',
+  '/reseller': 'menu.reseller',
   '/panels': 'menu.panels',
 };
 

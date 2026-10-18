@@ -190,6 +190,31 @@ func TestWeeklySummaryIsFormattedForPush(t *testing.T) {
 	}
 }
 
+// A reseller running out of credit is worth a high-priority push with the numbers in the body.
+func TestResellerCreditAlertIsFormattedForPush(t *testing.T) {
+	msg, ok := Format(eventbus.Event{Type: eventbus.EventResellerCreditLow, Source: "shop", Data: &eventbus.ResellerCreditData{
+		Username: "shop", Balance: 950, Threshold: 1000,
+	}}, "h")
+	if !ok || msg.Title != "[h] Reseller credit is low" || msg.Priority != 4 {
+		t.Fatalf("msg = %+v ok=%v", msg, ok)
+	}
+	if want := "Reseller shop is low on credit: 950 left, alert level 1000"; msg.Body != want {
+		t.Fatalf("body = %q, want %q", msg.Body, want)
+	}
+}
+
+func TestNewLoginLocationIsFormattedForPush(t *testing.T) {
+	msg, ok := Format(eventbus.Event{Type: eventbus.EventLoginNewLocation, Source: "root", Data: &eventbus.NewLoginLocationData{
+		Username: "root", IP: "198.51.100.9", Country: "BR", NewCountry: true,
+	}}, "h")
+	if !ok || msg.Title != "[h] New login location" {
+		t.Fatalf("msg = %+v ok=%v", msg, ok)
+	}
+	if want := "root signed in from a new country: 198.51.100.9 (BR)"; msg.Body != want {
+		t.Fatalf("body = %q, want %q", msg.Body, want)
+	}
+}
+
 // The test button reports the provider's refusal and works while the channel is switched off.
 func TestTestReportsProviderErrorAndIgnoresEnabled(t *testing.T) {
 	ok := &recorder{}

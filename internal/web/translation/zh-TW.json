@@ -149,6 +149,7 @@
     "audit": "操作日誌",
     "admins": "管理員",
     "sessions": "工作階段",
+    "reseller": "分銷商",
     "sales": "銷售",
     "hosts": "主機",
     "docs": "文件",
@@ -163,12 +164,22 @@
       "hello": "你好",
       "title": "歡迎",
       "loginAgain": "登入時效已過，請重新登入",
+      "captcha": "安全驗證",
+      "captchaPlaceholder": "算式的答案",
+      "captchaRefresh": "換一張圖片",
+      "tgCode": "Telegram 驗證碼",
+      "tgCodePlaceholder": "來自 Telegram 的 6 位驗證碼",
+      "tgCodeMessage": "你的面板登入驗證碼：",
       "toasts": {
         "invalidFormData": "資料格式錯誤",
         "emptyUsername": "請輸入使用者名稱",
         "emptyPassword": "請輸入密碼",
         "wrongUsernameOrPassword": "用戶名、密碼或雙重驗證碼無效。",
-        "successLogin": "您已成功登入您的帳戶。"
+        "successLogin": "您已成功登入您的帳戶。",
+        "wrongCaptcha": "安全驗證的答案不正確。",
+        "tgCodeSent": "登入驗證碼已傳送到你的 Telegram。",
+        "tgCodeWait": "剛剛已傳送過驗證碼，請稍後再試。",
+        "tgCodeWrong": "Telegram 驗證碼錯誤或已過期。"
       }
     },
     "index": {
@@ -325,6 +336,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "保留本機設定",
+      "importPassphrase": "備份口令（僅用於加密備份）",
       "importKeepHostSettingsDesc": "保留本面板的監聽位址、連接埠、基礎路徑、憑證與節點身分，而不是使用上傳檔案中的值。",
       "hosted": {
         "title": "你的方案",
@@ -916,6 +928,14 @@
       "subIdDesc": "同時作為此用戶端的 Telegram 機器人邀請碼：任何人將其傳送給機器人即會綁定到此用戶端。請保持足夠長且隨機——過短或容易猜到的 ID 可能被他人搶先綁定。",
       "shortLinkNone": "尚無短連結",
       "shortLinkCreate": "建立短連結",
+      "signedLinkNone": "尚無簽章連結",
+      "signedLinkCreate": "產生簽章連結",
+      "signedExpires": "{date} 到期",
+      "signedTtl1h": "1 小時",
+      "signedTtl1d": "1 天",
+      "signedTtl7d": "7 天",
+      "signedTtl30d": "30 天",
+      "signedTtlNever": "永不過期",
       "shortLinkRevoke": "撤銷短連結",
       "shortLinkRevokeConfirm": "撤銷此短連結？正在使用它的應用將無法更新；新建立的短連結位址會不同。",
       "shortLinkRevoked": "短連結已撤銷",
@@ -1635,6 +1655,23 @@
         "twoFactorModalSetSuccess": "雙重身份驗證已成功建立",
         "twoFactorModalDeleteSuccess": "雙重身份驗證已成功刪除",
         "twoFactorModalError": "驗證碼錯誤",
+        "extra": {
+          "tab": "額外防護",
+          "captcha": "登入驗證碼",
+          "captchaDesc": "在檢查密碼之前，先出一道由面板自己繪製成圖片的簡單算術題，不會向任何第三方傳送資料。",
+          "newLocation": "新登入位置提醒",
+          "newLocationDesc": "管理員從未見過的位址或國家登入時，透過通知管道發出提醒。首次登入只用於記錄。辨識國家需要 Xray 資料夾中的 geoip.dat。",
+          "backupPassphrase": "備份加密口令",
+          "backupPassphraseDesc": "排程備份、下載的備份以及傳送到 Telegram 或 Discord 的備份，都會用此口令以 AES-256-GCM 加密，並帶 .enc 後綴。請妥善保管：沒有口令無法還原備份。留空則不加密。",
+          "backupPassphraseSet": "已設定口令；輸入新口令可取代",
+          "backupPassphraseClear": "移除口令",
+          "subSigning": "簽章訂閱連結",
+          "subSigningDesc": "訂閱伺服器只回應帶有效簽章的連結，一般連結會回傳 404。現有連結將失效，請在每位客戶的資訊視窗重新產生。連結可設定到期時間。",
+          "subSigningRotate": "輪替簽章金鑰（使所有已簽發的連結失效）",
+          "tgLogin": "Telegram 登入驗證碼",
+          "tgLoginDesc": "對已綁定 Telegram 聊天的管理員，在輸入密碼後要求輸入由機器人傳送的一次性驗證碼。Telegram 機器人未執行時會略過此步驟，避免機器人故障把你鎖在門外。未綁定聊天的管理員不受影響。",
+          "saved": "安全設定已儲存"
+        },
         "show": "顯示",
         "hide": "隱藏",
         "apiTokenNew": "新增令牌",
@@ -1996,6 +2033,8 @@
       "eventClientQuotaWarning": "流量預警",
       "eventClientExpiryWarning": "到期預警",
       "eventWeeklyReport": "每週摘要",
+      "eventResellerCreditLow": "分銷商額度不足",
+      "eventLoginNewLocation": "管理員從新位置登入",
       "testDiscordDesc": "傳送測試通知以驗證您的機器人權杖與頻道 ID",
       "discordNotInitialized": "Discord 服務未初始化",
       "discordBotNotEnabled": "Discord 機器人未啟用",
@@ -2795,6 +2834,28 @@
       "you": "你",
       "passwordKeep": "留空以保留目前的密碼。",
       "selfNote": "你無法修改自己的角色或存取範圍。",
+      "tgChatId": "Telegram 聊天 ID",
+      "tgChatIdHint": "選填。開啟 Telegram 登入驗證碼後，接收此管理員登入驗證碼的聊天。向機器人傳送 /id 可查到。0 表示未設定。",
+      "transfer": {
+        "title": "轉移客戶",
+        "action": "轉移客戶",
+        "hint": "把客戶從此操作員轉移給另一位操作員。此操作員群組中的客戶加入目標群組；此操作員入站上的客戶會附加到目標的入站，並從此操作員的入站上移除。",
+        "target": "轉移給",
+        "group": "目標群組",
+        "groupHint": "當客戶在此操作員的群組中且目標有多個群組時需要選擇。",
+        "emails": "僅這些客戶",
+        "emailsHint": "留空則轉移此操作員可見的全部客戶。電子郵件之間以逗號或空格分隔。",
+        "submit": "轉移",
+        "errTarget": "請選擇接收客戶的操作員。",
+        "moved": "已轉移 {count} 個客戶",
+        "reasons": {
+          "not_source_client": "不是此操作員的客戶",
+          "shared_inbound": "位於兩位操作員共用的入站上",
+          "no_target_inbound": "目標沒有入站",
+          "needs_group": "請選擇目標的一個群組",
+          "failed": "無法轉移"
+        }
+      },
       "deleteConfirm": "刪除此管理員？其工作階段將立即結束。",
       "errUsername": "請輸入不超過 64 個字元的使用者名稱。",
       "errPassword": "請輸入密碼。",
@@ -2803,6 +2864,57 @@
       "toasts": {
         "saved": "管理員已儲存",
         "deleted": "管理員已刪除"
+      }
+    },
+    "reseller": {
+      "title": "分銷商額度",
+      "mine": "我的額度",
+      "hint": "分銷商建立或續期客戶時，會依其價格表扣除額度。可在此為其儲值並查看銷售情況。",
+      "hintSelf": "建立或續期客戶時，會依您的價格表扣除額度。",
+      "credit": "額度",
+      "pricePerGb": "每 GB 價格",
+      "pricePerDay": "每天價格",
+      "manage": "管理",
+      "topupTitle": "增加或扣減額度",
+      "amountHint": "金額（負數為扣減）",
+      "note": "備註",
+      "topup": "套用",
+      "pricesTitle": "價格表",
+      "wholesale": "批發價格表",
+      "wholesaleHint": "沒有自訂價格的分銷商依此價格表計費。額度是面板自己的單位；設定提醒線，可在分銷商額度不足時收到通知（0 = 關閉）。",
+      "lowCredit": "低於此值時提醒",
+      "priceFallback": "價格留空則沿用面板價格表。",
+      "ranges": {
+        "all": "全部時間",
+        "7": "7 天",
+        "30": "30 天",
+        "90": "90 天"
+      },
+      "report": {
+        "reseller": "分銷商",
+        "created": "新建",
+        "renewed": "續期",
+        "spent": "已消耗",
+        "traffic": "售出流量",
+        "days": "售出天數",
+        "toppedUp": "已儲值額度"
+      },
+      "ledger": {
+        "title": "額度記錄",
+        "time": "時間",
+        "kind": "類型",
+        "amount": "金額",
+        "client": "客戶"
+      },
+      "kinds": {
+        "topup": "儲值",
+        "create": "新客戶",
+        "renew": "續期"
+      },
+      "toasts": {
+        "toppedUp": "額度已更新",
+        "pricesSaved": "價格表已儲存",
+        "configSaved": "價格表已儲存"
       }
     },
     "sales": {

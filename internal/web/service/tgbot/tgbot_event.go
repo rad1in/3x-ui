@@ -220,5 +220,11 @@ func (t *Tgbot) formatEventMessage(e eventbus.Event) string {
 		return header + t.I18nBot("tgbot.messages.eventLoginFallback", "Source=="+e.Source)
 	}
 
+	if title, lines, ok := eventbus.PlainText(e); ok {
+		for i := range lines {
+			lines[i] = html.EscapeString(lines[i])
+		}
+		return header + "<b>" + html.EscapeString(title) + "</b>\n" + strings.Join(lines, "\n")
+	}
 	return ""
 }

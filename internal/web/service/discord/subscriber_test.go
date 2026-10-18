@@ -541,3 +541,17 @@ func TestFormatEmbed_ClientWarnings(t *testing.T) {
 		t.Fatal("a warning without client data must not produce an embed")
 	}
 }
+
+func TestResellerCreditAlertBecomesAnEmbed(t *testing.T) {
+	settingService := setupTestDB(t)
+	sub := NewSubscriber(settingService, NewDiscordService(settingService))
+
+	embed, ok := sub.FormatEmbed(eventbus.Event{
+		Type: eventbus.EventResellerCreditLow, Source: "shop",
+		Data: &eventbus.ResellerCreditData{Username: "shop", Balance: 950, Threshold: 1000},
+	})
+	if !ok || embed.Color != ColorOrange || embed.Title != "Reseller credit is low" ||
+		embed.Description != "Reseller shop is low on credit: 950 left, alert level 1000" {
+		t.Fatalf("embed = %+v, ok = %v", embed, ok)
+	}
+}

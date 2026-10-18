@@ -23,6 +23,22 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
+func TestResellerCreditAlertMailEscapesTheUsername(t *testing.T) {
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	sub := NewSubscriber(service.SettingService{}, nil)
+	subject, body := sub.formatMessage(eventbus.Event{
+		Type:   eventbus.EventResellerCreditLow,
+		Source: "<i>shop</i>",
+		Data:   &eventbus.ResellerCreditData{Username: "<i>shop</i>", Balance: 950, Threshold: 1000},
+	})
+	if !strings.HasSuffix(subject, " Reseller credit is low") {
+		t.Fatalf("subject = %q", subject)
+	}
+	if strings.Contains(body, "<i>shop</i>") || !strings.Contains(body, "Reseller &lt;i&gt;shop&lt;/i&gt; is low on credit: 950 left, alert level 1000") {
+		t.Fatalf("body does not carry the escaped alert:\n%s", body)
+	}
+}
+
 // Client emails are admin-typed text going into an HTML body.
 func TestClientWarningMailEscapesTheEmail(t *testing.T) {
 	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))

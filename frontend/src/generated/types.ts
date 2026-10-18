@@ -13,15 +13,20 @@ export interface AdminInput {
   inboundIds: number[];
   password: string;
   role: string;
+  tgChatId: number;
   username: string;
 }
 
 export interface AdminView {
   createdAt: number;
+  credit: number;
   groups: string[];
   id: number;
   inboundIds: number[];
+  pricePerDay?: number | null;
+  pricePerGb?: number | null;
   role: string;
+  tgChatId: number;
   username: string;
 }
 
@@ -730,6 +735,23 @@ export interface ClientTraffic {
   uuid: string;
 }
 
+export interface ClientTransferRequest {
+  emails: string[];
+  fromAdminId: number;
+  group: string;
+  toAdminId: number;
+}
+
+export interface ClientTransferResult {
+  moved: string[];
+  skipped: ClientTransferSkip[];
+}
+
+export interface ClientTransferSkip {
+  email: string;
+  reason: string;
+}
+
 export interface ClientsSummary {
   active: number;
   deactive: string[];
@@ -1374,6 +1396,52 @@ export interface ReferralConfig {
   enabled: boolean;
 }
 
+export interface ResellerAccount {
+  balance: number;
+  entries: ResellerEntry[];
+  prices: ResellerPrices;
+  userId: number;
+}
+
+export interface ResellerConfig {
+  lowCredit: number;
+  pricePerDay: number;
+  pricePerGb: number;
+}
+
+export interface ResellerEntry {
+  amount: number;
+  bytes: number;
+  clientEmail: string;
+  createdAt: number;
+  days: number;
+  id: number;
+  kind: string;
+  note: string;
+  userId: number;
+}
+
+export interface ResellerPrices {
+  pricePerDay: number;
+  pricePerGb: number;
+}
+
+export interface ResellerReport {
+  rows: ResellerReportRow[];
+}
+
+export interface ResellerReportRow {
+  balance: number;
+  bytes: number;
+  created: number;
+  days: number;
+  renewed: number;
+  spent: number;
+  toppedUp: number;
+  userId: number;
+  username: string;
+}
+
 export interface SalesConfig {
   card: CardPayConfig;
   clearSecrets?: string[];
@@ -1400,6 +1468,29 @@ export interface SalesConfigView {
   referral: ReferralConfig;
   walletEnabled: boolean;
   zarinpal: ZarinpalConfig;
+}
+
+export interface SecurityConfig {
+  backupPassphrase: string;
+  captchaEnable: boolean;
+  clearBackupPassphrase?: boolean;
+  newLocationAlert: boolean;
+  rotateSubSigningKey?: boolean;
+  subSigningEnable: boolean;
+  subSigningKey: string;
+  tgLoginEnable: boolean;
+}
+
+export interface SecurityConfigView {
+  backupPassphrase: string;
+  captchaEnable: boolean;
+  clearBackupPassphrase?: boolean;
+  hasBackupPassphrase: boolean;
+  newLocationAlert: boolean;
+  rotateSubSigningKey?: boolean;
+  subSigningEnable: boolean;
+  subSigningKey: string;
+  tgLoginEnable: boolean;
 }
 
 export interface ServerSettings {
@@ -1498,6 +1589,11 @@ export interface ShopWallet {
   balances: WalletBalance[];
   entries: WalletEntry[];
   referralCode: string;
+}
+
+export interface SignedSubLink {
+  expiresAt: number;
+  url: string;
 }
 
 export interface Sponsor {

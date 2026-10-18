@@ -149,6 +149,7 @@
     "audit": "操作ログ",
     "admins": "管理者",
     "sessions": "セッション",
+    "reseller": "リセラー",
     "sales": "販売",
     "hosts": "ホスト",
     "docs": "ドキュメント",
@@ -163,12 +164,22 @@
       "hello": "こんにちは",
       "title": "ようこそ",
       "loginAgain": "ログインセッションが切れました。再度ログインしてください。",
+      "captcha": "セキュリティチェック",
+      "captchaPlaceholder": "計算の答え",
+      "captchaRefresh": "別の画像を表示",
+      "tgCode": "Telegramコード",
+      "tgCodePlaceholder": "Telegramの6桁コード",
+      "tgCodeMessage": "パネルのログインコード:",
       "toasts": {
         "invalidFormData": "データ形式エラー",
         "emptyUsername": "ユーザー名を入力してください",
         "emptyPassword": "パスワードを入力してください",
         "wrongUsernameOrPassword": "ユーザー名、パスワード、または二段階認証コードが無効です。",
-        "successLogin": "アカウントに正常にログインしました。"
+        "successLogin": "アカウントに正常にログインしました。",
+        "wrongCaptcha": "セキュリティチェックの答えが違います。",
+        "tgCodeSent": "ログインコードをTelegramに送信しました。",
+        "tgCodeWait": "少し前にコードを送信しました。再要求の前にお待ちください。",
+        "tgCodeWrong": "Telegramコードが違うか、期限切れです。"
       }
     },
     "index": {
@@ -325,6 +336,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "このマシンの設定を保持する",
+      "importPassphrase": "バックアップのパスフレーズ（暗号化バックアップの場合のみ）",
       "importKeepHostSettingsDesc": "アップロードしたファイルの値ではなく、このパネルのリッスンアドレス、ポート、ベースパス、証明書、ノード ID を保持します。",
       "hosted": {
         "title": "ご契約プラン",
@@ -916,6 +928,14 @@
       "subIdDesc": "このクライアントの Telegram ボット招待コードとしても使われます。ボットに送信した人がこのクライアントに紐付けられます。長くランダムな値にしてください。短い、または推測しやすい ID は他人に取得されるおそれがあります。",
       "shortLinkNone": "短縮リンクはまだありません",
       "shortLinkCreate": "短縮リンクを作成",
+      "signedLinkNone": "署名付きリンクはまだありません",
+      "signedLinkCreate": "署名付きリンクを作成",
+      "signedExpires": "有効期限 {date}",
+      "signedTtl1h": "1時間",
+      "signedTtl1d": "1日",
+      "signedTtl7d": "7日",
+      "signedTtl30d": "30日",
+      "signedTtlNever": "無期限",
       "shortLinkRevoke": "短縮リンクを取り消す",
       "shortLinkRevokeConfirm": "この短縮リンクを取り消しますか？使用中のアプリは更新できなくなり、新しいリンクは別のアドレスになります。",
       "shortLinkRevoked": "短縮リンクを取り消しました",
@@ -1635,6 +1655,23 @@
         "twoFactorModalSetSuccess": "二要素認証が正常に設定されました",
         "twoFactorModalDeleteSuccess": "二要素認証が正常に削除されました",
         "twoFactorModalError": "コードが間違っています",
+        "extra": {
+          "tab": "追加の保護",
+          "captcha": "ログインCAPTCHA",
+          "captchaDesc": "パスワードを確認する前に、パネル自身が画像として描く簡単な計算を出題します。外部サービスには何も送信されません。",
+          "newLocation": "新しいログイン場所の通知",
+          "newLocationDesc": "管理者がこれまでにないアドレスや国からサインインしたとき、通知チャネルでアラートを送ります。最初のサインインは学習のみです。国の判定にはXrayフォルダのgeoip.datが必要です。",
+          "backupPassphrase": "バックアップ暗号化パスフレーズ",
+          "backupPassphraseDesc": "スケジュールバックアップ、ダウンロードしたバックアップ、TelegramやDiscordに送るバックアップは、このパスフレーズでAES-256-GCM暗号化され、拡張子.encが付きます。紛失するとバックアップを復元できません。空欄なら暗号化しません。",
+          "backupPassphraseSet": "パスフレーズは設定済みです。置き換えるには新しいものを入力してください",
+          "backupPassphraseClear": "パスフレーズを削除",
+          "subSigning": "署名付きサブスクリプションリンク",
+          "subSigningDesc": "有効な署名のあるリンクだけにサブスクリプションサーバーが応答し、通常のリンクは404になります。既存のリンクは使えなくなるため、各クライアントの情報画面で新しく発行してください。リンクには有効期限を付けられます。",
+          "subSigningRotate": "署名キーをローテーション（発行済みのリンクがすべて無効になります）",
+          "tgLogin": "Telegramログインコード",
+          "tgLoginDesc": "Telegramチャットを紐付けた管理者に、パスワードの後でボットが送るワンタイムコードを求めます。Telegramボットが動いていない間は省略されるため、ボットの不具合で締め出されることはありません。チャット未設定の管理者は対象外です。",
+          "saved": "セキュリティ設定を保存しました"
+        },
         "show": "表示",
         "hide": "非表示",
         "apiTokenNew": "新規トークン",
@@ -1996,6 +2033,8 @@
       "eventClientQuotaWarning": "通信量の警告",
       "eventClientExpiryWarning": "期限の警告",
       "eventWeeklyReport": "週次サマリー",
+      "eventResellerCreditLow": "リセラーのクレジット残高が少ない",
+      "eventLoginNewLocation": "管理者が新しい場所からログイン",
       "testDiscordDesc": "BotトークンとチャンネルIDを確認するためのテスト通知を送信します",
       "discordNotInitialized": "Discord サービスが初期化されていません",
       "discordBotNotEnabled": "Discord ボットが有効になっていません",
@@ -2795,6 +2834,28 @@
       "you": "あなた",
       "passwordKeep": "現在のパスワードを維持する場合は空欄のままにします。",
       "selfNote": "自分のロールやアクセス範囲は変更できません。",
+      "tgChatId": "TelegramチャットID",
+      "tgChatIdHint": "任意。Telegramログインコードが有効なときに、この管理者のログインコードを受け取るチャットです。ボットに /id を送ると確認できます。0は未設定です。",
+      "transfer": {
+        "title": "クライアントを移管",
+        "action": "クライアントを移管",
+        "hint": "このオペレーターのクライアントを別のオペレーターへ移します。このオペレーターのグループにいるクライアントは移管先のグループに入り、このオペレーターのインバウンド上のクライアントは移管先のインバウンドに接続され、元のインバウンドからは外されます。",
+        "target": "移管先",
+        "group": "移管先のグループ",
+        "groupHint": "クライアントがこのオペレーターのグループにいて、移管先に複数のグループがある場合に必要です。",
+        "emails": "これらのクライアントのみ",
+        "emailsHint": "空欄にすると、このオペレーターに見えるすべてのクライアントを移します。メールアドレスはカンマまたはスペースで区切ります。",
+        "submit": "移管",
+        "errTarget": "クライアントの移管先オペレーターを選択してください。",
+        "moved": "{count} 件のクライアントを移管しました",
+        "reasons": {
+          "not_source_client": "このオペレーターのクライアントではありません",
+          "shared_inbound": "両方のオペレーターが共有するインバウンド上にあります",
+          "no_target_inbound": "移管先にインバウンドがありません",
+          "needs_group": "移管先のグループを選択してください",
+          "failed": "移管できませんでした"
+        }
+      },
       "deleteConfirm": "この管理者を削除しますか？すぐにログアウトされます。",
       "errUsername": "64 文字以内のユーザー名を入力してください。",
       "errPassword": "パスワードを入力してください。",
@@ -2803,6 +2864,57 @@
       "toasts": {
         "saved": "管理者を保存しました",
         "deleted": "管理者を削除しました"
+      }
+    },
+    "reseller": {
+      "title": "リセラーのクレジット",
+      "mine": "自分のクレジット",
+      "hint": "リセラーがクライアントを作成または更新すると、価格表に従ってクレジットが引き落とされます。クレジットをチャージし、販売状況を確認できます。",
+      "hintSelf": "クライアントを作成または更新すると、価格表に従ってクレジットが引き落とされます。",
+      "credit": "クレジット",
+      "pricePerGb": "GBあたりの価格",
+      "pricePerDay": "1日あたりの価格",
+      "manage": "管理",
+      "topupTitle": "クレジットの追加・減算",
+      "amountHint": "金額（負の値で減算）",
+      "note": "メモ",
+      "topup": "適用",
+      "pricesTitle": "価格表",
+      "wholesale": "卸価格表",
+      "wholesaleHint": "独自の価格を持たないリセラーにはこの価格表が適用されます。クレジットはパネル独自の単位です。警告レベルを設定すると、残高が少なくなったときに通知されます（0 = 無効）。",
+      "lowCredit": "この値を下回ったら警告",
+      "priceFallback": "価格を空欄にするとパネルの価格表に従います。",
+      "ranges": {
+        "all": "全期間",
+        "7": "7日間",
+        "30": "30日間",
+        "90": "90日間"
+      },
+      "report": {
+        "reseller": "リセラー",
+        "created": "作成数",
+        "renewed": "更新数",
+        "spent": "使用額",
+        "traffic": "販売トラフィック",
+        "days": "販売日数",
+        "toppedUp": "追加クレジット"
+      },
+      "ledger": {
+        "title": "クレジット履歴",
+        "time": "日時",
+        "kind": "種類",
+        "amount": "金額",
+        "client": "クライアント"
+      },
+      "kinds": {
+        "topup": "チャージ",
+        "create": "新規クライアント",
+        "renew": "更新"
+      },
+      "toasts": {
+        "toppedUp": "クレジットを更新しました",
+        "pricesSaved": "価格表を保存しました",
+        "configSaved": "卸価格表を保存しました"
       }
     },
     "sales": {

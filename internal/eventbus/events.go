@@ -41,7 +41,31 @@ const (
 
 	// Weekly summary; Data is a *WeeklySummaryData.
 	EventWeeklyReport EventType = "report.weekly"
+
+	// A reseller's credit fell below the alert threshold; Source is the
+	// reseller's username, Data a *ResellerCreditData.
+	EventResellerCreditLow EventType = "reseller.credit_low"
+
+	// An admin signed in from an address or country not seen before; Source is
+	// the username, Data a *NewLoginLocationData.
+	EventLoginNewLocation EventType = "login.new_location"
 )
+
+// NewLoginLocationData describes a sign-in from an unfamiliar place. Country is
+// empty when no geoip database could place the address.
+type NewLoginLocationData struct {
+	Username   string `json:"username"`
+	IP         string `json:"ip"`
+	Country    string `json:"country"`
+	NewCountry bool   `json:"newCountry"`
+}
+
+// ResellerCreditData is a reseller's credit when it dropped below Threshold.
+type ResellerCreditData struct {
+	Username  string `json:"username"`
+	Balance   int64  `json:"balance"`
+	Threshold int64  `json:"threshold"`
+}
 
 // TopUser is one client's traffic over the report window.
 type TopUser struct {

@@ -149,6 +149,7 @@
     "audit": "Actividad",
     "admins": "Administradores",
     "sessions": "Sesiones",
+    "reseller": "Revendedores",
     "sales": "Ventas",
     "hosts": "Hosts",
     "docs": "Documentación",
@@ -163,12 +164,22 @@
       "hello": "Hola",
       "title": "Bienvenido",
       "loginAgain": "El límite de tiempo de inicio de sesión ha expirado. Por favor, inicia sesión nuevamente.",
+      "captcha": "Comprobación de seguridad",
+      "captchaPlaceholder": "Resultado de la suma",
+      "captchaRefresh": "Mostrar otra imagen",
+      "tgCode": "Código de Telegram",
+      "tgCodePlaceholder": "Código de 6 dígitos de Telegram",
+      "tgCodeMessage": "Tu código de acceso al panel:",
       "toasts": {
         "invalidFormData": "El formato de los datos de entrada es inválido.",
         "emptyUsername": "Por favor ingresa el nombre de usuario.",
         "emptyPassword": "Por favor ingresa la contraseña.",
         "wrongUsernameOrPassword": "Nombre de usuario, contraseña o código de dos factores incorrecto.",
-        "successLogin": "Has iniciado sesión en tu cuenta correctamente."
+        "successLogin": "Has iniciado sesión en tu cuenta correctamente.",
+        "wrongCaptcha": "La respuesta de la comprobación de seguridad es incorrecta.",
+        "tgCodeSent": "Se envió un código de acceso a tu Telegram.",
+        "tgCodeWait": "Se envió un código hace un momento, espera antes de pedir otro.",
+        "tgCodeWrong": "El código de Telegram es incorrecto o ha caducado."
       }
     },
     "index": {
@@ -325,6 +336,7 @@
       "accessBlocked": "BLOCKED",
       "accessProxy": "PROXY",
       "importKeepHostSettings": "Mantener la configuración de esta máquina",
+      "importPassphrase": "Frase de contraseña de la copia (solo si está cifrada)",
       "importKeepHostSettingsDesc": "Conserva las direcciones de escucha, los puertos, la ruta base, los certificados y la identidad de nodo de este panel en lugar de tomarlos del archivo subido.",
       "hosted": {
         "title": "Tu plan",
@@ -916,6 +928,14 @@
       "subIdDesc": "También sirve como código de invitación de este cliente en el bot de Telegram: quien lo envíe al bot queda vinculado a este cliente. Mantenlo largo y aleatorio: un ID corto o fácil de adivinar puede ser reclamado por otra persona.",
       "shortLinkNone": "Aún no hay enlace corto",
       "shortLinkCreate": "Crear enlace corto",
+      "signedLinkNone": "Aún no hay enlace firmado",
+      "signedLinkCreate": "Crear enlace firmado",
+      "signedExpires": "Caduca {date}",
+      "signedTtl1h": "1 hora",
+      "signedTtl1d": "1 día",
+      "signedTtl7d": "7 días",
+      "signedTtl30d": "30 días",
+      "signedTtlNever": "Nunca",
       "shortLinkRevoke": "Revocar enlace corto",
       "shortLinkRevokeConfirm": "¿Revocar este enlace corto? Las apps que lo usan dejarán de actualizarse; uno nuevo tendrá otra dirección.",
       "shortLinkRevoked": "Enlace corto revocado",
@@ -1635,6 +1655,23 @@
         "twoFactorModalSetSuccess": "La autenticación de dos factores se ha establecido con éxito",
         "twoFactorModalDeleteSuccess": "La autenticación de dos factores se ha eliminado con éxito",
         "twoFactorModalError": "Código incorrecto",
+        "extra": {
+          "tab": "Protección extra",
+          "captcha": "Captcha de inicio de sesión",
+          "captchaDesc": "Pide resolver una operación sencilla, dibujada como imagen por el propio panel, antes de comprobar la contraseña. No se envía nada a terceros.",
+          "newLocation": "Alerta de nueva ubicación de acceso",
+          "newLocationDesc": "Envía una alerta por los canales de notificación cuando un administrador entra desde una dirección o país no visto antes. El primer acceso solo sirve para aprender. Los países requieren un geoip.dat en la carpeta de Xray.",
+          "backupPassphrase": "Frase de cifrado de copias de seguridad",
+          "backupPassphraseDesc": "Las copias programadas, las descargadas y las enviadas a Telegram o Discord se cifran con AES-256-GCM bajo esta frase y llevan el sufijo .enc. Guárdala bien: sin ella no se puede restaurar. Déjala vacía para copias sin cifrar.",
+          "backupPassphraseSet": "Hay una frase configurada; escribe otra para reemplazarla",
+          "backupPassphraseClear": "Quitar la frase",
+          "subSigning": "Enlaces de suscripción firmados",
+          "subSigningDesc": "El servidor de suscripción solo responde a enlaces con firma válida; los enlaces simples reciben 404. Los enlaces actuales dejan de funcionar, así que genera otros desde la ventana de cada cliente. Un enlace puede caducar.",
+          "subSigningRotate": "Rotar la clave de firma (invalida todos los enlaces emitidos)",
+          "tgLogin": "Código de acceso por Telegram",
+          "tgLoginDesc": "Pide a los administradores con un chat de Telegram vinculado un código de un solo uso, enviado por el bot, tras la contraseña. Se omite mientras el bot no esté en marcha, para que un bot averiado nunca te deje fuera. Los administradores sin chat vinculado no lo reciben.",
+          "saved": "Ajustes de seguridad guardados"
+        },
         "show": "Mostrar",
         "hide": "Ocultar",
         "apiTokenNew": "Nuevo token",
@@ -1996,6 +2033,8 @@
       "eventClientQuotaWarning": "Aviso de cuota",
       "eventClientExpiryWarning": "Aviso de vencimiento",
       "eventWeeklyReport": "Resumen semanal",
+      "eventResellerCreditLow": "Crédito de revendedor bajo",
+      "eventLoginNewLocation": "Acceso de administrador desde un lugar nuevo",
       "testDiscordDesc": "Enviar una notificación de prueba para verificar el token del bot y el ID del canal",
       "discordNotInitialized": "Servicio de Discord no inicializado",
       "discordBotNotEnabled": "El bot de Discord no está habilitado",
@@ -2795,6 +2834,28 @@
       "you": "tú",
       "passwordKeep": "Déjalo vacío para conservar la contraseña actual.",
       "selfNote": "No puedes cambiar tu propio rol ni tu acceso.",
+      "tgChatId": "ID del chat de Telegram",
+      "tgChatIdHint": "Opcional. El chat que recibe los códigos de acceso de este administrador cuando el código por Telegram está activo. Envía /id al bot para averiguarlo. 0 significa ninguno.",
+      "transfer": {
+        "title": "Transferir clientes",
+        "action": "Transferir clientes",
+        "hint": "Mueve clientes de este operador a otro. Los clientes de los grupos de este operador pasan al grupo del destino; los de sus entradas se asocian a las entradas del destino y se desvinculan de las de este operador.",
+        "target": "Mover a",
+        "group": "Grupo de destino",
+        "groupHint": "Necesario cuando los clientes están en grupos de este operador y el destino tiene más de un grupo.",
+        "emails": "Solo estos clientes",
+        "emailsHint": "Déjalo vacío para mover todos los clientes que ve este operador. Separa los correos con coma o espacio.",
+        "submit": "Transferir",
+        "errTarget": "Elige el operador al que mover los clientes.",
+        "moved": "{count} clientes movidos",
+        "reasons": {
+          "not_source_client": "No es cliente de este operador",
+          "shared_inbound": "Está en una entrada que comparten ambos operadores",
+          "no_target_inbound": "El destino no tiene entradas",
+          "needs_group": "Elige uno de los grupos del destino",
+          "failed": "No se pudo mover"
+        }
+      },
       "deleteConfirm": "¿Eliminar este administrador? Su sesión se cierra al instante.",
       "errUsername": "Introduce un nombre de usuario de 64 caracteres como máximo.",
       "errPassword": "Introduce una contraseña.",
@@ -2803,6 +2864,57 @@
       "toasts": {
         "saved": "Administrador guardado",
         "deleted": "Administrador eliminado"
+      }
+    },
+    "reseller": {
+      "title": "Crédito de revendedores",
+      "mine": "Mi crédito",
+      "hint": "A los revendedores se les descuenta según su lista de precios cuando crean o renuevan clientes. Recarga su crédito y sigue sus ventas.",
+      "hintSelf": "Se te descuenta según tu lista de precios cuando creas o renuevas clientes.",
+      "credit": "Crédito",
+      "pricePerGb": "Precio por GB",
+      "pricePerDay": "Precio por día",
+      "manage": "Gestionar",
+      "topupTitle": "Añadir o quitar crédito",
+      "amountHint": "Importe (negativo resta)",
+      "note": "Nota",
+      "topup": "Aplicar",
+      "pricesTitle": "Lista de precios",
+      "wholesale": "Lista de precios mayorista",
+      "wholesaleHint": "Los revendedores sin precios propios se facturan con esta lista. El crédito es la unidad propia del panel; fija el nivel de alerta para saber cuándo un revendedor se queda corto (0 = desactivado).",
+      "lowCredit": "Alertar por debajo de",
+      "priceFallback": "Deja un precio vacío para seguir la lista de precios del panel.",
+      "ranges": {
+        "all": "Todo el tiempo",
+        "7": "7 días",
+        "30": "30 días",
+        "90": "90 días"
+      },
+      "report": {
+        "reseller": "Revendedor",
+        "created": "Creados",
+        "renewed": "Renovados",
+        "spent": "Gastado",
+        "traffic": "Tráfico vendido",
+        "days": "Días vendidos",
+        "toppedUp": "Crédito añadido"
+      },
+      "ledger": {
+        "title": "Historial de crédito",
+        "time": "Hora",
+        "kind": "Tipo",
+        "amount": "Importe",
+        "client": "Cliente"
+      },
+      "kinds": {
+        "topup": "Recarga",
+        "create": "Cliente nuevo",
+        "renew": "Renovación"
+      },
+      "toasts": {
+        "toppedUp": "Crédito actualizado",
+        "pricesSaved": "Lista de precios guardada",
+        "configSaved": "Lista de precios guardada"
       }
     },
     "sales": {
