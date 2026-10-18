@@ -2,6 +2,7 @@ package sub
 
 import (
 	"encoding/json"
+	"github.com/mhsanaei/3x-ui/v3/internal/sshtunnel"
 	"strconv"
 	"strings"
 	"testing"
@@ -156,6 +157,44 @@ func TestL2TPSubscriptionListsTheKeyAndLogin(t *testing.T) {
 		t.Fatalf("getSubs = %v, %v; an L2TP-only user must still have a subscription", subs, err)
 	}
 	want := VPNAccount{InboundId: ib.Id, Protocol: "l2tp", Remark: "Old phones", Server: "vpn.example.com", Username: "l2@e", Password: "pw-l2", PSK: "shared-key-123"}
+	if len(s.vpnAccounts) != 1 || s.vpnAccounts[0] != want {
+		t.Fatalf("accounts = %+v, want %+v", s.vpnAccounts, want)
+	}
+}
+
+// An SSH tunnel app asks for the server, port, login and, to trust the
+// server, its key fingerprint; the page lists all of them.
+func TestSSHSubscriptionListsPortLoginAndFingerprint(t *testing.T) {
+	initSubDB(t)
+	key, err := sshtunnel.NewHostKey()
+	if err != nil {
+		t.Fatal(err)
+	}
+	settings, _ := json.Marshal(map[string]any{
+		"hostKey": key,
+		"clients": []map[string]any{{"email": "s@e", "password": "pw-ssh", "subId": "SSHSUB", "enable": true}},
+	})
+	db := database.GetDB()
+	ib := &model.Inbound{UserId: 1, Tag: "ssh-2222", Enable: true, Port: 2222, Protocol: model.SSH, Remark: "Tunnel", Settings: string(settings)}
+	if err := db.Create(ib).Error; err != nil {
+		t.Fatal(err)
+	}
+	client := &model.ClientRecord{Email: "s@e", SubID: "SSHSUB", Password: "pw-ssh", Enable: true}
+	if err := db.Create(client).Error; err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Create(&model.ClientInbound{ClientId: client.Id, InboundId: ib.Id}).Error; err != nil {
+		t.Fatal(err)
+	}
+	s := &SubService{}
+	s.PrepareForRequest("vpn.example.com")
+	if subs, _, _, _, err := s.getSubs("SSHSUB"); err != nil || subs == nil {
+		t.Fatalf("getSubs = %v, %v; an SSH-only user must still have a subscription", subs, err)
+	}
+	want := VPNAccount{
+		InboundId: ib.Id, Protocol: "ssh", Remark: "Tunnel", Server: "vpn.example.com", Username: "s@e", Password: "pw-ssh",
+		Port: 2222, Fingerprint: sshtunnel.Fingerprint(key),
+	}
 	if len(s.vpnAccounts) != 1 || s.vpnAccounts[0] != want {
 		t.Fatalf("accounts = %+v, want %+v", s.vpnAccounts, want)
 	}

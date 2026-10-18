@@ -127,6 +127,7 @@
     "openvpnHint": "Impor profil ke aplikasi OpenVPN, lalu masuk dengan nama pengguna dan kata sandi di bawah. Aplikasi yang disarankan:",
     "ikev2Hint": "Di iPhone dan Mac, pasang profilnya; login Anda sudah ada di dalamnya. Di Windows, pasang sertifikat CA lalu tambahkan VPN IKEv2 dengan server, nama pengguna, dan kata sandi di bawah. Di Android, gunakan aplikasi",
     "l2tpHint": "Tambahkan VPN L2TP/IPsec (PSK) di pengaturan VPN perangkat Anda dengan server, kunci pre-shared, nama pengguna, dan kata sandi di bawah.",
+    "sshHint": "Tambahkan akun ini ke aplikasi terowongan SSH, atau jalankan ssh -N -D 1080 dengan server, port, nama pengguna, dan kata sandi di bawah. Periksa sidik jari kunci host saat pertama kali terhubung.",
     "outlineHint": "Kunci Outline: buka salah satunya di perangkat yang sudah memasang aplikasi Outline, atau salin lalu tambahkan di aplikasi. Aplikasi membaca ulang kunci, jadi perubahan server berikutnya ikut sampai."
   },
   "menu": {
@@ -794,6 +795,14 @@
           "psk": "Kunci pre-shared",
           "pskDesc": "Kunci IPsec yang diketik setiap klien di samping login-nya. Kosongkan untuk membuatnya otomatis; mengubahnya memutus semua perangkat.",
           "poolDesc": "Rentang IPv4 privat yang diberikan ke klien yang terhubung. Kosongkan untuk memilih 10.90.x.0/24 yang bebas secara otomatis."
+        },
+        "ssh": {
+          "help": "Klien masuk lewat SSH dengan email sebagai nama pengguna dan kata sandinya, lalu meneruskan port melalui server (misalnya ssh -N -D 1080). Akun tidak mendapat shell. Panel menjalankan layanan SSH sendiri untuk ini, jadi OpenSSH di host tetap bisa memakai port-nya.",
+          "banner": "Banner login",
+          "bannerDesc": "Teks yang ditampilkan ke klien sebelum masuk. Kosongkan jika tidak perlu.",
+          "allowLocal": "Izinkan tujuan lokal",
+          "allowLocalDesc": "Izinkan akun membuat terowongan ke server ini sendiri dan ke jaringan privat. Nonaktif secara bawaan agar klien tidak bisa menjangkau panel atau layanan internal.",
+          "fingerprint": "Sidik jari kunci host"
         }
       },
       "info": {

@@ -127,6 +127,7 @@
     "openvpnHint": "Importa el perfil en una app de OpenVPN y luego inicia sesión con el usuario y la contraseña de abajo. App recomendada:",
     "ikev2Hint": "En iPhone y Mac, instala el perfil; incluye tu acceso. En Windows, instala el certificado CA y añade una VPN IKEv2 con el servidor, usuario y contraseña de abajo. En Android, usa la app",
     "l2tpHint": "Añade una VPN L2TP/IPsec (PSK) en los ajustes de VPN de tu dispositivo con el servidor, la clave precompartida, el usuario y la contraseña de abajo.",
+    "sshHint": "Añade esta cuenta a una app de túnel SSH, o ejecuta ssh -N -D 1080 con el servidor, el puerto, el usuario y la contraseña de abajo. Comprueba la huella de la clave del host la primera vez que te conectes.",
     "outlineHint": "Claves de Outline: abre una en un dispositivo con la app Outline instalada, o cópiala y añádela en la app. La app vuelve a leer la clave, así que los cambios posteriores del servidor le llegan."
   },
   "menu": {
@@ -794,6 +795,14 @@
           "psk": "Clave precompartida",
           "pskDesc": "La clave IPsec que cada cliente escribe junto a su acceso. Déjala vacía para generarla; cambiarla desconecta todos los dispositivos.",
           "poolDesc": "Rango IPv4 privado asignado a los clientes conectados. Déjalo vacío para elegir automáticamente un 10.90.x.0/24 libre."
+        },
+        "ssh": {
+          "help": "Los clientes inician sesión por SSH con su email como usuario y su contraseña, y luego redirigen puertos a través del servidor (por ejemplo ssh -N -D 1080). Las cuentas no reciben shell. El panel ejecuta su propio servicio SSH para esto, así que OpenSSH en el host puede conservar su puerto.",
+          "banner": "Banner de acceso",
+          "bannerDesc": "Texto que ven los clientes antes de iniciar sesión. Déjalo vacío para no mostrar nada.",
+          "allowLocal": "Permitir destinos locales",
+          "allowLocalDesc": "Permite que las cuentas abran túneles hacia este mismo servidor y hacia redes privadas. Desactivado por defecto para que un cliente no llegue al panel ni a servicios internos.",
+          "fingerprint": "Huella de la clave del host"
         }
       },
       "info": {

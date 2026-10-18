@@ -16,6 +16,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/mtproto"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
 	"github.com/mhsanaei/3x-ui/v3/internal/sockkill"
+	"github.com/mhsanaei/3x-ui/v3/internal/sshtunnel"
 	"github.com/mhsanaei/3x-ui/v3/internal/tuic"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 )
@@ -53,6 +54,13 @@ func (l *Local) withAPI(fn func(api *xray.XrayAPI) error) error {
 }
 
 func (l *Local) AddInbound(_ context.Context, ib *model.Inbound) error {
+	if ib.Protocol == model.SSH {
+		inst, ok := sshtunnel.InstanceFromInbound(ib)
+		if !ok {
+			return nil
+		}
+		return sshtunnel.GetManager().Ensure(inst)
+	}
 	if ib.Protocol == model.L2TP {
 		inst, ok := l2tp.InstanceFromInbound(ib)
 		if !ok {
@@ -131,6 +139,10 @@ func (l *Local) AddInbound(_ context.Context, ib *model.Inbound) error {
 }
 
 func (l *Local) DelInbound(_ context.Context, ib *model.Inbound) error {
+	if ib.Protocol == model.SSH {
+		sshtunnel.GetManager().Remove(ib.Id)
+		return nil
+	}
 	if ib.Protocol == model.L2TP {
 		l2tp.GetManager().Remove(ib.Id)
 		return nil
@@ -170,6 +182,9 @@ func (l *Local) DelInbound(_ context.Context, ib *model.Inbound) error {
 }
 
 func (l *Local) UpdateInbound(ctx context.Context, oldIb, newIb *model.Inbound) error {
+	if oldIb.Protocol == model.SSH || newIb.Protocol == model.SSH {
+		return l.updateManagedInbound(ctx, model.SSH, oldIb, newIb)
+	}
 	if oldIb.Protocol == model.OpenVPN || newIb.Protocol == model.OpenVPN {
 		return l.updateOpenVPNInbound(ctx, oldIb, newIb)
 	}
@@ -256,6 +271,32 @@ func (l *Local) updateL2TPInbound(ctx context.Context, oldIb, newIb *model.Inbou
 		return nil
 	}
 	return l2tp.GetManager().Ensure(inst)
+}
+
+// updateManagedInbound applies an update to a protocol served by a panel-side
+// manager: Ensure swaps accounts in place, so a client edit does not drop
+// everyone else's connections.
+func (l *Local) updateManagedInbound(ctx context.Context, proto model.Protocol, oldIb, newIb *model.Inbound) error {
+	if oldIb.Protocol != proto || newIb.Protocol != proto {
+		_ = l.DelInbound(ctx, oldIb)
+		if !newIb.Enable {
+			return nil
+		}
+		return l.AddInbound(ctx, newIb)
+	}
+	if !newIb.Enable || !managedServesAnyone(newIb) {
+		return l.DelInbound(ctx, newIb)
+	}
+	return l.AddInbound(ctx, newIb)
+}
+
+func managedServesAnyone(ib *model.Inbound) bool {
+	switch ib.Protocol {
+	case model.SSH:
+		_, ok := sshtunnel.InstanceFromInbound(ib)
+		return ok
+	}
+	return false
 }
 
 // updateMtprotoInbound applies an inbound update without the Del+Add sequence
@@ -384,7 +425,7 @@ func (l *Local) updateTuicInbound(ctx context.Context, oldIb, newIb *model.Inbou
 // servedBySidecar: these protocols run outside Xray and take client changes by
 // re-applying the whole inbound, so Xray's per-user ops do not apply to them.
 func servedBySidecar(p model.Protocol) bool {
-	return p == model.MTProto || p == model.AmneziaWG || p == model.TUIC || p == model.OpenVPN || p == model.IKEv2 || p == model.L2TP
+	return p == model.MTProto || p == model.AmneziaWG || p == model.TUIC || p == model.OpenVPN || p == model.IKEv2 || p == model.L2TP || p == model.SSH
 }
 
 func (l *Local) AddUser(_ context.Context, ib *model.Inbound, userMap map[string]any) error {
@@ -484,6 +525,8 @@ func (l *Local) DisconnectClient(ctx context.Context, ib *model.Inbound, email s
 		return ipsec.GetManager().KickUser(email), nil
 	case model.L2TP:
 		return l2tp.GetManager().KickUser(email), nil
+	case model.SSH:
+		return sshtunnel.GetManager().KickUser(email), nil
 	case model.VLESS, model.VMESS, model.Trojan, model.Shadowsocks:
 		return sockkill.Kill(ctx, ib.Port, ips)
 	default:

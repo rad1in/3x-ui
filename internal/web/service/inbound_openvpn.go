@@ -177,6 +177,8 @@ func (s *InboundService) applyLocalSidecar(protocol model.Protocol, inboundId in
 		s.applyLocalIKEv2(inboundId)
 	case model.L2TP:
 		s.applyLocalL2TP(inboundId)
+	case model.SSH:
+		s.applyLocalSSH(inboundId)
 	default:
 		return false
 	}

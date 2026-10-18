@@ -11,6 +11,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/ipsec"
 	"github.com/mhsanaei/3x-ui/v3/internal/l2tp"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
+	"github.com/mhsanaei/3x-ui/v3/internal/sshtunnel"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 )
 
@@ -24,12 +25,15 @@ type VPNAccount struct {
 	Username  string `json:"username"`
 	Password  string `json:"password"`
 	PSK       string `json:"psk,omitempty"`
+	// Port and Fingerprint are what an SSH tunnel app asks for besides the login.
+	Port        int    `json:"port,omitempty"`
+	Fingerprint string `json:"fingerprint,omitempty"`
 }
 
 var errNoVPNProfile = errors.New("no vpn profile for this subscription")
 
 func servesVPNAccounts(p model.Protocol) bool {
-	return p == model.OpenVPN || p == model.IKEv2 || p == model.L2TP
+	return p == model.OpenVPN || p == model.IKEv2 || p == model.L2TP || p == model.SSH
 }
 
 var unsafeFileChars = regexp.MustCompile(`[^A-Za-z0-9._-]+`)
@@ -47,10 +51,16 @@ func (s *SubService) addVPNAccounts(inbound *model.Inbound, clients []model.Clie
 	if inst, _, ok := l2tp.ServerOf(inbound); ok {
 		psk = inst.PSK
 	}
+	var port int
+	var fingerprint string
+	if inst, _, ok := sshtunnel.ServerOf(inbound); ok {
+		port, fingerprint = inst.Port, sshtunnel.Fingerprint(inst.HostKey)
+	}
 	for _, c := range clients {
 		s.vpnAccounts = append(s.vpnAccounts, VPNAccount{
 			InboundId: inbound.Id, Protocol: string(inbound.Protocol), Remark: remark,
 			Server: server, Username: c.Email, Password: c.Password, PSK: psk,
+			Port: port, Fingerprint: fingerprint,
 		})
 	}
 }

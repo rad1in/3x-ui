@@ -127,6 +127,7 @@
     "openvpnHint": "Import the profile into an OpenVPN app, then sign in with the username and password below. Recommended app:",
     "ikev2Hint": "On iPhone and Mac, install the profile; it carries your login. On Windows, install the CA certificate, then add an IKEv2 VPN with the server, username and password below. On Android, use the app",
     "l2tpHint": "Add an L2TP/IPsec (PSK) VPN in your device's VPN settings with the server, pre-shared key, username and password below.",
+    "sshHint": "Add this account to an SSH tunnel app, or run ssh -N -D 1080 with the server, port, username and password below. Check the host key fingerprint the first time you connect.",
     "outlineHint": "Outline keys: open one on a device with the Outline app installed, or copy it and add it in the app. The app re-reads the key, so later server changes reach it."
   },
   "menu": {
@@ -795,6 +796,14 @@
           "psk": "Pre-shared key",
           "pskDesc": "The IPsec key every client types next to their login. Leave empty to generate one; changing it disconnects every device.",
           "poolDesc": "Private IPv4 range handed to connected clients. Leave empty to pick a free 10.90.x.0/24 automatically."
+        },
+        "ssh": {
+          "help": "Clients sign in over SSH with their email as the username and their password, then forward ports through the server (for example ssh -N -D 1080). Accounts get no shell. The panel runs its own SSH service for this, so OpenSSH on the host can keep its own port.",
+          "banner": "Login banner",
+          "bannerDesc": "Text shown to clients before they sign in. Leave empty for none.",
+          "allowLocal": "Allow local targets",
+          "allowLocalDesc": "Let accounts tunnel to this server itself and to private networks. Off by default, so a client cannot reach the panel or internal services.",
+          "fingerprint": "Host key fingerprint"
         }
       },
       "info": {

@@ -127,6 +127,7 @@
     "openvpnHint": "Importe o perfil em um app OpenVPN e entre com o usuário e a senha abaixo. App recomendado:",
     "ikev2Hint": "No iPhone e no Mac, instale o perfil; ele já traz seu login. No Windows, instale o certificado CA e adicione uma VPN IKEv2 com o servidor, usuário e senha abaixo. No Android, use o app",
     "l2tpHint": "Adicione uma VPN L2TP/IPsec (PSK) nas configurações de VPN do seu dispositivo com o servidor, a chave pré-compartilhada, o usuário e a senha abaixo.",
+    "sshHint": "Adicione esta conta a um app de túnel SSH, ou execute ssh -N -D 1080 com o servidor, a porta, o usuário e a senha abaixo. Confira a impressão digital da chave do host na primeira conexão.",
     "outlineHint": "Chaves do Outline: abra uma num aparelho com o app Outline instalado, ou copie e adicione no app. O app relê a chave, então mudanças futuras no servidor chegam até ele."
   },
   "menu": {
@@ -794,6 +795,14 @@
           "psk": "Chave pré-compartilhada",
           "pskDesc": "A chave IPsec que cada cliente digita junto do login. Deixe vazio para gerar uma; alterá-la desconecta todos os dispositivos.",
           "poolDesc": "Faixa IPv4 privada atribuída aos clientes conectados. Deixe vazio para escolher automaticamente uma 10.90.x.0/24 livre."
+        },
+        "ssh": {
+          "help": "Os clientes entram por SSH com o email como usuário e a senha, e depois encaminham portas pelo servidor (por exemplo ssh -N -D 1080). As contas não recebem shell. O painel executa o próprio serviço SSH para isso, então o OpenSSH do host pode manter a sua porta.",
+          "banner": "Banner de login",
+          "bannerDesc": "Texto exibido aos clientes antes de entrarem. Deixe vazio para não mostrar nada.",
+          "allowLocal": "Permitir destinos locais",
+          "allowLocalDesc": "Permite que as contas abram túneis para o próprio servidor e para redes privadas. Desativado por padrão, para que um cliente não alcance o painel nem serviços internos.",
+          "fingerprint": "Impressão digital da chave do host"
         }
       },
       "info": {

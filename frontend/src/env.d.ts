@@ -33,6 +33,8 @@ interface SubPageData {
     username: string;
     password: string;
     psk?: string;
+    port?: number;
+    fingerprint?: string;
   }[];
   profiles?: { kind: string; url: string }[];
   outline?: { inboundId: number; remark: string; url: string }[];

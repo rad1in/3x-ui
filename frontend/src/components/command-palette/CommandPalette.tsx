@@ -371,6 +371,7 @@ export default function CommandPalette() {
           'openvpn',
           'ikev2',
           'l2tp',
+          'ssh',
         ],
         icon: <ImportOutlined />,
       },

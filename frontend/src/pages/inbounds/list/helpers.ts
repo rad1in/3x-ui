@@ -96,6 +96,7 @@ export function isInboundMultiUser(record: { protocol: string }): boolean {
     case 'openvpn':
     case 'ikev2':
     case 'l2tp':
+    case 'ssh':
       return true;
     default:
       return false;
@@ -104,7 +105,9 @@ export function isInboundMultiUser(record: { protocol: string }): boolean {
 
 // These VPNs hand out profiles to import, not share links.
 export function hasShareLinks(protocol: string): boolean {
-  return protocol !== 'openvpn' && protocol !== 'ikev2' && protocol !== 'l2tp';
+  return (
+    protocol !== 'openvpn' && protocol !== 'ikev2' && protocol !== 'l2tp' && protocol !== 'ssh'
+  );
 }
 
 export type IKEv2ProfileFormat = 'mobileconfig' | 'sswan' | 'ca';

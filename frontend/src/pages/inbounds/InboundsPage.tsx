@@ -50,7 +50,7 @@ import { InboundList } from './list';
 import { openvpnPanelProfileUrl } from './list/helpers';
 import { useVPNStatus } from '@/api/queries/useVPNStatus';
 
-const VPN_PROTOCOLS = new Set(['openvpn', 'ikev2', 'l2tp']);
+const VPN_PROTOCOLS = new Set(['openvpn', 'ikev2', 'l2tp', 'ssh']);
 import { LazyMount } from '@/components/utility';
 const InboundFormModal = lazy(() => import('./form/InboundFormModal'));
 const CloneInboundModal = lazy(() => import('./CloneInboundModal'));
@@ -334,6 +334,7 @@ export default function InboundsPage() {
         case 'openvpn':
         case 'ikev2':
         case 'l2tp':
+        case 'ssh':
           return c.password === client.password && c.email === client.email;
         default:
           return c.id === client.id && c.email === client.email;

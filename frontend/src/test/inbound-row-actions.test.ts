@@ -41,8 +41,8 @@ describe('inbound row actions', () => {
     expect(keys).toContain('subs');
   });
 
-  // IKEv2 and L2TP have no share links either; their logins live in the client's info.
-  it.each(['ikev2', 'l2tp'])('offers no link export for %s', (protocol) => {
+  // IKEv2, L2TP and SSH have no share links either; their logins are on the subscription page.
+  it.each(['ikev2', 'l2tp', 'ssh'])('offers no link export for %s', (protocol) => {
     const keys = menuKeys(protocol);
     expect(keys).not.toContain('export');
     expect(keys).toContain('subs');

@@ -105,11 +105,11 @@ _openapi:
         else its listen address, else the host the request reached the panel on.
       url: '#download-the-ovpn-profile-of-an-openvpn-inbound-it-carries-the-inbounds-ca-and-tls-crypt-key-and-asks-the-user-for-their-client-email-and-password-the-remote-address-is-the-inbounds-custom-share-address-else-its-listen-address-else-the-host-the-request-reached-the-panel-on'
     - depth: 2
-      title: 'Whether each OpenVPN, IKEv2 and L2TP inbound that should be serving
+      title: 'Whether each OpenVPN, IKEv2, L2TP and SSH inbound that should be serving
         someone is up, and if not, why (a missing binary, a kernel without PPP
         or IPsec, another strongSwan already running). Inbounds with no live
         client are left out: nothing runs for them.'
-      url: '#whether-each-openvpn-ikev2-and-l2tp-inbound-that-should-be-serving-someone-is-up-and-if-not-why-a-missing-binary-a-kernel-without-ppp-or-ipsec-another-strongswan-already-running-inbounds-with-no-live-client-are-left-out-nothing-runs-for-them'
+      url: '#whether-each-openvpn-ikev2-l2tp-and-ssh-inbound-that-should-be-serving-someone-is-up-and-if-not-why-a-missing-binary-a-kernel-without-ppp-or-ipsec-another-strongswan-already-running-inbounds-with-no-live-client-are-left-out-nothing-runs-for-them'
     - depth: 2
       title: Download one client's profile for an IKEv2 inbound. `mobileconfig` is an
         Apple configuration profile (iOS, iPadOS, macOS) with the login filled
@@ -209,11 +209,11 @@ _openapi:
           address, else its listen address, else the host the request reached
           the panel on.
         id: download-the-ovpn-profile-of-an-openvpn-inbound-it-carries-the-inbounds-ca-and-tls-crypt-key-and-asks-the-user-for-their-client-email-and-password-the-remote-address-is-the-inbounds-custom-share-address-else-its-listen-address-else-the-host-the-request-reached-the-panel-on
-      - content: 'Whether each OpenVPN, IKEv2 and L2TP inbound that should be serving
-          someone is up, and if not, why (a missing binary, a kernel without PPP
-          or IPsec, another strongSwan already running). Inbounds with no live
-          client are left out: nothing runs for them.'
-        id: whether-each-openvpn-ikev2-and-l2tp-inbound-that-should-be-serving-someone-is-up-and-if-not-why-a-missing-binary-a-kernel-without-ppp-or-ipsec-another-strongswan-already-running-inbounds-with-no-live-client-are-left-out-nothing-runs-for-them
+      - content: 'Whether each OpenVPN, IKEv2, L2TP and SSH inbound that should be
+          serving someone is up, and if not, why (a missing binary, a kernel
+          without PPP or IPsec, another strongSwan already running). Inbounds
+          with no live client are left out: nothing runs for them.'
+        id: whether-each-openvpn-ikev2-l2tp-and-ssh-inbound-that-should-be-serving-someone-is-up-and-if-not-why-a-missing-binary-a-kernel-without-ppp-or-ipsec-another-strongswan-already-running-inbounds-with-no-live-client-are-left-out-nothing-runs-for-them
       - content: Download one client's profile for an IKEv2 inbound. `mobileconfig` is
           an Apple configuration profile (iOS, iPadOS, macOS) with the login
           filled in and the inbound's CA trusted; `sswan` is a profile for the

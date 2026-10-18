@@ -68,6 +68,11 @@ describe('composeInboundTag transport suffix parity', () => {
       'in-443-udp',
     ],
     [
+      'ssh is tcp whatever the stream says',
+      base({ protocol: 'ssh', streamSettings: { network: 'kcp' } }),
+      'in-443-tcp',
+    ],
+    [
       'l2tp forced udp',
       base({ protocol: 'l2tp', streamSettings: { network: 'tcp' } }),
       'in-443-udp',

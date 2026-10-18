@@ -235,6 +235,13 @@ export function useInboundColumns({
               </Tooltip>,
             );
           }
+          if (record.protocol === 'ssh') {
+            tags.push(
+              <Tag key="n" color="green">
+                TCP
+              </Tag>,
+            );
+          }
           if (record.protocol === 'openvpn') {
             const settings = coerceInboundJsonField(record.settings) as { proto?: string } | null;
             tags.push(

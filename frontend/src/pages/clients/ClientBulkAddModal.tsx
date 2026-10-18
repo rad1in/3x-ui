@@ -43,6 +43,7 @@ const MULTI_CLIENT_PROTOCOLS = new Set([
   'openvpn',
   'ikev2',
   'l2tp',
+  'ssh',
 ]);
 
 const EMPTY: ClientBulkAddFormValues = {

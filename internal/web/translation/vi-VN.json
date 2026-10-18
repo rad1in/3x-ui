@@ -127,6 +127,7 @@
     "openvpnHint": "Nhập hồ sơ vào ứng dụng OpenVPN, sau đó đăng nhập bằng tên người dùng và mật khẩu bên dưới. Ứng dụng đề xuất:",
     "ikev2Hint": "Trên iPhone và Mac, hãy cài hồ sơ; thông tin đăng nhập đã có sẵn trong đó. Trên Windows, cài chứng chỉ CA rồi thêm VPN IKEv2 với máy chủ, tên người dùng và mật khẩu bên dưới. Trên Android, dùng ứng dụng",
     "l2tpHint": "Thêm VPN L2TP/IPsec (PSK) trong cài đặt VPN của thiết bị với máy chủ, khóa chia sẻ trước, tên người dùng và mật khẩu bên dưới.",
+    "sshHint": "Thêm tài khoản này vào ứng dụng đường hầm SSH, hoặc chạy ssh -N -D 1080 với máy chủ, cổng, tên người dùng và mật khẩu bên dưới. Hãy kiểm tra dấu vân tay khóa máy chủ ở lần kết nối đầu tiên.",
     "outlineHint": "Khóa Outline: mở một khóa trên thiết bị đã cài ứng dụng Outline, hoặc sao chép rồi thêm vào ứng dụng. Ứng dụng đọc lại khóa nên các thay đổi máy chủ sau này vẫn được cập nhật."
   },
   "menu": {
@@ -794,6 +795,14 @@
           "psk": "Khóa chia sẻ trước",
           "pskDesc": "Khóa IPsec mà mỗi khách hàng nhập cùng thông tin đăng nhập. Để trống để tự tạo; thay đổi nó sẽ ngắt kết nối mọi thiết bị.",
           "poolDesc": "Dải IPv4 riêng cấp cho khách hàng đã kết nối. Để trống để tự động chọn một dải 10.90.x.0/24 còn trống."
+        },
+        "ssh": {
+          "help": "Máy khách đăng nhập qua SSH với email làm tên người dùng và mật khẩu của mình, rồi chuyển tiếp cổng qua máy chủ (ví dụ ssh -N -D 1080). Tài khoản không có shell. Bảng điều khiển chạy dịch vụ SSH riêng cho việc này nên OpenSSH trên máy chủ vẫn giữ được cổng của nó.",
+          "banner": "Biểu ngữ đăng nhập",
+          "bannerDesc": "Văn bản hiển thị cho máy khách trước khi đăng nhập. Để trống nếu không cần.",
+          "allowLocal": "Cho phép đích cục bộ",
+          "allowLocalDesc": "Cho phép tài khoản tạo đường hầm tới chính máy chủ này và các mạng riêng. Mặc định tắt để máy khách không truy cập được bảng điều khiển hay dịch vụ nội bộ.",
+          "fingerprint": "Dấu vân tay khóa máy chủ"
         }
       },
       "info": {

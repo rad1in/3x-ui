@@ -58,6 +58,7 @@ const INBOUND_PROTOCOL_COLORS: Record<string, string> = {
   openvpn: 'green',
   ikev2: 'blue',
   l2tp: 'purple',
+  ssh: 'cyan',
 };
 
 const INBOUND_CHIP_LIMIT = 1;
