@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/url"
+	"strconv"
 	"sync"
 	"time"
 
@@ -17,6 +18,7 @@ import (
 const (
 	GatewayZarinpal = payment.Zarinpal
 	GatewayIDPay    = payment.IDPay
+	GatewayCrypto   = payment.NOWPayments
 )
 
 const (
@@ -37,12 +39,32 @@ var settleMu sync.Mutex
 func IsOnlineGateway(gateway string) bool { return isOnline(gateway) }
 
 func isOnline(gateway string) bool {
+	return isVerifiable(gateway) || gateway == GatewayCrypto
+}
+
+// isVerifiable marks the gateways whose payments the shop can confirm by
+// asking them; crypto payments are reported by a signed webhook instead.
+func isVerifiable(gateway string) bool {
 	return gateway == GatewayZarinpal || gateway == GatewayIDPay
+}
+
+// gatewayAcceptsCurrency: the Iranian gateways take toman and rials, the
+// crypto invoice is priced in dollars or euros.
+func gatewayAcceptsCurrency(gateway, currency string) bool {
+	switch gateway {
+	case GatewayZarinpal, GatewayIDPay:
+		_, ok := payment.RialAmount(0, currency)
+		return ok
+	case GatewayCrypto:
+		return currency == "USD" || currency == "EUR"
+	default:
+		return true
+	}
 }
 
 // SetGatewayFactory replaces the real payment clients; tests of other packages
 // use it to point the gateways at fake servers.
-func (s *OrderService) SetGatewayFactory(factory func(name string, cfg *SalesConfig) payment.Gateway) {
+func (s *OrderService) SetGatewayFactory(factory func(name string, cfg *SalesConfig) payment.Starter) {
 	s.gatewayFactory = factory
 }
 
@@ -53,7 +75,7 @@ func ShopOrderURL(cfg *SalesConfig, token string) string {
 }
 
 // newGateway builds the client for an online method from the configuration.
-func (s *OrderService) newGateway(name string, cfg *SalesConfig) payment.Gateway {
+func (s *OrderService) newGateway(name string, cfg *SalesConfig) payment.Starter {
 	if s.gatewayFactory != nil {
 		return s.gatewayFactory(name, cfg)
 	}
@@ -62,13 +84,37 @@ func (s *OrderService) newGateway(name string, cfg *SalesConfig) payment.Gateway
 		return &payment.ZarinpalGateway{MerchantID: cfg.Zarinpal.MerchantId, Sandbox: cfg.Zarinpal.Sandbox}
 	case GatewayIDPay:
 		return &payment.IDPayGateway{APIKey: cfg.IDPay.ApiKey, Sandbox: cfg.IDPay.Sandbox}
+	case GatewayCrypto:
+		return &payment.NOWPaymentsGateway{APIKey: cfg.Crypto.ApiKey, Sandbox: cfg.Crypto.Sandbox}
 	default:
 		return nil
 	}
 }
 
 func callbackURL(cfg *SalesConfig, order *model.Order) string {
+	if order.Gateway == GatewayCrypto {
+		return cfg.PublicBaseURL + "/shop/api/ipn/nowpayments"
+	}
 	return cfg.PublicBaseURL + "/shop/api/callback/" + order.Gateway + "?order=" + url.QueryEscape(order.Token)
+}
+
+// startRequest prices the order the way the gateway wants it: rials for the
+// Iranian gateways, the plan currency for the crypto invoice.
+func startRequest(cfg *SalesConfig, order *model.Order) (payment.StartRequest, bool) {
+	req := payment.StartRequest{
+		OrderToken:  order.Token,
+		Description: order.PlanName,
+		CallbackURL: callbackURL(cfg, order),
+		ReturnURL:   ShopOrderURL(cfg, order.Token),
+	}
+	if order.Gateway == GatewayCrypto {
+		req.Amount, req.Currency = order.Amount, order.Currency
+		req.Description = "Order " + strconv.Itoa(order.Id)
+		return req, true
+	}
+	rials, ok := payment.RialAmount(order.Amount, order.Currency)
+	req.Amount, req.Currency = rials, "IRR"
+	return req, ok
 }
 
 // StartPayment opens the order's payment at its gateway and stores where to
@@ -79,17 +125,12 @@ func (s *OrderService) StartPayment(order *model.Order) (*model.Order, error) {
 	if err != nil {
 		return nil, err
 	}
-	amount, ok := payment.RialAmount(order.Amount, order.Currency)
+	req, ok := startRequest(cfg, order)
 	gw := s.newGateway(order.Gateway, cfg)
 	if !ok || gw == nil {
 		return nil, salesErr(ErrGatewayUnavailable)
 	}
-	res, err := gw.Start(context.Background(), payment.StartRequest{
-		OrderToken:  order.Token,
-		Amount:      amount,
-		Description: order.PlanName,
-		CallbackURL: callbackURL(cfg, order),
-	})
+	res, err := gw.Start(context.Background(), req)
 	if err != nil {
 		logger.Warningf("order %d: starting %s payment: %v", order.Id, order.Gateway, err)
 		if _, cerr := s.closeOrder(order.Id, model.OrderStatusFailed); cerr != nil {
@@ -127,7 +168,7 @@ func (s *OrderService) CompleteGatewayPayment(inboundSvc *InboundService, token 
 	if err != nil {
 		return nil, false, err
 	}
-	if !isOnline(order.Gateway) {
+	if !isVerifiable(order.Gateway) {
 		return nil, false, salesErr(ErrOrderState)
 	}
 	switch order.Status {
@@ -167,8 +208,8 @@ func (s *OrderService) verifyOnline(order *model.Order) (*payment.VerifyResult, 
 		return nil, err
 	}
 	amount, ok := payment.RialAmount(order.Amount, order.Currency)
-	gw := s.newGateway(order.Gateway, cfg)
-	if !ok || gw == nil || order.GatewayRef == "" {
+	gw, verifiable := s.newGateway(order.Gateway, cfg).(payment.Gateway)
+	if !ok || !verifiable || order.GatewayRef == "" {
 		return nil, salesErr(ErrOrderState)
 	}
 	return gw.Verify(context.Background(), payment.VerifyRequest{Ref: order.GatewayRef, OrderToken: order.Token, Amount: amount})
@@ -200,6 +241,9 @@ func (s *OrderService) ReconcileOnline(inboundSvc *InboundService) (int, bool, e
 		Find(&pending).Error
 	if err != nil {
 		return 0, false, err
+	}
+	if err := s.expireCryptoOrders(now); err != nil {
+		logger.Warning("shop reconcile: expiring crypto orders:", err)
 	}
 	fulfilled, needRestart := 0, false
 	for i := range pending {

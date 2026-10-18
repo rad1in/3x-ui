@@ -2836,12 +2836,16 @@
         "apiKey": "API 密钥",
         "sandbox": "沙盒（测试）模式",
         "secretKept": "已保存，留空则保持不变",
-        "removeSecret": "清除已保存的值"
+        "removeSecret": "清除已保存的值",
+        "cryptoTitle": "加密货币（NOWPayments）",
+        "cryptoHint": "仅适用于以 USD 或 EUR 定价的套餐，收款由 NOWPayments 的签名回调确认。",
+        "ipnSecret": "IPN 密钥"
       },
       "gateways": {
         "card": "银行卡转账",
         "zarinpal": "Zarinpal",
-        "idpay": "IDPay"
+        "idpay": "IDPay",
+        "crypto": "加密货币"
       }
     },
     "sessions": {

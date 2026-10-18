@@ -85,6 +85,27 @@ func TestSalesConfigViewNeverCarriesSecretsAndBlankSaveKeepsThem(t *testing.T) {
 	}
 }
 
+func TestSalesConfigKeepsOneCryptoSecretWhenTheOtherIsReplaced(t *testing.T) {
+	setupBulkDB(t)
+	svc := &SalesConfigService{}
+	full := &SalesConfig{PublicBaseURL: "https://s.example.com", Crypto: CryptoConfig{Enabled: true, ApiKey: "np-key", IpnSecret: "np-ipn"}}
+	if err := svc.Save(full); err != nil {
+		t.Fatalf("Save: %v", err)
+	}
+	rotate := &SalesConfig{PublicBaseURL: "https://s.example.com", Crypto: CryptoConfig{Enabled: true, IpnSecret: "np-ipn-2"}}
+	if err := svc.Save(rotate); err != nil {
+		t.Fatalf("Save rotate: %v", err)
+	}
+	got, _ := svc.Get()
+	if got.Crypto.ApiKey != "np-key" || got.Crypto.IpnSecret != "np-ipn-2" {
+		t.Fatalf("crypto = %+v, want the API key kept and the IPN secret rotated", got.Crypto)
+	}
+	view, _ := svc.GetView()
+	if view.Crypto.ApiKey != "" || view.Crypto.IpnSecret != "" || !view.HasCryptoApiKey || !view.HasCryptoIpnSecret {
+		t.Fatalf("view = %+v, want blank secrets with both Has flags", view)
+	}
+}
+
 func TestSalesConfigClearSecretsEmptiesOnlyTheNamedOne(t *testing.T) {
 	setupBulkDB(t)
 	svc := &SalesConfigService{}
@@ -112,6 +133,7 @@ func TestSalesConfigRejectsOnlineMethodsThatCannotWork(t *testing.T) {
 		{"no base url", SalesConfig{Zarinpal: ZarinpalConfig{Enabled: true, MerchantId: "m"}}, "public base URL"},
 		{"base url without scheme", SalesConfig{PublicBaseURL: "shop.example.com", IDPay: IDPayConfig{Enabled: true, ApiKey: "k"}}, "public base URL"},
 		{"zarinpal without merchant", SalesConfig{PublicBaseURL: "https://s.example.com", Zarinpal: ZarinpalConfig{Enabled: true}}, "merchant id"},
+		{"crypto without ipn secret", SalesConfig{PublicBaseURL: "https://s.example.com", Crypto: CryptoConfig{Enabled: true, ApiKey: "k"}}, "IPN secret"},
 		{"idpay without key", SalesConfig{PublicBaseURL: "https://s.example.com", IDPay: IDPayConfig{Enabled: true}}, "API key"},
 	}
 	for _, tc := range cases {

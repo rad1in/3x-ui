@@ -3031,6 +3031,30 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "CryptoConfig": {
+    "description": "CryptoConfig is the NOWPayments account. ApiKey and IpnSecret are secrets.",
+    "properties": {
+      "apiKey": {
+        "type": "string"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "ipnSecret": {
+        "type": "string"
+      },
+      "sandbox": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "apiKey",
+      "enabled",
+      "ipnSecret",
+      "sandbox"
+    ],
+    "type": "object"
+  },
   "FallbackParentInfo": {
     "description": "FallbackParentInfo carries everything the frontend needs to rewrite a\nchild inbound's client link: where to connect (the master's address\nand port) and which path matched on the master's fallbacks array.\nThe frontend already has the master inbound in its dbInbounds list,\nso we only ship identifiers + the match path here.",
     "properties": {
@@ -5768,6 +5792,9 @@ export const SCHEMAS: Record<string, unknown> = {
         },
         "type": "array"
       },
+      "crypto": {
+        "$ref": "#/components/schemas/CryptoConfig"
+      },
       "idpay": {
         "$ref": "#/components/schemas/IDPayConfig"
       },
@@ -5784,6 +5811,7 @@ export const SCHEMAS: Record<string, unknown> = {
     },
     "required": [
       "card",
+      "crypto",
       "idpay",
       "publicBaseUrl",
       "publicEnabled",
@@ -5802,6 +5830,15 @@ export const SCHEMAS: Record<string, unknown> = {
           "type": "string"
         },
         "type": "array"
+      },
+      "crypto": {
+        "$ref": "#/components/schemas/CryptoConfig"
+      },
+      "hasCryptoApiKey": {
+        "type": "boolean"
+      },
+      "hasCryptoIpnSecret": {
+        "type": "boolean"
       },
       "hasIdpayApiKey": {
         "type": "boolean"
@@ -5825,6 +5862,9 @@ export const SCHEMAS: Record<string, unknown> = {
     },
     "required": [
       "card",
+      "crypto",
+      "hasCryptoApiKey",
+      "hasCryptoIpnSecret",
       "hasIdpayApiKey",
       "hasZarinpalMerchantId",
       "idpay",

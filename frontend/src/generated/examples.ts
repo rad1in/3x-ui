@@ -763,6 +763,12 @@ export const EXAMPLES: Record<string, unknown> = {
     "onlineCount": 1,
     "total": 2000
   },
+  "CryptoConfig": {
+    "apiKey": "",
+    "enabled": false,
+    "ipnSecret": "",
+    "sandbox": false
+  },
   "FallbackParentInfo": {
     "masterId": 0,
     "path": ""
@@ -1440,6 +1446,12 @@ export const EXAMPLES: Record<string, unknown> = {
     "clearSecrets": [
       ""
     ],
+    "crypto": {
+      "apiKey": "",
+      "enabled": false,
+      "ipnSecret": "",
+      "sandbox": false
+    },
     "idpay": {
       "apiKey": "",
       "enabled": false,
@@ -1464,6 +1476,14 @@ export const EXAMPLES: Record<string, unknown> = {
     "clearSecrets": [
       ""
     ],
+    "crypto": {
+      "apiKey": "",
+      "enabled": false,
+      "ipnSecret": "",
+      "sandbox": false
+    },
+    "hasCryptoApiKey": false,
+    "hasCryptoIpnSecret": false,
     "hasIdpayApiKey": false,
     "hasZarinpalMerchantId": false,
     "idpay": {

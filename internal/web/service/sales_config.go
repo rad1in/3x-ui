@@ -33,10 +33,20 @@ type IDPayConfig struct {
 	Sandbox bool   `json:"sandbox"`
 }
 
+// CryptoConfig is the NOWPayments account. ApiKey and IpnSecret are secrets.
+type CryptoConfig struct {
+	Enabled   bool   `json:"enabled"`
+	ApiKey    string `json:"apiKey"`
+	IpnSecret string `json:"ipnSecret"`
+	Sandbox   bool   `json:"sandbox"`
+}
+
 // Names of the secret fields, as ClearSecrets takes them.
 const (
 	secretZarinpalMerchant = "zarinpal.merchantId"
 	secretIDPayKey         = "idpay.apiKey"
+	secretCryptoKey        = "crypto.apiKey"
+	secretCryptoIPN        = "crypto.ipnSecret"
 )
 
 // SalesConfig is everything the operator configures about selling. It is one
@@ -48,6 +58,7 @@ type SalesConfig struct {
 	Card          CardPayConfig  `json:"card"`
 	Zarinpal      ZarinpalConfig `json:"zarinpal"`
 	IDPay         IDPayConfig    `json:"idpay"`
+	Crypto        CryptoConfig   `json:"crypto"`
 	ClearSecrets  []string       `json:"clearSecrets,omitempty"`
 }
 
@@ -57,6 +68,8 @@ type SalesConfigView struct {
 	SalesConfig
 	HasZarinpalMerchantId bool `json:"hasZarinpalMerchantId"`
 	HasIdpayApiKey        bool `json:"hasIdpayApiKey"`
+	HasCryptoApiKey       bool `json:"hasCryptoApiKey"`
+	HasCryptoIpnSecret    bool `json:"hasCryptoIpnSecret"`
 }
 
 const salesConfigKey = "salesConfig"
@@ -71,6 +84,8 @@ func (c *SalesConfig) secrets() map[string]*string {
 	return map[string]*string{
 		secretZarinpalMerchant: &c.Zarinpal.MerchantId,
 		secretIDPayKey:         &c.IDPay.ApiKey,
+		secretCryptoKey:        &c.Crypto.ApiKey,
+		secretCryptoIPN:        &c.Crypto.IpnSecret,
 	}
 }
 
@@ -112,6 +127,8 @@ func (s *SalesConfigService) GetView() (*SalesConfigView, error) {
 	view := &SalesConfigView{
 		HasZarinpalMerchantId: cfg.Zarinpal.MerchantId != "",
 		HasIdpayApiKey:        cfg.IDPay.ApiKey != "",
+		HasCryptoApiKey:       cfg.Crypto.ApiKey != "",
+		HasCryptoIpnSecret:    cfg.Crypto.IpnSecret != "",
 	}
 	for _, field := range cfg.secrets() {
 		*field = ""
@@ -169,7 +186,7 @@ func (c *SalesConfig) normalize() error {
 	if card.Enabled && len(card.CardNumber) != 16 {
 		return common.NewError("card number must be 16 digits")
 	}
-	online := c.Zarinpal.Enabled || c.IDPay.Enabled
+	online := c.Zarinpal.Enabled || c.IDPay.Enabled || c.Crypto.Enabled
 	if online && !validBaseURL(c.PublicBaseURL) {
 		return common.NewError("an online payment method needs the public base URL (http or https)")
 	}
@@ -178,6 +195,9 @@ func (c *SalesConfig) normalize() error {
 	}
 	if c.IDPay.Enabled && c.IDPay.ApiKey == "" {
 		return common.NewError("idpay needs an API key")
+	}
+	if c.Crypto.Enabled && (c.Crypto.ApiKey == "" || c.Crypto.IpnSecret == "") {
+		return common.NewError("crypto needs an API key and an IPN secret")
 	}
 	return nil
 }

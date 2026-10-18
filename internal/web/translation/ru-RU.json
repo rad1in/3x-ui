@@ -2836,12 +2836,16 @@
         "apiKey": "API-ключ",
         "sandbox": "Тестовый режим (sandbox)",
         "secretKept": "Сохранено. Оставьте пустым, чтобы не менять",
-        "removeSecret": "Удалить сохранённое значение"
+        "removeSecret": "Удалить сохранённое значение",
+        "cryptoTitle": "Криптовалюта (NOWPayments)",
+        "cryptoHint": "Только для тарифов в USD или EUR. Платежи подтверждаются подписанным вебхуком NOWPayments.",
+        "ipnSecret": "IPN-секрет"
       },
       "gateways": {
         "card": "Перевод на карту",
         "zarinpal": "Zarinpal",
-        "idpay": "IDPay"
+        "idpay": "IDPay",
+        "crypto": "Криптовалюта"
       }
     },
     "sessions": {

@@ -747,6 +747,14 @@ export const ClientsSummarySchema = z.object({
 });
 export type ClientsSummary = z.infer<typeof ClientsSummarySchema>;
 
+export const CryptoConfigSchema = z.object({
+  apiKey: z.string(),
+  enabled: z.boolean(),
+  ipnSecret: z.string(),
+  sandbox: z.boolean(),
+});
+export type CryptoConfig = z.infer<typeof CryptoConfigSchema>;
+
 export const FallbackParentInfoSchema = z.object({
   masterId: z.number().int(),
   path: z.string().optional(),
@@ -1383,6 +1391,7 @@ export type RealityScanResult = z.infer<typeof RealityScanResultSchema>;
 export const SalesConfigSchema = z.object({
   card: z.lazy(() => CardPayConfigSchema),
   clearSecrets: z.array(z.string()).optional(),
+  crypto: z.lazy(() => CryptoConfigSchema),
   idpay: z.lazy(() => IDPayConfigSchema),
   publicBaseUrl: z.string(),
   publicEnabled: z.boolean(),
@@ -1393,6 +1402,9 @@ export type SalesConfig = z.infer<typeof SalesConfigSchema>;
 export const SalesConfigViewSchema = z.object({
   card: z.lazy(() => CardPayConfigSchema),
   clearSecrets: z.array(z.string()).optional(),
+  crypto: z.lazy(() => CryptoConfigSchema),
+  hasCryptoApiKey: z.boolean(),
+  hasCryptoIpnSecret: z.boolean(),
   hasIdpayApiKey: z.boolean(),
   hasZarinpalMerchantId: z.boolean(),
   idpay: z.lazy(() => IDPayConfigSchema),

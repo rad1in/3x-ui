@@ -3057,6 +3057,30 @@
         ],
         "type": "object"
       },
+      "CryptoConfig": {
+        "description": "CryptoConfig is the NOWPayments account. ApiKey and IpnSecret are secrets.",
+        "properties": {
+          "apiKey": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "ipnSecret": {
+            "type": "string"
+          },
+          "sandbox": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "apiKey",
+          "enabled",
+          "ipnSecret",
+          "sandbox"
+        ],
+        "type": "object"
+      },
       "FallbackParentInfo": {
         "description": "FallbackParentInfo carries everything the frontend needs to rewrite a\nchild inbound's client link: where to connect (the master's address\nand port) and which path matched on the master's fallbacks array.\nThe frontend already has the master inbound in its dbInbounds list,\nso we only ship identifiers + the match path here.",
         "properties": {
@@ -5794,6 +5818,9 @@
             },
             "type": "array"
           },
+          "crypto": {
+            "$ref": "#/components/schemas/CryptoConfig"
+          },
           "idpay": {
             "$ref": "#/components/schemas/IDPayConfig"
           },
@@ -5810,6 +5837,7 @@
         },
         "required": [
           "card",
+          "crypto",
           "idpay",
           "publicBaseUrl",
           "publicEnabled",
@@ -5828,6 +5856,15 @@
               "type": "string"
             },
             "type": "array"
+          },
+          "crypto": {
+            "$ref": "#/components/schemas/CryptoConfig"
+          },
+          "hasCryptoApiKey": {
+            "type": "boolean"
+          },
+          "hasCryptoIpnSecret": {
+            "type": "boolean"
           },
           "hasIdpayApiKey": {
             "type": "boolean"
@@ -5851,6 +5888,9 @@
         },
         "required": [
           "card",
+          "crypto",
+          "hasCryptoApiKey",
+          "hasCryptoIpnSecret",
           "hasIdpayApiKey",
           "hasZarinpalMerchantId",
           "idpay",
@@ -17590,7 +17630,7 @@
         "tags": [
           "Sales"
         ],
-        "summary": "Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay). Secrets (the Zarinpal merchant id and the IDPay API key) are never returned: they come back blank and hasZarinpalMerchantId / hasIdpayApiKey say whether they are set. Owner only.",
+        "summary": "Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto). Secrets (the Zarinpal merchant id, the IDPay API key and the NOWPayments API key and IPN secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.",
         "operationId": "get_panel_api_sales_config",
         "responses": {
           "200": {
@@ -17624,6 +17664,14 @@
                     "clearSecrets": [
                       ""
                     ],
+                    "crypto": {
+                      "apiKey": "",
+                      "enabled": false,
+                      "ipnSecret": "",
+                      "sandbox": false
+                    },
+                    "hasCryptoApiKey": false,
+                    "hasCryptoIpnSecret": false,
                     "hasIdpayApiKey": false,
                     "hasZarinpalMerchantId": false,
                     "idpay": {
@@ -17651,7 +17699,7 @@
         "tags": [
           "Sales"
         ],
-        "summary": "Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal or IDPay section needs its secret and the public base URL (http or https), because the gateway sends the customer back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.",
+        "summary": "Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay or crypto section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.",
         "operationId": "post_panel_api_sales_config_save",
         "requestBody": {
           "required": true,
@@ -18065,6 +18113,47 @@
             "in": "query",
             "required": true,
             "description": "Order token.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/api/ipn/nowpayments": {
+      "post": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "NOWPayments webhook (set as ipn_callback_url on every crypto invoice). The x-nowpayments-sig header must be the HMAC-SHA512, keyed with the IPN secret, of the body with its keys sorted at every depth; an invalid or missing signature answers 401 and changes nothing. The order is found by order_id and its price_amount and price_currency must equal the order. finished delivers the client; partially_paid parks the order in review for the admin; failed and expired fail it; a finished payment for an order already failed or canceled is parked in review instead of being lost. Orders the shop cannot use are answered 200 so the sender stops retrying, internal failures 500 so it retries. Crypto plans must be priced in USD or EUR; unpaid crypto orders are canceled after 7 days.",
+        "operationId": "post_shop_api_ipn_nowpayments",
+        "parameters": [
+          {
+            "name": "x-nowpayments-sig",
+            "in": "header",
+            "required": true,
+            "description": "HMAC-SHA512 signature of the body.",
             "schema": {
               "type": "string"
             }

@@ -1,6 +1,9 @@
 package controller
 
 import (
+	"crypto/hmac"
+	"crypto/sha512"
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -37,6 +40,8 @@ func newZarinpalFake(t *testing.T) *zarinpalFake {
 		case "/pg/v4/payment/verify.json":
 			f.verifyCalls.Add(1)
 			_, _ = w.Write([]byte(f.verifyBody.Load().(string)))
+		case "/v1/invoice":
+			_, _ = w.Write([]byte(`{"id":"inv-1","invoice_url":"https://nowpayments.test/payment/?iid=inv-1"}`))
 		case "/v1.1/payment":
 			w.WriteHeader(http.StatusCreated)
 			_, _ = w.Write([]byte(`{"id":"idpay-id-1","link":"https://idpay.test/p/ws/idpay-id-1"}`))
@@ -57,8 +62,11 @@ func newZarinpalFake(t *testing.T) *zarinpalFake {
 
 type gatewayHarness struct {
 	*shopHarness
-	fake *zarinpalFake
+	fake    *zarinpalFake
+	usdPlan *model.Plan
 }
+
+const testIPNSecret = "controller-ipn-secret"
 
 func newGatewayHarness(t *testing.T) *gatewayHarness {
 	t.Helper()
@@ -84,6 +92,7 @@ func newGatewayHarness(t *testing.T) *gatewayHarness {
 		PublicBaseURL: "https://shop.example.com",
 		Zarinpal:      service.ZarinpalConfig{Enabled: true, MerchantId: "merchant"},
 		IDPay:         service.IDPayConfig{Enabled: true, ApiKey: "idpay-key"},
+		Crypto:        service.CryptoConfig{Enabled: true, ApiKey: "np-key", IpnSecret: testIPNSecret},
 	}
 	if err := (&service.SalesConfigService{}).Save(cfg); err != nil {
 		t.Fatalf("config: %v", err)
@@ -91,7 +100,10 @@ func newGatewayHarness(t *testing.T) *gatewayHarness {
 
 	fake := newZarinpalFake(t)
 	orders := &service.OrderService{}
-	orders.SetGatewayFactory(func(name string, c *service.SalesConfig) payment.Gateway {
+	orders.SetGatewayFactory(func(name string, c *service.SalesConfig) payment.Starter {
+		if name == service.GatewayCrypto {
+			return &payment.NOWPaymentsGateway{APIKey: c.Crypto.ApiKey, BaseURL: fake.server.URL}
+		}
 		if name == service.GatewayIDPay {
 			return &payment.IDPayGateway{APIKey: c.IDPay.ApiKey, BaseURL: fake.server.URL}
 		}
@@ -99,7 +111,13 @@ func newGatewayHarness(t *testing.T) *gatewayHarness {
 	})
 	engine := gin.New()
 	newShopController(engine.Group("/shop"), func(c *gin.Context) { c.Status(http.StatusNotFound) }, orders)
-	return &gatewayHarness{shopHarness: &shopHarness{engine: engine, plan: plan}, fake: fake}
+	usd, err := (&service.PlanService{}).SavePlan(&model.Plan{
+		Name: "Dollar", Price: 1999, Currency: "USD", TotalGB: 10 << 30, DurationDays: 30, TemplateId: tpl.Id, Enabled: true,
+	})
+	if err != nil {
+		t.Fatalf("usd plan: %v", err)
+	}
+	return &gatewayHarness{shopHarness: &shopHarness{engine: engine, plan: plan}, fake: fake, usdPlan: usd}
 }
 
 func (h *gatewayHarness) start(t *testing.T, email string) service.ShopOrderView {
@@ -219,5 +237,80 @@ func TestShopIDPayPostedCallbackDeliversTheClient(t *testing.T) {
 	}
 	if got := h.orderStatus(t, view.Token); got.Status != model.OrderStatusPaid || !got.Fulfilled {
 		t.Fatalf("order = %+v, want paid and delivered", got)
+	}
+}
+
+func (h *gatewayHarness) startCrypto(t *testing.T, email string) service.ShopOrderView {
+	t.Helper()
+	body := `{"planId":` + strconv.Itoa(h.usdPlan.Id) + `,"kind":"new","email":"` + email + `","gateway":"crypto"}`
+	code, reply := h.call(t, http.MethodPost, "/shop/api/orders", body)
+	if code != http.StatusOK || !reply.Success {
+		t.Fatalf("create crypto order = %d %+v", code, reply)
+	}
+	var view service.ShopOrderView
+	if err := json.Unmarshal(reply.Obj, &view); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	return view
+}
+
+func (h *gatewayHarness) ipn(t *testing.T, body, signature string) *httptest.ResponseRecorder {
+	t.Helper()
+	req := httptest.NewRequest(http.MethodPost, "/shop/api/ipn/nowpayments", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	if signature != "" {
+		req.Header.Set("x-nowpayments-sig", signature)
+	}
+	req.RemoteAddr = "203.0.113.50:1234"
+	w := httptest.NewRecorder()
+	h.engine.ServeHTTP(w, req)
+	return w
+}
+
+// signedIPN signs the key-sorted body the way NOWPayments does.
+func signedIPN(token, status string) (string, string) {
+	body := `{"order_id":"` + token + `","payment_id":99,"payment_status":"` + status + `","price_amount":19.99,"price_currency":"usd"}`
+	mac := hmac.New(sha512.New, []byte(testIPNSecret))
+	mac.Write([]byte(body))
+	return body, hex.EncodeToString(mac.Sum(nil))
+}
+
+func TestShopCryptoOrderFromInvoiceToSignedWebhook(t *testing.T) {
+	h := newGatewayHarness(t)
+	view := h.startCrypto(t, "alice")
+	if view.PayURL != "https://nowpayments.test/payment/?iid=inv-1" || view.Status != model.OrderStatusPending {
+		t.Fatalf("started order = %+v, want the hosted invoice link", view)
+	}
+
+	body, sig := signedIPN(view.Token, "finished")
+	if w := h.ipn(t, body, sig); w.Code != http.StatusOK {
+		t.Fatalf("signed webhook = %d %s, want 200", w.Code, w.Body.String())
+	}
+	if got := h.orderStatus(t, view.Token); got.Status != model.OrderStatusPaid || !got.Fulfilled {
+		t.Fatalf("order = %+v, want paid and delivered", got)
+	}
+}
+
+func TestShopCryptoWebhookWithoutAValidSignatureIsRefused(t *testing.T) {
+	h := newGatewayHarness(t)
+	view := h.startCrypto(t, "mallory")
+	body, _ := signedIPN(view.Token, "finished")
+
+	for name, sig := range map[string]string{"none": "", "forged": strings.Repeat("ab", 64)} {
+		if w := h.ipn(t, body, sig); w.Code != http.StatusUnauthorized {
+			t.Fatalf("%s signature = %d, want 401", name, w.Code)
+		}
+	}
+	if got := h.orderStatus(t, view.Token); got.Status != model.OrderStatusPending || got.Fulfilled {
+		t.Fatalf("order = %+v, a forged webhook must not move it", got)
+	}
+}
+
+func TestShopCryptoWebhookStopsRetriesForOrdersItCannotUse(t *testing.T) {
+	h := newGatewayHarness(t)
+	body, sig := signedIPN("unknown-token", "finished")
+	w := h.ipn(t, body, sig)
+	if w.Code != http.StatusOK || !strings.Contains(w.Body.String(), service.ErrOrderNotFound) {
+		t.Fatalf("webhook for an unknown order = %d %s, want 200 so the sender stops retrying", w.Code, w.Body.String())
 	}
 }

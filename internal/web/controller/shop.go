@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"io"
 	"net/http"
 	"sync"
 	"time"
@@ -16,6 +17,7 @@ import (
 
 const (
 	shopBodyLimit      = 8 << 10
+	shopIPNBodyLimit   = 64 << 10
 	shopWriteLimit     = 30
 	shopWriteWindow    = 10 * time.Minute
 	shopLimiterMaxKeys = 10000
@@ -48,6 +50,7 @@ func newShopController(g *gin.RouterGroup, notFound gin.HandlerFunc, orders *ser
 	api.GET("/orders/:token", a.getOrder)
 	api.POST("/orders", a.rateLimited, a.createOrder)
 	api.POST("/orders/:token/receipt", a.rateLimited, a.submitReceipt)
+	api.POST("/ipn/nowpayments", a.ipn)
 	api.GET("/callback/:gateway", a.rateLimited, a.callback)
 	api.POST("/callback/:gateway", a.rateLimited, a.callback)
 	return a
@@ -176,6 +179,39 @@ func (a *ShopController) callback(c *gin.Context) {
 		return
 	}
 	c.Redirect(http.StatusSeeOther, service.ShopOrderURL(cfg, token))
+}
+
+// ipn receives NOWPayments webhooks. A forged one is refused before anything
+// else; a verified one the shop cannot use is answered 200 so the sender stops
+// retrying, while a failure on our side answers 500 so it tries again.
+func (a *ShopController) ipn(c *gin.Context) {
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, shopIPNBodyLimit)
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, entity.Msg{Msg: "bad_request"})
+		return
+	}
+	order, needRestart, err := a.orderService.HandleCryptoIPN(&a.inboundService, body, c.GetHeader("x-nowpayments-sig"))
+	if needRestart {
+		a.xrayService.SetToNeedRestart()
+	}
+	if order != nil && order.FulfilledAt > 0 {
+		notifyClientsChanged()
+	}
+	var salesErr *service.SalesError
+	switch {
+	case err == nil:
+		c.JSON(http.StatusOK, entity.Msg{Success: true})
+	case errors.As(err, &salesErr) && salesErr.Code == service.ErrBadSignature:
+		c.JSON(http.StatusUnauthorized, entity.Msg{Msg: salesErr.Code})
+	case errors.As(err, &salesErr) && salesErr.Code == service.ErrGatewayUnavailable:
+		a.deny(c)
+	case errors.As(err, &salesErr), errors.Is(err, payment.ErrGateway):
+		c.JSON(http.StatusOK, entity.Msg{Msg: err.Error()})
+	default:
+		logger.Warningf("shop crypto ipn: %v", err)
+		c.JSON(http.StatusInternalServerError, entity.Msg{Msg: shopInternalError})
+	}
 }
 
 type shopReceiptBody struct {

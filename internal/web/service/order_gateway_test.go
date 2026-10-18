@@ -65,7 +65,7 @@ func newOnlineFixture(t *testing.T, port int) *onlineFixture {
 		t.Fatalf("Save config: %v", err)
 	}
 	gw := &stubGateway{verifyRes: &payment.VerifyResult{Paid: true, TrackingRef: "TRK-77"}}
-	f.orders.gatewayFactory = func(string, *SalesConfig) payment.Gateway { return gw }
+	f.orders.gatewayFactory = func(string, *SalesConfig) payment.Starter { return gw }
 	return &onlineFixture{shopFixture: f, gw: gw}
 }
 
@@ -322,7 +322,7 @@ func TestReconcileSettlesPaidOrdersAndExpiresAbandonedOnes(t *testing.T) {
 		t.Fatalf("mark: %v", err)
 	}
 	perRef := &refGateway{paidRefs: map[string]bool{"PAID-REF": true}}
-	f.orders.gatewayFactory = func(string, *SalesConfig) payment.Gateway { return perRef }
+	f.orders.gatewayFactory = func(string, *SalesConfig) payment.Starter { return perRef }
 
 	fulfilled, _, err := f.orders.ReconcileOnline(&InboundService{})
 	if err != nil {

@@ -29,12 +29,16 @@ const (
 // payment state is unknown and the caller may retry.
 var ErrGateway = errors.New("payment gateway error")
 
-// StartRequest opens a payment. Amount is in rials.
+// StartRequest opens a payment. Amount is in the minor unit of Currency; the
+// Iranian gateways are given rials and ignore Currency.
 type StartRequest struct {
 	OrderToken  string
 	Amount      int64
+	Currency    string
 	Description string
 	CallbackURL string
+	// ReturnURL is where a hosted payment page sends the customer afterwards.
+	ReturnURL string
 }
 
 // StartResult is where to send the customer and the id to verify later.
@@ -57,9 +61,15 @@ type VerifyResult struct {
 	TrackingRef string
 }
 
-// Gateway is one payment provider.
-type Gateway interface {
+// Starter opens payments; a provider that reports payments by webhook is only
+// a Starter.
+type Starter interface {
 	Start(ctx context.Context, req StartRequest) (*StartResult, error)
+}
+
+// Gateway is a provider whose payments can also be verified on request.
+type Gateway interface {
+	Starter
 	Verify(ctx context.Context, req VerifyRequest) (*VerifyResult, error)
 }
 

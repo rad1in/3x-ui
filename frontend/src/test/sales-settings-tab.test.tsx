@@ -12,8 +12,11 @@ const view = {
   card: { enabled: false, cardNumber: '', holderName: '', bankName: '', instructions: '' },
   zarinpal: { enabled: true, merchantId: '', sandbox: false },
   idpay: { enabled: false, apiKey: '', sandbox: false },
+  crypto: { enabled: false, apiKey: '', ipnSecret: '', sandbox: false },
   hasZarinpalMerchantId: true,
   hasIdpayApiKey: false,
+  hasCryptoApiKey: false,
+  hasCryptoIpnSecret: false,
 };
 
 function savedBodies() {

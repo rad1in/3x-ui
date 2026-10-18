@@ -40,6 +40,12 @@ export const salesConfigSchema = z.object({
   }),
   zarinpal: z.object({ enabled: z.boolean(), merchantId: z.string(), sandbox: z.boolean() }),
   idpay: z.object({ enabled: z.boolean(), apiKey: z.string(), sandbox: z.boolean() }),
+  crypto: z.object({
+    enabled: z.boolean(),
+    apiKey: z.string(),
+    ipnSecret: z.string(),
+    sandbox: z.boolean(),
+  }),
   clearSecrets: z.array(z.string()),
 });
 export type SalesConfigValues = z.infer<typeof salesConfigSchema>;

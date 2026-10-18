@@ -103,6 +103,7 @@ func run(root, outDir string) error {
 				"CardPayConfig",
 				"ZarinpalConfig",
 				"IDPayConfig",
+				"CryptoConfig",
 				"SalesConfigView",
 				"ShopPlan",
 				"ShopCatalog",

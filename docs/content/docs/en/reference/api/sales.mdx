@@ -40,21 +40,21 @@ _openapi:
       url: '#reject-a-pending-or-in-review-order-with-an-optional-reason-the-customer-sees-a-rejected-order-cannot-be-approved-afterwards'
     - depth: 2
       title: 'Selling configuration: whether the public shop is on, its public base
-        URL and the payment methods (card-to-card, Zarinpal, IDPay). Secrets
-        (the Zarinpal merchant id and the IDPay API key) are never returned:
-        they come back blank and hasZarinpalMerchantId / hasIdpayApiKey say
-        whether they are set. Owner only.'
-      url: '#selling-configuration-whether-the-public-shop-is-on-its-public-base-url-and-the-payment-methods-card-to-card-zarinpal-idpay-secrets-the-zarinpal-merchant-id-and-the-idpay-api-key-are-never-returned-they-come-back-blank-and-haszarinpalmerchantid--hasidpayapikey-say-whether-they-are-set-owner-only'
+        URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments
+        crypto). Secrets (the Zarinpal merchant id, the IDPay API key and the
+        NOWPayments API key and IPN secret) are never returned: they come back
+        blank and the has... flags say whether they are set. Owner only.'
+      url: '#selling-configuration-whether-the-public-shop-is-on-its-public-base-url-and-the-payment-methods-card-to-card-zarinpal-idpay-nowpayments-crypto-secrets-the-zarinpal-merchant-id-the-idpay-api-key-and-the-nowpayments-api-key-and-ipn-secret-are-never-returned-they-come-back-blank-and-the-has-flags-say-whether-they-are-set-owner-only'
     - depth: 2
       title: Replace the selling configuration. An enabled card section needs a 16
-        figure card number (Persian numerals are accepted); an enabled Zarinpal
-        or IDPay section needs its secret and the public base URL (http or
-        https), because the gateway sends the customer back to it. A blank
-        secret keeps the stored one; list a secret in clearSecrets
-        (zarinpal.merchantId, idpay.apiKey) to empty it. Secrets are encrypted
-        at rest when node token encryption is on. A disabled section is stored
-        as is. Owner only.
-      url: '#replace-the-selling-configuration-an-enabled-card-section-needs-a-16-figure-card-number-persian-numerals-are-accepted-an-enabled-zarinpal-or-idpay-section-needs-its-secret-and-the-public-base-url-http-or-https-because-the-gateway-sends-the-customer-back-to-it-a-blank-secret-keeps-the-stored-one-list-a-secret-in-clearsecrets-zarinpalmerchantid-idpayapikey-to-empty-it-secrets-are-encrypted-at-rest-when-node-token-encryption-is-on-a-disabled-section-is-stored-as-is-owner-only'
+        figure card number (Persian numerals are accepted); an enabled Zarinpal,
+        IDPay or crypto section needs its secrets and the public base URL (http
+        or https), because the gateway sends the customer or its webhook back to
+        it. A blank secret keeps the stored one; list a secret in clearSecrets
+        (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret) to
+        empty it. Secrets are encrypted at rest when node token encryption is
+        on. A disabled section is stored as is. Owner only.
+      url: '#replace-the-selling-configuration-an-enabled-card-section-needs-a-16-figure-card-number-persian-numerals-are-accepted-an-enabled-zarinpal-idpay-or-crypto-section-needs-its-secrets-and-the-public-base-url-http-or-https-because-the-gateway-sends-the-customer-or-its-webhook-back-to-it-a-blank-secret-keeps-the-stored-one-list-a-secret-in-clearsecrets-zarinpalmerchantid-idpayapikey-cryptoapikey-cryptoipnsecret-to-empty-it-secrets-are-encrypted-at-rest-when-node-token-encryption-is-on-a-disabled-section-is-stored-as-is-owner-only'
   structuredData:
     headings:
       - content: Every plan, enabled or not, by sortOrder. Each plan points at a client
@@ -83,20 +83,22 @@ _openapi:
           customer sees. A rejected order cannot be approved afterwards.
         id: reject-a-pending-or-in-review-order-with-an-optional-reason-the-customer-sees-a-rejected-order-cannot-be-approved-afterwards
       - content: 'Selling configuration: whether the public shop is on, its public base
-          URL and the payment methods (card-to-card, Zarinpal, IDPay). Secrets
-          (the Zarinpal merchant id and the IDPay API key) are never returned:
-          they come back blank and hasZarinpalMerchantId / hasIdpayApiKey say
-          whether they are set. Owner only.'
-        id: selling-configuration-whether-the-public-shop-is-on-its-public-base-url-and-the-payment-methods-card-to-card-zarinpal-idpay-secrets-the-zarinpal-merchant-id-and-the-idpay-api-key-are-never-returned-they-come-back-blank-and-haszarinpalmerchantid--hasidpayapikey-say-whether-they-are-set-owner-only
+          URL and the payment methods (card-to-card, Zarinpal, IDPay,
+          NOWPayments crypto). Secrets (the Zarinpal merchant id, the IDPay API
+          key and the NOWPayments API key and IPN secret) are never returned:
+          they come back blank and the has... flags say whether they are set.
+          Owner only.'
+        id: selling-configuration-whether-the-public-shop-is-on-its-public-base-url-and-the-payment-methods-card-to-card-zarinpal-idpay-nowpayments-crypto-secrets-the-zarinpal-merchant-id-the-idpay-api-key-and-the-nowpayments-api-key-and-ipn-secret-are-never-returned-they-come-back-blank-and-the-has-flags-say-whether-they-are-set-owner-only
       - content: Replace the selling configuration. An enabled card section needs a 16
           figure card number (Persian numerals are accepted); an enabled
-          Zarinpal or IDPay section needs its secret and the public base URL
-          (http or https), because the gateway sends the customer back to it. A
-          blank secret keeps the stored one; list a secret in clearSecrets
-          (zarinpal.merchantId, idpay.apiKey) to empty it. Secrets are encrypted
-          at rest when node token encryption is on. A disabled section is stored
-          as is. Owner only.
-        id: replace-the-selling-configuration-an-enabled-card-section-needs-a-16-figure-card-number-persian-numerals-are-accepted-an-enabled-zarinpal-or-idpay-section-needs-its-secret-and-the-public-base-url-http-or-https-because-the-gateway-sends-the-customer-back-to-it-a-blank-secret-keeps-the-stored-one-list-a-secret-in-clearsecrets-zarinpalmerchantid-idpayapikey-to-empty-it-secrets-are-encrypted-at-rest-when-node-token-encryption-is-on-a-disabled-section-is-stored-as-is-owner-only
+          Zarinpal, IDPay or crypto section needs its secrets and the public
+          base URL (http or https), because the gateway sends the customer or
+          its webhook back to it. A blank secret keeps the stored one; list a
+          secret in clearSecrets (zarinpal.merchantId, idpay.apiKey,
+          crypto.apiKey, crypto.ipnSecret) to empty it. Secrets are encrypted at
+          rest when node token encryption is on. A disabled section is stored as
+          is. Owner only.
+        id: replace-the-selling-configuration-an-enabled-card-section-needs-a-16-figure-card-number-persian-numerals-are-accepted-an-enabled-zarinpal-idpay-or-crypto-section-needs-its-secrets-and-the-public-base-url-http-or-https-because-the-gateway-sends-the-customer-or-its-webhook-back-to-it-a-blank-secret-keeps-the-stored-one-list-a-secret-in-clearsecrets-zarinpalmerchantid-idpayapikey-cryptoapikey-cryptoipnsecret-to-empty-it-secrets-are-encrypted-at-rest-when-node-token-encryption-is-on-a-disabled-section-is-stored-as-is-owner-only
     contents: []
 ---
 

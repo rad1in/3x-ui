@@ -2836,12 +2836,16 @@
         "apiKey": "API キー",
         "sandbox": "サンドボックスモード",
         "secretKept": "保存済み。空欄のままにすると保持されます",
-        "removeSecret": "保存済みの値を削除"
+        "removeSecret": "保存済みの値を削除",
+        "cryptoTitle": "暗号資産（NOWPayments）",
+        "cryptoHint": "USD または EUR 建てのプラン専用です。支払いは NOWPayments の署名付き Webhook で確認されます。",
+        "ipnSecret": "IPN シークレット"
       },
       "gateways": {
         "card": "カード間振込",
         "zarinpal": "Zarinpal",
-        "idpay": "IDPay"
+        "idpay": "IDPay",
+        "crypto": "暗号資産"
       }
     },
     "sessions": {

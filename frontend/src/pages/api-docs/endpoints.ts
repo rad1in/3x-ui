@@ -2527,14 +2527,14 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/panel/api/sales/config',
         summary:
-          'Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay). Secrets (the Zarinpal merchant id and the IDPay API key) are never returned: they come back blank and hasZarinpalMerchantId / hasIdpayApiKey say whether they are set. Owner only.',
+          'Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto). Secrets (the Zarinpal merchant id, the IDPay API key and the NOWPayments API key and IPN secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.',
         responseSchema: 'SalesConfigView',
       },
       {
         method: 'POST',
         path: '/panel/api/sales/config/save',
         summary:
-          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal or IDPay section needs its secret and the public base URL (http or https), because the gateway sends the customer back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.',
+          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay or crypto section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.',
         params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SalesConfig.' }],
       },
     ],
@@ -2605,6 +2605,20 @@ export const sections: readonly Section[] = [
         params: [
           { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay'] },
           { name: 'order', in: 'query', type: 'string', desc: 'Order token.' },
+        ],
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/ipn/nowpayments',
+        summary:
+          'NOWPayments webhook (set as ipn_callback_url on every crypto invoice). The x-nowpayments-sig header must be the HMAC-SHA512, keyed with the IPN secret, of the body with its keys sorted at every depth; an invalid or missing signature answers 401 and changes nothing. The order is found by order_id and its price_amount and price_currency must equal the order. finished delivers the client; partially_paid parks the order in review for the admin; failed and expired fail it; a finished payment for an order already failed or canceled is parked in review instead of being lost. Orders the shop cannot use are answered 200 so the sender stops retrying, internal failures 500 so it retries. Crypto plans must be priced in USD or EUR; unpaid crypto orders are canceled after 7 days.',
+        params: [
+          {
+            name: 'x-nowpayments-sig',
+            in: 'header',
+            type: 'string',
+            desc: 'HMAC-SHA512 signature of the body.',
+          },
         ],
       },
       {

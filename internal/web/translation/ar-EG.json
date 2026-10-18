@@ -2836,12 +2836,16 @@
         "apiKey": "مفتاح API",
         "sandbox": "وضع الاختبار (Sandbox)",
         "secretKept": "محفوظ. اتركه فارغًا للإبقاء عليه",
-        "removeSecret": "حذف القيمة المحفوظة"
+        "removeSecret": "حذف القيمة المحفوظة",
+        "cryptoTitle": "العملات الرقمية (NOWPayments)",
+        "cryptoHint": "للخطط المسعّرة بالدولار أو اليورو فقط. يتم تأكيد الدفع عبر إشعار موقّع من NOWPayments.",
+        "ipnSecret": "مفتاح IPN السري"
       },
       "gateways": {
         "card": "بطاقة إلى بطاقة",
         "zarinpal": "زرين بال",
-        "idpay": "IDPay"
+        "idpay": "IDPay",
+        "crypto": "عملات رقمية"
       }
     },
     "sessions": {

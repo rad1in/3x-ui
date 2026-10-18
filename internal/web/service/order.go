@@ -38,6 +38,8 @@ const (
 	ErrReceiptInvalid      = "receipt_invalid"
 	ErrCurrencyUnsupported = "currency_unsupported"
 	ErrGatewayFailed       = "gateway_failed"
+	ErrBadSignature        = "bad_signature"
+	ErrAmountMismatch      = "amount_mismatch"
 )
 
 // SalesError is a refusal that is safe to show a customer verbatim by code.
@@ -79,7 +81,7 @@ type OrderService struct {
 	config  SalesConfigService
 	clients ClientService
 	// gatewayFactory replaces the real payment clients in tests.
-	gatewayFactory func(name string, cfg *SalesConfig) payment.Gateway
+	gatewayFactory func(name string, cfg *SalesConfig) payment.Starter
 }
 
 // fulfilMu serialises approvals so one order never provisions twice; the
@@ -138,6 +140,8 @@ func gatewayEnabled(cfg *SalesConfig, gateway string) bool {
 		return cfg.Zarinpal.Enabled && cfg.Zarinpal.MerchantId != "" && cfg.PublicBaseURL != ""
 	case GatewayIDPay:
 		return cfg.IDPay.Enabled && cfg.IDPay.ApiKey != "" && cfg.PublicBaseURL != ""
+	case GatewayCrypto:
+		return cfg.Crypto.Enabled && cfg.Crypto.ApiKey != "" && cfg.Crypto.IpnSecret != "" && cfg.PublicBaseURL != ""
 	default:
 		return false
 	}
@@ -160,7 +164,7 @@ func (s *OrderService) CreateOrder(in CreateOrderInput) (*model.Order, error) {
 	if err != nil || !plan.Enabled {
 		return nil, salesErr(ErrPlanUnavailable)
 	}
-	if _, payable := payment.RialAmount(plan.Price, plan.Currency); isOnline(in.Gateway) && !payable {
+	if !gatewayAcceptsCurrency(in.Gateway, plan.Currency) {
 		return nil, salesErr(ErrCurrencyUnsupported)
 	}
 	email := strings.TrimSpace(in.Email)

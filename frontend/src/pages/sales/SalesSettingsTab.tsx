@@ -13,11 +13,14 @@ const EMPTY: SalesConfigValues = {
   card: { enabled: false, cardNumber: '', holderName: '', bankName: '', instructions: '' },
   zarinpal: { enabled: false, merchantId: '', sandbox: false },
   idpay: { enabled: false, apiKey: '', sandbox: false },
+  crypto: { enabled: false, apiKey: '', ipnSecret: '', sandbox: false },
   clearSecrets: [],
 };
 
 const SECRET_MERCHANT = 'zarinpal.merchantId';
 const SECRET_IDPAY = 'idpay.apiKey';
+const SECRET_CRYPTO_KEY = 'crypto.apiKey';
+const SECRET_CRYPTO_IPN = 'crypto.ipnSecret';
 
 export default function SalesSettingsTab() {
   const { t } = useTranslation();
@@ -134,6 +137,45 @@ export default function SalesSettingsTab() {
           />
         </FormField>
         <FormField label={t('pages.sales.config.sandbox')} name="idpay.sandbox" valueProp="checked">
+          <Switch />
+        </FormField>
+
+        <h4>{t('pages.sales.config.cryptoTitle')}</h4>
+        <FormField
+          label={t('pages.sales.config.gatewayEnabled')}
+          name="crypto.enabled"
+          valueProp="checked"
+          extra={t('pages.sales.config.cryptoHint')}
+        >
+          <Switch />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.apiKey')}
+          name="crypto.apiKey"
+          extra={secretField(SECRET_CRYPTO_KEY, config?.hasCryptoApiKey)}
+        >
+          <Input.Password
+            dir="ltr"
+            autoComplete="off"
+            placeholder={config?.hasCryptoApiKey ? t('pages.sales.config.secretKept') : ''}
+          />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.ipnSecret')}
+          name="crypto.ipnSecret"
+          extra={secretField(SECRET_CRYPTO_IPN, config?.hasCryptoIpnSecret)}
+        >
+          <Input.Password
+            dir="ltr"
+            autoComplete="off"
+            placeholder={config?.hasCryptoIpnSecret ? t('pages.sales.config.secretKept') : ''}
+          />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.sandbox')}
+          name="crypto.sandbox"
+          valueProp="checked"
+        >
           <Switch />
         </FormField>
 

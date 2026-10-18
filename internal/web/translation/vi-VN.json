@@ -2836,12 +2836,16 @@
         "apiKey": "Khóa API",
         "sandbox": "Chế độ thử nghiệm (sandbox)",
         "secretKept": "Đã lưu. Để trống để giữ nguyên",
-        "removeSecret": "Xóa giá trị đã lưu"
+        "removeSecret": "Xóa giá trị đã lưu",
+        "cryptoTitle": "Tiền mã hóa (NOWPayments)",
+        "cryptoHint": "Chỉ dùng cho gói định giá bằng USD hoặc EUR. Thanh toán được xác nhận bằng webhook có chữ ký của NOWPayments.",
+        "ipnSecret": "Khóa bí mật IPN"
       },
       "gateways": {
         "card": "Chuyển khoản thẻ",
         "zarinpal": "Zarinpal",
-        "idpay": "IDPay"
+        "idpay": "IDPay",
+        "crypto": "Tiền mã hóa"
       }
     },
     "sessions": {

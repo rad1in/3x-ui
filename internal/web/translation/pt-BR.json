@@ -2836,12 +2836,16 @@
         "apiKey": "Chave de API",
         "sandbox": "Modo de testes (sandbox)",
         "secretKept": "Salva. Deixe em branco para mantê-la",
-        "removeSecret": "Remover o valor salvo"
+        "removeSecret": "Remover o valor salvo",
+        "cryptoTitle": "Cripto (NOWPayments)",
+        "cryptoHint": "Apenas para planos em USD ou EUR. Os pagamentos são confirmados por um webhook assinado da NOWPayments.",
+        "ipnSecret": "Segredo IPN"
       },
       "gateways": {
         "card": "Cartão a cartão",
         "zarinpal": "Zarinpal",
-        "idpay": "IDPay"
+        "idpay": "IDPay",
+        "crypto": "Cripto"
       }
     },
     "sessions": {

@@ -48,6 +48,19 @@ _openapi:
       title: The same callback for gateways that return the customer with a form POST
         (IDPay sends status 10 when the customer paid).
       url: '#the-same-callback-for-gateways-that-return-the-customer-with-a-form-post-idpay-sends-status-10-when-the-customer-paid'
+    - depth: 2
+      title: NOWPayments webhook (set as ipn_callback_url on every crypto invoice).
+        The x-nowpayments-sig header must be the HMAC-SHA512, keyed with the IPN
+        secret, of the body with its keys sorted at every depth; an invalid or
+        missing signature answers 401 and changes nothing. The order is found by
+        order_id and its price_amount and price_currency must equal the order.
+        finished delivers the client; partially_paid parks the order in review
+        for the admin; failed and expired fail it; a finished payment for an
+        order already failed or canceled is parked in review instead of being
+        lost. Orders the shop cannot use are answered 200 so the sender stops
+        retrying, internal failures 500 so it retries. Crypto plans must be
+        priced in USD or EUR; unpaid crypto orders are canceled after 7 days.
+      url: '#nowpayments-webhook-set-as-ipn_callback_url-on-every-crypto-invoice-the-x-nowpayments-sig-header-must-be-the-hmac-sha512-keyed-with-the-ipn-secret-of-the-body-with-its-keys-sorted-at-every-depth-an-invalid-or-missing-signature-answers-401-and-changes-nothing-the-order-is-found-by-order_id-and-its-price_amount-and-price_currency-must-equal-the-order-finished-delivers-the-client-partially_paid-parks-the-order-in-review-for-the-admin-failed-and-expired-fail-it-a-finished-payment-for-an-order-already-failed-or-canceled-is-parked-in-review-instead-of-being-lost-orders-the-shop-cannot-use-are-answered-200-so-the-sender-stops-retrying-internal-failures-500-so-it-retries-crypto-plans-must-be-priced-in-usd-or-eur-unpaid-crypto-orders-are-canceled-after-7-days'
   structuredData:
     headings:
       - content: Plans on sale, by sort order, and the payment methods that are switched
@@ -79,6 +92,19 @@ _openapi:
       - content: The same callback for gateways that return the customer with a form
           POST (IDPay sends status 10 when the customer paid).
         id: the-same-callback-for-gateways-that-return-the-customer-with-a-form-post-idpay-sends-status-10-when-the-customer-paid
+      - content: NOWPayments webhook (set as ipn_callback_url on every crypto invoice).
+          The x-nowpayments-sig header must be the HMAC-SHA512, keyed with the
+          IPN secret, of the body with its keys sorted at every depth; an
+          invalid or missing signature answers 401 and changes nothing. The
+          order is found by order_id and its price_amount and price_currency
+          must equal the order. finished delivers the client; partially_paid
+          parks the order in review for the admin; failed and expired fail it; a
+          finished payment for an order already failed or canceled is parked in
+          review instead of being lost. Orders the shop cannot use are answered
+          200 so the sender stops retrying, internal failures 500 so it retries.
+          Crypto plans must be priced in USD or EUR; unpaid crypto orders are
+          canceled after 7 days.
+        id: nowpayments-webhook-set-as-ipn_callback_url-on-every-crypto-invoice-the-x-nowpayments-sig-header-must-be-the-hmac-sha512-keyed-with-the-ipn-secret-of-the-body-with-its-keys-sorted-at-every-depth-an-invalid-or-missing-signature-answers-401-and-changes-nothing-the-order-is-found-by-order_id-and-its-price_amount-and-price_currency-must-equal-the-order-finished-delivers-the-client-partially_paid-parks-the-order-in-review-for-the-admin-failed-and-expired-fail-it-a-finished-payment-for-an-order-already-failed-or-canceled-is-parked-in-review-instead-of-being-lost-orders-the-shop-cannot-use-are-answered-200-so-the-sender-stops-retrying-internal-failures-500-so-it-retries-crypto-plans-must-be-priced-in-usd-or-eur-unpaid-crypto-orders-are-canceled-after-7-days
     contents: []
 ---
 
@@ -91,7 +117,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/shop/api/plans","method":"get"},{"path":"/shop/api/orders","method":"post"},{"path":"/shop/api/orders/{token}","method":"get"},{"path":"/shop/api/orders/{token}/receipt","method":"post"},{"path":"/shop/api/callback/{gateway}","method":"get"},{"path":"/shop/api/callback/{gateway}","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/shop/api/plans","method":"get"},{"path":"/shop/api/orders","method":"post"},{"path":"/shop/api/orders/{token}","method":"get"},{"path":"/shop/api/orders/{token}/receipt","method":"post"},{"path":"/shop/api/callback/{gateway}","method":"get"},{"path":"/shop/api/callback/{gateway}","method":"post"},{"path":"/shop/api/ipn/nowpayments","method":"post"}]} showTitle />
     </>
   );
 }

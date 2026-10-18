@@ -708,6 +708,13 @@ export interface ClientsSummary {
   total: number;
 }
 
+export interface CryptoConfig {
+  apiKey: string;
+  enabled: boolean;
+  ipnSecret: string;
+  sandbox: boolean;
+}
+
 export interface FallbackParentInfo {
   masterId: number;
   path?: string;
@@ -1302,6 +1309,7 @@ export interface RealityScanResult {
 export interface SalesConfig {
   card: CardPayConfig;
   clearSecrets?: string[];
+  crypto: CryptoConfig;
   idpay: IDPayConfig;
   publicBaseUrl: string;
   publicEnabled: boolean;
@@ -1311,6 +1319,9 @@ export interface SalesConfig {
 export interface SalesConfigView {
   card: CardPayConfig;
   clearSecrets?: string[];
+  crypto: CryptoConfig;
+  hasCryptoApiKey: boolean;
+  hasCryptoIpnSecret: boolean;
   hasIdpayApiKey: boolean;
   hasZarinpalMerchantId: boolean;
   idpay: IDPayConfig;

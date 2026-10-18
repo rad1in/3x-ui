@@ -2836,12 +2836,16 @@
         "apiKey": "API anahtarı",
         "sandbox": "Test modu (sandbox)",
         "secretKept": "Kayıtlı. Korumak için boş bırakın",
-        "removeSecret": "Kayıtlı değeri kaldır"
+        "removeSecret": "Kayıtlı değeri kaldır",
+        "cryptoTitle": "Kripto (NOWPayments)",
+        "cryptoHint": "Yalnızca USD veya EUR fiyatlı paketler içindir. Ödemeler NOWPayments’ın imzalı webhook’uyla onaylanır.",
+        "ipnSecret": "IPN gizli anahtarı"
       },
       "gateways": {
         "card": "Karttan karta",
         "zarinpal": "Zarinpal",
-        "idpay": "IDPay"
+        "idpay": "IDPay",
+        "crypto": "Kripto"
       }
     },
     "sessions": {

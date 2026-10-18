@@ -2836,12 +2836,16 @@
         "apiKey": "Kunci API",
         "sandbox": "Mode uji (sandbox)",
         "secretKept": "Tersimpan. Biarkan kosong untuk mempertahankan",
-        "removeSecret": "Hapus nilai tersimpan"
+        "removeSecret": "Hapus nilai tersimpan",
+        "cryptoTitle": "Kripto (NOWPayments)",
+        "cryptoHint": "Hanya untuk paket berharga USD atau EUR. Pembayaran dikonfirmasi lewat webhook bertanda tangan dari NOWPayments.",
+        "ipnSecret": "Rahasia IPN"
       },
       "gateways": {
         "card": "Kartu ke kartu",
         "zarinpal": "Zarinpal",
-        "idpay": "IDPay"
+        "idpay": "IDPay",
+        "crypto": "Kripto"
       }
     },
     "sessions": {

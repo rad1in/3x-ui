@@ -46,7 +46,7 @@ type ShopOrderView struct {
 
 func enabledMethods(cfg *SalesConfig) []string {
 	methods := []string{}
-	for _, gateway := range []string{GatewayCard, GatewayZarinpal, GatewayIDPay} {
+	for _, gateway := range []string{GatewayCard, GatewayZarinpal, GatewayIDPay, GatewayCrypto} {
 		if gatewayEnabled(cfg, gateway) {
 			methods = append(methods, gateway)
 		}
