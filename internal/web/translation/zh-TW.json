@@ -146,6 +146,7 @@
     "audit": "操作日誌",
     "admins": "管理員",
     "sessions": "工作階段",
+    "sales": "銷售",
     "hosts": "主機",
     "docs": "文件",
     "openMenu": "開啟選單",
@@ -2754,6 +2755,53 @@
       "toasts": {
         "saved": "管理員已儲存",
         "deleted": "管理員已刪除"
+      }
+    },
+    "sales": {
+      "hint": "向客戶出售方案。方案設定價格、流量與時長，其關聯的客戶端範本決定客戶可使用的入站。",
+      "plansTab": "方案",
+      "ordersTab": "訂單",
+      "plans": {
+        "add": "新增方案",
+        "edit": "編輯方案",
+        "name": "名稱",
+        "details": "說明",
+        "price": "價格",
+        "currency": "貨幣",
+        "quotaGb": "流量（GB，0 = 不限）",
+        "durationDays": "時長（天，0 = 永不過期）",
+        "template": "客戶端範本",
+        "templateHint": "範本提供入站、流控與群組；方案的流量、時長與 IP 限制會覆蓋範本中的值。",
+        "sortOrder": "排序",
+        "enabled": "在售",
+        "disabled": "已隱藏",
+        "confirmDelete": "刪除此方案？已購買的客戶不受影響。",
+        "saved": "方案已儲存",
+        "deleted": "方案已刪除",
+        "errName": "請填寫名稱",
+        "errPrice": "價格不能為負",
+        "errTemplate": "請選擇客戶端範本"
+      },
+      "orders": {
+        "plan": "方案",
+        "client": "客戶端",
+        "amount": "金額",
+        "gateway": "付款方式",
+        "status": "狀態",
+        "created": "建立時間",
+        "allStatuses": "全部狀態",
+        "kinds": {
+          "new": "新購",
+          "renew": "續費"
+        },
+        "statuses": {
+          "pending": "待付款",
+          "review": "審核中",
+          "paid": "已付款",
+          "rejected": "已拒絕",
+          "failed": "失敗",
+          "canceled": "已取消"
+        }
       }
     },
     "sessions": {

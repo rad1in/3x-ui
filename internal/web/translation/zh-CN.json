@@ -146,6 +146,7 @@
     "audit": "操作日志",
     "admins": "管理员",
     "sessions": "会话",
+    "sales": "销售",
     "hosts": "主机",
     "docs": "文档",
     "openMenu": "打开菜单",
@@ -2754,6 +2755,53 @@
       "toasts": {
         "saved": "管理员已保存",
         "deleted": "管理员已删除"
+      }
+    },
+    "sales": {
+      "hint": "向客户出售套餐。套餐设定价格、流量和时长，其关联的客户端模板决定客户可使用的入站。",
+      "plansTab": "套餐",
+      "ordersTab": "订单",
+      "plans": {
+        "add": "添加套餐",
+        "edit": "编辑套餐",
+        "name": "名称",
+        "details": "说明",
+        "price": "价格",
+        "currency": "货币",
+        "quotaGb": "流量（GB，0 = 不限）",
+        "durationDays": "时长（天，0 = 永不过期）",
+        "template": "客户端模板",
+        "templateHint": "模板提供入站、流控和分组；套餐的流量、时长和 IP 限制会覆盖模板中的值。",
+        "sortOrder": "排序",
+        "enabled": "在售",
+        "disabled": "已隐藏",
+        "confirmDelete": "删除此套餐？已购买的客户不受影响。",
+        "saved": "套餐已保存",
+        "deleted": "套餐已删除",
+        "errName": "请填写名称",
+        "errPrice": "价格不能为负",
+        "errTemplate": "请选择客户端模板"
+      },
+      "orders": {
+        "plan": "套餐",
+        "client": "客户端",
+        "amount": "金额",
+        "gateway": "支付方式",
+        "status": "状态",
+        "created": "创建时间",
+        "allStatuses": "全部状态",
+        "kinds": {
+          "new": "新购",
+          "renew": "续费"
+        },
+        "statuses": {
+          "pending": "待支付",
+          "review": "审核中",
+          "paid": "已支付",
+          "rejected": "已拒绝",
+          "failed": "失败",
+          "canceled": "已取消"
+        }
       }
     },
     "sessions": {

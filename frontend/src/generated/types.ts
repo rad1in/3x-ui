@@ -1155,6 +1155,32 @@ export interface NodeView {
   xrayVersion: string;
 }
 
+export interface Order {
+  amount: number;
+  clientEmail: string;
+  contact: string;
+  createdAt: number;
+  currency: string;
+  gateway: string;
+  gatewayRef: string;
+  id: number;
+  kind: string;
+  paidAt: number;
+  planId: number;
+  planName: string;
+  receiptNote: string;
+  receiptRef: string;
+  rejectReason: string;
+  status: string;
+  token: string;
+  updatedAt: number;
+}
+
+export interface OrderPage {
+  items: Order[];
+  total: number;
+}
+
 export interface OutboundTraffics {
   down: number;
   id: number;
@@ -1191,6 +1217,22 @@ export interface PeerActivity {
   online: boolean;
   tag: string;
   up: number;
+}
+
+export interface Plan {
+  createdAt: number;
+  currency: string;
+  description: string;
+  durationDays: number;
+  enabled: boolean;
+  id: number;
+  limitIp: number;
+  name: string;
+  price: number;
+  sortOrder: number;
+  templateId: number;
+  totalGB: number;
+  updatedAt: number;
 }
 
 export interface ProbeResultUI {

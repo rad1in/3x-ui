@@ -47,6 +47,11 @@ export const keys = {
     options: () => ['inbounds', 'options'] as const,
     vpnStatus: () => ['inbounds', 'vpnStatus'] as const,
   },
+  sales: {
+    root: () => ['sales'] as const,
+    plans: () => ['sales', 'plans'] as const,
+    orders: (status: string, page: number) => ['sales', 'orders', status, page] as const,
+  },
   clients: {
     root: () => ['clients'] as const,
     list: (params: unknown) => ['clients', 'list', params] as const,

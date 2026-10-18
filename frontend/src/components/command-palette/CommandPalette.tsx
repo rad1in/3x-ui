@@ -16,6 +16,7 @@ import {
   CodeOutlined,
   CopyOutlined,
   CrownOutlined,
+  ShoppingCartOutlined,
   DashboardOutlined,
   DatabaseOutlined,
   DiscordOutlined,
@@ -425,6 +426,12 @@ export default function CommandPalette() {
         title: t('menu.apiDocs'),
         keywords: ['api', 'api docs', 'swagger', 'rest api', 'endpoints'],
         icon: <ApiOutlined />,
+      },
+      {
+        path: '/sales',
+        title: t('menu.sales'),
+        keywords: ['sales', 'plans', 'orders', 'payments', 'shop'],
+        icon: <ShoppingCartOutlined />,
       },
       {
         path: '/sponsors',

@@ -147,6 +147,7 @@
     "audit": "Activity",
     "admins": "Admins",
     "sessions": "Sessions",
+    "sales": "Sales",
     "docs": "Documentation",
     "openMenu": "Open menu",
     "pinSidebar": "Pin sidebar",
@@ -2754,6 +2755,53 @@
       "toasts": {
         "saved": "Admin saved",
         "deleted": "Admin deleted"
+      }
+    },
+    "sales": {
+      "hint": "Sell plans to customers. A plan sets the price, quota and duration; the client template it points to decides which inbounds the customer gets.",
+      "plansTab": "Plans",
+      "ordersTab": "Orders",
+      "plans": {
+        "add": "Add plan",
+        "edit": "Edit plan",
+        "name": "Name",
+        "details": "Description",
+        "price": "Price",
+        "currency": "Currency",
+        "quotaGb": "Quota (GB, 0 = unlimited)",
+        "durationDays": "Duration (days, 0 = no expiry)",
+        "template": "Client template",
+        "templateHint": "The template supplies the inbounds, flow and group. The plan’s quota, duration and IP limit override it.",
+        "sortOrder": "Sort order",
+        "enabled": "On sale",
+        "disabled": "Hidden",
+        "confirmDelete": "Delete this plan? Customers who already bought it are not affected.",
+        "saved": "Plan saved",
+        "deleted": "Plan deleted",
+        "errName": "Name is required",
+        "errPrice": "Price cannot be negative",
+        "errTemplate": "Pick a client template"
+      },
+      "orders": {
+        "plan": "Plan",
+        "client": "Client",
+        "amount": "Amount",
+        "gateway": "Payment method",
+        "status": "Status",
+        "created": "Created",
+        "allStatuses": "All statuses",
+        "kinds": {
+          "new": "New",
+          "renew": "Renewal"
+        },
+        "statuses": {
+          "pending": "Awaiting payment",
+          "review": "In review",
+          "paid": "Paid",
+          "rejected": "Rejected",
+          "failed": "Failed",
+          "canceled": "Canceled"
+        }
       }
     },
     "sessions": {

@@ -146,6 +146,7 @@
     "audit": "Hoạt động",
     "admins": "Quản trị viên",
     "sessions": "Phiên",
+    "sales": "Bán hàng",
     "hosts": "Hosts",
     "docs": "Tài liệu",
     "openMenu": "Mở menu",
@@ -2754,6 +2755,53 @@
       "toasts": {
         "saved": "Đã lưu quản trị viên",
         "deleted": "Đã xóa quản trị viên"
+      }
+    },
+    "sales": {
+      "hint": "Bán gói cho khách hàng. Gói đặt giá, hạn mức và thời hạn; mẫu khách hàng mà gói trỏ tới quyết định khách nhận được inbound nào.",
+      "plansTab": "Gói",
+      "ordersTab": "Đơn hàng",
+      "plans": {
+        "add": "Thêm gói",
+        "edit": "Sửa gói",
+        "name": "Tên",
+        "details": "Mô tả",
+        "price": "Giá",
+        "currency": "Tiền tệ",
+        "quotaGb": "Hạn mức (GB, 0 = không giới hạn)",
+        "durationDays": "Thời hạn (ngày, 0 = không hết hạn)",
+        "template": "Mẫu khách hàng",
+        "templateHint": "Mẫu cung cấp inbound, flow và nhóm. Hạn mức, thời hạn và giới hạn IP của gói sẽ ghi đè lên mẫu.",
+        "sortOrder": "Thứ tự",
+        "enabled": "Đang bán",
+        "disabled": "Đã ẩn",
+        "confirmDelete": "Xóa gói này? Khách đã mua không bị ảnh hưởng.",
+        "saved": "Đã lưu gói",
+        "deleted": "Đã xóa gói",
+        "errName": "Cần nhập tên",
+        "errPrice": "Giá không được âm",
+        "errTemplate": "Chọn một mẫu khách hàng"
+      },
+      "orders": {
+        "plan": "Gói",
+        "client": "Khách hàng",
+        "amount": "Số tiền",
+        "gateway": "Phương thức thanh toán",
+        "status": "Trạng thái",
+        "created": "Đã tạo",
+        "allStatuses": "Mọi trạng thái",
+        "kinds": {
+          "new": "Mới",
+          "renew": "Gia hạn"
+        },
+        "statuses": {
+          "pending": "Chờ thanh toán",
+          "review": "Đang xem xét",
+          "paid": "Đã thanh toán",
+          "rejected": "Đã từ chối",
+          "failed": "Thất bại",
+          "canceled": "Đã hủy"
+        }
       }
     },
     "sessions": {

@@ -146,6 +146,7 @@
     "audit": "Atividade",
     "admins": "Administradores",
     "sessions": "Sessões",
+    "sales": "Vendas",
     "hosts": "Hosts",
     "docs": "Documentação",
     "openMenu": "Abrir menu",
@@ -2754,6 +2755,53 @@
       "toasts": {
         "saved": "Administrador salvo",
         "deleted": "Administrador excluído"
+      }
+    },
+    "sales": {
+      "hint": "Venda planos aos clientes. O plano define preço, cota e duração; o modelo de cliente associado decide quais inbounds o cliente recebe.",
+      "plansTab": "Planos",
+      "ordersTab": "Pedidos",
+      "plans": {
+        "add": "Adicionar plano",
+        "edit": "Editar plano",
+        "name": "Nome",
+        "details": "Descrição",
+        "price": "Preço",
+        "currency": "Moeda",
+        "quotaGb": "Cota (GB, 0 = ilimitada)",
+        "durationDays": "Duração (dias, 0 = sem expiração)",
+        "template": "Modelo de cliente",
+        "templateHint": "O modelo fornece os inbounds, o flow e o grupo. Cota, duração e limite de IP do plano o substituem.",
+        "sortOrder": "Ordem",
+        "enabled": "À venda",
+        "disabled": "Oculto",
+        "confirmDelete": "Excluir este plano? Clientes que já o compraram não são afetados.",
+        "saved": "Plano salvo",
+        "deleted": "Plano excluído",
+        "errName": "O nome é obrigatório",
+        "errPrice": "O preço não pode ser negativo",
+        "errTemplate": "Escolha um modelo de cliente"
+      },
+      "orders": {
+        "plan": "Plano",
+        "client": "Cliente",
+        "amount": "Valor",
+        "gateway": "Forma de pagamento",
+        "status": "Status",
+        "created": "Criado",
+        "allStatuses": "Todos os status",
+        "kinds": {
+          "new": "Novo",
+          "renew": "Renovação"
+        },
+        "statuses": {
+          "pending": "Aguardando pagamento",
+          "review": "Em análise",
+          "paid": "Pago",
+          "rejected": "Recusado",
+          "failed": "Falhou",
+          "canceled": "Cancelado"
+        }
       }
     },
     "sessions": {

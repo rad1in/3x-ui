@@ -5144,6 +5144,122 @@
         ],
         "type": "object"
       },
+      "Order": {
+        "description": "Order is one purchase attempt of a plan. Amount is what the customer pays in\nCurrency's minor unit; PlanName is a snapshot so editing a plan never\nrewrites history. Token is the unguessable handle the customer uses.",
+        "properties": {
+          "amount": {
+            "example": 250000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "clientEmail": {
+            "example": "alice",
+            "type": "string"
+          },
+          "contact": {
+            "example": "@alice",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "currency": {
+            "example": "IRT",
+            "type": "string"
+          },
+          "gateway": {
+            "example": "card",
+            "type": "string"
+          },
+          "gatewayRef": {
+            "type": "string"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "kind": {
+            "example": "new",
+            "type": "string"
+          },
+          "paidAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "planId": {
+            "example": 1,
+            "type": "integer"
+          },
+          "planName": {
+            "example": "Monthly 50 GB",
+            "type": "string"
+          },
+          "receiptNote": {
+            "type": "string"
+          },
+          "receiptRef": {
+            "example": "482913",
+            "type": "string"
+          },
+          "rejectReason": {
+            "type": "string"
+          },
+          "status": {
+            "example": "pending",
+            "type": "string"
+          },
+          "token": {
+            "example": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "amount",
+          "clientEmail",
+          "contact",
+          "createdAt",
+          "currency",
+          "gateway",
+          "gatewayRef",
+          "id",
+          "kind",
+          "paidAt",
+          "planId",
+          "planName",
+          "receiptNote",
+          "receiptRef",
+          "rejectReason",
+          "status",
+          "token",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "OrderPage": {
+        "description": "OrderPage is one page of orders, newest first, with the unpaged total.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Order"
+            },
+            "type": "array"
+          },
+          "total": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total"
+        ],
+        "type": "object"
+      },
       "OutboundTraffics": {
         "description": "OutboundTraffics tracks traffic statistics for Xray outbound connections.",
         "properties": {
@@ -5307,6 +5423,81 @@
           "online",
           "tag",
           "up"
+        ],
+        "type": "object"
+      },
+      "Plan": {
+        "description": "Plan is a sellable package. Price is in the currency's minor unit (see\nservice.CurrencyDecimals); TotalGB is in bytes; DurationDays 0 means no\nexpiry. TemplateId supplies the inbounds and the rest of the client preset.",
+        "properties": {
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "currency": {
+            "example": "IRT",
+            "type": "string"
+          },
+          "description": {
+            "example": "Valid for 30 days",
+            "type": "string"
+          },
+          "durationDays": {
+            "example": 30,
+            "type": "integer"
+          },
+          "enabled": {
+            "example": true,
+            "type": "boolean"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "limitIp": {
+            "example": 2,
+            "type": "integer"
+          },
+          "name": {
+            "example": "Monthly 50 GB",
+            "type": "string"
+          },
+          "price": {
+            "example": 250000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "sortOrder": {
+            "example": 0,
+            "type": "integer"
+          },
+          "templateId": {
+            "example": 1,
+            "type": "integer"
+          },
+          "totalGB": {
+            "example": 53687091200,
+            "format": "int64",
+            "type": "integer"
+          },
+          "updatedAt": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "createdAt",
+          "currency",
+          "description",
+          "durationDays",
+          "enabled",
+          "id",
+          "limitIp",
+          "name",
+          "price",
+          "sortOrder",
+          "templateId",
+          "totalGB",
+          "updatedAt"
         ],
         "type": "object"
       },
@@ -6293,6 +6484,10 @@
     {
       "name": "Sponsors",
       "description": "Manage the sponsor placements this panel shows on its login page, dashboard and sponsors page, and optionally read them from another panel's feed instead."
+    },
+    {
+      "name": "Sales",
+      "description": "Sell plans to customers: the plan catalogue and the order queue. Prices and amounts are integers in the currency minor unit (IRT and IRR have none, USD, EUR and USDT have two decimals); quotas are in bytes."
     },
     {
       "name": "Admins",
@@ -16637,6 +16832,262 @@
                       "type": "string"
                     },
                     "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/plans": {
+      "get": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Every plan, enabled or not, by sortOrder. Each plan points at a client template that supplies the inbounds and the rest of the client preset.",
+        "operationId": "get_panel_api_sales_plans",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Plan"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "createdAt": 0,
+                      "currency": "IRT",
+                      "description": "Valid for 30 days",
+                      "durationDays": 30,
+                      "enabled": true,
+                      "id": 1,
+                      "limitIp": 2,
+                      "name": "Monthly 50 GB",
+                      "price": 250000,
+                      "sortOrder": 0,
+                      "templateId": 1,
+                      "totalGB": 53687091200,
+                      "updatedAt": 0
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/plans/save": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Create a plan (id 0) or replace the one with the given id. Names are unique, the currency must be IRT, IRR, USD, EUR or USDT and templateId must exist. Returns the saved plan.",
+        "operationId": "post_panel_api_sales_plans_save",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "Plan."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/Plan"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "createdAt": 0,
+                    "currency": "IRT",
+                    "description": "Valid for 30 days",
+                    "durationDays": 30,
+                    "enabled": true,
+                    "id": 1,
+                    "limitIp": 2,
+                    "name": "Monthly 50 GB",
+                    "price": 250000,
+                    "sortOrder": 0,
+                    "templateId": 1,
+                    "totalGB": 53687091200,
+                    "updatedAt": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/plans/del/{id}": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Delete a plan. Refused while an order for it is still pending or in review; clients already sold keep working.",
+        "operationId": "post_panel_api_sales_plans_del_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Plan id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/orders": {
+      "get": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Orders newest first, with the total for the filter. status is one of pending, review, paid, rejected, failed or canceled; empty lists all.",
+        "operationId": "get_panel_api_sales_orders",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Only orders in this status.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Page size, 1 to 200.",
+            "schema": {
+              "type": "integer",
+              "default": 200
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Rows to skip.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/OrderPage"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "items": [
+                      {
+                        "amount": 250000,
+                        "clientEmail": "alice",
+                        "contact": "@alice",
+                        "createdAt": 0,
+                        "currency": "IRT",
+                        "gateway": "card",
+                        "gatewayRef": "",
+                        "id": 1,
+                        "kind": "new",
+                        "paidAt": 0,
+                        "planId": 1,
+                        "planName": "Monthly 50 GB",
+                        "receiptNote": "",
+                        "receiptRef": "482913",
+                        "rejectReason": "",
+                        "status": "pending",
+                        "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+                        "updatedAt": 0
+                      }
+                    ],
+                    "total": 0
                   }
                 }
               }

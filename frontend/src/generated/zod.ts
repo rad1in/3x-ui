@@ -1224,6 +1224,34 @@ export const NodeViewSchema = z.object({
 });
 export type NodeView = z.infer<typeof NodeViewSchema>;
 
+export const OrderSchema = z.object({
+  amount: z.number().int(),
+  clientEmail: z.string(),
+  contact: z.string(),
+  createdAt: z.number().int(),
+  currency: z.string(),
+  gateway: z.string(),
+  gatewayRef: z.string(),
+  id: z.number().int(),
+  kind: z.string(),
+  paidAt: z.number().int(),
+  planId: z.number().int(),
+  planName: z.string(),
+  receiptNote: z.string(),
+  receiptRef: z.string(),
+  rejectReason: z.string(),
+  status: z.string(),
+  token: z.string(),
+  updatedAt: z.number().int(),
+});
+export type Order = z.infer<typeof OrderSchema>;
+
+export const OrderPageSchema = z.object({
+  items: z.array(z.lazy(() => OrderSchema)),
+  total: z.number().int(),
+});
+export type OrderPage = z.infer<typeof OrderPageSchema>;
+
 export const OutboundTrafficsSchema = z.object({
   down: z.number().int(),
   id: z.number().int(),
@@ -1265,6 +1293,23 @@ export const PeerActivitySchema = z.object({
   up: z.number().int(),
 });
 export type PeerActivity = z.infer<typeof PeerActivitySchema>;
+
+export const PlanSchema = z.object({
+  createdAt: z.number().int(),
+  currency: z.string(),
+  description: z.string(),
+  durationDays: z.number().int(),
+  enabled: z.boolean(),
+  id: z.number().int(),
+  limitIp: z.number().int(),
+  name: z.string(),
+  price: z.number().int(),
+  sortOrder: z.number().int(),
+  templateId: z.number().int(),
+  totalGB: z.number().int(),
+  updatedAt: z.number().int(),
+});
+export type Plan = z.infer<typeof PlanSchema>;
 
 export const ProbeResultUISchema = z.object({
   cpuPct: z.number(),

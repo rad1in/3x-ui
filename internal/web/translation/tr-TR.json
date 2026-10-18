@@ -146,6 +146,7 @@
     "audit": "Etkinlik",
     "admins": "Yöneticiler",
     "sessions": "Oturumlar",
+    "sales": "Satışlar",
     "hosts": "Host'lar",
     "docs": "Belgeler",
     "openMenu": "Menüyü aç",
@@ -2754,6 +2755,53 @@
       "toasts": {
         "saved": "Yönetici kaydedildi",
         "deleted": "Yönetici silindi"
+      }
+    },
+    "sales": {
+      "hint": "Müşterilere paket satın. Paket fiyatı, kotayı ve süreyi belirler; bağlı istemci şablonu müşterinin hangi inbound’lara erişeceğini belirler.",
+      "plansTab": "Paketler",
+      "ordersTab": "Siparişler",
+      "plans": {
+        "add": "Paket ekle",
+        "edit": "Paketi düzenle",
+        "name": "Ad",
+        "details": "Açıklama",
+        "price": "Fiyat",
+        "currency": "Para birimi",
+        "quotaGb": "Kota (GB, 0 = sınırsız)",
+        "durationDays": "Süre (gün, 0 = süresiz)",
+        "template": "İstemci şablonu",
+        "templateHint": "Şablon inbound’ları, flow’u ve grubu sağlar. Paketin kotası, süresi ve IP sınırı şablonu geçersiz kılar.",
+        "sortOrder": "Sıralama",
+        "enabled": "Satışta",
+        "disabled": "Gizli",
+        "confirmDelete": "Bu paket silinsin mi? Satın almış müşteriler etkilenmez.",
+        "saved": "Paket kaydedildi",
+        "deleted": "Paket silindi",
+        "errName": "Ad gerekli",
+        "errPrice": "Fiyat negatif olamaz",
+        "errTemplate": "Bir istemci şablonu seçin"
+      },
+      "orders": {
+        "plan": "Paket",
+        "client": "İstemci",
+        "amount": "Tutar",
+        "gateway": "Ödeme yöntemi",
+        "status": "Durum",
+        "created": "Oluşturuldu",
+        "allStatuses": "Tüm durumlar",
+        "kinds": {
+          "new": "Yeni",
+          "renew": "Yenileme"
+        },
+        "statuses": {
+          "pending": "Ödeme bekliyor",
+          "review": "İnceleniyor",
+          "paid": "Ödendi",
+          "rejected": "Reddedildi",
+          "failed": "Başarısız",
+          "canceled": "İptal edildi"
+        }
       }
     },
     "sessions": {

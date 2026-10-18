@@ -1269,6 +1269,51 @@ export const EXAMPLES: Record<string, unknown> = {
     "xrayState": "running",
     "xrayVersion": "25.10.31"
   },
+  "Order": {
+    "amount": 250000,
+    "clientEmail": "alice",
+    "contact": "@alice",
+    "createdAt": 0,
+    "currency": "IRT",
+    "gateway": "card",
+    "gatewayRef": "",
+    "id": 1,
+    "kind": "new",
+    "paidAt": 0,
+    "planId": 1,
+    "planName": "Monthly 50 GB",
+    "receiptNote": "",
+    "receiptRef": "482913",
+    "rejectReason": "",
+    "status": "pending",
+    "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+    "updatedAt": 0
+  },
+  "OrderPage": {
+    "items": [
+      {
+        "amount": 250000,
+        "clientEmail": "alice",
+        "contact": "@alice",
+        "createdAt": 0,
+        "currency": "IRT",
+        "gateway": "card",
+        "gatewayRef": "",
+        "id": 1,
+        "kind": "new",
+        "paidAt": 0,
+        "planId": 1,
+        "planName": "Monthly 50 GB",
+        "receiptNote": "",
+        "receiptRef": "482913",
+        "rejectReason": "",
+        "status": "pending",
+        "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+        "updatedAt": 0
+      }
+    ],
+    "total": 0
+  },
   "OutboundTraffics": {
     "down": 0,
     "id": 0,
@@ -1302,6 +1347,21 @@ export const EXAMPLES: Record<string, unknown> = {
     "online": true,
     "tag": "inbound-51820",
     "up": 1048576
+  },
+  "Plan": {
+    "createdAt": 0,
+    "currency": "IRT",
+    "description": "Valid for 30 days",
+    "durationDays": 30,
+    "enabled": true,
+    "id": 1,
+    "limitIp": 2,
+    "name": "Monthly 50 GB",
+    "price": 250000,
+    "sortOrder": 0,
+    "templateId": 1,
+    "totalGB": 53687091200,
+    "updatedAt": 0
   },
   "ProbeResultUI": {
     "cpuPct": 12.5,

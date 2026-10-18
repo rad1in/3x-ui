@@ -2438,6 +2438,70 @@ export const sections: readonly Section[] = [
   },
 
   {
+    id: 'sales',
+    title: 'Sales',
+    description:
+      'Sell plans to customers: the plan catalogue and the order queue. Prices and amounts are integers in the currency minor unit (IRT and IRR have none, USD, EUR and USDT have two decimals); quotas are in bytes.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/sales/plans',
+        summary:
+          'Every plan, enabled or not, by sortOrder. Each plan points at a client template that supplies the inbounds and the rest of the client preset.',
+        responseSchema: 'Plan',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/plans/save',
+        summary:
+          'Create a plan (id 0) or replace the one with the given id. Names are unique, the currency must be IRT, IRR, USD, EUR or USDT and templateId must exist. Returns the saved plan.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'Plan.' }],
+        responseSchema: 'Plan',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/plans/del/:id',
+        summary:
+          'Delete a plan. Refused while an order for it is still pending or in review; clients already sold keep working.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Plan id.' }],
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/orders',
+        summary:
+          'Orders newest first, with the total for the filter. status is one of pending, review, paid, rejected, failed or canceled; empty lists all.',
+        params: [
+          {
+            name: 'status',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'Only orders in this status.',
+          },
+          {
+            name: 'limit',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 200,
+            desc: 'Page size, 1 to 200.',
+          },
+          {
+            name: 'offset',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 0,
+            desc: 'Rows to skip.',
+          },
+        ],
+        responseSchema: 'OrderPage',
+      },
+    ],
+  },
+
+  {
     id: 'admins',
     title: 'Admins',
     description:

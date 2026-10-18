@@ -5118,6 +5118,122 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "Order": {
+    "description": "Order is one purchase attempt of a plan. Amount is what the customer pays in\nCurrency's minor unit; PlanName is a snapshot so editing a plan never\nrewrites history. Token is the unguessable handle the customer uses.",
+    "properties": {
+      "amount": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "clientEmail": {
+        "example": "alice",
+        "type": "string"
+      },
+      "contact": {
+        "example": "@alice",
+        "type": "string"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "currency": {
+        "example": "IRT",
+        "type": "string"
+      },
+      "gateway": {
+        "example": "card",
+        "type": "string"
+      },
+      "gatewayRef": {
+        "type": "string"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "kind": {
+        "example": "new",
+        "type": "string"
+      },
+      "paidAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "planId": {
+        "example": 1,
+        "type": "integer"
+      },
+      "planName": {
+        "example": "Monthly 50 GB",
+        "type": "string"
+      },
+      "receiptNote": {
+        "type": "string"
+      },
+      "receiptRef": {
+        "example": "482913",
+        "type": "string"
+      },
+      "rejectReason": {
+        "type": "string"
+      },
+      "status": {
+        "example": "pending",
+        "type": "string"
+      },
+      "token": {
+        "example": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
+        "type": "string"
+      },
+      "updatedAt": {
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "amount",
+      "clientEmail",
+      "contact",
+      "createdAt",
+      "currency",
+      "gateway",
+      "gatewayRef",
+      "id",
+      "kind",
+      "paidAt",
+      "planId",
+      "planName",
+      "receiptNote",
+      "receiptRef",
+      "rejectReason",
+      "status",
+      "token",
+      "updatedAt"
+    ],
+    "type": "object"
+  },
+  "OrderPage": {
+    "description": "OrderPage is one page of orders, newest first, with the unpaged total.",
+    "properties": {
+      "items": {
+        "items": {
+          "$ref": "#/components/schemas/Order"
+        },
+        "type": "array"
+      },
+      "total": {
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "items",
+      "total"
+    ],
+    "type": "object"
+  },
   "OutboundTraffics": {
     "description": "OutboundTraffics tracks traffic statistics for Xray outbound connections.",
     "properties": {
@@ -5281,6 +5397,81 @@ export const SCHEMAS: Record<string, unknown> = {
       "online",
       "tag",
       "up"
+    ],
+    "type": "object"
+  },
+  "Plan": {
+    "description": "Plan is a sellable package. Price is in the currency's minor unit (see\nservice.CurrencyDecimals); TotalGB is in bytes; DurationDays 0 means no\nexpiry. TemplateId supplies the inbounds and the rest of the client preset.",
+    "properties": {
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "currency": {
+        "example": "IRT",
+        "type": "string"
+      },
+      "description": {
+        "example": "Valid for 30 days",
+        "type": "string"
+      },
+      "durationDays": {
+        "example": 30,
+        "type": "integer"
+      },
+      "enabled": {
+        "example": true,
+        "type": "boolean"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "limitIp": {
+        "example": 2,
+        "type": "integer"
+      },
+      "name": {
+        "example": "Monthly 50 GB",
+        "type": "string"
+      },
+      "price": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "sortOrder": {
+        "example": 0,
+        "type": "integer"
+      },
+      "templateId": {
+        "example": 1,
+        "type": "integer"
+      },
+      "totalGB": {
+        "example": 53687091200,
+        "format": "int64",
+        "type": "integer"
+      },
+      "updatedAt": {
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "createdAt",
+      "currency",
+      "description",
+      "durationDays",
+      "enabled",
+      "id",
+      "limitIp",
+      "name",
+      "price",
+      "sortOrder",
+      "templateId",
+      "totalGB",
+      "updatedAt"
     ],
     "type": "object"
   },

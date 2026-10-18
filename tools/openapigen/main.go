@@ -45,6 +45,8 @@ func run(root, outDir string) error {
 				"HostedPanel",
 				"ClientTemplate",
 				"ClientDailyUsage",
+				"Plan",
+				"Order",
 			),
 			AliasAllow: setOf("Protocol"),
 			Overrides: map[string][]walkOverride{
@@ -96,6 +98,7 @@ func run(root, outDir string) error {
 			Path: resolveRel(root, "internal/web/service"),
 			StructAllow: setOf(
 				"InboundOption",
+				"OrderPage",
 				"VPNStatus",
 				"BackupResult",
 				"HappLinkResult",

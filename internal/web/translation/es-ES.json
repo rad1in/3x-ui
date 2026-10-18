@@ -146,6 +146,7 @@
     "audit": "Actividad",
     "admins": "Administradores",
     "sessions": "Sesiones",
+    "sales": "Ventas",
     "hosts": "Hosts",
     "docs": "Documentación",
     "openMenu": "Abrir menú",
@@ -2754,6 +2755,53 @@
       "toasts": {
         "saved": "Administrador guardado",
         "deleted": "Administrador eliminado"
+      }
+    },
+    "sales": {
+      "hint": "Vende planes a tus clientes. El plan fija precio, cuota y duración; la plantilla de cliente a la que apunta decide qué entradas recibe el cliente.",
+      "plansTab": "Planes",
+      "ordersTab": "Pedidos",
+      "plans": {
+        "add": "Añadir plan",
+        "edit": "Editar plan",
+        "name": "Nombre",
+        "details": "Descripción",
+        "price": "Precio",
+        "currency": "Moneda",
+        "quotaGb": "Cuota (GB, 0 = ilimitada)",
+        "durationDays": "Duración (días, 0 = sin caducidad)",
+        "template": "Plantilla de cliente",
+        "templateHint": "La plantilla aporta las entradas, el flow y el grupo. La cuota, duración y límite de IP del plan la sustituyen.",
+        "sortOrder": "Orden",
+        "enabled": "En venta",
+        "disabled": "Oculto",
+        "confirmDelete": "¿Eliminar este plan? Los clientes que ya lo compraron no se ven afectados.",
+        "saved": "Plan guardado",
+        "deleted": "Plan eliminado",
+        "errName": "El nombre es obligatorio",
+        "errPrice": "El precio no puede ser negativo",
+        "errTemplate": "Elige una plantilla de cliente"
+      },
+      "orders": {
+        "plan": "Plan",
+        "client": "Cliente",
+        "amount": "Importe",
+        "gateway": "Método de pago",
+        "status": "Estado",
+        "created": "Creado",
+        "allStatuses": "Todos los estados",
+        "kinds": {
+          "new": "Nuevo",
+          "renew": "Renovación"
+        },
+        "statuses": {
+          "pending": "Pago pendiente",
+          "review": "En revisión",
+          "paid": "Pagado",
+          "rejected": "Rechazado",
+          "failed": "Fallido",
+          "canceled": "Cancelado"
+        }
       }
     },
     "sessions": {

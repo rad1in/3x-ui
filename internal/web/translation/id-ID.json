@@ -146,6 +146,7 @@
     "audit": "Aktivitas",
     "admins": "Admin",
     "sessions": "Sesi",
+    "sales": "Penjualan",
     "hosts": "Host",
     "docs": "Dokumentasi",
     "openMenu": "Buka menu",
@@ -2754,6 +2755,53 @@
       "toasts": {
         "saved": "Admin disimpan",
         "deleted": "Admin dihapus"
+      }
+    },
+    "sales": {
+      "hint": "Jual paket ke pelanggan. Paket menentukan harga, kuota, dan durasi; templat klien yang dituju menentukan inbound yang didapat pelanggan.",
+      "plansTab": "Paket",
+      "ordersTab": "Pesanan",
+      "plans": {
+        "add": "Tambah paket",
+        "edit": "Ubah paket",
+        "name": "Nama",
+        "details": "Deskripsi",
+        "price": "Harga",
+        "currency": "Mata uang",
+        "quotaGb": "Kuota (GB, 0 = tanpa batas)",
+        "durationDays": "Durasi (hari, 0 = tanpa kedaluwarsa)",
+        "template": "Templat klien",
+        "templateHint": "Templat menyediakan inbound, flow, dan grup. Kuota, durasi, dan batas IP paket menimpanya.",
+        "sortOrder": "Urutan",
+        "enabled": "Dijual",
+        "disabled": "Tersembunyi",
+        "confirmDelete": "Hapus paket ini? Pelanggan yang sudah membelinya tidak terpengaruh.",
+        "saved": "Paket disimpan",
+        "deleted": "Paket dihapus",
+        "errName": "Nama wajib diisi",
+        "errPrice": "Harga tidak boleh negatif",
+        "errTemplate": "Pilih templat klien"
+      },
+      "orders": {
+        "plan": "Paket",
+        "client": "Klien",
+        "amount": "Jumlah",
+        "gateway": "Metode pembayaran",
+        "status": "Status",
+        "created": "Dibuat",
+        "allStatuses": "Semua status",
+        "kinds": {
+          "new": "Baru",
+          "renew": "Perpanjangan"
+        },
+        "statuses": {
+          "pending": "Menunggu pembayaran",
+          "review": "Ditinjau",
+          "paid": "Dibayar",
+          "rejected": "Ditolak",
+          "failed": "Gagal",
+          "canceled": "Dibatalkan"
+        }
       }
     },
     "sessions": {

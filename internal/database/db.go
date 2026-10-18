@@ -112,6 +112,8 @@ func allModels() []any {
 		&model.ClientTemplate{},
 		&model.ClientDailyUsage{},
 		&model.ClientTrial{},
+		&model.Plan{},
+		&model.Order{},
 	}
 }
 

@@ -14,6 +14,7 @@ const SettingsPage = lazy(() => import('@/pages/settings/SettingsPage'));
 const XrayPage = lazy(() => import('@/pages/xray/XrayPage'));
 const ApiDocsPage = lazy(() => import('@/pages/api-docs/ApiDocsPage'));
 const SponsorsPage = lazy(() => import('@/pages/sponsors/SponsorsPage'));
+const SalesPage = lazy(() => import('@/pages/sales/SalesPage'));
 const AuditPage = lazy(() => import('@/pages/audit/AuditPage'));
 const AdminsPage = lazy(() => import('@/pages/admins/AdminsPage'));
 const SessionsPage = lazy(() => import('@/pages/sessions/SessionsPage'));
@@ -57,6 +58,7 @@ const routes: RouteObject[] = [
       { path: 'routing', element: withSuspense(<XrayPage />) },
       { path: 'api-docs', element: withSuspense(<ApiDocsPage />) },
       { path: 'sponsors', element: withSuspense(<SponsorsPage />) },
+      { path: 'sales', element: withSuspense(<SalesPage />) },
       { path: 'audit', element: withSuspense(<AuditPage />) },
       { path: 'admins', element: withSuspense(<AdminsPage />) },
       { path: 'sessions', element: withSuspense(<SessionsPage />) },

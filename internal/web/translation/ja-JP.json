@@ -146,6 +146,7 @@
     "audit": "操作ログ",
     "admins": "管理者",
     "sessions": "セッション",
+    "sales": "販売",
     "hosts": "ホスト",
     "docs": "ドキュメント",
     "openMenu": "メニューを開く",
@@ -2754,6 +2755,53 @@
       "toasts": {
         "saved": "管理者を保存しました",
         "deleted": "管理者を削除しました"
+      }
+    },
+    "sales": {
+      "hint": "プランを顧客に販売します。プランは価格・容量・期間を定め、紐づくクライアントテンプレートが顧客に付与するインバウンドを決めます。",
+      "plansTab": "プラン",
+      "ordersTab": "注文",
+      "plans": {
+        "add": "プランを追加",
+        "edit": "プランを編集",
+        "name": "名前",
+        "details": "説明",
+        "price": "価格",
+        "currency": "通貨",
+        "quotaGb": "容量（GB、0 = 無制限）",
+        "durationDays": "期間（日、0 = 無期限）",
+        "template": "クライアントテンプレート",
+        "templateHint": "テンプレートがインバウンド・フロー・グループを供給します。プランの容量・期間・IP 制限がテンプレートの値を上書きします。",
+        "sortOrder": "並び順",
+        "enabled": "販売中",
+        "disabled": "非表示",
+        "confirmDelete": "このプランを削除しますか？購入済みの顧客には影響しません。",
+        "saved": "プランを保存しました",
+        "deleted": "プランを削除しました",
+        "errName": "名前は必須です",
+        "errPrice": "価格に負の値は使えません",
+        "errTemplate": "クライアントテンプレートを選択してください"
+      },
+      "orders": {
+        "plan": "プラン",
+        "client": "クライアント",
+        "amount": "金額",
+        "gateway": "支払い方法",
+        "status": "ステータス",
+        "created": "作成日時",
+        "allStatuses": "すべてのステータス",
+        "kinds": {
+          "new": "新規",
+          "renew": "更新"
+        },
+        "statuses": {
+          "pending": "支払い待ち",
+          "review": "確認中",
+          "paid": "支払い済み",
+          "rejected": "却下",
+          "failed": "失敗",
+          "canceled": "キャンセル"
+        }
       }
     },
     "sessions": {
