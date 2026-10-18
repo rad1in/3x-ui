@@ -50,6 +50,8 @@ export class AllSetting {
   tgBotChatId = '';
   tgRunTime = '@daily';
   tgBotBackup = false;
+  tgTrialEnable = false;
+  tgTrialTemplateId = 0;
   tgCpu = 80;
   tgMemory = 80;
   tgLang = 'en-US';

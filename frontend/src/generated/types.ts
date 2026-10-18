@@ -191,6 +191,8 @@ export interface AllSetting {
   tgLang: string;
   tgMemory: number;
   tgRunTime: string;
+  tgTrialEnable: boolean;
+  tgTrialTemplateId: number;
   timeLocation: string;
   trafficDiff: number;
   trustedProxyCIDRs: string;
@@ -402,6 +404,8 @@ export interface AllSettingView {
   tgLang: string;
   tgMemory: number;
   tgRunTime: string;
+  tgTrialEnable: boolean;
+  tgTrialTemplateId: number;
   timeLocation: string;
   trafficDiff: number;
   trustedProxyCIDRs: string;

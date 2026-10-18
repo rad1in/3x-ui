@@ -67,6 +67,7 @@ func migrationModels() []any {
 		&model.ClientDepletion{},
 		&model.ClientTemplate{},
 		&model.ClientDailyUsage{},
+		&model.ClientTrial{},
 	}
 }
 

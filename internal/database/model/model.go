@@ -1097,6 +1097,17 @@ type ClientDailyUsage struct {
 
 func (ClientDailyUsage) TableName() string { return "client_daily_usage" }
 
+// ClientTrial records that a Telegram user already received a free trial, so
+// deleting the trial client does not hand out another one.
+type ClientTrial struct {
+	Id        int    `json:"id" gorm:"primaryKey;autoIncrement"`
+	TgID      int64  `json:"tgId" gorm:"column:tg_id;uniqueIndex;not null"`
+	Email     string `json:"email"`
+	CreatedAt int64  `json:"createdAt" gorm:"autoCreateTime:milli"`
+}
+
+func (ClientTrial) TableName() string { return "client_trials" }
+
 // MarshalJSON emits the reverse column as a nested JSON object rather than an
 // escaped JSON-text string, matching the same convention Inbound uses for its
 // JSON-text columns. Empty storage renders as null.

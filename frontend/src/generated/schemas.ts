@@ -584,6 +584,13 @@ export const SCHEMAS: Record<string, unknown> = {
       "tgRunTime": {
         "type": "string"
       },
+      "tgTrialEnable": {
+        "type": "boolean"
+      },
+      "tgTrialTemplateId": {
+        "minimum": 0,
+        "type": "integer"
+      },
       "timeLocation": {
         "type": "string"
       },
@@ -822,6 +829,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "tgLang",
       "tgMemory",
       "tgRunTime",
+      "tgTrialEnable",
+      "tgTrialTemplateId",
       "timeLocation",
       "trafficDiff",
       "trustedProxyCIDRs",
@@ -1455,6 +1464,13 @@ export const SCHEMAS: Record<string, unknown> = {
       "tgRunTime": {
         "type": "string"
       },
+      "tgTrialEnable": {
+        "type": "boolean"
+      },
+      "tgTrialTemplateId": {
+        "minimum": 0,
+        "type": "integer"
+      },
       "timeLocation": {
         "type": "string"
       },
@@ -1703,6 +1719,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "tgLang",
       "tgMemory",
       "tgRunTime",
+      "tgTrialEnable",
+      "tgTrialTemplateId",
       "timeLocation",
       "trafficDiff",
       "trustedProxyCIDRs",

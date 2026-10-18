@@ -49,6 +49,8 @@ export const AllSettingSchema = z
     tgBotChatId: z.string().optional(),
     tgRunTime: z.string().optional(),
     tgBotBackup: z.boolean().optional(),
+    tgTrialEnable: z.boolean().optional(),
+    tgTrialTemplateId: z.number().int().min(0).optional(),
     tgCpu: z.number().int().min(0).max(100).optional(),
     outboundDownThreshold: z.number().int().min(1).max(100).optional(),
     tgLang: z.string().optional(),

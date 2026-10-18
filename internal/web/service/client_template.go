@@ -106,6 +106,22 @@ func templateExpiry(tpl *model.ClientTemplate, now int64) int64 {
 	return now + span
 }
 
+func templateClient(tpl *model.ClientTemplate, email string, now int64) model.Client {
+	return model.Client{
+		Email:           email,
+		Enable:          true,
+		TotalGB:         tpl.TotalGB,
+		ExpiryTime:      templateExpiry(tpl, now),
+		LimitIP:         tpl.LimitIP,
+		Flow:            tpl.Flow,
+		Group:           tpl.Group,
+		Comment:         tpl.Comment,
+		Reset:           tpl.Reset,
+		TrafficReset:    tpl.TrafficReset,
+		TrafficResetDay: tpl.TrafficResetDay,
+	}
+}
+
 // CreateClientsFromTemplate creates one client per email from the preset; an
 // email that fails is reported in Failed without stopping the others.
 func (s *ClientService) CreateClientsFromTemplate(inboundSvc *InboundService, templateID int, emails []string) (*ClientTemplateResult, error) {
@@ -121,19 +137,7 @@ func (s *ClientService) CreateClientsFromTemplate(inboundSvc *InboundService, te
 			continue
 		}
 		needRestart, err := s.Create(inboundSvc, &ClientCreatePayload{
-			Client: model.Client{
-				Email:           email,
-				Enable:          true,
-				TotalGB:         tpl.TotalGB,
-				ExpiryTime:      templateExpiry(tpl, now),
-				LimitIP:         tpl.LimitIP,
-				Flow:            tpl.Flow,
-				Group:           tpl.Group,
-				Comment:         tpl.Comment,
-				Reset:           tpl.Reset,
-				TrafficReset:    tpl.TrafficReset,
-				TrafficResetDay: tpl.TrafficResetDay,
-			},
+			Client:     templateClient(tpl, email, now),
 			InboundIds: append([]int(nil), tpl.InboundIds...),
 		})
 		res.NeedRestart = res.NeedRestart || needRestart
