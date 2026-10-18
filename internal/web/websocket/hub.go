@@ -39,11 +39,28 @@ type clientOpKind int
 const (
 	opRegister clientOpKind = iota
 	opUnregister
+	opDisconnectUser
 )
 
 type clientOp struct {
-	kind clientOpKind
-	c    *Client
+	kind   clientOpKind
+	c      *Client
+	userId int
+}
+
+// hubMessage is one broadcast in two cuts: full for unrestricted sockets and
+// restricted (nil = withheld) for operator sockets.
+type hubMessage struct {
+	full       []byte
+	restricted []byte
+}
+
+// restrictedSafeTypes carry nothing scoped to clients or inbounds.
+var restrictedSafeTypes = map[MessageType]bool{
+	MessageTypeStatus:       true,
+	MessageTypeXrayState:    true,
+	MessageTypeNotification: true,
+	MessageTypeInvalidate:   true,
 }
 
 // NewClient builds a Client ready for hub registration.
@@ -63,15 +80,18 @@ type Message struct {
 
 // Client represents a single WebSocket connection.
 type Client struct {
-	ID        string
-	Send      chan []byte
-	closeOnce sync.Once
+	ID     string
+	Send   chan []byte
+	UserId int
+	// Restricted sockets belong to operators, whose REST reads are scoped.
+	Restricted bool
+	closeOnce  sync.Once
 }
 
 // Hub fan-outs messages to all connected clients.
 type Hub struct {
 	clients   map[*Client]struct{}
-	broadcast chan []byte
+	broadcast chan hubMessage
 	ops       chan clientOp
 	mu        sync.RWMutex
 	ctx       context.Context
@@ -86,7 +106,7 @@ func NewHub() *Hub {
 	ctx, cancel := context.WithCancel(context.Background())
 	return &Hub{
 		clients:       make(map[*Client]struct{}),
-		broadcast:     make(chan []byte, hubBroadcastQueue),
+		broadcast:     make(chan hubMessage, hubBroadcastQueue),
 		ops:           make(chan clientOp, hubOpsQueue),
 		ctx:           ctx,
 		cancel:        cancel,
@@ -158,7 +178,7 @@ func (h *Hub) runOnce() (stopped bool) {
 			return true
 
 		case op := <-h.ops:
-			if op.c == nil {
+			if op.c == nil && op.kind != opDisconnectUser {
 				continue
 			}
 			switch op.kind {
@@ -170,6 +190,8 @@ func (h *Hub) runOnce() (stopped bool) {
 				logger.Debugf("WebSocket client connected: %s (total: %d)", op.c.ID, n)
 			case opUnregister:
 				h.removeClient(op.c)
+			case opDisconnectUser:
+				h.removeUser(op.userId)
 			}
 
 		case msg := <-h.broadcast:
@@ -201,13 +223,35 @@ func (h *Hub) removeClient(c *Client) {
 	logger.Debugf("WebSocket client disconnected: %s (total: %d)", c.ID, n)
 }
 
+func (h *Hub) removeUser(userId int) {
+	h.mu.Lock()
+	for c := range h.clients {
+		if c.UserId == userId {
+			delete(h.clients, c)
+			c.closeOnce.Do(func() { close(c.Send) })
+		}
+	}
+	h.mu.Unlock()
+}
+
+// DisconnectUser closes every socket of one admin, whose access just changed.
+func (h *Hub) DisconnectUser(userId int) {
+	if h == nil {
+		return
+	}
+	select {
+	case h.ops <- clientOp{kind: opDisconnectUser, userId: userId}:
+	case <-h.ctx.Done():
+	}
+}
+
 // fanout delivers msg to every client. Each send is non-blocking — a client
 // whose buffer is full is collected for direct removal at the end. We do NOT
 // route slow-client unregistrations through the unregister channel: under
 // burst load (panel restart, network blip) that channel can fill up while the
 // hub itself is the consumer, causing a self-deadlock.
-func (h *Hub) fanout(msg []byte) {
-	if msg == nil {
+func (h *Hub) fanout(msg hubMessage) {
+	if msg.full == nil {
 		return
 	}
 	h.mu.RLock()
@@ -223,7 +267,13 @@ func (h *Hub) fanout(msg []byte) {
 
 	var dead []*Client
 	for _, c := range targets {
-		if !trySend(c, msg) {
+		frame := msg.full
+		if c.Restricted {
+			if frame = msg.restricted; frame == nil {
+				continue
+			}
+		}
+		if !trySend(c, frame) {
 			dead = append(dead, c)
 		}
 	}
@@ -287,12 +337,25 @@ func (h *Hub) Broadcast(messageType MessageType, payload any) {
 		h.broadcastInvalidate(messageType)
 		return
 	}
-	h.enqueue(data)
+	msg := hubMessage{full: data}
+	switch {
+	case restrictedSafeTypes[messageType]:
+		msg.restricted = data
+	case messageType == MessageTypeInbounds:
+		msg.restricted = invalidateFrame(MessageTypeInbounds)
+	}
+	h.enqueue(msg)
 }
 
 // broadcastInvalidate queues a lightweight signal telling clients to re-fetch
 // the named data type via REST.
 func (h *Hub) broadcastInvalidate(originalType MessageType) {
+	if data := invalidateFrame(originalType); data != nil {
+		h.enqueue(hubMessage{full: data, restricted: data})
+	}
+}
+
+func invalidateFrame(originalType MessageType) []byte {
 	data, err := json.Marshal(Message{
 		Type:    MessageTypeInvalidate,
 		Payload: map[string]string{"type": string(originalType)},
@@ -300,16 +363,16 @@ func (h *Hub) broadcastInvalidate(originalType MessageType) {
 	})
 	if err != nil {
 		logger.Error("WebSocket invalidate marshal failed:", err)
-		return
+		return nil
 	}
-	h.enqueue(data)
+	return data
 }
 
-// enqueue submits raw bytes to the broadcast channel. Dropped on backpressure
+// enqueue submits a message to the broadcast channel. Dropped on backpressure
 // (channel full for >100ms) or shutdown.
-func (h *Hub) enqueue(data []byte) {
+func (h *Hub) enqueue(msg hubMessage) {
 	select {
-	case h.broadcast <- data:
+	case h.broadcast <- msg:
 	case <-time.After(enqueueTimeout):
 		logger.Warning("WebSocket broadcast channel full, dropping message")
 	case <-h.ctx.Done():

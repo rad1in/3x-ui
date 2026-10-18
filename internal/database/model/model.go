@@ -40,12 +40,35 @@ const (
 	L2TP        Protocol = "l2tp"
 )
 
-// User represents a user account in the 3x-ui panel.
+// Admin roles, from most to least privileged. An operator only reaches the
+// inbounds and client groups listed in its scope; a viewer only reads.
+const (
+	AdminRoleOwner    = "owner"
+	AdminRoleAdmin    = "admin"
+	AdminRoleOperator = "operator"
+	AdminRoleViewer   = "viewer"
+)
+
+func IsKnownAdminRole(role string) bool {
+	switch role {
+	case AdminRoleOwner, AdminRoleAdmin, AdminRoleOperator, AdminRoleViewer:
+		return true
+	}
+	return false
+}
+
+// User represents an admin account in the 3x-ui panel.
 type User struct {
 	Id         int    `json:"id" gorm:"primaryKey;autoIncrement"`
 	Username   string `json:"username"`
 	Password   string `json:"password"`
 	LoginEpoch int64  `json:"-" gorm:"default:0"`
+	// The column default makes every account that predates roles an owner.
+	Role string `json:"role" gorm:"not null;default:'owner'"`
+	// JSON arrays; read only for operators.
+	ScopeInboundIds string `json:"-" gorm:"column:scope_inbound_ids;not null;default:'[]'"`
+	ScopeGroups     string `json:"-" gorm:"column:scope_groups;not null;default:'[]'"`
+	CreatedAt       int64  `json:"createdAt" gorm:"not null;default:0"`
 }
 
 // Inbound represents an Xray inbound configuration with traffic statistics and settings.

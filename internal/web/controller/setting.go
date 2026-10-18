@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/crypto"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
@@ -132,6 +133,17 @@ func (a *SettingController) updateSetting(c *gin.Context) {
 		return
 	}
 	allSetting := &form.AllSetting
+	if role := c.GetString(adminRoleKey); role != "" && role != model.AdminRoleOwner {
+		stored, err := a.settingService.GetAllSetting()
+		if err != nil {
+			jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), err)
+			return
+		}
+		if service.SecuritySettingsChanged(stored, allSetting, form.ClearLdapPassword) {
+			c.AbortWithStatusJSON(http.StatusForbidden, entity.Msg{Success: false, Msg: I18nWeb(c, "pages.admins.securityOwnerOnly")})
+			return
+		}
+	}
 	oldTwoFactor, twoFactorErr := a.settingService.GetTwoFactorEnable()
 	oldPanelOutbound, _ := a.settingService.GetPanelOutbound()
 	oldTgEnable, _ := a.settingService.GetTgbotEnabled()
@@ -214,9 +226,11 @@ func (a *SettingController) updateUser(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifyUserError"), errors.New(I18nWeb(c, "pages.settings.toasts.userPassMustBeNotEmpty")))
 		return
 	}
-	if err := a.settingService.VerifyTwoFactorCode(form.TwoFactorCode); err != nil {
-		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifyUserError"), err)
-		return
+	if user.Role == model.AdminRoleOwner {
+		if err := a.settingService.VerifyTwoFactorCode(form.TwoFactorCode); err != nil {
+			jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifyUserError"), err)
+			return
+		}
 	}
 	err = a.userService.UpdateUser(user.Id, form.NewUsername, form.NewPassword)
 	if err == nil {

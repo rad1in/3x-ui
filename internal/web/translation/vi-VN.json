@@ -139,6 +139,7 @@
     "donate": "Quyên góp",
     "sponsors": "Nhà tài trợ",
     "audit": "Hoạt động",
+    "admins": "Quản trị viên",
     "hosts": "Hosts",
     "docs": "Tài liệu",
     "openMenu": "Mở menu",
@@ -2601,6 +2602,42 @@
       "empty": "Chưa có hoạt động nào",
       "login": "Đăng nhập",
       "sectionServer": "Máy chủ"
+    },
+    "admins": {
+      "title": "Quản trị viên",
+      "hint": "Mỗi người có tài khoản đăng nhập riêng. Chủ sở hữu làm được mọi thứ, kể cả quản lý quản trị viên và cài đặt bảo mật. Quản trị viên làm được mọi việc còn lại. Người vận hành chỉ xem và thay đổi các inbound và nhóm khách hàng được giao. Người xem chỉ được xem, không thay đổi gì.",
+      "add": "Thêm quản trị viên",
+      "edit": "Sửa quản trị viên",
+      "role": "Vai trò",
+      "roles": {
+        "owner": "Chủ sở hữu",
+        "admin": "Quản trị viên",
+        "operator": "Người vận hành",
+        "viewer": "Người xem"
+      },
+      "roleHint": {
+        "owner": "Mọi thứ, kể cả quản trị viên, token API và cài đặt bảo mật.",
+        "admin": "Mọi thứ trừ quản trị viên, token API, tệp cơ sở dữ liệu và cài đặt bảo mật.",
+        "operator": "Chỉ các inbound và nhóm khách hàng được chọn bên dưới.",
+        "viewer": "Quyền chỉ đọc toàn bộ bảng điều khiển."
+      },
+      "scope": "Quyền truy cập",
+      "scopeAll": "Toàn bộ bảng điều khiển",
+      "scopeNone": "Chưa được giao gì",
+      "scopeInbounds": "Inbound",
+      "scopeGroups": "Nhóm khách hàng",
+      "you": "bạn",
+      "passwordKeep": "Để trống để giữ mật khẩu hiện tại.",
+      "selfNote": "Bạn không thể thay đổi vai trò hoặc quyền truy cập của chính mình.",
+      "deleteConfirm": "Xóa quản trị viên này? Họ sẽ bị đăng xuất ngay.",
+      "errUsername": "Nhập tên người dùng tối đa 64 ký tự.",
+      "errPassword": "Nhập mật khẩu.",
+      "forbidden": "Vai trò của bạn không cho phép thao tác này.",
+      "securityOwnerOnly": "Chỉ chủ sở hữu mới được thay đổi cài đặt bảo mật.",
+      "toasts": {
+        "saved": "Đã lưu quản trị viên",
+        "deleted": "Đã xóa quản trị viên"
+      }
     },
     "hostedPanels": {
       "saved": "Đã lưu bảng điều khiển",

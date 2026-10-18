@@ -24,6 +24,25 @@ export type trafficLocalApplyAction = z.infer<typeof trafficLocalApplyActionSche
 export const transportBitsSchema = z.number().int();
 export type transportBits = z.infer<typeof transportBitsSchema>;
 
+export const AdminInputSchema = z.object({
+  groups: z.array(z.string()),
+  inboundIds: z.array(z.number().int()),
+  password: z.string(),
+  role: z.string(),
+  username: z.string(),
+});
+export type AdminInput = z.infer<typeof AdminInputSchema>;
+
+export const AdminViewSchema = z.object({
+  createdAt: z.number().int(),
+  groups: z.array(z.string()),
+  id: z.number().int(),
+  inboundIds: z.array(z.number().int()),
+  role: z.string(),
+  username: z.string(),
+});
+export type AdminView = z.infer<typeof AdminViewSchema>;
+
 export const AllSettingSchema = z.object({
   autoDeleteDepletedDays: z.number().int().min(0),
   backupKeep: z.number().int().min(0),
@@ -1348,8 +1367,10 @@ export const TuicServerSettingsSchema = z.object({
 export type TuicServerSettings = z.infer<typeof TuicServerSettingsSchema>;
 
 export const UserSchema = z.object({
+  createdAt: z.number().int(),
   id: z.number().int(),
   password: z.string(),
+  role: z.string(),
   username: z.string(),
 });
 export type User = z.infer<typeof UserSchema>;

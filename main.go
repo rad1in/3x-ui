@@ -269,7 +269,7 @@ func showSetting(show bool) {
 		}
 
 		userService := panel.UserService{}
-		userModel, err := userService.GetFirstUser()
+		userModel, err := userService.GetPrimaryOwner()
 		if err != nil {
 			fmt.Println("get current user info failed, error info:", err)
 		}

@@ -139,6 +139,7 @@
     "donate": "Donasi",
     "sponsors": "Sponsor",
     "audit": "Aktivitas",
+    "admins": "Admin",
     "hosts": "Host",
     "docs": "Dokumentasi",
     "openMenu": "Buka menu",
@@ -2601,6 +2602,42 @@
       "empty": "Belum ada aktivitas tercatat",
       "login": "Login",
       "sectionServer": "Server"
+    },
+    "admins": {
+      "title": "Admin",
+      "hint": "Setiap orang punya login sendiri. Pemilik bisa melakukan semuanya, termasuk mengelola admin dan pengaturan keamanan. Admin bisa melakukan semua hal lainnya. Operator hanya melihat dan mengubah inbound dan grup klien yang ditugaskan kepadanya. Pengamat bisa melihat tetapi tidak mengubah apa pun.",
+      "add": "Tambah admin",
+      "edit": "Ubah admin",
+      "role": "Peran",
+      "roles": {
+        "owner": "Pemilik",
+        "admin": "Admin",
+        "operator": "Operator",
+        "viewer": "Pengamat"
+      },
+      "roleHint": {
+        "owner": "Semuanya, termasuk admin, token API, dan pengaturan keamanan.",
+        "admin": "Semuanya kecuali admin, token API, file database, dan pengaturan keamanan.",
+        "operator": "Hanya inbound dan grup klien yang dipilih di bawah.",
+        "viewer": "Akses baca saja ke seluruh panel."
+      },
+      "scope": "Akses",
+      "scopeAll": "Seluruh panel",
+      "scopeNone": "Belum ada yang ditugaskan",
+      "scopeInbounds": "Inbound",
+      "scopeGroups": "Grup klien",
+      "you": "Anda",
+      "passwordKeep": "Biarkan kosong untuk mempertahankan kata sandi saat ini.",
+      "selfNote": "Anda tidak dapat mengubah peran atau akses Anda sendiri.",
+      "deleteConfirm": "Hapus admin ini? Sesinya langsung diakhiri.",
+      "errUsername": "Masukkan nama pengguna paling banyak 64 karakter.",
+      "errPassword": "Masukkan kata sandi.",
+      "forbidden": "Peran Anda tidak mengizinkan tindakan ini.",
+      "securityOwnerOnly": "Hanya pemilik yang dapat mengubah pengaturan keamanan.",
+      "toasts": {
+        "saved": "Admin disimpan",
+        "deleted": "Admin dihapus"
+      }
     },
     "hostedPanels": {
       "saved": "Panel disimpan",

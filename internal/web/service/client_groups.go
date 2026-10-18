@@ -352,6 +352,9 @@ func (s *ClientService) AddToGroup(emails []string, group string) (int, error) {
 
 func (s *ClientService) replaceGroupValue(oldName, newName string) (int, error) {
 	db := database.GetDB()
+	if err := renameScopeGroup(db, oldName, newName); err != nil {
+		return 0, err
+	}
 	if newName == "" {
 		if err := db.Where("name = ?", oldName).Delete(&model.ClientGroup{}).Error; err != nil {
 			return 0, err

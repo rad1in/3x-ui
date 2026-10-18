@@ -26,6 +26,86 @@
       }
     },
     "schemas": {
+      "AdminInput": {
+        "description": "AdminInput creates or edits an admin. An empty Password on edit keeps it.",
+        "properties": {
+          "groups": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "inboundIds": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "password": {
+            "example": "a-long-password",
+            "type": "string"
+          },
+          "role": {
+            "example": "operator",
+            "type": "string"
+          },
+          "username": {
+            "example": "support",
+            "type": "string"
+          }
+        },
+        "required": [
+          "groups",
+          "inboundIds",
+          "password",
+          "role",
+          "username"
+        ],
+        "type": "object"
+      },
+      "AdminView": {
+        "description": "AdminView is an admin account as the owner sees it; it never carries the hash.",
+        "properties": {
+          "createdAt": {
+            "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "groups": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "example": 2,
+            "type": "integer"
+          },
+          "inboundIds": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "role": {
+            "example": "operator",
+            "type": "string"
+          },
+          "username": {
+            "example": "support",
+            "type": "string"
+          }
+        },
+        "required": [
+          "createdAt",
+          "groups",
+          "id",
+          "inboundIds",
+          "role",
+          "username"
+        ],
+        "type": "object"
+      },
       "AllSetting": {
         "properties": {
           "autoDeleteDepletedDays": {
@@ -5561,12 +5641,20 @@
         "type": "object"
       },
       "User": {
-        "description": "User represents a user account in the 3x-ui panel.",
+        "description": "User represents an admin account in the 3x-ui panel.",
         "properties": {
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
           "id": {
             "type": "integer"
           },
           "password": {
+            "type": "string"
+          },
+          "role": {
+            "description": "The column default makes every account that predates roles an owner.",
             "type": "string"
           },
           "username": {
@@ -5574,8 +5662,10 @@
           }
         },
         "required": [
+          "createdAt",
           "id",
           "password",
+          "role",
           "username"
         ],
         "type": "object"
@@ -5692,6 +5782,10 @@
     {
       "name": "Sponsors",
       "description": "Manage the sponsor placements this panel shows on its login page, dashboard and sponsors page, and optionally read them from another panel's feed instead."
+    },
+    {
+      "name": "Admins",
+      "description": "Admin accounts and their roles. owner: everything; admin: everything except managing admins, API tokens, the database file and security settings; operator: only the inbounds and client groups in its scope; viewer: read-only. Every endpoint except /me is owner-only. API tokens are not admins and keep their own scopes. All endpoints under /panel/api/admins."
     },
     {
       "name": "Activity Log",
@@ -15164,6 +15258,289 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/admins/me": {
+      "get": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "The signed-in admin with its role and, for an operator, its scope. An API token answers as the oldest owner.",
+        "operationId": "get_panel_api_admins_me",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/AdminView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "createdAt": 1760684400000,
+                    "groups": [
+                      ""
+                    ],
+                    "id": 2,
+                    "inboundIds": [
+                      0
+                    ],
+                    "role": "operator",
+                    "username": "support"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/admins/list": {
+      "get": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Every admin account, oldest first. Password hashes are never returned.",
+        "operationId": "get_panel_api_admins_list",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdminView"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "createdAt": 1760684400000,
+                      "groups": [
+                        ""
+                      ],
+                      "id": 2,
+                      "inboundIds": [
+                        0
+                      ],
+                      "role": "operator",
+                      "username": "support"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/admins/create": {
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Create an admin. username is unique (case-insensitive), password is required, role is owner, admin, operator or viewer. inboundIds and groups are kept only for an operator.",
+        "operationId": "post_panel_api_admins_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "AdminInput."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/AdminView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "createdAt": 1760684400000,
+                    "groups": [
+                      ""
+                    ],
+                    "id": 2,
+                    "inboundIds": [
+                      0
+                    ],
+                    "role": "operator",
+                    "username": "support"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/admins/update/{id}": {
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Replace an admin. An empty password keeps the current one; a new one ends that admin's sessions. The panel always keeps one owner, and nobody can change their own role or scope.",
+        "operationId": "post_panel_api_admins_update_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Admin id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "AdminInput."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/AdminView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "createdAt": 1760684400000,
+                    "groups": [
+                      ""
+                    ],
+                    "id": 2,
+                    "inboundIds": [
+                      0
+                    ],
+                    "role": "operator",
+                    "username": "support"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/admins/del/{id}": {
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Delete an admin and close its live connections. The last owner and yourself cannot be deleted.",
+        "operationId": "post_panel_api_admins_del_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Admin id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",

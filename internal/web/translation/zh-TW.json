@@ -139,6 +139,7 @@
     "donate": "捐贈",
     "sponsors": "贊助商",
     "audit": "操作日誌",
+    "admins": "管理員",
     "hosts": "主機",
     "docs": "文件",
     "openMenu": "開啟選單",
@@ -2601,6 +2602,42 @@
       "empty": "尚無操作記錄",
       "login": "登入",
       "sectionServer": "伺服器"
+    },
+    "admins": {
+      "title": "管理員",
+      "hint": "每個人都有自己的登入帳號。擁有者可以做任何事，包括管理管理員和安全設定。管理員可以做其餘所有事情。操作員只能檢視和修改指派給他們的入站和用戶端群組。檢視者只能檢視，不能修改任何內容。",
+      "add": "新增管理員",
+      "edit": "編輯管理員",
+      "role": "角色",
+      "roles": {
+        "owner": "擁有者",
+        "admin": "管理員",
+        "operator": "操作員",
+        "viewer": "檢視者"
+      },
+      "roleHint": {
+        "owner": "全部權限，包括管理員、API 權杖和安全設定。",
+        "admin": "除管理員、API 權杖、資料庫檔案和安全設定以外的全部權限。",
+        "operator": "僅限下方選擇的入站和用戶端群組。",
+        "viewer": "對整個面板唯讀存取。"
+      },
+      "scope": "存取範圍",
+      "scopeAll": "整個面板",
+      "scopeNone": "尚未指派任何內容",
+      "scopeInbounds": "入站",
+      "scopeGroups": "用戶端群組",
+      "you": "你",
+      "passwordKeep": "留空以保留目前的密碼。",
+      "selfNote": "你無法修改自己的角色或存取範圍。",
+      "deleteConfirm": "刪除此管理員？其工作階段將立即結束。",
+      "errUsername": "請輸入不超過 64 個字元的使用者名稱。",
+      "errPassword": "請輸入密碼。",
+      "forbidden": "你的角色不允許此操作。",
+      "securityOwnerOnly": "只有擁有者可以修改安全設定。",
+      "toasts": {
+        "saved": "管理員已儲存",
+        "deleted": "管理員已刪除"
+      }
     },
     "hostedPanels": {
       "saved": "面板已儲存",

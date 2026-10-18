@@ -63,6 +63,8 @@ type ClientPageParams struct {
 	HasTgID    string `form:"hasTgId"`
 	HasComment string `form:"hasComment"`
 	Group      string `form:"group"`
+	// Scope is set by the server for operators, never bound from the query.
+	Scope *AdminScope `form:"-" json:"-"`
 }
 
 // ClientPageResponse is the shape returned by ListPaged. `Total` is the
@@ -171,6 +173,7 @@ type clientQuery struct {
 	nowMs            int64
 	expireDiffMs     int64
 	trafficDiffBytes int64
+	scope            *AdminScope
 }
 
 type clientQueryJoin struct {
@@ -211,7 +214,7 @@ func newClientQuery(db *gorm.DB, nowMs, expireDiffMs, trafficDiffBytes int64) cl
 }
 
 func (q clientQuery) from() *gorm.DB {
-	tx := q.db.Table("clients AS c")
+	tx := q.scope.restrictClients(q.db.Table("clients AS c"), "c")
 	for _, j := range q.joins {
 		tx = tx.Joins(j.sql, j.args...)
 	}
@@ -402,9 +405,14 @@ func (s *ClientService) ListPaged(inboundSvc *InboundService, settingSvc *Settin
 
 	onlines := inboundSvc.GetOnlineClients()
 	q := newClientQuery(db, time.Now().UnixMilli(), expireDiffMs, trafficDiffBytes)
+	q.scope = params.Scope
 
 	var total int64
-	if err := db.Model(&model.ClientRecord{}).Count(&total).Error; err != nil {
+	countTotal := db.Model(&model.ClientRecord{})
+	if q.scope != nil {
+		countTotal = q.from()
+	}
+	if err := countTotal.Count(&total).Error; err != nil {
 		return nil, err
 	}
 
@@ -433,6 +441,7 @@ func (s *ClientService) ListPaged(inboundSvc *InboundService, settingSvc *Settin
 	if err != nil {
 		return nil, err
 	}
+	groups = params.Scope.KeepGroupNames(groups)
 
 	return &ClientPageResponse{
 		Items:    items,
@@ -583,10 +592,10 @@ func (q clientQuery) onlineEmails(onlines []string) ([]string, int, error) {
 	count := 0
 	for _, batch := range chunkStrings(onlines, sqlInChunk) {
 		var page []string
-		if err := q.db.Model(&model.ClientRecord{}).
-			Where("COALESCE(enable, FALSE) = TRUE AND email IN ?", batch).
-			Order("id ASC").
-			Pluck("email", &page).Error; err != nil {
+		if err := q.scope.restrictClients(q.db.Table("clients AS c"), "c").
+			Where("COALESCE(c.enable, FALSE) = TRUE AND c.email IN ?", batch).
+			Order("c.id ASC").
+			Pluck("c.email", &page).Error; err != nil {
 			return nil, 0, err
 		}
 		count += len(page)

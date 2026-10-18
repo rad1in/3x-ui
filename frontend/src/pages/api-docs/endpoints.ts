@@ -2265,6 +2265,55 @@ export const sections: readonly Section[] = [
   },
 
   {
+    id: 'admins',
+    title: 'Admins',
+    description:
+      'Admin accounts and their roles. owner: everything; admin: everything except managing admins, API tokens, the database file and security settings; operator: only the inbounds and client groups in its scope; viewer: read-only. Every endpoint except /me is owner-only. API tokens are not admins and keep their own scopes. All endpoints under /panel/api/admins.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/admins/me',
+        summary:
+          'The signed-in admin with its role and, for an operator, its scope. An API token answers as the oldest owner.',
+        responseSchema: 'AdminView',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/admins/list',
+        summary: 'Every admin account, oldest first. Password hashes are never returned.',
+        responseSchema: 'AdminView',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/admins/create',
+        summary:
+          'Create an admin. username is unique (case-insensitive), password is required, role is owner, admin, operator or viewer. inboundIds and groups are kept only for an operator.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'AdminInput.' }],
+        responseSchema: 'AdminView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/admins/update/:id',
+        summary:
+          "Replace an admin. An empty password keeps the current one; a new one ends that admin's sessions. The panel always keeps one owner, and nobody can change their own role or scope.",
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Admin id.' },
+          { name: 'body', in: 'body (json)', type: 'object', desc: 'AdminInput.' },
+        ],
+        responseSchema: 'AdminView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/admins/del/:id',
+        summary:
+          'Delete an admin and close its live connections. The last owner and yourself cannot be deleted.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Admin id.' }],
+      },
+    ],
+  },
+
+  {
     id: 'activity-log',
     title: 'Activity Log',
     description:

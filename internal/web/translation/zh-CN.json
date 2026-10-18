@@ -139,6 +139,7 @@
     "donate": "捐赠",
     "sponsors": "赞助商",
     "audit": "操作日志",
+    "admins": "管理员",
     "hosts": "主机",
     "docs": "文档",
     "openMenu": "打开菜单",
@@ -2601,6 +2602,42 @@
       "empty": "暂无操作记录",
       "login": "登录",
       "sectionServer": "服务器"
+    },
+    "admins": {
+      "title": "管理员",
+      "hint": "每个人都有自己的登录账号。所有者可以做任何事，包括管理管理员和安全设置。管理员可以做其余所有事情。操作员只能查看和修改分配给他们的入站和客户端分组。查看者只能查看，不能修改任何内容。",
+      "add": "添加管理员",
+      "edit": "编辑管理员",
+      "role": "角色",
+      "roles": {
+        "owner": "所有者",
+        "admin": "管理员",
+        "operator": "操作员",
+        "viewer": "查看者"
+      },
+      "roleHint": {
+        "owner": "全部权限，包括管理员、API 令牌和安全设置。",
+        "admin": "除管理员、API 令牌、数据库文件和安全设置之外的全部权限。",
+        "operator": "仅限下方选择的入站和客户端分组。",
+        "viewer": "对整个面板只读访问。"
+      },
+      "scope": "访问范围",
+      "scopeAll": "整个面板",
+      "scopeNone": "未分配任何内容",
+      "scopeInbounds": "入站",
+      "scopeGroups": "客户端分组",
+      "you": "你",
+      "passwordKeep": "留空以保留当前密码。",
+      "selfNote": "你不能修改自己的角色或访问范围。",
+      "deleteConfirm": "删除此管理员？其会话将立即结束。",
+      "errUsername": "请输入不超过 64 个字符的用户名。",
+      "errPassword": "请输入密码。",
+      "forbidden": "你的角色不允许此操作。",
+      "securityOwnerOnly": "只有所有者可以修改安全设置。",
+      "toasts": {
+        "saved": "管理员已保存",
+        "deleted": "管理员已删除"
+      }
     },
     "hostedPanels": {
       "saved": "面板已保存",

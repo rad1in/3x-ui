@@ -8,6 +8,23 @@ export type staticEgressResolver = string;
 export type trafficLocalApplyAction = number;
 export type transportBits = number;
 
+export interface AdminInput {
+  groups: string[];
+  inboundIds: number[];
+  password: string;
+  role: string;
+  username: string;
+}
+
+export interface AdminView {
+  createdAt: number;
+  groups: string[];
+  id: number;
+  inboundIds: number[];
+  role: string;
+  username: string;
+}
+
 export interface AllSetting {
   autoDeleteDepletedDays: number;
   backupKeep: number;
@@ -1266,8 +1283,10 @@ export interface TuicServerSettings {
 }
 
 export interface User {
+  createdAt: number;
   id: number;
   password: string;
+  role: string;
   username: string;
 }
 

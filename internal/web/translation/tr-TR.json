@@ -139,6 +139,7 @@
     "donate": "Bağış Yap",
     "sponsors": "Sponsorlar",
     "audit": "Etkinlik",
+    "admins": "Yöneticiler",
     "hosts": "Host'lar",
     "docs": "Belgeler",
     "openMenu": "Menüyü aç",
@@ -2601,6 +2602,42 @@
       "empty": "Henüz kayıtlı etkinlik yok",
       "login": "Giriş",
       "sectionServer": "Sunucu"
+    },
+    "admins": {
+      "title": "Yöneticiler",
+      "hint": "Her kişinin kendi girişi vardır. Sahipler, yöneticileri ve güvenlik ayarlarını yönetmek dahil her şeyi yapabilir. Yöneticiler geri kalan her şeyi yapabilir. Operatörler yalnızca kendilerine atanan gelen bağlantıları ve istemci gruplarını görür ve değiştirir. İzleyiciler bakabilir ama hiçbir şeyi değiştiremez.",
+      "add": "Yönetici ekle",
+      "edit": "Yöneticiyi düzenle",
+      "role": "Rol",
+      "roles": {
+        "owner": "Sahip",
+        "admin": "Yönetici",
+        "operator": "Operatör",
+        "viewer": "İzleyici"
+      },
+      "roleHint": {
+        "owner": "Yöneticiler, API belirteçleri ve güvenlik ayarları dahil her şey.",
+        "admin": "Yöneticiler, API belirteçleri, veritabanı dosyası ve güvenlik ayarları dışında her şey.",
+        "operator": "Yalnızca aşağıda seçilen gelen bağlantılar ve istemci grupları.",
+        "viewer": "Tüm panele salt okunur erişim."
+      },
+      "scope": "Erişim",
+      "scopeAll": "Tüm panel",
+      "scopeNone": "Hiçbir şey atanmadı",
+      "scopeInbounds": "Gelen bağlantılar",
+      "scopeGroups": "İstemci grupları",
+      "you": "siz",
+      "passwordKeep": "Mevcut şifreyi korumak için boş bırakın.",
+      "selfNote": "Kendi rolünüzü veya erişiminizi değiştiremezsiniz.",
+      "deleteConfirm": "Bu yönetici silinsin mi? Oturumu hemen kapatılır.",
+      "errUsername": "En fazla 64 karakterlik bir kullanıcı adı girin.",
+      "errPassword": "Bir şifre girin.",
+      "forbidden": "Rolünüz bu işleme izin vermiyor.",
+      "securityOwnerOnly": "Güvenlik ayarlarını yalnızca bir sahip değiştirebilir.",
+      "toasts": {
+        "saved": "Yönetici kaydedildi",
+        "deleted": "Yönetici silindi"
+      }
     },
     "hostedPanels": {
       "saved": "Panel kaydedildi",

@@ -140,6 +140,7 @@
     "donate": "Donate",
     "sponsors": "Sponsors",
     "audit": "Activity",
+    "admins": "Admins",
     "docs": "Documentation",
     "openMenu": "Open menu",
     "pinSidebar": "Pin sidebar",
@@ -2601,6 +2602,42 @@
       "empty": "No activity recorded yet",
       "login": "Login",
       "sectionServer": "Server"
+    },
+    "admins": {
+      "title": "Admins",
+      "hint": "Each person gets their own login. Owners can do everything, including managing admins and security settings. Admins can do everything else. Operators only see and change the inbounds and client groups assigned to them. Viewers can look but not change anything.",
+      "add": "Add admin",
+      "edit": "Edit admin",
+      "role": "Role",
+      "roles": {
+        "owner": "Owner",
+        "admin": "Admin",
+        "operator": "Operator",
+        "viewer": "Viewer"
+      },
+      "roleHint": {
+        "owner": "Everything, including admins, API tokens and security settings.",
+        "admin": "Everything except admins, API tokens, the database file and security settings.",
+        "operator": "Only the inbounds and client groups chosen below.",
+        "viewer": "Read-only access to the whole panel."
+      },
+      "scope": "Access",
+      "scopeAll": "Whole panel",
+      "scopeNone": "Nothing assigned",
+      "scopeInbounds": "Inbounds",
+      "scopeGroups": "Client groups",
+      "you": "you",
+      "passwordKeep": "Leave empty to keep the current password.",
+      "selfNote": "You cannot change your own role or access.",
+      "deleteConfirm": "Delete this admin? They are signed out at once.",
+      "errUsername": "Enter a username of at most 64 characters.",
+      "errPassword": "Enter a password.",
+      "forbidden": "Your role does not allow this action.",
+      "securityOwnerOnly": "Only an owner can change security settings.",
+      "toasts": {
+        "saved": "Admin saved",
+        "deleted": "Admin deleted"
+      }
     },
     "hostedPanels": {
       "saved": "Panel saved",

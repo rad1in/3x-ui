@@ -139,6 +139,7 @@
     "donate": "Doar",
     "sponsors": "Patrocinadores",
     "audit": "Atividade",
+    "admins": "Administradores",
     "hosts": "Hosts",
     "docs": "Documentação",
     "openMenu": "Abrir menu",
@@ -2601,6 +2602,42 @@
       "empty": "Nenhuma atividade registrada ainda",
       "login": "Login",
       "sectionServer": "Servidor"
+    },
+    "admins": {
+      "title": "Administradores",
+      "hint": "Cada pessoa tem o próprio login. Proprietários podem fazer tudo, inclusive gerenciar administradores e as configurações de segurança. Administradores podem fazer todo o resto. Operadores só veem e alteram as entradas e os grupos de clientes atribuídos a eles. Observadores podem ver, mas não alterar nada.",
+      "add": "Adicionar administrador",
+      "edit": "Editar administrador",
+      "role": "Função",
+      "roles": {
+        "owner": "Proprietário",
+        "admin": "Administrador",
+        "operator": "Operador",
+        "viewer": "Observador"
+      },
+      "roleHint": {
+        "owner": "Tudo, inclusive administradores, tokens de API e configurações de segurança.",
+        "admin": "Tudo, exceto administradores, tokens de API, o arquivo do banco de dados e as configurações de segurança.",
+        "operator": "Apenas as entradas e os grupos de clientes escolhidos abaixo.",
+        "viewer": "Acesso somente leitura ao painel inteiro."
+      },
+      "scope": "Acesso",
+      "scopeAll": "Painel inteiro",
+      "scopeNone": "Nada atribuído",
+      "scopeInbounds": "Entradas",
+      "scopeGroups": "Grupos de clientes",
+      "you": "você",
+      "passwordKeep": "Deixe em branco para manter a senha atual.",
+      "selfNote": "Você não pode alterar a própria função ou o próprio acesso.",
+      "deleteConfirm": "Excluir este administrador? A sessão dele é encerrada na hora.",
+      "errUsername": "Informe um nome de usuário com no máximo 64 caracteres.",
+      "errPassword": "Informe uma senha.",
+      "forbidden": "Sua função não permite esta ação.",
+      "securityOwnerOnly": "Apenas um proprietário pode alterar as configurações de segurança.",
+      "toasts": {
+        "saved": "Administrador salvo",
+        "deleted": "Administrador excluído"
+      }
     },
     "hostedPanels": {
       "saved": "Painel salvo",

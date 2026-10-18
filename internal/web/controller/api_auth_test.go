@@ -41,7 +41,7 @@ func newAPIAuthTestEngine(t *testing.T) (*gin.Engine, *APIController) {
 	// Logs in as the first user so the session path can be exercised over a
 	// cookie round-trip without reaching into checkAPIAuth's internals.
 	engine.GET("/test-login", func(c *gin.Context) {
-		u, err := a.userService.GetFirstUser()
+		u, err := a.userService.GetPrimaryOwner()
 		if err != nil {
 			c.Status(http.StatusInternalServerError)
 			return

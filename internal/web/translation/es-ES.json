@@ -139,6 +139,7 @@
     "donate": "Donar",
     "sponsors": "Patrocinadores",
     "audit": "Actividad",
+    "admins": "Administradores",
     "hosts": "Hosts",
     "docs": "Documentación",
     "openMenu": "Abrir menú",
@@ -2601,6 +2602,42 @@
       "empty": "Aún no hay actividad registrada",
       "login": "Inicio de sesión",
       "sectionServer": "Servidor"
+    },
+    "admins": {
+      "title": "Administradores",
+      "hint": "Cada persona tiene su propio acceso. Los propietarios pueden hacerlo todo, incluida la gestión de administradores y la configuración de seguridad. Los administradores pueden hacer todo lo demás. Los operadores solo ven y cambian las entradas y los grupos de clientes que se les asignan. Los observadores pueden mirar, pero no cambiar nada.",
+      "add": "Añadir administrador",
+      "edit": "Editar administrador",
+      "role": "Rol",
+      "roles": {
+        "owner": "Propietario",
+        "admin": "Administrador",
+        "operator": "Operador",
+        "viewer": "Observador"
+      },
+      "roleHint": {
+        "owner": "Todo, incluidos los administradores, los tokens de API y la configuración de seguridad.",
+        "admin": "Todo salvo los administradores, los tokens de API, el archivo de base de datos y la configuración de seguridad.",
+        "operator": "Solo las entradas y los grupos de clientes elegidos abajo.",
+        "viewer": "Acceso de solo lectura a todo el panel."
+      },
+      "scope": "Acceso",
+      "scopeAll": "Todo el panel",
+      "scopeNone": "Nada asignado",
+      "scopeInbounds": "Entradas",
+      "scopeGroups": "Grupos de clientes",
+      "you": "tú",
+      "passwordKeep": "Déjalo vacío para conservar la contraseña actual.",
+      "selfNote": "No puedes cambiar tu propio rol ni tu acceso.",
+      "deleteConfirm": "¿Eliminar este administrador? Su sesión se cierra al instante.",
+      "errUsername": "Introduce un nombre de usuario de 64 caracteres como máximo.",
+      "errPassword": "Introduce una contraseña.",
+      "forbidden": "Tu rol no permite esta acción.",
+      "securityOwnerOnly": "Solo un propietario puede cambiar la configuración de seguridad.",
+      "toasts": {
+        "saved": "Administrador guardado",
+        "deleted": "Administrador eliminado"
+      }
     },
     "hostedPanels": {
       "saved": "Panel guardado",
