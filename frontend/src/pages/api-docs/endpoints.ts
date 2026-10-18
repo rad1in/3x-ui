@@ -2525,6 +2525,54 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/sales/discounts',
+        summary:
+          'Every discount code, newest first, with uses: how many orders currently hold a use of it (orders failed, canceled or rejected give theirs back).',
+        responseSchema: 'DiscountCode',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/discounts/save',
+        summary:
+          'Create a code (id 0) or replace the one with the given id. Codes are stored upper-case, 3 to 32 letters, digits, dash or underscore. A percent code takes value percent (1 to 99) off; a fixed code takes value minor units of its currency off and only applies to plans in that currency. planIds limits the code to those plans (empty is all), maxUses 0 is unlimited, oncePerCustomer allows one order per client username, expiresAt is unix ms (0 never). A discount that would make the order free is refused at purchase time.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'DiscountCode.' }],
+        responseSchema: 'DiscountCode',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/discounts/del/:id',
+        summary: 'Delete a discount code. Orders already placed with it keep the price they got.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Discount code id.' }],
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/wallet',
+        summary:
+          'A customer wallet: the balance per currency and the latest ledger lines. The customer is the client with that username; a wallet is a ledger, so a balance is always the sum of its entries.',
+        params: [{ name: 'email', in: 'query', type: 'string', desc: 'Client username.' }],
+        responseSchema: 'WalletView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/wallet/adjust',
+        summary:
+          'Credit (positive amount) or debit (negative) a customer wallet in minor units of a currency. The client must exist and a debit cannot take the balance below zero. Wallet entries also come from referral bonuses, wallet payments and refunds of rejected wallet orders.',
+        params: [
+          { name: 'email', in: 'body (json)', type: 'string', desc: 'Client username.' },
+          {
+            name: 'currency',
+            in: 'body (json)',
+            type: 'string',
+            desc: 'IRT, IRR, USD, EUR or USDT.',
+          },
+          { name: 'amount', in: 'body (json)', type: 'integer', desc: 'Minor units, not zero.' },
+          { name: 'note', in: 'body (json)', type: 'string', optional: true },
+        ],
+        responseSchema: 'WalletEntry',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/sales/config',
         summary:
           'Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto). Secrets (the Zarinpal merchant id, the IDPay API key and the NOWPayments API key and IPN secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.',
@@ -2544,13 +2592,42 @@ export const sections: readonly Section[] = [
     id: 'shop',
     title: 'Public Shop',
     description:
-      'The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address.',
+      'The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed, bad_signature, amount_mismatch, discount_invalid, discount_used, referral_invalid, wallet_insufficient, proof_invalid); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address.',
     endpoints: [
       {
         method: 'GET',
         path: '/shop/api/plans',
         summary: 'Plans on sale, by sort order, and the payment methods that are switched on.',
         responseSchema: 'ShopCatalog',
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/quote',
+        summary:
+          'Preview the price of a plan with a discount code, without reserving the code. A refused code answers success false with discount_invalid (unknown, disabled, expired, wrong plan or currency, or it would make the order free) or discount_used (use limit reached, or already used by this client).',
+        params: [
+          { name: 'planId', in: 'body (json)', type: 'integer' },
+          { name: 'discountCode', in: 'body (json)', type: 'string', optional: true },
+          {
+            name: 'email',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Lets a once-per-customer code be checked against this client.',
+          },
+        ],
+        responseSchema: 'Quote',
+      },
+      {
+        method: 'GET',
+        path: '/shop/api/wallet',
+        summary:
+          'A client wallet for whoever holds the client subscription id (proof): balances, the latest 20 ledger lines and the client referral code to share. A wrong email or proof answers proof_invalid.',
+        params: [
+          { name: 'email', in: 'query', type: 'string', desc: 'Client username.' },
+          { name: 'proof', in: 'query', type: 'string', desc: 'The client subscription id.' },
+        ],
+        responseSchema: 'ShopWallet',
       },
       {
         method: 'POST',
@@ -2565,7 +2642,28 @@ export const sections: readonly Section[] = [
             name: 'gateway',
             in: 'body (json)',
             type: 'string',
-            desc: 'Payment method, e.g. card.',
+            desc: 'Payment method: card, zarinpal, idpay, crypto or wallet. A wallet payment is for renewals only, needs proof and is delivered at once.',
+          },
+          {
+            name: 'discountCode',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Coupon; the order carries the discounted amount and the list price.',
+          },
+          {
+            name: 'referralCode',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'A referral code from an existing client, for a first purchase. The referrer is paid a share into their wallet once the order is delivered.',
+          },
+          {
+            name: 'proof',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'The client subscription id; required to pay from a wallet.',
           },
           {
             name: 'contact',

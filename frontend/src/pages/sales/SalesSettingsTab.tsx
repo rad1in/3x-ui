@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Checkbox, Form, Input, Switch } from 'antd';
+import { Button, Checkbox, Form, Input, InputNumber, Switch } from 'antd';
 import { FormProvider, useWatch } from 'react-hook-form';
 
 import { useSalesConfig } from '@/api/queries/useSales';
@@ -14,6 +14,8 @@ const EMPTY: SalesConfigValues = {
   zarinpal: { enabled: false, merchantId: '', sandbox: false },
   idpay: { enabled: false, apiKey: '', sandbox: false },
   crypto: { enabled: false, apiKey: '', ipnSecret: '', sandbox: false },
+  walletEnabled: false,
+  referral: { enabled: false, bonusPercent: 10 },
   clearSecrets: [],
 };
 
@@ -65,6 +67,27 @@ export default function SalesSettingsTab() {
           extra={t('pages.sales.config.publicBaseUrlHint')}
         >
           <Input placeholder="https://shop.example.com" dir="ltr" />
+        </FormField>
+
+        <h4>{t('pages.sales.config.walletTitle')}</h4>
+        <FormField
+          label={t('pages.sales.config.walletEnabled')}
+          name="walletEnabled"
+          valueProp="checked"
+          extra={t('pages.sales.config.walletHint')}
+        >
+          <Switch />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.referralEnabled')}
+          name="referral.enabled"
+          valueProp="checked"
+          extra={t('pages.sales.config.referralHint')}
+        >
+          <Switch />
+        </FormField>
+        <FormField label={t('pages.sales.config.bonusPercent')} name="referral.bonusPercent">
+          <InputNumber min={0} max={100} precision={0} style={{ width: '100%' }} />
         </FormField>
 
         <h4>{t('pages.sales.config.cardTitle')}</h4>

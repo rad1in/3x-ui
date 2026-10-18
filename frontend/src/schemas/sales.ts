@@ -46,6 +46,37 @@ export const salesConfigSchema = z.object({
     ipnSecret: z.string(),
     sandbox: z.boolean(),
   }),
+  walletEnabled: z.boolean(),
+  referral: z.object({
+    enabled: z.boolean(),
+    bonusPercent: z
+      .number()
+      .int()
+      .min(0, 'pages.sales.config.errBonus')
+      .max(100, 'pages.sales.config.errBonus'),
+  }),
   clearSecrets: z.array(z.string()),
 });
 export type SalesConfigValues = z.infer<typeof salesConfigSchema>;
+
+export const DISCOUNT_KINDS = ['percent', 'fixed'] as const;
+
+// A fixed value is entered in major units of its currency; lib/discount converts.
+export const discountFormSchema = z
+  .object({
+    id: z.number().int().optional(),
+    code: z.string().trim().min(3, 'pages.sales.discounts.errCode'),
+    kind: z.enum(DISCOUNT_KINDS),
+    value: z.number().positive('pages.sales.discounts.errValue'),
+    currency: z.enum(CURRENCIES),
+    planIds: z.array(z.number().int()),
+    maxUses: z.number().int().min(0),
+    oncePerCustomer: z.boolean(),
+    expiresAt: z.number().int().min(0),
+    enabled: z.boolean(),
+  })
+  .refine((v) => v.kind !== 'percent' || (Number.isInteger(v.value) && v.value <= 99), {
+    path: ['value'],
+    message: 'pages.sales.discounts.errPercent',
+  });
+export type DiscountFormValues = z.infer<typeof discountFormSchema>;

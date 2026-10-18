@@ -13,6 +13,8 @@ const view = {
   zarinpal: { enabled: true, merchantId: '', sandbox: false },
   idpay: { enabled: false, apiKey: '', sandbox: false },
   crypto: { enabled: false, apiKey: '', ipnSecret: '', sandbox: false },
+  walletEnabled: false,
+  referral: { enabled: false, bonusPercent: 10 },
   hasZarinpalMerchantId: true,
   hasIdpayApiKey: false,
   hasCryptoApiKey: false,

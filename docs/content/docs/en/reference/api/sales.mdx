@@ -39,6 +39,36 @@ _openapi:
         sees. A rejected order cannot be approved afterwards.
       url: '#reject-a-pending-or-in-review-order-with-an-optional-reason-the-customer-sees-a-rejected-order-cannot-be-approved-afterwards'
     - depth: 2
+      title: 'Every discount code, newest first, with uses: how many orders currently
+        hold a use of it (orders failed, canceled or rejected give theirs
+        back).'
+      url: '#every-discount-code-newest-first-with-uses-how-many-orders-currently-hold-a-use-of-it-orders-failed-canceled-or-rejected-give-theirs-back'
+    - depth: 2
+      title: Create a code (id 0) or replace the one with the given id. Codes are
+        stored upper-case, 3 to 32 letters, digits, dash or underscore. A
+        percent code takes value percent (1 to 99) off; a fixed code takes value
+        minor units of its currency off and only applies to plans in that
+        currency. planIds limits the code to those plans (empty is all), maxUses
+        0 is unlimited, oncePerCustomer allows one order per client username,
+        expiresAt is unix ms (0 never). A discount that would make the order
+        free is refused at purchase time.
+      url: '#create-a-code-id-0-or-replace-the-one-with-the-given-id-codes-are-stored-upper-case-3-to-32-letters-digits-dash-or-underscore-a-percent-code-takes-value-percent-1-to-99-off-a-fixed-code-takes-value-minor-units-of-its-currency-off-and-only-applies-to-plans-in-that-currency-planids-limits-the-code-to-those-plans-empty-is-all-maxuses-0-is-unlimited-oncepercustomer-allows-one-order-per-client-username-expiresat-is-unix-ms-0-never-a-discount-that-would-make-the-order-free-is-refused-at-purchase-time'
+    - depth: 2
+      title: Delete a discount code. Orders already placed with it keep the price they
+        got.
+      url: '#delete-a-discount-code-orders-already-placed-with-it-keep-the-price-they-got'
+    - depth: 2
+      title: 'A customer wallet: the balance per currency and the latest ledger lines.
+        The customer is the client with that username; a wallet is a ledger, so
+        a balance is always the sum of its entries.'
+      url: '#a-customer-wallet-the-balance-per-currency-and-the-latest-ledger-lines-the-customer-is-the-client-with-that-username-a-wallet-is-a-ledger-so-a-balance-is-always-the-sum-of-its-entries'
+    - depth: 2
+      title: Credit (positive amount) or debit (negative) a customer wallet in minor
+        units of a currency. The client must exist and a debit cannot take the
+        balance below zero. Wallet entries also come from referral bonuses,
+        wallet payments and refunds of rejected wallet orders.
+      url: '#credit-positive-amount-or-debit-negative-a-customer-wallet-in-minor-units-of-a-currency-the-client-must-exist-and-a-debit-cannot-take-the-balance-below-zero-wallet-entries-also-come-from-referral-bonuses-wallet-payments-and-refunds-of-rejected-wallet-orders'
+    - depth: 2
       title: 'Selling configuration: whether the public shop is on, its public base
         URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments
         crypto). Secrets (the Zarinpal merchant id, the IDPay API key and the
@@ -82,6 +112,31 @@ _openapi:
       - content: Reject a pending or in-review order, with an optional reason the
           customer sees. A rejected order cannot be approved afterwards.
         id: reject-a-pending-or-in-review-order-with-an-optional-reason-the-customer-sees-a-rejected-order-cannot-be-approved-afterwards
+      - content: 'Every discount code, newest first, with uses: how many orders
+          currently hold a use of it (orders failed, canceled or rejected give
+          theirs back).'
+        id: every-discount-code-newest-first-with-uses-how-many-orders-currently-hold-a-use-of-it-orders-failed-canceled-or-rejected-give-theirs-back
+      - content: Create a code (id 0) or replace the one with the given id. Codes are
+          stored upper-case, 3 to 32 letters, digits, dash or underscore. A
+          percent code takes value percent (1 to 99) off; a fixed code takes
+          value minor units of its currency off and only applies to plans in
+          that currency. planIds limits the code to those plans (empty is all),
+          maxUses 0 is unlimited, oncePerCustomer allows one order per client
+          username, expiresAt is unix ms (0 never). A discount that would make
+          the order free is refused at purchase time.
+        id: create-a-code-id-0-or-replace-the-one-with-the-given-id-codes-are-stored-upper-case-3-to-32-letters-digits-dash-or-underscore-a-percent-code-takes-value-percent-1-to-99-off-a-fixed-code-takes-value-minor-units-of-its-currency-off-and-only-applies-to-plans-in-that-currency-planids-limits-the-code-to-those-plans-empty-is-all-maxuses-0-is-unlimited-oncepercustomer-allows-one-order-per-client-username-expiresat-is-unix-ms-0-never-a-discount-that-would-make-the-order-free-is-refused-at-purchase-time
+      - content: Delete a discount code. Orders already placed with it keep the price
+          they got.
+        id: delete-a-discount-code-orders-already-placed-with-it-keep-the-price-they-got
+      - content: 'A customer wallet: the balance per currency and the latest ledger
+          lines. The customer is the client with that username; a wallet is a
+          ledger, so a balance is always the sum of its entries.'
+        id: a-customer-wallet-the-balance-per-currency-and-the-latest-ledger-lines-the-customer-is-the-client-with-that-username-a-wallet-is-a-ledger-so-a-balance-is-always-the-sum-of-its-entries
+      - content: Credit (positive amount) or debit (negative) a customer wallet in minor
+          units of a currency. The client must exist and a debit cannot take the
+          balance below zero. Wallet entries also come from referral bonuses,
+          wallet payments and refunds of rejected wallet orders.
+        id: credit-positive-amount-or-debit-negative-a-customer-wallet-in-minor-units-of-a-currency-the-client-must-exist-and-a-debit-cannot-take-the-balance-below-zero-wallet-entries-also-come-from-referral-bonuses-wallet-payments-and-refunds-of-rejected-wallet-orders
       - content: 'Selling configuration: whether the public shop is on, its public base
           URL and the payment methods (card-to-card, Zarinpal, IDPay,
           NOWPayments crypto). Secrets (the Zarinpal merchant id, the IDPay API
@@ -111,7 +166,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/sales/plans","method":"get"},{"path":"/panel/api/sales/plans/save","method":"post"},{"path":"/panel/api/sales/plans/del/{id}","method":"post"},{"path":"/panel/api/sales/orders","method":"get"},{"path":"/panel/api/sales/orders/approve/{id}","method":"post"},{"path":"/panel/api/sales/orders/reject/{id}","method":"post"},{"path":"/panel/api/sales/config","method":"get"},{"path":"/panel/api/sales/config/save","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/sales/plans","method":"get"},{"path":"/panel/api/sales/plans/save","method":"post"},{"path":"/panel/api/sales/plans/del/{id}","method":"post"},{"path":"/panel/api/sales/orders","method":"get"},{"path":"/panel/api/sales/orders/approve/{id}","method":"post"},{"path":"/panel/api/sales/orders/reject/{id}","method":"post"},{"path":"/panel/api/sales/discounts","method":"get"},{"path":"/panel/api/sales/discounts/save","method":"post"},{"path":"/panel/api/sales/discounts/del/{id}","method":"post"},{"path":"/panel/api/sales/wallet","method":"get"},{"path":"/panel/api/sales/wallet/adjust","method":"post"},{"path":"/panel/api/sales/config","method":"get"},{"path":"/panel/api/sales/config/save","method":"post"}]} showTitle />
     </>
   );
 }

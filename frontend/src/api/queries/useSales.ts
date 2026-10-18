@@ -3,11 +3,15 @@ import { z } from 'zod';
 
 import { keys } from '@/api/queryKeys';
 import {
+  DiscountCodeSchema,
   OrderPageSchema,
   PlanSchema,
+  WalletViewSchema,
   SalesConfigViewSchema,
+  type DiscountCode,
   type OrderPage,
   type Plan,
+  type WalletView,
   type SalesConfigView,
 } from '@/generated/zod';
 import type { SalesConfigValues } from '@/schemas/sales';
@@ -58,6 +62,63 @@ export function usePlans() {
     save: save.mutateAsync,
     saving: save.isPending,
     remove: remove.mutateAsync,
+  };
+}
+
+async function fetchDiscounts(): Promise<DiscountCode[]> {
+  const msg = await HttpUtil.get('/panel/api/sales/discounts', undefined, { silent: true });
+  if (!msg?.success) throw new Error(msg?.msg || 'Failed to load discount codes');
+  return parseMsg(msg, z.array(DiscountCodeSchema), 'sales/discounts').obj ?? [];
+}
+
+export function useDiscounts() {
+  const queryClient = useQueryClient();
+  const query = useQuery({ queryKey: keys.sales.discounts(), queryFn: fetchDiscounts });
+  const refresh = (msg: { success?: boolean } | undefined) => {
+    if (msg?.success) void queryClient.invalidateQueries({ queryKey: keys.sales.discounts() });
+  };
+  const save = useMutation({
+    mutationFn: (code: Partial<DiscountCode>) =>
+      HttpUtil.post('/panel/api/sales/discounts/save', code, JSON_HEADERS),
+    onSuccess: refresh,
+  });
+  const remove = useMutation({
+    mutationFn: (id: number) => HttpUtil.post(`/panel/api/sales/discounts/del/${id}`),
+    onSuccess: refresh,
+  });
+  return {
+    discounts: query.data ?? [],
+    loading: query.isLoading,
+    save: save.mutateAsync,
+    saving: save.isPending,
+    remove: remove.mutateAsync,
+  };
+}
+
+export function useWallet(email: string) {
+  const queryClient = useQueryClient();
+  const query = useQuery({
+    queryKey: keys.sales.wallet(email),
+    enabled: email !== '',
+    queryFn: async (): Promise<WalletView> => {
+      const msg = await HttpUtil.get('/panel/api/sales/wallet', { email }, { silent: true });
+      if (!msg?.success) throw new Error(msg?.msg || 'Failed to load the wallet');
+      return parseMsg(msg, WalletViewSchema, 'sales/wallet', { strict: true }).obj as WalletView;
+    },
+  });
+  const adjust = useMutation({
+    mutationFn: (body: { email: string; currency: string; amount: number; note: string }) =>
+      HttpUtil.post('/panel/api/sales/wallet/adjust', body, JSON_HEADERS),
+    onSuccess: (msg) => {
+      if (msg?.success) void queryClient.invalidateQueries({ queryKey: keys.sales.root() });
+    },
+  });
+  return {
+    wallet: query.data,
+    loading: query.isFetching,
+    error: query.error,
+    adjust: adjust.mutateAsync,
+    adjusting: adjust.isPending,
   };
 }
 

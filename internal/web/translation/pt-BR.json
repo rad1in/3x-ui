@@ -2761,6 +2761,8 @@
       "hint": "Venda planos aos clientes. O plano define preço, cota e duração; o modelo de cliente associado decide quais inbounds o cliente recebe.",
       "plansTab": "Planos",
       "ordersTab": "Pedidos",
+      "discountsTab": "Descontos",
+      "walletsTab": "Carteiras",
       "settingsTab": "Configurações",
       "plans": {
         "add": "Adicionar plano",
@@ -2803,6 +2805,8 @@
         "receiptNote": "Nota do cliente",
         "rejectReason": "Motivo da recusa",
         "rejectReasonHint": "Motivo opcional que o cliente verá",
+        "discountCode": "Código de desconto (preço de tabela)",
+        "referrer": "Indicado por",
         "kinds": {
           "new": "Novo",
           "renew": "Renovação"
@@ -2837,9 +2841,54 @@
         "sandbox": "Modo de testes (sandbox)",
         "secretKept": "Salva. Deixe em branco para mantê-la",
         "removeSecret": "Remover o valor salvo",
+        "walletTitle": "Carteira e indicações",
+        "walletEnabled": "Pagar renovações com o saldo da carteira",
+        "walletHint": "O cliente prova que a conta é dele com o id da assinatura. O saldo é mantido por moeda.",
+        "referralEnabled": "Bônus de indicação",
+        "referralHint": "Quando um amigo compra pela primeira vez com o código de indicação de alguém e o pedido é entregue, uma parte do preço vai para a carteira dessa pessoa.",
+        "bonusPercent": "Bônus (% do preço)",
+        "errBonus": "O bônus deve ficar entre 0 e 100",
         "cryptoTitle": "Cripto (NOWPayments)",
         "cryptoHint": "Apenas para planos em USD ou EUR. Os pagamentos são confirmados por um webhook assinado da NOWPayments.",
         "ipnSecret": "Segredo IPN"
+      },
+      "discounts": {
+        "add": "Adicionar código de desconto",
+        "edit": "Editar código de desconto",
+        "code": "Código",
+        "kind": "Tipo",
+        "percent": "Percentual",
+        "fixed": "Valor fixo",
+        "value": "Valor",
+        "plans": "Aplica-se aos planos",
+        "plansHint": "Deixe vazio para todos os planos.",
+        "maxUses": "Máximo de usos",
+        "maxUsesHint": "0 = ilimitado.",
+        "expiresAt": "Expira em",
+        "oncePerCustomer": "Uma vez por cliente",
+        "enabled": "Ativo",
+        "uses": "Usos",
+        "confirmDelete": "Excluir este código? Pedidos já feitos mantêm o preço.",
+        "saved": "Código salvo",
+        "deleted": "Código excluído",
+        "errCode": "O código precisa de pelo menos 3 caracteres",
+        "errValue": "Informe um valor maior que zero",
+        "errPercent": "Percentual é um número inteiro de 1 a 99"
+      },
+      "wallets": {
+        "search": "Usuário do cliente",
+        "empty": "Sem saldo",
+        "adjust": "Ajustar saldo",
+        "amountHint": "Valor (negativo para debitar)",
+        "note": "Nota",
+        "kind": "Tipo",
+        "adjusted": "Saldo ajustado",
+        "kinds": {
+          "admin": "Ajuste do admin",
+          "referral": "Bônus de indicação",
+          "spend": "Pagamento de pedido",
+          "refund": "Reembolso"
+        }
       },
       "gateways": {
         "card": "Cartão a cartão",

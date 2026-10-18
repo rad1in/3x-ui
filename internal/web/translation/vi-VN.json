@@ -2761,6 +2761,8 @@
       "hint": "Bán gói cho khách hàng. Gói đặt giá, hạn mức và thời hạn; mẫu khách hàng mà gói trỏ tới quyết định khách nhận được inbound nào.",
       "plansTab": "Gói",
       "ordersTab": "Đơn hàng",
+      "discountsTab": "Giảm giá",
+      "walletsTab": "Ví",
       "settingsTab": "Cài đặt",
       "plans": {
         "add": "Thêm gói",
@@ -2803,6 +2805,8 @@
         "receiptNote": "Ghi chú của khách",
         "rejectReason": "Lý do từ chối",
         "rejectReasonHint": "Lý do tùy chọn mà khách hàng sẽ thấy",
+        "discountCode": "Mã giảm giá (giá gốc)",
+        "referrer": "Người giới thiệu",
         "kinds": {
           "new": "Mới",
           "renew": "Gia hạn"
@@ -2837,9 +2841,54 @@
         "sandbox": "Chế độ thử nghiệm (sandbox)",
         "secretKept": "Đã lưu. Để trống để giữ nguyên",
         "removeSecret": "Xóa giá trị đã lưu",
+        "walletTitle": "Ví và giới thiệu",
+        "walletEnabled": "Thanh toán gia hạn bằng số dư ví",
+        "walletHint": "Khách chứng minh tài khoản là của mình bằng ID đăng ký. Số dư được giữ riêng theo từng loại tiền.",
+        "referralEnabled": "Thưởng giới thiệu",
+        "referralHint": "Khi một người bạn mua lần đầu bằng mã giới thiệu và đơn được giao, một phần giá được cộng vào ví của người giới thiệu.",
+        "bonusPercent": "Thưởng (% giá)",
+        "errBonus": "Mức thưởng phải từ 0 đến 100",
         "cryptoTitle": "Tiền mã hóa (NOWPayments)",
         "cryptoHint": "Chỉ dùng cho gói định giá bằng USD hoặc EUR. Thanh toán được xác nhận bằng webhook có chữ ký của NOWPayments.",
         "ipnSecret": "Khóa bí mật IPN"
+      },
+      "discounts": {
+        "add": "Thêm mã giảm giá",
+        "edit": "Sửa mã giảm giá",
+        "code": "Mã",
+        "kind": "Loại",
+        "percent": "Phần trăm",
+        "fixed": "Số tiền cố định",
+        "value": "Giá trị",
+        "plans": "Áp dụng cho gói",
+        "plansHint": "Để trống nếu áp dụng cho mọi gói.",
+        "maxUses": "Số lần dùng tối đa",
+        "maxUsesHint": "0 = không giới hạn.",
+        "expiresAt": "Hết hạn",
+        "oncePerCustomer": "Một lần cho mỗi khách",
+        "enabled": "Đang bật",
+        "uses": "Lượt dùng",
+        "confirmDelete": "Xóa mã này? Các đơn đã đặt vẫn giữ giá.",
+        "saved": "Đã lưu mã giảm giá",
+        "deleted": "Đã xóa mã giảm giá",
+        "errCode": "Mã cần ít nhất 3 ký tự",
+        "errValue": "Nhập giá trị lớn hơn 0",
+        "errPercent": "Phần trăm là số nguyên từ 1 đến 99"
+      },
+      "wallets": {
+        "search": "Tên người dùng khách",
+        "empty": "Không có số dư",
+        "adjust": "Điều chỉnh số dư",
+        "amountHint": "Số tiền (âm để trừ)",
+        "note": "Ghi chú",
+        "kind": "Loại",
+        "adjusted": "Đã điều chỉnh số dư",
+        "kinds": {
+          "admin": "Admin điều chỉnh",
+          "referral": "Thưởng giới thiệu",
+          "spend": "Thanh toán đơn hàng",
+          "refund": "Hoàn tiền"
+        }
       },
       "gateways": {
         "card": "Chuyển khoản thẻ",

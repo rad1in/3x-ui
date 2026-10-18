@@ -769,6 +769,24 @@ export const EXAMPLES: Record<string, unknown> = {
     "ipnSecret": "",
     "sandbox": false
   },
+  "DiscountCode": {
+    "code": "WELCOME10",
+    "createdAt": 0,
+    "currency": "USD",
+    "enabled": true,
+    "expiresAt": 0,
+    "id": 1,
+    "kind": "percent",
+    "maxUses": 100,
+    "oncePerCustomer": true,
+    "planIds": [
+      1,
+      2
+    ],
+    "updatedAt": 0,
+    "uses": 3,
+    "value": 10
+  },
   "FallbackParentInfo": {
     "masterId": 0,
     "path": ""
@@ -1293,6 +1311,7 @@ export const EXAMPLES: Record<string, unknown> = {
     "contact": "@alice",
     "createdAt": 0,
     "currency": "IRT",
+    "discountCode": "WELCOME10",
     "durationDays": 30,
     "fulfilledAt": 0,
     "gateway": "card",
@@ -1300,12 +1319,15 @@ export const EXAMPLES: Record<string, unknown> = {
     "id": 1,
     "kind": "new",
     "limitIp": 2,
+    "listAmount": 250000,
     "paidAt": 0,
     "payUrl": "",
     "planId": 1,
     "planName": "Monthly 50 GB",
     "receiptNote": "",
     "receiptRef": "482913",
+    "referralCode": "",
+    "referrerEmail": "",
     "rejectReason": "",
     "status": "pending",
     "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
@@ -1320,6 +1342,7 @@ export const EXAMPLES: Record<string, unknown> = {
         "contact": "@alice",
         "createdAt": 0,
         "currency": "IRT",
+        "discountCode": "WELCOME10",
         "durationDays": 30,
         "fulfilledAt": 0,
         "gateway": "card",
@@ -1327,12 +1350,15 @@ export const EXAMPLES: Record<string, unknown> = {
         "id": 1,
         "kind": "new",
         "limitIp": 2,
+        "listAmount": 250000,
         "paidAt": 0,
         "payUrl": "",
         "planId": 1,
         "planName": "Monthly 50 GB",
         "receiptNote": "",
         "receiptRef": "482913",
+        "referralCode": "",
+        "referrerEmail": "",
         "rejectReason": "",
         "status": "pending",
         "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
@@ -1410,6 +1436,13 @@ export const EXAMPLES: Record<string, unknown> = {
     "running": true,
     "startedAt": 1760000000000
   },
+  "Quote": {
+    "currency": "IRT",
+    "discount": 25000,
+    "discountCode": "WELCOME10",
+    "final": 225000,
+    "list": 250000
+  },
   "RealityScanResult": {
     "alpn": "h2",
     "certChainBytes": 3427,
@@ -1435,6 +1468,10 @@ export const EXAMPLES: Record<string, unknown> = {
     "tlsVersion": "1.3",
     "x25519": true
   },
+  "ReferralConfig": {
+    "bonusPercent": 10,
+    "enabled": false
+  },
   "SalesConfig": {
     "card": {
       "bankName": "Melli",
@@ -1459,6 +1496,11 @@ export const EXAMPLES: Record<string, unknown> = {
     },
     "publicBaseUrl": "https://shop.example.com",
     "publicEnabled": false,
+    "referral": {
+      "bonusPercent": 10,
+      "enabled": false
+    },
+    "walletEnabled": false,
     "zarinpal": {
       "enabled": false,
       "merchantId": "",
@@ -1493,6 +1535,11 @@ export const EXAMPLES: Record<string, unknown> = {
     },
     "publicBaseUrl": "https://shop.example.com",
     "publicEnabled": false,
+    "referral": {
+      "bonusPercent": 10,
+      "enabled": false
+    },
+    "walletEnabled": false,
     "zarinpal": {
       "enabled": false,
       "merchantId": "",
@@ -1576,9 +1623,11 @@ export const EXAMPLES: Record<string, unknown> = {
     "clientEmail": "alice",
     "createdAt": 0,
     "currency": "IRT",
+    "discountCode": "",
     "fulfilled": false,
     "gateway": "card",
     "kind": "new",
+    "listAmount": 250000,
     "payUrl": "",
     "planName": "Monthly 50 GB",
     "rejectReason": "",
@@ -1595,6 +1644,27 @@ export const EXAMPLES: Record<string, unknown> = {
     "name": "Monthly 50 GB",
     "price": 250000,
     "totalGB": 53687091200
+  },
+  "ShopWallet": {
+    "balances": [
+      {
+        "amount": 250,
+        "currency": "USD"
+      }
+    ],
+    "entries": [
+      {
+        "amount": 250,
+        "createdAt": 0,
+        "currency": "USD",
+        "email": "alice",
+        "id": 1,
+        "kind": "referral",
+        "note": "",
+        "orderId": 12
+      }
+    ],
+    "referralCode": "K7M2QX9P"
   },
   "Sponsor": {
     "enable": true,
@@ -1735,6 +1805,41 @@ export const EXAMPLES: Record<string, unknown> = {
     "id": 4,
     "reason": "this kernel has no PPP support (/dev/ppp is missing), which L2TP needs",
     "running": false
+  },
+  "WalletBalance": {
+    "amount": 250,
+    "currency": "USD"
+  },
+  "WalletEntry": {
+    "amount": 250,
+    "createdAt": 0,
+    "currency": "USD",
+    "email": "alice",
+    "id": 1,
+    "kind": "referral",
+    "note": "",
+    "orderId": 12
+  },
+  "WalletView": {
+    "balances": [
+      {
+        "amount": 250,
+        "currency": "USD"
+      }
+    ],
+    "email": "alice",
+    "entries": [
+      {
+        "amount": 250,
+        "createdAt": 0,
+        "currency": "USD",
+        "email": "alice",
+        "id": 1,
+        "kind": "referral",
+        "note": "",
+        "orderId": 12
+      }
+    ]
   },
   "ZarinpalConfig": {
     "enabled": false,

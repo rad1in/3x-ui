@@ -2761,6 +2761,8 @@
       "hint": "Müşterilere paket satın. Paket fiyatı, kotayı ve süreyi belirler; bağlı istemci şablonu müşterinin hangi inbound’lara erişeceğini belirler.",
       "plansTab": "Paketler",
       "ordersTab": "Siparişler",
+      "discountsTab": "İndirimler",
+      "walletsTab": "Cüzdanlar",
       "settingsTab": "Ayarlar",
       "plans": {
         "add": "Paket ekle",
@@ -2803,6 +2805,8 @@
         "receiptNote": "Müşteri notu",
         "rejectReason": "Ret nedeni",
         "rejectReasonHint": "Müşterinin göreceği isteğe bağlı neden",
+        "discountCode": "İndirim kodu (liste fiyatı)",
+        "referrer": "Yönlendiren",
         "kinds": {
           "new": "Yeni",
           "renew": "Yenileme"
@@ -2837,9 +2841,54 @@
         "sandbox": "Test modu (sandbox)",
         "secretKept": "Kayıtlı. Korumak için boş bırakın",
         "removeSecret": "Kayıtlı değeri kaldır",
+        "walletTitle": "Cüzdan ve yönlendirme",
+        "walletEnabled": "Yenilemeleri cüzdan bakiyesinden öde",
+        "walletHint": "Müşteri hesabın kendisine ait olduğunu abonelik kimliğiyle kanıtlar. Bakiye para birimi başına tutulur.",
+        "referralEnabled": "Yönlendirme bonusu",
+        "referralHint": "Bir arkadaş birinin yönlendirme koduyla ilk kez satın alıp sipariş teslim edildiğinde, fiyatın bir kısmı o kişinin cüzdanına eklenir.",
+        "bonusPercent": "Bonus (fiyatın %’si)",
+        "errBonus": "Bonus 0 ile 100 arasında olmalıdır",
         "cryptoTitle": "Kripto (NOWPayments)",
         "cryptoHint": "Yalnızca USD veya EUR fiyatlı paketler içindir. Ödemeler NOWPayments’ın imzalı webhook’uyla onaylanır.",
         "ipnSecret": "IPN gizli anahtarı"
+      },
+      "discounts": {
+        "add": "İndirim kodu ekle",
+        "edit": "İndirim kodunu düzenle",
+        "code": "Kod",
+        "kind": "Tür",
+        "percent": "Yüzde",
+        "fixed": "Sabit tutar",
+        "value": "Değer",
+        "plans": "Geçerli paketler",
+        "plansHint": "Tüm paketler için boş bırakın.",
+        "maxUses": "Azami kullanım",
+        "maxUsesHint": "0 = sınırsız.",
+        "expiresAt": "Bitiş",
+        "oncePerCustomer": "Müşteri başına bir kez",
+        "enabled": "Etkin",
+        "uses": "Kullanım",
+        "confirmDelete": "Bu kod silinsin mi? Verilmiş siparişler fiyatını korur.",
+        "saved": "İndirim kodu kaydedildi",
+        "deleted": "İndirim kodu silindi",
+        "errCode": "Kod en az 3 karakter olmalı",
+        "errValue": "Sıfırdan büyük bir değer girin",
+        "errPercent": "Yüzde 1 ile 99 arasında tam sayıdır"
+      },
+      "wallets": {
+        "search": "İstemci kullanıcı adı",
+        "empty": "Bakiye yok",
+        "adjust": "Bakiyeyi düzenle",
+        "amountHint": "Tutar (düşmek için negatif)",
+        "note": "Not",
+        "kind": "Tür",
+        "adjusted": "Bakiye düzenlendi",
+        "kinds": {
+          "admin": "Yönetici düzenlemesi",
+          "referral": "Yönlendirme bonusu",
+          "spend": "Sipariş ödemesi",
+          "refund": "İade"
+        }
       },
       "gateways": {
         "card": "Karttan karta",

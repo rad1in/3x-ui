@@ -2761,6 +2761,8 @@
       "hint": "向客戶出售方案。方案設定價格、流量與時長，其關聯的客戶端範本決定客戶可使用的入站。",
       "plansTab": "方案",
       "ordersTab": "訂單",
+      "discountsTab": "優惠碼",
+      "walletsTab": "錢包",
       "settingsTab": "設定",
       "plans": {
         "add": "新增方案",
@@ -2803,6 +2805,8 @@
         "receiptNote": "客戶備註",
         "rejectReason": "拒絕原因",
         "rejectReasonHint": "選填，客戶會看到此原因",
+        "discountCode": "優惠碼（原價）",
+        "referrer": "推薦人",
         "kinds": {
           "new": "新購",
           "renew": "續費"
@@ -2837,9 +2841,54 @@
         "sandbox": "沙盒（測試）模式",
         "secretKept": "已儲存，留空則保持不變",
         "removeSecret": "清除已儲存的值",
+        "walletTitle": "錢包與推薦",
+        "walletEnabled": "使用錢包餘額支付續費",
+        "walletHint": "客戶透過訂閱 ID 證明帳戶屬於自己；餘額按幣別分別記帳。",
+        "referralEnabled": "推薦獎勵",
+        "referralHint": "好友首次使用推薦碼購買且訂單發放後，部分價款會計入推薦人的錢包。",
+        "bonusPercent": "獎勵（價款的百分比）",
+        "errBonus": "獎勵比例須在 0 到 100 之間",
         "cryptoTitle": "加密貨幣（NOWPayments）",
         "cryptoHint": "僅適用於以 USD 或 EUR 定價的方案，收款由 NOWPayments 的簽名回呼確認。",
         "ipnSecret": "IPN 金鑰"
+      },
+      "discounts": {
+        "add": "新增優惠碼",
+        "edit": "編輯優惠碼",
+        "code": "優惠碼",
+        "kind": "類型",
+        "percent": "百分比",
+        "fixed": "固定金額",
+        "value": "數值",
+        "plans": "適用方案",
+        "plansHint": "留空表示適用於所有方案。",
+        "maxUses": "最大使用次數",
+        "maxUsesHint": "0 = 不限。",
+        "expiresAt": "到期時間",
+        "oncePerCustomer": "每位客戶限用一次",
+        "enabled": "啟用",
+        "uses": "已用次數",
+        "confirmDelete": "刪除此優惠碼？已下的訂單價格不變。",
+        "saved": "優惠碼已儲存",
+        "deleted": "優惠碼已刪除",
+        "errCode": "優惠碼至少 3 個字元",
+        "errValue": "請輸入大於 0 的數值",
+        "errPercent": "百分比為 1 到 99 的整數"
+      },
+      "wallets": {
+        "search": "客戶端使用者名稱",
+        "empty": "暫無餘額",
+        "adjust": "調整餘額",
+        "amountHint": "金額（負數為扣減）",
+        "note": "備註",
+        "kind": "類型",
+        "adjusted": "餘額已調整",
+        "kinds": {
+          "admin": "管理員調整",
+          "referral": "推薦獎勵",
+          "spend": "訂單付款",
+          "refund": "退款"
+        }
       },
       "gateways": {
         "card": "銀行卡轉帳",

@@ -15,6 +15,8 @@ type SalesController struct {
 	planService    service.PlanService
 	orderService   service.OrderService
 	configService  service.SalesConfigService
+	discounts      service.DiscountService
+	wallets        service.WalletService
 	inboundService service.InboundService
 	xrayService    service.XrayService
 }
@@ -27,6 +29,11 @@ func NewSalesController(g *gin.RouterGroup) *SalesController {
 	g.GET("/orders", a.listOrders)
 	g.POST("/orders/approve/:id", a.approveOrder)
 	g.POST("/orders/reject/:id", a.rejectOrder)
+	g.GET("/discounts", a.listDiscounts)
+	g.POST("/discounts/save", a.saveDiscount)
+	g.POST("/discounts/del/:id", a.deleteDiscount)
+	g.GET("/wallet", a.getWallet)
+	g.POST("/wallet/adjust", a.adjustWallet)
 	g.GET("/config", a.getConfig)
 	g.POST("/config/save", a.saveConfig)
 	return a
@@ -123,4 +130,50 @@ func (a *SalesController) saveConfig(c *gin.Context) {
 		return
 	}
 	respondDone(c, "pages.sales.config.saved", nil, a.configService.Save(&cfg))
+}
+
+func (a *SalesController) listDiscounts(c *gin.Context) {
+	rows, err := a.discounts.ListDiscounts()
+	jsonObj(c, rows, err)
+}
+
+func (a *SalesController) saveDiscount(c *gin.Context) {
+	var code model.DiscountCode
+	if err := c.ShouldBindJSON(&code); err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	saved, err := a.discounts.SaveDiscount(&code)
+	respondDone(c, "pages.sales.discounts.saved", saved, err)
+}
+
+func (a *SalesController) deleteDiscount(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	respondDone(c, "pages.sales.discounts.deleted", nil, a.discounts.DeleteDiscount(id))
+}
+
+func (a *SalesController) getWallet(c *gin.Context) {
+	view, err := a.wallets.View(c.Query("email"))
+	jsonObj(c, view, err)
+}
+
+type adjustWalletBody struct {
+	Email    string `json:"email"`
+	Currency string `json:"currency"`
+	Amount   int64  `json:"amount"`
+	Note     string `json:"note"`
+}
+
+func (a *SalesController) adjustWallet(c *gin.Context) {
+	var body adjustWalletBody
+	if err := c.ShouldBindJSON(&body); err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	entry, err := a.wallets.Adjust(body.Email, body.Currency, body.Amount, body.Note)
+	respondDone(c, "pages.sales.wallets.adjusted", entry, err)
 }

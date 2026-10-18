@@ -8,9 +8,11 @@ import { usePageTitle } from '@/hooks/usePageTitle';
 import { useTheme } from '@/hooks/useTheme';
 import AppSidebar from '@/layouts/AppSidebar';
 import { setMessageInstance } from '@/utils/messageBus';
+import DiscountsTab from './DiscountsTab';
 import OrdersTab from './OrdersTab';
 import PlansTab from './PlansTab';
 import SalesSettingsTab from './SalesSettingsTab';
+import WalletsTab from './WalletsTab';
 import './SalesPage.css';
 
 export default function SalesPage() {
@@ -47,6 +49,12 @@ export default function SalesPage() {
                 items={[
                   { key: 'plans', label: t('pages.sales.plansTab'), children: <PlansTab /> },
                   { key: 'orders', label: t('pages.sales.ordersTab'), children: <OrdersTab /> },
+                  {
+                    key: 'discounts',
+                    label: t('pages.sales.discountsTab'),
+                    children: <DiscountsTab />,
+                  },
+                  { key: 'wallets', label: t('pages.sales.walletsTab'), children: <WalletsTab /> },
                   ...(isOwner
                     ? [
                         {

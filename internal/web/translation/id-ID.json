@@ -2761,6 +2761,8 @@
       "hint": "Jual paket ke pelanggan. Paket menentukan harga, kuota, dan durasi; templat klien yang dituju menentukan inbound yang didapat pelanggan.",
       "plansTab": "Paket",
       "ordersTab": "Pesanan",
+      "discountsTab": "Diskon",
+      "walletsTab": "Dompet",
       "settingsTab": "Pengaturan",
       "plans": {
         "add": "Tambah paket",
@@ -2803,6 +2805,8 @@
         "receiptNote": "Catatan pelanggan",
         "rejectReason": "Alasan penolakan",
         "rejectReasonHint": "Alasan opsional yang dilihat pelanggan",
+        "discountCode": "Kode diskon (harga normal)",
+        "referrer": "Direferensikan oleh",
         "kinds": {
           "new": "Baru",
           "renew": "Perpanjangan"
@@ -2837,9 +2841,54 @@
         "sandbox": "Mode uji (sandbox)",
         "secretKept": "Tersimpan. Biarkan kosong untuk mempertahankan",
         "removeSecret": "Hapus nilai tersimpan",
+        "walletTitle": "Dompet dan referral",
+        "walletEnabled": "Bayar perpanjangan dari saldo dompet",
+        "walletHint": "Pelanggan membuktikan akun miliknya dengan ID langganan. Saldo dipisah per mata uang.",
+        "referralEnabled": "Bonus referral",
+        "referralHint": "Saat teman membeli pertama kali dengan kode referral seseorang dan pesanan terkirim, sebagian harga masuk ke dompet pemilik kode.",
+        "bonusPercent": "Bonus (% dari harga)",
+        "errBonus": "Bonus harus antara 0 dan 100",
         "cryptoTitle": "Kripto (NOWPayments)",
         "cryptoHint": "Hanya untuk paket berharga USD atau EUR. Pembayaran dikonfirmasi lewat webhook bertanda tangan dari NOWPayments.",
         "ipnSecret": "Rahasia IPN"
+      },
+      "discounts": {
+        "add": "Tambah kode diskon",
+        "edit": "Ubah kode diskon",
+        "code": "Kode",
+        "kind": "Jenis",
+        "percent": "Persen",
+        "fixed": "Jumlah tetap",
+        "value": "Nilai",
+        "plans": "Berlaku untuk paket",
+        "plansHint": "Kosongkan untuk semua paket.",
+        "maxUses": "Maksimum penggunaan",
+        "maxUsesHint": "0 = tanpa batas.",
+        "expiresAt": "Kedaluwarsa",
+        "oncePerCustomer": "Sekali per pelanggan",
+        "enabled": "Aktif",
+        "uses": "Penggunaan",
+        "confirmDelete": "Hapus kode ini? Pesanan yang sudah dibuat tetap memakai harganya.",
+        "saved": "Kode diskon disimpan",
+        "deleted": "Kode diskon dihapus",
+        "errCode": "Kode minimal 3 karakter",
+        "errValue": "Masukkan nilai di atas nol",
+        "errPercent": "Persen adalah bilangan bulat 1 sampai 99"
+      },
+      "wallets": {
+        "search": "Username klien",
+        "empty": "Tidak ada saldo",
+        "adjust": "Sesuaikan saldo",
+        "amountHint": "Jumlah (negatif untuk mengurangi)",
+        "note": "Catatan",
+        "kind": "Jenis",
+        "adjusted": "Saldo disesuaikan",
+        "kinds": {
+          "admin": "Penyesuaian admin",
+          "referral": "Bonus referral",
+          "spend": "Pembayaran pesanan",
+          "refund": "Pengembalian dana"
+        }
       },
       "gateways": {
         "card": "Kartu ke kartu",

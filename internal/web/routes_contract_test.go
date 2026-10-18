@@ -44,6 +44,8 @@ var contractExtraRoutes = map[string]bool{
 	"POST /shop/api/orders/:token/receipt": true,
 	"GET /shop/api/callback/:gateway":      true,
 	"POST /shop/api/callback/:gateway":     true,
+	"POST /shop/api/quote":                 true,
+	"GET /shop/api/wallet":                 true,
 	"POST /shop/api/ipn/nowpayments":       true,
 }
 

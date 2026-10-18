@@ -50,6 +50,8 @@ func newShopController(g *gin.RouterGroup, notFound gin.HandlerFunc, orders *ser
 	api.GET("/orders/:token", a.getOrder)
 	api.POST("/orders", a.rateLimited, a.createOrder)
 	api.POST("/orders/:token/receipt", a.rateLimited, a.submitReceipt)
+	api.POST("/quote", a.rateLimited, a.quote)
+	api.GET("/wallet", a.rateLimited, a.wallet)
 	api.POST("/ipn/nowpayments", a.ipn)
 	api.GET("/callback/:gateway", a.rateLimited, a.callback)
 	api.POST("/callback/:gateway", a.rateLimited, a.callback)
@@ -131,13 +133,16 @@ func (a *ShopController) createOrder(c *gin.Context) {
 	if !a.bind(c, &in) {
 		return
 	}
-	order, err := a.orderService.CreateOrder(in)
-	if err == nil && service.IsOnlineGateway(order.Gateway) {
-		order, err = a.orderService.StartPayment(order)
+	order, needRestart, err := a.orderService.Checkout(&a.inboundService, in)
+	if needRestart {
+		a.xrayService.SetToNeedRestart()
 	}
 	if err != nil {
 		a.reply(c, nil, err)
 		return
+	}
+	if order.FulfilledAt > 0 {
+		notifyClientsChanged()
 	}
 	a.view(c, order.Token)
 }
@@ -212,6 +217,20 @@ func (a *ShopController) ipn(c *gin.Context) {
 		logger.Warningf("shop crypto ipn: %v", err)
 		c.JSON(http.StatusInternalServerError, entity.Msg{Msg: shopInternalError})
 	}
+}
+
+func (a *ShopController) quote(c *gin.Context) {
+	var in service.QuoteInput
+	if !a.bind(c, &in) {
+		return
+	}
+	quote, err := a.orderService.Quote(in)
+	a.reply(c, quote, err)
+}
+
+func (a *ShopController) wallet(c *gin.Context) {
+	view, err := a.orderService.CustomerWallet(c.Query("email"), c.Query("proof"))
+	a.reply(c, view, err)
 }
 
 type shopReceiptBody struct {

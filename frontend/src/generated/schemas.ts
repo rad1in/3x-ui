@@ -3055,6 +3055,88 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "DiscountCode": {
+    "description": "DiscountCode is a coupon. A code is stored upper-case; PlanIds empty means\nevery plan; MaxUses 0 means unlimited. Uses is filled in when listing.",
+    "properties": {
+      "code": {
+        "example": "WELCOME10",
+        "type": "string"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "currency": {
+        "example": "USD",
+        "type": "string"
+      },
+      "enabled": {
+        "example": true,
+        "type": "boolean"
+      },
+      "expiresAt": {
+        "example": 0,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "kind": {
+        "example": "percent",
+        "type": "string"
+      },
+      "maxUses": {
+        "example": 100,
+        "type": "integer"
+      },
+      "oncePerCustomer": {
+        "example": true,
+        "type": "boolean"
+      },
+      "planIds": {
+        "example": [
+          1,
+          2
+        ],
+        "items": {
+          "type": "integer"
+        },
+        "type": "array"
+      },
+      "updatedAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "uses": {
+        "example": 3,
+        "format": "int64",
+        "type": "integer"
+      },
+      "value": {
+        "example": 10,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "code",
+      "createdAt",
+      "currency",
+      "enabled",
+      "expiresAt",
+      "id",
+      "kind",
+      "maxUses",
+      "oncePerCustomer",
+      "planIds",
+      "updatedAt",
+      "uses",
+      "value"
+    ],
+    "type": "object"
+  },
   "FallbackParentInfo": {
     "description": "FallbackParentInfo carries everything the frontend needs to rewrite a\nchild inbound's client link: where to connect (the master's address\nand port) and which path matched on the master's fallbacks array.\nThe frontend already has the master inbound in its dbInbounds list,\nso we only ship identifiers + the match path here.",
     "properties": {
@@ -5217,6 +5299,10 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": "IRT",
         "type": "string"
       },
+      "discountCode": {
+        "example": "WELCOME10",
+        "type": "string"
+      },
       "durationDays": {
         "example": 30,
         "type": "integer"
@@ -5244,6 +5330,11 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": 2,
         "type": "integer"
       },
+      "listAmount": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      },
       "paidAt": {
         "format": "int64",
         "type": "integer"
@@ -5264,6 +5355,12 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "receiptRef": {
         "example": "482913",
+        "type": "string"
+      },
+      "referralCode": {
+        "type": "string"
+      },
+      "referrerEmail": {
         "type": "string"
       },
       "rejectReason": {
@@ -5293,6 +5390,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "contact",
       "createdAt",
       "currency",
+      "discountCode",
       "durationDays",
       "fulfilledAt",
       "gateway",
@@ -5300,12 +5398,15 @@ export const SCHEMAS: Record<string, unknown> = {
       "id",
       "kind",
       "limitIp",
+      "listAmount",
       "paidAt",
       "payUrl",
       "planId",
       "planName",
       "receiptNote",
       "receiptRef",
+      "referralCode",
+      "referrerEmail",
       "rejectReason",
       "status",
       "token",
@@ -5664,6 +5765,42 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "Quote": {
+    "description": "Quote is a price preview; nothing is reserved.",
+    "properties": {
+      "currency": {
+        "example": "IRT",
+        "type": "string"
+      },
+      "discount": {
+        "example": 25000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "discountCode": {
+        "example": "WELCOME10",
+        "type": "string"
+      },
+      "final": {
+        "example": 225000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "list": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "currency",
+      "discount",
+      "discountCode",
+      "final",
+      "list"
+    ],
+    "type": "object"
+  },
   "RealityScanResult": {
     "properties": {
       "alpn": {
@@ -5780,6 +5917,23 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "ReferralConfig": {
+    "description": "ReferralConfig pays a customer a share of a friend's first purchase, into\ntheir wallet, in the currency of the purchase.",
+    "properties": {
+      "bonusPercent": {
+        "example": 10,
+        "type": "integer"
+      },
+      "enabled": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "bonusPercent",
+      "enabled"
+    ],
+    "type": "object"
+  },
   "SalesConfig": {
     "description": "SalesConfig is everything the operator configures about selling. It is one\nJSON setting. Secrets are served blank and kept when a save leaves them\nblank; ClearSecrets names the ones to empty on purpose.",
     "properties": {
@@ -5805,6 +5959,12 @@ export const SCHEMAS: Record<string, unknown> = {
       "publicEnabled": {
         "type": "boolean"
       },
+      "referral": {
+        "$ref": "#/components/schemas/ReferralConfig"
+      },
+      "walletEnabled": {
+        "type": "boolean"
+      },
       "zarinpal": {
         "$ref": "#/components/schemas/ZarinpalConfig"
       }
@@ -5815,6 +5975,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "idpay",
       "publicBaseUrl",
       "publicEnabled",
+      "referral",
+      "walletEnabled",
       "zarinpal"
     ],
     "type": "object"
@@ -5856,6 +6018,12 @@ export const SCHEMAS: Record<string, unknown> = {
       "publicEnabled": {
         "type": "boolean"
       },
+      "referral": {
+        "$ref": "#/components/schemas/ReferralConfig"
+      },
+      "walletEnabled": {
+        "type": "boolean"
+      },
       "zarinpal": {
         "$ref": "#/components/schemas/ZarinpalConfig"
       }
@@ -5870,6 +6038,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "idpay",
       "publicBaseUrl",
       "publicEnabled",
+      "referral",
+      "walletEnabled",
       "zarinpal"
     ],
     "type": "object"
@@ -6138,6 +6308,9 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": "IRT",
         "type": "string"
       },
+      "discountCode": {
+        "type": "string"
+      },
       "fulfilled": {
         "type": "boolean"
       },
@@ -6148,6 +6321,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "kind": {
         "example": "new",
         "type": "string"
+      },
+      "listAmount": {
+        "example": 250000,
+        "format": "int64",
+        "type": "integer"
       },
       "payUrl": {
         "type": "string"
@@ -6176,9 +6354,11 @@ export const SCHEMAS: Record<string, unknown> = {
       "clientEmail",
       "createdAt",
       "currency",
+      "discountCode",
       "fulfilled",
       "gateway",
       "kind",
+      "listAmount",
       "planName",
       "rejectReason",
       "status",
@@ -6233,6 +6413,33 @@ export const SCHEMAS: Record<string, unknown> = {
       "name",
       "price",
       "totalGB"
+    ],
+    "type": "object"
+  },
+  "ShopWallet": {
+    "description": "ShopWallet is what a customer sees of their own wallet: balances, the\nlatest ledger lines and the code to share. The balances are per currency.",
+    "properties": {
+      "balances": {
+        "items": {
+          "$ref": "#/components/schemas/WalletBalance"
+        },
+        "type": "array"
+      },
+      "entries": {
+        "items": {
+          "$ref": "#/components/schemas/WalletEntry"
+        },
+        "type": "array"
+      },
+      "referralCode": {
+        "example": "K7M2QX9P",
+        "type": "string"
+      }
+    },
+    "required": [
+      "balances",
+      "entries",
+      "referralCode"
     ],
     "type": "object"
   },
@@ -6707,6 +6914,100 @@ export const SCHEMAS: Record<string, unknown> = {
     "required": [
       "id",
       "running"
+    ],
+    "type": "object"
+  },
+  "WalletBalance": {
+    "description": "WalletBalance is a customer's balance in one currency, in its minor unit.",
+    "properties": {
+      "amount": {
+        "example": 250,
+        "format": "int64",
+        "type": "integer"
+      },
+      "currency": {
+        "example": "USD",
+        "type": "string"
+      }
+    },
+    "required": [
+      "amount",
+      "currency"
+    ],
+    "type": "object"
+  },
+  "WalletEntry": {
+    "description": "WalletEntry is one line of a customer's wallet ledger; the balance in a\ncurrency is the sum of its entries. Ref, when set, is unique so a bonus or\na debit for an order can never be booked twice.",
+    "properties": {
+      "amount": {
+        "example": 250,
+        "format": "int64",
+        "type": "integer"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "currency": {
+        "example": "USD",
+        "type": "string"
+      },
+      "email": {
+        "example": "alice",
+        "type": "string"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "kind": {
+        "example": "referral",
+        "type": "string"
+      },
+      "note": {
+        "type": "string"
+      },
+      "orderId": {
+        "example": 12,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "amount",
+      "createdAt",
+      "currency",
+      "email",
+      "id",
+      "kind",
+      "note",
+      "orderId"
+    ],
+    "type": "object"
+  },
+  "WalletView": {
+    "description": "WalletView is a customer's balances and latest ledger lines.",
+    "properties": {
+      "balances": {
+        "items": {
+          "$ref": "#/components/schemas/WalletBalance"
+        },
+        "type": "array"
+      },
+      "email": {
+        "example": "alice",
+        "type": "string"
+      },
+      "entries": {
+        "items": {
+          "$ref": "#/components/schemas/WalletEntry"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "balances",
+      "email",
+      "entries"
     ],
     "type": "object"
   },

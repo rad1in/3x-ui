@@ -2761,6 +2761,8 @@
       "hint": "向客户出售套餐。套餐设定价格、流量和时长，其关联的客户端模板决定客户可使用的入站。",
       "plansTab": "套餐",
       "ordersTab": "订单",
+      "discountsTab": "优惠码",
+      "walletsTab": "钱包",
       "settingsTab": "设置",
       "plans": {
         "add": "添加套餐",
@@ -2803,6 +2805,8 @@
         "receiptNote": "客户备注",
         "rejectReason": "拒绝原因",
         "rejectReasonHint": "可选，客户会看到此原因",
+        "discountCode": "优惠码（原价）",
+        "referrer": "推荐人",
         "kinds": {
           "new": "新购",
           "renew": "续费"
@@ -2837,9 +2841,54 @@
         "sandbox": "沙盒（测试）模式",
         "secretKept": "已保存，留空则保持不变",
         "removeSecret": "清除已保存的值",
+        "walletTitle": "钱包与推荐",
+        "walletEnabled": "使用钱包余额支付续费",
+        "walletHint": "客户通过订阅 ID 证明账户归己所有；余额按币种分别记账。",
+        "referralEnabled": "推荐奖励",
+        "referralHint": "好友首次使用推荐码购买且订单发放后，部分价款会计入推荐人的钱包。",
+        "bonusPercent": "奖励（价款的百分比）",
+        "errBonus": "奖励比例须在 0 到 100 之间",
         "cryptoTitle": "加密货币（NOWPayments）",
         "cryptoHint": "仅适用于以 USD 或 EUR 定价的套餐，收款由 NOWPayments 的签名回调确认。",
         "ipnSecret": "IPN 密钥"
+      },
+      "discounts": {
+        "add": "添加优惠码",
+        "edit": "编辑优惠码",
+        "code": "优惠码",
+        "kind": "类型",
+        "percent": "百分比",
+        "fixed": "固定金额",
+        "value": "数值",
+        "plans": "适用套餐",
+        "plansHint": "留空表示适用于所有套餐。",
+        "maxUses": "最大使用次数",
+        "maxUsesHint": "0 = 不限。",
+        "expiresAt": "到期时间",
+        "oncePerCustomer": "每位客户限用一次",
+        "enabled": "启用",
+        "uses": "已用次数",
+        "confirmDelete": "删除此优惠码？已下的订单价格不变。",
+        "saved": "优惠码已保存",
+        "deleted": "优惠码已删除",
+        "errCode": "优惠码至少 3 个字符",
+        "errValue": "请输入大于 0 的数值",
+        "errPercent": "百分比为 1 到 99 的整数"
+      },
+      "wallets": {
+        "search": "客户端用户名",
+        "empty": "暂无余额",
+        "adjust": "调整余额",
+        "amountHint": "金额（负数为扣减）",
+        "note": "备注",
+        "kind": "类型",
+        "adjusted": "余额已调整",
+        "kinds": {
+          "admin": "管理员调整",
+          "referral": "推荐奖励",
+          "spend": "订单付款",
+          "refund": "退款"
+        }
       },
       "gateways": {
         "card": "银行卡转账",

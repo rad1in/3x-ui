@@ -114,6 +114,9 @@ func allModels() []any {
 		&model.ClientTrial{},
 		&model.Plan{},
 		&model.Order{},
+		&model.DiscountCode{},
+		&model.WalletEntry{},
+		&model.ReferralCode{},
 	}
 }
 

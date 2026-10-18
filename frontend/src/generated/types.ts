@@ -715,6 +715,22 @@ export interface CryptoConfig {
   sandbox: boolean;
 }
 
+export interface DiscountCode {
+  code: string;
+  createdAt: number;
+  currency: string;
+  enabled: boolean;
+  expiresAt: number;
+  id: number;
+  kind: string;
+  maxUses: number;
+  oncePerCustomer: boolean;
+  planIds: number[];
+  updatedAt: number;
+  uses: number;
+  value: number;
+}
+
 export interface FallbackParentInfo {
   masterId: number;
   path?: string;
@@ -1182,6 +1198,7 @@ export interface Order {
   contact: string;
   createdAt: number;
   currency: string;
+  discountCode: string;
   durationDays: number;
   fulfilledAt: number;
   gateway: string;
@@ -1189,12 +1206,15 @@ export interface Order {
   id: number;
   kind: string;
   limitIp: number;
+  listAmount: number;
   paidAt: number;
   payUrl: string;
   planId: number;
   planName: string;
   receiptNote: string;
   receiptRef: string;
+  referralCode: string;
+  referrerEmail: string;
   rejectReason: string;
   status: string;
   token: string;
@@ -1282,6 +1302,14 @@ export interface ProcState {
   startedAt: number;
 }
 
+export interface Quote {
+  currency: string;
+  discount: number;
+  discountCode: string;
+  final: number;
+  list: number;
+}
+
 export interface RealityScanResult {
   alpn: string;
   certChainBytes: number;
@@ -1306,6 +1334,11 @@ export interface RealityScanResult {
   x25519: boolean;
 }
 
+export interface ReferralConfig {
+  bonusPercent: number;
+  enabled: boolean;
+}
+
 export interface SalesConfig {
   card: CardPayConfig;
   clearSecrets?: string[];
@@ -1313,6 +1346,8 @@ export interface SalesConfig {
   idpay: IDPayConfig;
   publicBaseUrl: string;
   publicEnabled: boolean;
+  referral: ReferralConfig;
+  walletEnabled: boolean;
   zarinpal: ZarinpalConfig;
 }
 
@@ -1327,6 +1362,8 @@ export interface SalesConfigView {
   idpay: IDPayConfig;
   publicBaseUrl: string;
   publicEnabled: boolean;
+  referral: ReferralConfig;
+  walletEnabled: boolean;
   zarinpal: ZarinpalConfig;
 }
 
@@ -1398,9 +1435,11 @@ export interface ShopOrderView {
   clientEmail: string;
   createdAt: number;
   currency: string;
+  discountCode: string;
   fulfilled: boolean;
   gateway: string;
   kind: string;
+  listAmount: number;
   payUrl?: string;
   planName: string;
   rejectReason: string;
@@ -1418,6 +1457,12 @@ export interface ShopPlan {
   name: string;
   price: number;
   totalGB: number;
+}
+
+export interface ShopWallet {
+  balances: WalletBalance[];
+  entries: WalletEntry[];
+  referralCode: string;
 }
 
 export interface Sponsor {
@@ -1527,6 +1572,28 @@ export interface VPNStatus {
   id: number;
   reason?: string;
   running: boolean;
+}
+
+export interface WalletBalance {
+  amount: number;
+  currency: string;
+}
+
+export interface WalletEntry {
+  amount: number;
+  createdAt: number;
+  currency: string;
+  email: string;
+  id: number;
+  kind: string;
+  note: string;
+  orderId: number;
+}
+
+export interface WalletView {
+  balances: WalletBalance[];
+  email: string;
+  entries: WalletEntry[];
 }
 
 export interface ZarinpalConfig {

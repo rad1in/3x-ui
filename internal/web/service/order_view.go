@@ -1,6 +1,7 @@
 package service
 
 import (
+	"crypto/subtle"
 	"strings"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
@@ -33,6 +34,8 @@ type ShopOrderView struct {
 	Kind            string         `json:"kind" example:"new"`
 	ClientEmail     string         `json:"clientEmail" example:"alice"`
 	Amount          int64          `json:"amount" example:"250000"`
+	ListAmount      int64          `json:"listAmount" example:"250000"`
+	DiscountCode    string         `json:"discountCode"`
 	Currency        string         `json:"currency" example:"IRT"`
 	Gateway         string         `json:"gateway" example:"card"`
 	Status          string         `json:"status" example:"pending"`
@@ -46,7 +49,7 @@ type ShopOrderView struct {
 
 func enabledMethods(cfg *SalesConfig) []string {
 	methods := []string{}
-	for _, gateway := range []string{GatewayCard, GatewayZarinpal, GatewayIDPay, GatewayCrypto} {
+	for _, gateway := range []string{GatewayCard, GatewayWallet, GatewayZarinpal, GatewayIDPay, GatewayCrypto} {
 		if gatewayEnabled(cfg, gateway) {
 			methods = append(methods, gateway)
 		}
@@ -83,7 +86,7 @@ func (s *OrderService) PublicView(order *model.Order, host string) (*ShopOrderVi
 	}
 	view := &ShopOrderView{
 		Token: order.Token, PlanName: order.PlanName, Kind: order.Kind, ClientEmail: order.ClientEmail,
-		Amount: order.Amount, Currency: order.Currency, Gateway: order.Gateway, Status: order.Status,
+		Amount: order.Amount, ListAmount: order.ListAmount, DiscountCode: order.DiscountCode, Currency: order.Currency, Gateway: order.Gateway, Status: order.Status,
 		RejectReason: order.RejectReason, CreatedAt: order.CreatedAt, Fulfilled: order.FulfilledAt > 0,
 	}
 	awaitingTransfer := order.Status == model.OrderStatusPending || order.Status == model.OrderStatusReview
@@ -116,4 +119,39 @@ func (s *OrderService) subscriptionURL(email, host string) string {
 		return ""
 	}
 	return strings.TrimRight(settings.BuildSubURIBase(host), "/") + "/" + strings.Trim(path, "/") + "/" + rec.SubID
+}
+
+// ShopWallet is what a customer sees of their own wallet: balances, the
+// latest ledger lines and the code to share. The balances are per currency.
+type ShopWallet struct {
+	Balances     []WalletBalance     `json:"balances"`
+	Entries      []model.WalletEntry `json:"entries"`
+	ReferralCode string              `json:"referralCode" example:"K7M2QX9P"`
+}
+
+const shopWalletEntries = 20
+
+// CustomerWallet shows a client's wallet to whoever holds the client's
+// subscription id; the same proof lets them pay from it.
+func (s *OrderService) CustomerWallet(email, proof string) (*ShopWallet, error) {
+	rec, err := s.clients.GetRecordByEmail(nil, strings.TrimSpace(email))
+	if err != nil {
+		return nil, salesErr(ErrProofInvalid)
+	}
+	if proof == "" || subtle.ConstantTimeCompare([]byte(rec.SubID), []byte(proof)) != 1 {
+		return nil, salesErr(ErrProofInvalid)
+	}
+	view, err := (&WalletService{}).View(rec.Email)
+	if err != nil {
+		return nil, err
+	}
+	code, err := s.referrals.CodeFor(rec.Email)
+	if err != nil {
+		return nil, err
+	}
+	entries := view.Entries
+	if len(entries) > shopWalletEntries {
+		entries = entries[:shopWalletEntries]
+	}
+	return &ShopWallet{Balances: view.Balances, Entries: entries, ReferralCode: code}, nil
 }

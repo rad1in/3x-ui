@@ -3081,6 +3081,88 @@
         ],
         "type": "object"
       },
+      "DiscountCode": {
+        "description": "DiscountCode is a coupon. A code is stored upper-case; PlanIds empty means\nevery plan; MaxUses 0 means unlimited. Uses is filled in when listing.",
+        "properties": {
+          "code": {
+            "example": "WELCOME10",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "currency": {
+            "example": "USD",
+            "type": "string"
+          },
+          "enabled": {
+            "example": true,
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "example": 0,
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "kind": {
+            "example": "percent",
+            "type": "string"
+          },
+          "maxUses": {
+            "example": 100,
+            "type": "integer"
+          },
+          "oncePerCustomer": {
+            "example": true,
+            "type": "boolean"
+          },
+          "planIds": {
+            "example": [
+              1,
+              2
+            ],
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "updatedAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "uses": {
+            "example": 3,
+            "format": "int64",
+            "type": "integer"
+          },
+          "value": {
+            "example": 10,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "code",
+          "createdAt",
+          "currency",
+          "enabled",
+          "expiresAt",
+          "id",
+          "kind",
+          "maxUses",
+          "oncePerCustomer",
+          "planIds",
+          "updatedAt",
+          "uses",
+          "value"
+        ],
+        "type": "object"
+      },
       "FallbackParentInfo": {
         "description": "FallbackParentInfo carries everything the frontend needs to rewrite a\nchild inbound's client link: where to connect (the master's address\nand port) and which path matched on the master's fallbacks array.\nThe frontend already has the master inbound in its dbInbounds list,\nso we only ship identifiers + the match path here.",
         "properties": {
@@ -5243,6 +5325,10 @@
             "example": "IRT",
             "type": "string"
           },
+          "discountCode": {
+            "example": "WELCOME10",
+            "type": "string"
+          },
           "durationDays": {
             "example": 30,
             "type": "integer"
@@ -5270,6 +5356,11 @@
             "example": 2,
             "type": "integer"
           },
+          "listAmount": {
+            "example": 250000,
+            "format": "int64",
+            "type": "integer"
+          },
           "paidAt": {
             "format": "int64",
             "type": "integer"
@@ -5290,6 +5381,12 @@
           },
           "receiptRef": {
             "example": "482913",
+            "type": "string"
+          },
+          "referralCode": {
+            "type": "string"
+          },
+          "referrerEmail": {
             "type": "string"
           },
           "rejectReason": {
@@ -5319,6 +5416,7 @@
           "contact",
           "createdAt",
           "currency",
+          "discountCode",
           "durationDays",
           "fulfilledAt",
           "gateway",
@@ -5326,12 +5424,15 @@
           "id",
           "kind",
           "limitIp",
+          "listAmount",
           "paidAt",
           "payUrl",
           "planId",
           "planName",
           "receiptNote",
           "receiptRef",
+          "referralCode",
+          "referrerEmail",
           "rejectReason",
           "status",
           "token",
@@ -5690,6 +5791,42 @@
         ],
         "type": "object"
       },
+      "Quote": {
+        "description": "Quote is a price preview; nothing is reserved.",
+        "properties": {
+          "currency": {
+            "example": "IRT",
+            "type": "string"
+          },
+          "discount": {
+            "example": 25000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "discountCode": {
+            "example": "WELCOME10",
+            "type": "string"
+          },
+          "final": {
+            "example": 225000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "list": {
+            "example": 250000,
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "currency",
+          "discount",
+          "discountCode",
+          "final",
+          "list"
+        ],
+        "type": "object"
+      },
       "RealityScanResult": {
         "properties": {
           "alpn": {
@@ -5806,6 +5943,23 @@
         ],
         "type": "object"
       },
+      "ReferralConfig": {
+        "description": "ReferralConfig pays a customer a share of a friend's first purchase, into\ntheir wallet, in the currency of the purchase.",
+        "properties": {
+          "bonusPercent": {
+            "example": 10,
+            "type": "integer"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "bonusPercent",
+          "enabled"
+        ],
+        "type": "object"
+      },
       "SalesConfig": {
         "description": "SalesConfig is everything the operator configures about selling. It is one\nJSON setting. Secrets are served blank and kept when a save leaves them\nblank; ClearSecrets names the ones to empty on purpose.",
         "properties": {
@@ -5831,6 +5985,12 @@
           "publicEnabled": {
             "type": "boolean"
           },
+          "referral": {
+            "$ref": "#/components/schemas/ReferralConfig"
+          },
+          "walletEnabled": {
+            "type": "boolean"
+          },
           "zarinpal": {
             "$ref": "#/components/schemas/ZarinpalConfig"
           }
@@ -5841,6 +6001,8 @@
           "idpay",
           "publicBaseUrl",
           "publicEnabled",
+          "referral",
+          "walletEnabled",
           "zarinpal"
         ],
         "type": "object"
@@ -5882,6 +6044,12 @@
           "publicEnabled": {
             "type": "boolean"
           },
+          "referral": {
+            "$ref": "#/components/schemas/ReferralConfig"
+          },
+          "walletEnabled": {
+            "type": "boolean"
+          },
           "zarinpal": {
             "$ref": "#/components/schemas/ZarinpalConfig"
           }
@@ -5896,6 +6064,8 @@
           "idpay",
           "publicBaseUrl",
           "publicEnabled",
+          "referral",
+          "walletEnabled",
           "zarinpal"
         ],
         "type": "object"
@@ -6164,6 +6334,9 @@
             "example": "IRT",
             "type": "string"
           },
+          "discountCode": {
+            "type": "string"
+          },
           "fulfilled": {
             "type": "boolean"
           },
@@ -6174,6 +6347,11 @@
           "kind": {
             "example": "new",
             "type": "string"
+          },
+          "listAmount": {
+            "example": 250000,
+            "format": "int64",
+            "type": "integer"
           },
           "payUrl": {
             "type": "string"
@@ -6202,9 +6380,11 @@
           "clientEmail",
           "createdAt",
           "currency",
+          "discountCode",
           "fulfilled",
           "gateway",
           "kind",
+          "listAmount",
           "planName",
           "rejectReason",
           "status",
@@ -6259,6 +6439,33 @@
           "name",
           "price",
           "totalGB"
+        ],
+        "type": "object"
+      },
+      "ShopWallet": {
+        "description": "ShopWallet is what a customer sees of their own wallet: balances, the\nlatest ledger lines and the code to share. The balances are per currency.",
+        "properties": {
+          "balances": {
+            "items": {
+              "$ref": "#/components/schemas/WalletBalance"
+            },
+            "type": "array"
+          },
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/WalletEntry"
+            },
+            "type": "array"
+          },
+          "referralCode": {
+            "example": "K7M2QX9P",
+            "type": "string"
+          }
+        },
+        "required": [
+          "balances",
+          "entries",
+          "referralCode"
         ],
         "type": "object"
       },
@@ -6736,6 +6943,100 @@
         ],
         "type": "object"
       },
+      "WalletBalance": {
+        "description": "WalletBalance is a customer's balance in one currency, in its minor unit.",
+        "properties": {
+          "amount": {
+            "example": 250,
+            "format": "int64",
+            "type": "integer"
+          },
+          "currency": {
+            "example": "USD",
+            "type": "string"
+          }
+        },
+        "required": [
+          "amount",
+          "currency"
+        ],
+        "type": "object"
+      },
+      "WalletEntry": {
+        "description": "WalletEntry is one line of a customer's wallet ledger; the balance in a\ncurrency is the sum of its entries. Ref, when set, is unique so a bonus or\na debit for an order can never be booked twice.",
+        "properties": {
+          "amount": {
+            "example": 250,
+            "format": "int64",
+            "type": "integer"
+          },
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "currency": {
+            "example": "USD",
+            "type": "string"
+          },
+          "email": {
+            "example": "alice",
+            "type": "string"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "kind": {
+            "example": "referral",
+            "type": "string"
+          },
+          "note": {
+            "type": "string"
+          },
+          "orderId": {
+            "example": 12,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "amount",
+          "createdAt",
+          "currency",
+          "email",
+          "id",
+          "kind",
+          "note",
+          "orderId"
+        ],
+        "type": "object"
+      },
+      "WalletView": {
+        "description": "WalletView is a customer's balances and latest ledger lines.",
+        "properties": {
+          "balances": {
+            "items": {
+              "$ref": "#/components/schemas/WalletBalance"
+            },
+            "type": "array"
+          },
+          "email": {
+            "example": "alice",
+            "type": "string"
+          },
+          "entries": {
+            "items": {
+              "$ref": "#/components/schemas/WalletEntry"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "balances",
+          "email",
+          "entries"
+        ],
+        "type": "object"
+      },
       "ZarinpalConfig": {
         "description": "ZarinpalConfig is the Zarinpal merchant account. MerchantId is a secret.",
         "properties": {
@@ -6853,7 +7154,7 @@
     },
     {
       "name": "Public Shop",
-      "description": "The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address."
+      "description": "The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed, bad_signature, amount_mismatch, discount_invalid, discount_used, referral_invalid, wallet_insufficient, proof_invalid); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address."
     },
     {
       "name": "Admins",
@@ -17438,6 +17739,7 @@
                         "contact": "@alice",
                         "createdAt": 0,
                         "currency": "IRT",
+                        "discountCode": "WELCOME10",
                         "durationDays": 30,
                         "fulfilledAt": 0,
                         "gateway": "card",
@@ -17445,12 +17747,15 @@
                         "id": 1,
                         "kind": "new",
                         "limitIp": 2,
+                        "listAmount": 250000,
                         "paidAt": 0,
                         "payUrl": "",
                         "planId": 1,
                         "planName": "Monthly 50 GB",
                         "receiptNote": "",
                         "receiptRef": "482913",
+                        "referralCode": "",
+                        "referrerEmail": "",
                         "rejectReason": "",
                         "status": "pending",
                         "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
@@ -17512,6 +17817,7 @@
                     "contact": "@alice",
                     "createdAt": 0,
                     "currency": "IRT",
+                    "discountCode": "WELCOME10",
                     "durationDays": 30,
                     "fulfilledAt": 0,
                     "gateway": "card",
@@ -17519,12 +17825,15 @@
                     "id": 1,
                     "kind": "new",
                     "limitIp": 2,
+                    "listAmount": 250000,
                     "paidAt": 0,
                     "payUrl": "",
                     "planId": 1,
                     "planName": "Monthly 50 GB",
                     "receiptNote": "",
                     "receiptRef": "482913",
+                    "referralCode": "",
+                    "referrerEmail": "",
                     "rejectReason": "",
                     "status": "pending",
                     "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
@@ -17599,6 +17908,7 @@
                     "contact": "@alice",
                     "createdAt": 0,
                     "currency": "IRT",
+                    "discountCode": "WELCOME10",
                     "durationDays": 30,
                     "fulfilledAt": 0,
                     "gateway": "card",
@@ -17606,17 +17916,336 @@
                     "id": 1,
                     "kind": "new",
                     "limitIp": 2,
+                    "listAmount": 250000,
                     "paidAt": 0,
                     "payUrl": "",
                     "planId": 1,
                     "planName": "Monthly 50 GB",
                     "receiptNote": "",
                     "receiptRef": "482913",
+                    "referralCode": "",
+                    "referrerEmail": "",
                     "rejectReason": "",
                     "status": "pending",
                     "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
                     "totalGB": 53687091200,
                     "updatedAt": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/discounts": {
+      "get": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Every discount code, newest first, with uses: how many orders currently hold a use of it (orders failed, canceled or rejected give theirs back).",
+        "operationId": "get_panel_api_sales_discounts",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/DiscountCode"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "code": "WELCOME10",
+                      "createdAt": 0,
+                      "currency": "USD",
+                      "enabled": true,
+                      "expiresAt": 0,
+                      "id": 1,
+                      "kind": "percent",
+                      "maxUses": 100,
+                      "oncePerCustomer": true,
+                      "planIds": [
+                        1,
+                        2
+                      ],
+                      "updatedAt": 0,
+                      "uses": 3,
+                      "value": 10
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/discounts/save": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Create a code (id 0) or replace the one with the given id. Codes are stored upper-case, 3 to 32 letters, digits, dash or underscore. A percent code takes value percent (1 to 99) off; a fixed code takes value minor units of its currency off and only applies to plans in that currency. planIds limits the code to those plans (empty is all), maxUses 0 is unlimited, oncePerCustomer allows one order per client username, expiresAt is unix ms (0 never). A discount that would make the order free is refused at purchase time.",
+        "operationId": "post_panel_api_sales_discounts_save",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "DiscountCode."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/DiscountCode"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "code": "WELCOME10",
+                    "createdAt": 0,
+                    "currency": "USD",
+                    "enabled": true,
+                    "expiresAt": 0,
+                    "id": 1,
+                    "kind": "percent",
+                    "maxUses": 100,
+                    "oncePerCustomer": true,
+                    "planIds": [
+                      1,
+                      2
+                    ],
+                    "updatedAt": 0,
+                    "uses": 3,
+                    "value": 10
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/discounts/del/{id}": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Delete a discount code. Orders already placed with it keep the price they got.",
+        "operationId": "post_panel_api_sales_discounts_del_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Discount code id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/wallet": {
+      "get": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "A customer wallet: the balance per currency and the latest ledger lines. The customer is the client with that username; a wallet is a ledger, so a balance is always the sum of its entries.",
+        "operationId": "get_panel_api_sales_wallet",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "description": "Client username.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/WalletView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "balances": [
+                      {
+                        "amount": 250,
+                        "currency": "USD"
+                      }
+                    ],
+                    "email": "alice",
+                    "entries": [
+                      {
+                        "amount": 250,
+                        "createdAt": 0,
+                        "currency": "USD",
+                        "email": "alice",
+                        "id": 1,
+                        "kind": "referral",
+                        "note": "",
+                        "orderId": 12
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/wallet/adjust": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Credit (positive amount) or debit (negative) a customer wallet in minor units of a currency. The client must exist and a debit cannot take the balance below zero. Wallet entries also come from referral bonuses, wallet payments and refunds of rejected wallet orders.",
+        "operationId": "post_panel_api_sales_wallet_adjust",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Client username."
+                  },
+                  "currency": {
+                    "type": "string",
+                    "description": "IRT, IRR, USD, EUR or USDT."
+                  },
+                  "amount": {
+                    "type": "integer",
+                    "description": "Minor units, not zero."
+                  },
+                  "note": {
+                    "type": "string",
+                    "description": ""
+                  }
+                },
+                "required": [
+                  "email",
+                  "currency",
+                  "amount"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/WalletEntry"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "amount": 250,
+                    "createdAt": 0,
+                    "currency": "USD",
+                    "email": "alice",
+                    "id": 1,
+                    "kind": "referral",
+                    "note": "",
+                    "orderId": 12
                   }
                 }
               }
@@ -17681,6 +18310,11 @@
                     },
                     "publicBaseUrl": "https://shop.example.com",
                     "publicEnabled": false,
+                    "referral": {
+                      "bonusPercent": 10,
+                      "enabled": false
+                    },
+                    "walletEnabled": false,
                     "zarinpal": {
                       "enabled": false,
                       "merchantId": "",
@@ -17795,6 +18429,151 @@
         }
       }
     },
+    "/shop/api/quote": {
+      "post": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "Preview the price of a plan with a discount code, without reserving the code. A refused code answers success false with discount_invalid (unknown, disabled, expired, wrong plan or currency, or it would make the order free) or discount_used (use limit reached, or already used by this client).",
+        "operationId": "post_shop_api_quote",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "planId": {
+                    "type": "integer",
+                    "description": ""
+                  },
+                  "discountCode": {
+                    "type": "string",
+                    "description": ""
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "Lets a once-per-customer code be checked against this client."
+                  }
+                },
+                "required": [
+                  "planId"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/Quote"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "currency": "IRT",
+                    "discount": 25000,
+                    "discountCode": "WELCOME10",
+                    "final": 225000,
+                    "list": 250000
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/api/wallet": {
+      "get": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "A client wallet for whoever holds the client subscription id (proof): balances, the latest 20 ledger lines and the client referral code to share. A wrong email or proof answers proof_invalid.",
+        "operationId": "get_shop_api_wallet",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "description": "Client username.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "proof",
+            "in": "query",
+            "required": true,
+            "description": "The client subscription id.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/ShopWallet"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "balances": [
+                      {
+                        "amount": 250,
+                        "currency": "USD"
+                      }
+                    ],
+                    "entries": [
+                      {
+                        "amount": 250,
+                        "createdAt": 0,
+                        "currency": "USD",
+                        "email": "alice",
+                        "id": 1,
+                        "kind": "referral",
+                        "note": "",
+                        "orderId": 12
+                      }
+                    ],
+                    "referralCode": "K7M2QX9P"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/shop/api/orders": {
       "post": {
         "tags": [
@@ -17827,7 +18606,19 @@
                   },
                   "gateway": {
                     "type": "string",
-                    "description": "Payment method, e.g. card."
+                    "description": "Payment method: card, zarinpal, idpay, crypto or wallet. A wallet payment is for renewals only, needs proof and is delivered at once."
+                  },
+                  "discountCode": {
+                    "type": "string",
+                    "description": "Coupon; the order carries the discounted amount and the list price."
+                  },
+                  "referralCode": {
+                    "type": "string",
+                    "description": "A referral code from an existing client, for a first purchase. The referrer is paid a share into their wallet once the order is delivered."
+                  },
+                  "proof": {
+                    "type": "string",
+                    "description": "The client subscription id; required to pay from a wallet."
                   },
                   "contact": {
                     "type": "string",
@@ -17871,9 +18662,11 @@
                     "clientEmail": "alice",
                     "createdAt": 0,
                     "currency": "IRT",
+                    "discountCode": "",
                     "fulfilled": false,
                     "gateway": "card",
                     "kind": "new",
+                    "listAmount": 250000,
                     "payUrl": "",
                     "planName": "Monthly 50 GB",
                     "rejectReason": "",
@@ -17933,9 +18726,11 @@
                     "clientEmail": "alice",
                     "createdAt": 0,
                     "currency": "IRT",
+                    "discountCode": "",
                     "fulfilled": false,
                     "gateway": "card",
                     "kind": "new",
+                    "listAmount": 250000,
                     "payUrl": "",
                     "planName": "Monthly 50 GB",
                     "rejectReason": "",
@@ -18018,9 +18813,11 @@
                     "clientEmail": "alice",
                     "createdAt": 0,
                     "currency": "IRT",
+                    "discountCode": "",
                     "fulfilled": false,
                     "gateway": "card",
                     "kind": "new",
+                    "listAmount": 250000,
                     "payUrl": "",
                     "planName": "Monthly 50 GB",
                     "rejectReason": "",

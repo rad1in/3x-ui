@@ -153,6 +153,18 @@ export default function OrdersTab() {
               <Descriptions.Item label={t('pages.sales.orders.receiptNote')}>
                 <span dir="auto">{o.receiptNote || '-'}</span>
               </Descriptions.Item>
+              {o.discountCode && (
+                <Descriptions.Item label={t('pages.sales.orders.discountCode')}>
+                  <span dir="ltr">
+                    {o.discountCode} ({formatMoney(o.listAmount, o.currency)})
+                  </span>
+                </Descriptions.Item>
+              )}
+              {o.referrerEmail && (
+                <Descriptions.Item label={t('pages.sales.orders.referrer')}>
+                  <span dir="auto">{o.referrerEmail}</span>
+                </Descriptions.Item>
+              )}
               {o.rejectReason && (
                 <Descriptions.Item label={t('pages.sales.orders.rejectReason')}>
                   <span dir="auto">{o.rejectReason}</span>

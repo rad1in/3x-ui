@@ -51,6 +51,8 @@ export const keys = {
     root: () => ['sales'] as const,
     plans: () => ['sales', 'plans'] as const,
     config: () => ['sales', 'config'] as const,
+    discounts: () => ['sales', 'discounts'] as const,
+    wallet: (email: string) => ['sales', 'wallet', email] as const,
     orders: (status: string, page: number) => ['sales', 'orders', status, page] as const,
   },
   clients: {

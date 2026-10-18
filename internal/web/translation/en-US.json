@@ -2761,6 +2761,8 @@
       "hint": "Sell plans to customers. A plan sets the price, quota and duration; the client template it points to decides which inbounds the customer gets.",
       "plansTab": "Plans",
       "ordersTab": "Orders",
+      "discountsTab": "Discounts",
+      "walletsTab": "Wallets",
       "settingsTab": "Settings",
       "plans": {
         "add": "Add plan",
@@ -2803,6 +2805,8 @@
         "receiptNote": "Customer note",
         "rejectReason": "Rejection reason",
         "rejectReasonHint": "Optional reason the customer will see",
+        "discountCode": "Discount code (list price)",
+        "referrer": "Referred by",
         "kinds": {
           "new": "New",
           "renew": "Renewal"
@@ -2837,9 +2841,54 @@
         "sandbox": "Sandbox mode",
         "secretKept": "Saved. Leave blank to keep it",
         "removeSecret": "Remove the saved value",
+        "walletTitle": "Wallet and referrals",
+        "walletEnabled": "Pay renewals from the wallet balance",
+        "walletHint": "The customer proves the account is theirs with the subscription id. Balances are kept per currency.",
+        "referralEnabled": "Referral bonus",
+        "referralHint": "When a friend buys for the first time with someone’s referral code and the order is delivered, a share of the price goes to that person’s wallet.",
+        "bonusPercent": "Bonus (% of the price)",
+        "errBonus": "The bonus must be between 0 and 100",
         "cryptoTitle": "Crypto (NOWPayments)",
         "cryptoHint": "Only for plans priced in USD or EUR. Payments are confirmed by a signed NOWPayments webhook.",
         "ipnSecret": "IPN secret"
+      },
+      "discounts": {
+        "add": "Add discount code",
+        "edit": "Edit discount code",
+        "code": "Code",
+        "kind": "Type",
+        "percent": "Percent",
+        "fixed": "Fixed amount",
+        "value": "Value",
+        "plans": "Applies to plans",
+        "plansHint": "Leave empty for every plan.",
+        "maxUses": "Maximum uses",
+        "maxUsesHint": "0 = unlimited.",
+        "expiresAt": "Expires",
+        "oncePerCustomer": "Once per customer",
+        "enabled": "Active",
+        "uses": "Uses",
+        "confirmDelete": "Delete this code? Orders already placed keep their price.",
+        "saved": "Discount code saved",
+        "deleted": "Discount code deleted",
+        "errCode": "The code needs at least 3 characters",
+        "errValue": "Enter a value above zero",
+        "errPercent": "A percent is a whole number from 1 to 99"
+      },
+      "wallets": {
+        "search": "Client username",
+        "empty": "No balance",
+        "adjust": "Adjust balance",
+        "amountHint": "Amount (negative to debit)",
+        "note": "Note",
+        "kind": "Type",
+        "adjusted": "Balance adjusted",
+        "kinds": {
+          "admin": "Admin adjustment",
+          "referral": "Referral bonus",
+          "spend": "Order payment",
+          "refund": "Refund"
+        }
       },
       "gateways": {
         "card": "Card to card",

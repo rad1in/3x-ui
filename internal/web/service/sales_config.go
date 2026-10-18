@@ -41,6 +41,13 @@ type CryptoConfig struct {
 	Sandbox   bool   `json:"sandbox"`
 }
 
+// ReferralConfig pays a customer a share of a friend's first purchase, into
+// their wallet, in the currency of the purchase.
+type ReferralConfig struct {
+	Enabled      bool `json:"enabled"`
+	BonusPercent int  `json:"bonusPercent" example:"10"`
+}
+
 // Names of the secret fields, as ClearSecrets takes them.
 const (
 	secretZarinpalMerchant = "zarinpal.merchantId"
@@ -59,6 +66,8 @@ type SalesConfig struct {
 	Zarinpal      ZarinpalConfig `json:"zarinpal"`
 	IDPay         IDPayConfig    `json:"idpay"`
 	Crypto        CryptoConfig   `json:"crypto"`
+	WalletEnabled bool           `json:"walletEnabled"`
+	Referral      ReferralConfig `json:"referral"`
 	ClearSecrets  []string       `json:"clearSecrets,omitempty"`
 }
 
@@ -185,6 +194,9 @@ func (c *SalesConfig) normalize() error {
 	card.CardNumber = digitsOnly(card.CardNumber)
 	if card.Enabled && len(card.CardNumber) != 16 {
 		return common.NewError("card number must be 16 digits")
+	}
+	if c.Referral.Enabled && (c.Referral.BonusPercent < 1 || c.Referral.BonusPercent > 100) {
+		return common.NewError("the referral bonus must be between 1 and 100 percent")
 	}
 	online := c.Zarinpal.Enabled || c.IDPay.Enabled || c.Crypto.Enabled
 	if online && !validBaseURL(c.PublicBaseURL) {
