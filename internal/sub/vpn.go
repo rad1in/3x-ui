@@ -12,6 +12,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/l2tp"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
 	"github.com/mhsanaei/3x-ui/v3/internal/sshtunnel"
+	"github.com/mhsanaei/3x-ui/v3/internal/sstp"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 )
 
@@ -33,7 +34,7 @@ type VPNAccount struct {
 var errNoVPNProfile = errors.New("no vpn profile for this subscription")
 
 func servesVPNAccounts(p model.Protocol) bool {
-	return p == model.OpenVPN || p == model.IKEv2 || p == model.L2TP || p == model.SSH
+	return p == model.OpenVPN || p == model.IKEv2 || p == model.L2TP || p == model.SSH || p == model.SSTP
 }
 
 var unsafeFileChars = regexp.MustCompile(`[^A-Za-z0-9._-]+`)
@@ -47,6 +48,10 @@ func (s *SubService) addVPNAccounts(inbound *model.Inbound, clients []model.Clie
 	if inst, _, ok := ipsec.ServerOf(inbound); ok {
 		server = inst.Address
 	}
+	// An SSTP client checks the certificate against the name it dialled.
+	if inst, _, ok := sstp.ServerOf(inbound); ok {
+		server = inst.Address
+	}
 	var psk string
 	if inst, _, ok := l2tp.ServerOf(inbound); ok {
 		psk = inst.PSK
@@ -55,6 +60,9 @@ func (s *SubService) addVPNAccounts(inbound *model.Inbound, clients []model.Clie
 	var fingerprint string
 	if inst, _, ok := sshtunnel.ServerOf(inbound); ok {
 		port, fingerprint = inst.Port, sshtunnel.Fingerprint(inst.HostKey)
+	}
+	if inst, _, ok := sstp.ServerOf(inbound); ok {
+		port = inst.Port
 	}
 	for _, c := range clients {
 		s.vpnAccounts = append(s.vpnAccounts, VPNAccount{
@@ -95,6 +103,19 @@ func (s *SubService) OpenVPNProfileFile(subId string, inboundId int) (name, body
 		name = "openvpn-" + strconv.Itoa(ib.Id)
 	}
 	return name + ".ovpn", openvpn.ClientProfile(inst, s.resolveInboundAddress(&ib), remark), nil
+}
+
+// SSTPCAFile is the CA certificate Windows must trust for subId's SSTP
+// inbound; only a subscription with an account on it may fetch it.
+func (s *SubService) SSTPCAFile(subId string, inboundId int) (name, mime string, body []byte, err error) {
+	var ib model.Inbound
+	if err := database.GetDB().First(&ib, inboundId).Error; err != nil || ib.Protocol != model.SSTP {
+		return "", "", nil, errNoVPNProfile
+	}
+	if len(s.matchingClients(&ib, subId)) == 0 {
+		return "", "", nil, errNoVPNProfile
+	}
+	return service.SSTPCA(&ib)
 }
 
 // IKEv2ProfileFile builds one format of the IKEv2 profile for subId's login

@@ -4280,7 +4280,8 @@ export const SCHEMAS: Record<string, unknown> = {
           "openvpn",
           "ikev2",
           "l2tp",
-          "ssh"
+          "ssh",
+          "sstp"
         ],
         "example": "vless",
         "type": "string"

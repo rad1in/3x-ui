@@ -128,6 +128,7 @@
     "ikev2Hint": "iPhone ve Mac'te profili yükleyin; giriş bilgileriniz içindedir. Windows'ta CA sertifikasını yükleyin, ardından aşağıdaki sunucu, kullanıcı adı ve şifreyle bir IKEv2 VPN ekleyin. Android'de şu uygulamayı kullanın:",
     "l2tpHint": "Cihazınızın VPN ayarlarında bir L2TP/IPsec (PSK) VPN ekleyin ve aşağıdaki sunucu, ön paylaşımlı anahtar, kullanıcı adı ve şifreyi girin.",
     "sshHint": "Bu hesabı bir SSH tünel uygulamasına ekleyin veya aşağıdaki sunucu, port, kullanıcı adı ve parola ile ssh -N -D 1080 komutunu çalıştırın. İlk bağlantıda ana makine anahtarının parmak izini kontrol edin.",
+    "sstpHint": "Windows'ta CA sertifikasını Güvenilen Kök olarak yükleyin, ardından aşağıdaki sunucu, kullanıcı adı ve parola ile bir SSTP VPN ekleyin.",
     "outlineHint": "Outline anahtarları: birini Outline uygulaması yüklü bir cihazda açın ya da kopyalayıp uygulamaya ekleyin. Uygulama anahtarı yeniden okur, böylece sonraki sunucu değişiklikleri ona ulaşır."
   },
   "menu": {
@@ -803,6 +804,11 @@
           "allowLocal": "Yerel hedeflere izin ver",
           "allowLocalDesc": "Hesapların bu sunucunun kendisine ve özel ağlara tünel açmasına izin verir. İstemci panele veya iç hizmetlere ulaşamasın diye varsayılan olarak kapalıdır.",
           "fingerprint": "Ana makine anahtarı parmak izi"
+        },
+        "sstp": {
+          "help": "Windows, HTTPS üzerinden çalışan yerleşik SSTP VPN ile bağlanır. İstemciler e-postalarını kullanıcı adı, şifrelerini parola olarak girerek bağlanır. Sertifika sunucu adresi için düzenlendiğinden, adres istemcilerin yazdığı ad olmalıdır ve Windows önce bu inbound'un CA sertifikasına güvenmelidir (istemci bilgisinden veya abonelik sayfasından indirin). PPP destekli bir çekirdek ve pppd paketi gerekir.",
+          "poolDesc": "Bağlanan istemcilere verilen özel IPv4 aralığı. Boş bırakırsanız boş bir 10.91.x.0/24 otomatik seçilir.",
+          "ca": "CA sertifikası"
         }
       },
       "info": {

@@ -128,6 +128,7 @@
     "ikev2Hint": "On iPhone and Mac, install the profile; it carries your login. On Windows, install the CA certificate, then add an IKEv2 VPN with the server, username and password below. On Android, use the app",
     "l2tpHint": "Add an L2TP/IPsec (PSK) VPN in your device's VPN settings with the server, pre-shared key, username and password below.",
     "sshHint": "Add this account to an SSH tunnel app, or run ssh -N -D 1080 with the server, port, username and password below. Check the host key fingerprint the first time you connect.",
+    "sstpHint": "In Windows, install the CA certificate as a Trusted Root, then add an SSTP VPN with the server, username and password below.",
     "outlineHint": "Outline keys: open one on a device with the Outline app installed, or copy it and add it in the app. The app re-reads the key, so later server changes reach it."
   },
   "menu": {
@@ -804,6 +805,11 @@
           "allowLocal": "Allow local targets",
           "allowLocalDesc": "Let accounts tunnel to this server itself and to private networks. Off by default, so a client cannot reach the panel or internal services.",
           "fingerprint": "Host key fingerprint"
+        },
+        "sstp": {
+          "help": "Windows connects with its built-in SSTP VPN, carried over HTTPS. Clients sign in with their email as the username and their password. The server address must be the name clients type, since the certificate is issued for it, and Windows must first trust this inbound's CA certificate (download it from the client's info or the subscription page). It needs a kernel with PPP support and the pppd package.",
+          "poolDesc": "Private IPv4 range handed to connected clients. Leave empty to pick a free 10.91.x.0/24 automatically.",
+          "ca": "CA certificate"
         }
       },
       "info": {

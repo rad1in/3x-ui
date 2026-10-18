@@ -21,6 +21,7 @@ import { QrPanel } from '@/pages/inbounds/qr';
 import {
   ikev2PanelProfileUrl,
   openvpnPanelProfileUrl,
+  sstpPanelCaUrl,
   type IKEv2ProfileFormat,
 } from '@/pages/inbounds/list/helpers';
 import ClientHwidListModal from '@/components/clients/ClientHwidList';
@@ -59,6 +60,7 @@ const INBOUND_PROTOCOL_COLORS: Record<string, string> = {
   ikev2: 'blue',
   l2tp: 'purple',
   ssh: 'cyan',
+  sstp: 'geekblue',
 };
 
 const INBOUND_CHIP_LIMIT = 1;
@@ -67,6 +69,7 @@ const VPN_TAGS: Record<string, { label: string; color: string }> = {
   openvpn: { label: 'OpenVPN', color: 'green' },
   ikev2: { label: 'IKEv2', color: 'blue' },
   l2tp: { label: 'L2TP', color: 'purple' },
+  sstp: { label: 'SSTP', color: 'geekblue' },
 };
 
 const IKEV2_DOWNLOADS: { format: IKEv2ProfileFormat; labelKey: string }[] = [
@@ -258,7 +261,10 @@ export default function ClientInfoModal({
         .map((id) => inboundsById[id])
         .filter(
           (ib): ib is InboundOption =>
-            ib?.protocol === 'openvpn' || ib?.protocol === 'ikev2' || ib?.protocol === 'l2tp',
+            ib?.protocol === 'openvpn' ||
+            ib?.protocol === 'ikev2' ||
+            ib?.protocol === 'l2tp' ||
+            ib?.protocol === 'sstp',
         ),
     [client, inboundsById],
   );
@@ -906,6 +912,14 @@ export default function ClientInfoModal({
                             {t('pages.inbounds.form.l2tp.psk')}: <span dir="ltr">{ib.l2tpPsk}</span>
                           </Button>
                         </Tooltip>
+                      ) : ib.protocol === 'sstp' ? (
+                        <Button
+                          size="small"
+                          icon={<DownloadOutlined />}
+                          href={sstpPanelCaUrl(ib.id)}
+                        >
+                          {t('pages.inbounds.form.sstp.ca')}
+                        </Button>
                       ) : ib.protocol === 'ikev2' ? (
                         IKEV2_DOWNLOADS.map(({ format, labelKey }) => (
                           <Button

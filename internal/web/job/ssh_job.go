@@ -10,6 +10,8 @@ import (
 // listener that died, dropping depleted users) and books their traffic.
 type SSHJob struct {
 	inboundService service.InboundService
+	// lastErr keeps a listener that cannot bind from logging it every tick.
+	lastErr string
 }
 
 func NewSSHJob() *SSHJob {
@@ -27,7 +29,13 @@ func (j *SSHJob) Run() {
 		activeTags = append(activeTags, inst.Tag)
 	}
 	mgr := sshtunnel.GetManager()
-	mgr.Reconcile(desired)
+	err = mgr.Reconcile(desired)
+	if msg := errString(err); msg != j.lastErr {
+		if msg != "" {
+			logger.Warning("ssh job:", msg)
+		}
+		j.lastErr = msg
+	}
 
 	traffic, online := mgr.CollectTraffic()
 	deltas := make([]sidecarDelta, 0, len(traffic))

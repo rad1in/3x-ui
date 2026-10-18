@@ -31,6 +31,7 @@ const ROW_TAGS: Record<string, { label: string; color: string }> = {
   ikev2: { label: 'IKEv2', color: 'blue' },
   l2tp: { label: 'L2TP', color: 'purple' },
   ssh: { label: 'SSH', color: 'cyan' },
+  sstp: { label: 'SSTP', color: 'geekblue' },
 };
 
 const IKEV2_DOWNLOADS = [
@@ -77,6 +78,7 @@ export default function SubVPNTab({ subUrl, accounts, onCopy }: SubVPNTabProps) 
       )}
       {has('l2tp') && <p className="sub-openvpn-hint">{t('subscription.l2tpHint')}</p>}
       {has('ssh') && <p className="sub-openvpn-hint">{t('subscription.sshHint')}</p>}
+      {has('sstp') && <p className="sub-openvpn-hint">{t('subscription.sstpHint')}</p>}
       {accounts.map((a) => (
         <div key={`${a.protocol}-${a.inboundId}-${a.username}`} className="sub-row sub-openvpn-row">
           <Tag color={ROW_TAGS[a.protocol]?.color} className="sub-row-tag">
@@ -90,7 +92,8 @@ export default function SubVPNTab({ subUrl, accounts, onCopy }: SubVPNTabProps) 
               {a.protocol !== 'openvpn' &&
                 field(t('pages.inbounds.form.ikev2.serverAddress'), a.server)}
               {a.protocol === 'l2tp' && field(t('pages.inbounds.form.l2tp.psk'), a.psk ?? '')}
-              {a.protocol === 'ssh' && field(t('pages.inbounds.port'), String(a.port ?? ''))}
+              {(a.protocol === 'ssh' || a.protocol === 'sstp') &&
+                field(t('pages.inbounds.port'), String(a.port ?? ''))}
               {field(t('username'), a.username)}
               {field(t('password'), a.password)}
               {a.protocol === 'ssh' &&
@@ -99,7 +102,15 @@ export default function SubVPNTab({ subUrl, accounts, onCopy }: SubVPNTabProps) 
             </dl>
           </div>
           <div className="sub-row-actions">
-            {a.protocol === 'l2tp' || a.protocol === 'ssh' ? null : a.protocol === 'ikev2' ? (
+            {a.protocol === 'l2tp' || a.protocol === 'ssh' ? null : a.protocol === 'sstp' ? (
+              <Button
+                type="primary"
+                href={vpnProfileUrl(subUrl, a.protocol, a.inboundId, 'ca')}
+                icon={<DownloadOutlined />}
+              >
+                {t('pages.inbounds.form.sstp.ca')}
+              </Button>
+            ) : a.protocol === 'ikev2' ? (
               IKEV2_DOWNLOADS.map(({ format, labelKey }) => (
                 <Button
                   key={format}

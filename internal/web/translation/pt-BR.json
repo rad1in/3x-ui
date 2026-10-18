@@ -128,6 +128,7 @@
     "ikev2Hint": "No iPhone e no Mac, instale o perfil; ele já traz seu login. No Windows, instale o certificado CA e adicione uma VPN IKEv2 com o servidor, usuário e senha abaixo. No Android, use o app",
     "l2tpHint": "Adicione uma VPN L2TP/IPsec (PSK) nas configurações de VPN do seu dispositivo com o servidor, a chave pré-compartilhada, o usuário e a senha abaixo.",
     "sshHint": "Adicione esta conta a um app de túnel SSH, ou execute ssh -N -D 1080 com o servidor, a porta, o usuário e a senha abaixo. Confira a impressão digital da chave do host na primeira conexão.",
+    "sstpHint": "No Windows, instale o certificado CA como raiz confiável e adicione uma VPN SSTP com o servidor, usuário e senha abaixo.",
     "outlineHint": "Chaves do Outline: abra uma num aparelho com o app Outline instalado, ou copie e adicione no app. O app relê a chave, então mudanças futuras no servidor chegam até ele."
   },
   "menu": {
@@ -803,6 +804,11 @@
           "allowLocal": "Permitir destinos locais",
           "allowLocalDesc": "Permite que as contas abram túneis para o próprio servidor e para redes privadas. Desativado por padrão, para que um cliente não alcance o painel nem serviços internos.",
           "fingerprint": "Impressão digital da chave do host"
+        },
+        "sstp": {
+          "help": "O Windows se conecta com a VPN SSTP integrada, que trafega sobre HTTPS. Os clientes entram com o email como usuário e a senha. O endereço do servidor deve ser o nome que os clientes digitam, pois o certificado é emitido para ele, e o Windows precisa confiar antes no certificado CA deste inbound (baixe nas informações do cliente ou na página de assinatura). Requer um kernel com suporte a PPP e o pacote pppd.",
+          "poolDesc": "Faixa IPv4 privada entregue aos clientes conectados. Deixe vazio para escolher automaticamente um 10.91.x.0/24 livre.",
+          "ca": "Certificado CA"
         }
       },
       "info": {

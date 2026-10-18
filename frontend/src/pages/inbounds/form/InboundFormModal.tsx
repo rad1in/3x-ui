@@ -26,6 +26,7 @@ import {
 } from '@/lib/xray/inbound-form-adapter';
 import {
   createDefaultIKEv2InboundSettings,
+  createDefaultSSTPInboundSettings,
   createDefaultInboundSettings,
 } from '@/lib/xray/inbound-defaults';
 import { generateAwgObfuscation } from '@/lib/xray/amneziawg-obfuscation';
@@ -81,6 +82,7 @@ import {
   IKEv2Fields,
   L2TPFields,
   SSHFields,
+  SSTPFields,
   ShadowsocksFields,
   TuicFields,
   TunFields,
@@ -545,12 +547,15 @@ export default function InboundFormModal({
       const settings =
         next === Protocols.IKEV2
           ? createDefaultIKEv2InboundSettings(window.location.hostname)
-          : (createDefaultInboundSettings(next) ?? undefined);
+          : next === Protocols.SSTP
+            ? createDefaultSSTPInboundSettings(window.location.hostname)
+            : (createDefaultInboundSettings(next) ?? undefined);
       setV('settings', settings);
       // Native IKEv2 clients only ever dial UDP 500 (4500 behind NAT), L2TP ones 1701.
       if (next === Protocols.IKEV2) setV('port', 500);
       if (next === Protocols.L2TP) setV('port', 1701);
       if (next === Protocols.SSH) setV('port', 2222);
+      if (next === Protocols.SSTP) setV('port', 443);
       if (!NODE_ELIGIBLE_PROTOCOLS[next]) {
         setV('nodeId', null);
       }
@@ -869,6 +874,8 @@ export default function InboundFormModal({
       {protocol === Protocols.L2TP && <L2TPFields />}
 
       {protocol === Protocols.SSH && <SSHFields />}
+
+      {protocol === Protocols.SSTP && <SSTPFields />}
 
       {protocol === Protocols.SHADOWSOCKS && <ShadowsocksFields isSSWith2022={isSSWith2022} />}
 
@@ -1227,6 +1234,7 @@ export default function InboundFormModal({
                     Protocols.IKEV2,
                     Protocols.L2TP,
                     Protocols.SSH,
+                    Protocols.SSTP,
                   ] as string[]
                 ).includes(protocol) || isFallbackHost
                   ? [

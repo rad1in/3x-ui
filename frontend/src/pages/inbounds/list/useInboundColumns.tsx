@@ -235,7 +235,7 @@ export function useInboundColumns({
               </Tooltip>,
             );
           }
-          if (record.protocol === 'ssh') {
+          if (record.protocol === 'ssh' || record.protocol === 'sstp') {
             tags.push(
               <Tag key="n" color="green">
                 TCP

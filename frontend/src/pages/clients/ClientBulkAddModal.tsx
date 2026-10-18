@@ -44,6 +44,7 @@ const MULTI_CLIENT_PROTOCOLS = new Set([
   'ikev2',
   'l2tp',
   'ssh',
+  'sstp',
 ]);
 
 const EMPTY: ClientBulkAddFormValues = {

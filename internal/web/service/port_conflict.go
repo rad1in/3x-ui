@@ -31,7 +31,7 @@ func inboundTransports(protocol model.Protocol, streamSettings, settings string)
 	switch protocol {
 	case model.Hysteria, model.WireGuard, model.AmneziaWG, model.TUIC, model.IKEv2, model.L2TP:
 		return transportUDP
-	case model.MTProto, model.SSH:
+	case model.MTProto, model.SSH, model.SSTP:
 		return transportTCP
 	case model.OpenVPN:
 		var parsed struct {

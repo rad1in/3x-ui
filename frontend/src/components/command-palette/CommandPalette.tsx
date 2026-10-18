@@ -372,6 +372,7 @@ export default function CommandPalette() {
           'ikev2',
           'l2tp',
           'ssh',
+          'sstp',
         ],
         icon: <ImportOutlined />,
       },

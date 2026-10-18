@@ -229,7 +229,7 @@ func (s *InboundService) buildTargetClientFromSource(source model.Client, target
 			inboundCanEnableTlsFlow(string(targetProtocol), targetInbound.StreamSettings, targetInbound.Settings) {
 			target.Flow = flow
 		}
-	case model.Trojan, model.Shadowsocks, model.MASQUE, model.OpenVPN, model.IKEv2, model.L2TP, model.SSH:
+	case model.Trojan, model.Shadowsocks, model.MASQUE, model.OpenVPN, model.IKEv2, model.L2TP, model.SSH, model.SSTP:
 		target.Password = s.generateRandomCredential(targetProtocol)
 	case model.Hysteria:
 		target.Auth = s.generateRandomCredential(targetProtocol)

@@ -2,7 +2,6 @@ package sub
 
 import (
 	"encoding/json"
-	"github.com/mhsanaei/3x-ui/v3/internal/sshtunnel"
 	"strconv"
 	"strings"
 	"testing"
@@ -11,6 +10,8 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/ipsec"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
+	"github.com/mhsanaei/3x-ui/v3/internal/sshtunnel"
+	"github.com/mhsanaei/3x-ui/v3/internal/sstp"
 )
 
 func seedOpenVPNInbound(t *testing.T, subId string) *model.Inbound {
@@ -197,5 +198,51 @@ func TestSSHSubscriptionListsPortLoginAndFingerprint(t *testing.T) {
 	}
 	if len(s.vpnAccounts) != 1 || s.vpnAccounts[0] != want {
 		t.Fatalf("accounts = %+v, want %+v", s.vpnAccounts, want)
+	}
+}
+
+// An SSTP login is the server's name, port and account; the CA to trust comes
+// from the same subscription, and only for a subscription that has an account there.
+func TestSSTPSubscriptionListsTheAccountAndGatesItsCA(t *testing.T) {
+	initSubDB(t)
+	pki, err := ipsec.PKIFor(ipsec.PKI{}, "vpn.example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	settings, _ := json.Marshal(map[string]any{
+		"serverAddress": "vpn.example.com", "pool": "10.91.0.0/24", "pki": pki,
+		"clients": []map[string]any{{"email": "w@e", "password": "pw-sstp", "subId": "SSTPSUB", "enable": true}},
+	})
+	db := database.GetDB()
+	ib := &model.Inbound{UserId: 1, Tag: "sstp-443", Enable: true, Port: 443, Protocol: model.SSTP, Remark: "Windows", Settings: string(settings)}
+	if err := db.Create(ib).Error; err != nil {
+		t.Fatal(err)
+	}
+	client := &model.ClientRecord{Email: "w@e", SubID: "SSTPSUB", Password: "pw-sstp", Enable: true}
+	if err := db.Create(client).Error; err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Create(&model.ClientInbound{ClientId: client.Id, InboundId: ib.Id}).Error; err != nil {
+		t.Fatal(err)
+	}
+	s := &SubService{}
+	s.PrepareForRequest("panel.example.net")
+	if subs, _, _, _, err := s.getSubs("SSTPSUB"); err != nil || subs == nil {
+		t.Fatalf("getSubs = %v, %v; an SSTP-only user must still have a subscription", subs, err)
+	}
+	// The server is the certificate's name, not the host the panel was reached on.
+	want := VPNAccount{InboundId: ib.Id, Protocol: "sstp", Remark: "Windows", Server: "vpn.example.com", Username: "w@e", Password: "pw-sstp", Port: 443}
+	if len(s.vpnAccounts) != 1 || s.vpnAccounts[0] != want {
+		t.Fatalf("accounts = %+v, want %+v", s.vpnAccounts, want)
+	}
+
+	name, mime, body, err := (&SubService{}).SSTPCAFile("SSTPSUB", ib.Id)
+	inst, _, _ := sstp.ServerOf(ib)
+	ca, _ := ipsec.CACert(inst.PKI)
+	if err != nil || name != "sstp-"+strconv.Itoa(ib.Id)+"-ca.cer" || mime != "application/pkix-cert" || string(body) != string(ca.Raw) {
+		t.Fatalf("CA download = %q %q %d bytes, %v", name, mime, len(body), err)
+	}
+	if _, _, _, err := (&SubService{}).SSTPCAFile("SOMEONE-ELSE", ib.Id); err == nil {
+		t.Fatal("a subscription with no account on the inbound downloaded its CA")
 	}
 }

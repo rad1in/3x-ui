@@ -8,6 +8,7 @@ import { OpenVPNInboundSettingsSchema } from './openvpn';
 import { IKEv2InboundSettingsSchema } from './ikev2';
 import { L2TPInboundSettingsSchema } from './l2tp';
 import { SSHInboundSettingsSchema } from './ssh';
+import { SSTPInboundSettingsSchema } from './sstp';
 import { MixedInboundSettingsSchema } from './mixed';
 import { MtprotoInboundSettingsSchema } from './mtproto';
 import { ShadowsocksInboundSettingsSchema } from './shadowsocks';
@@ -27,6 +28,7 @@ export * from './openvpn';
 export * from './ikev2';
 export * from './l2tp';
 export * from './ssh';
+export * from './sstp';
 export * from './mixed';
 export * from './mtproto';
 export * from './shadowsocks';
@@ -62,5 +64,6 @@ export const InboundSettingsSchema = z.discriminatedUnion('protocol', [
   z.object({ protocol: z.literal('ikev2'), settings: IKEv2InboundSettingsSchema }),
   z.object({ protocol: z.literal('l2tp'), settings: L2TPInboundSettingsSchema }),
   z.object({ protocol: z.literal('ssh'), settings: SSHInboundSettingsSchema }),
+  z.object({ protocol: z.literal('sstp'), settings: SSTPInboundSettingsSchema }),
 ]);
 export type InboundSettings = z.infer<typeof InboundSettingsSchema>;

@@ -1,0 +1,46 @@
+package job
+
+import (
+	"github.com/mhsanaei/3x-ui/v3/internal/logger"
+	"github.com/mhsanaei/3x-ui/v3/internal/sstp"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
+)
+
+// SSTPJob keeps the SSTP listeners in line with the database (restarting one
+// that died, dropping depleted users) and books their traffic.
+type SSTPJob struct {
+	inboundService service.InboundService
+	// lastErr keeps a host that cannot run the protocol from logging it every tick.
+	lastErr string
+}
+
+func NewSSTPJob() *SSTPJob {
+	return new(SSTPJob)
+}
+
+func (j *SSTPJob) Run() {
+	desired, err := j.inboundService.DesiredSSTPInstances()
+	if err != nil {
+		logger.Warning("sstp job: desired instances:", err)
+		return
+	}
+	activeTags := make([]string, 0, len(desired))
+	for _, inst := range desired {
+		activeTags = append(activeTags, inst.Tag)
+	}
+	mgr := sstp.GetManager()
+	err = mgr.Reconcile(desired)
+	if msg := errString(err); msg != j.lastErr {
+		if msg != "" {
+			logger.Warning("sstp job:", msg)
+		}
+		j.lastErr = msg
+	}
+
+	traffic, online := mgr.CollectTraffic()
+	deltas := make([]sidecarDelta, 0, len(traffic))
+	for _, t := range traffic {
+		deltas = append(deltas, sidecarDelta{Tag: t.Tag, Email: t.Email, Up: t.Up, Down: t.Down})
+	}
+	bookSidecarTraffic(&j.inboundService, "sstp", deltas, online, activeTags)
+}

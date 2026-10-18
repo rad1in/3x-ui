@@ -14,6 +14,7 @@ import {
   IKEv2ClientSchema,
   L2TPClientSchema,
   SSHClientSchema,
+  SSTPClientSchema,
   ShadowsocksClientSchema,
   TrojanClientSchema,
   TuicClientSchema,
@@ -305,6 +306,8 @@ function clientSchemaForProtocol(protocol: string): z.ZodType | null {
       return L2TPClientSchema;
     case 'ssh':
       return SSHClientSchema;
+    case 'sstp':
+      return SSTPClientSchema;
     default:
       return null;
   }

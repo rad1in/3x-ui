@@ -4,9 +4,8 @@
 package sshtunnel
 
 import (
+	"errors"
 	"sync"
-
-	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 )
 
 // Traffic is one user's bytes on one inbound since the last collection.
@@ -88,7 +87,7 @@ func (m *Manager) Remove(id int) {
 
 // Reconcile stops unwanted inbounds and (re)starts the rest, recovering a
 // listener that died.
-func (m *Manager) Reconcile(desired []Instance) {
+func (m *Manager) Reconcile(desired []Instance) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	want := map[int]bool{}
@@ -100,11 +99,13 @@ func (m *Manager) Reconcile(desired []Instance) {
 			m.stopLocked(id)
 		}
 	}
+	var errs []error
 	for _, inst := range desired {
 		if err := m.ensureLocked(inst); err != nil {
-			logger.Warning("ssh: reconcile inbound", inst.Id, err)
+			errs = append(errs, err)
 		}
 	}
+	return errors.Join(errs...)
 }
 
 func (m *Manager) StopAll() {

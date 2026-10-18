@@ -70,6 +70,7 @@ const MULTI_CLIENT_PROTOCOLS = new Set([
   'ikev2',
   'l2tp',
   'ssh',
+  'sstp',
 ]);
 
 const CLIENT_FORM_MODAL_Z_INDEX = 1000;

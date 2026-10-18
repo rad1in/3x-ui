@@ -82,6 +82,7 @@ func (a *InboundController) initRouter(g *gin.RouterGroup) {
 	g.GET("/:id/fallbacks", a.getFallbacks)
 	g.GET("/:id/openvpnProfile", a.openvpnProfile)
 	g.GET("/:id/ikev2Profile", a.ikev2Profile)
+	g.GET("/:id/sstpCa", a.sstpCa)
 	g.GET("/vpnStatus", a.vpnStatus)
 
 	g.POST("/add", a.addInbound)
@@ -184,6 +185,21 @@ func (a *InboundController) ikev2Profile(c *gin.Context) {
 		return
 	}
 	name, mime, body, err := a.inboundService.IKEv2Profile(id, c.Query("email"), c.DefaultQuery("format", service.IKEv2ProfileApple))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "get"), err)
+		return
+	}
+	c.Header("Content-Disposition", `attachment; filename="`+name+`"`)
+	c.Data(http.StatusOK, mime, body)
+}
+
+func (a *InboundController) sstpCa(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "get"), err)
+		return
+	}
+	name, mime, body, err := a.inboundService.SSTPCA(id)
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "get"), err)
 		return
