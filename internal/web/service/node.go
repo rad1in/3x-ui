@@ -444,6 +444,24 @@ func (s *NodeService) normalize(n *model.Node) error {
 		}
 	}
 	n.BasePath = normalizeBasePath(n.BasePath)
+	return normalizeNodeCap(n)
+}
+
+// normalizeNodeCap validates the metered-VPS fields and fills their defaults.
+func normalizeNodeCap(n *model.Node) error {
+	if n.MonthlyCapGB < 0 || n.MonthlyCost < 0 {
+		return common.NewError("monthly cap and cost cannot be negative")
+	}
+	if n.CapAction != capActionStop {
+		n.CapAction = capActionAlert
+	}
+	if n.BillingDay < 1 || n.BillingDay > maxBillingDay {
+		n.BillingDay = 1
+	}
+	n.CostCurrency = strings.ToUpper(strings.TrimSpace(n.CostCurrency))
+	if len(n.CostCurrency) > 8 {
+		return common.NewError("cost currency is too long")
+	}
 	return nil
 }
 
@@ -543,6 +561,11 @@ func (s *NodeService) Update(id int, in *model.Node) error {
 		"inbound_sync_mode":     in.InboundSyncMode,
 		"inbound_tags":          string(inboundTagsJSON),
 		"outbound_tag":          in.OutboundTag,
+		"monthly_cap_gb":        in.MonthlyCapGB,
+		"cap_action":            in.CapAction,
+		"billing_day":           in.BillingDay,
+		"monthly_cost":          in.MonthlyCost,
+		"cost_currency":         in.CostCurrency,
 	}
 	if nodeSelectionGrew(existing, in) {
 		updates["inbounds_adopted_at"] = 0
@@ -606,6 +629,11 @@ func (s *NodeService) UpdateFromRequest(id int, req *NodeMutationRequest) error 
 		"inbound_sync_mode":     in.InboundSyncMode,
 		"inbound_tags":          string(inboundTagsJSON),
 		"outbound_tag":          in.OutboundTag,
+		"monthly_cap_gb":        in.MonthlyCapGB,
+		"cap_action":            in.CapAction,
+		"billing_day":           in.BillingDay,
+		"monthly_cost":          in.MonthlyCost,
+		"cost_currency":         in.CostCurrency,
 	}
 	if nodeSelectionGrew(existing, in) {
 		updates["inbounds_adopted_at"] = 0

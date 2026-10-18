@@ -147,6 +147,16 @@ func (t *Tgbot) formatEventMessage(e eventbus.Event) string {
 		}
 		return msg
 
+	case eventbus.EventNodeCapReached:
+		msg := header + "📊 " + t.I18nBot("tgbot.messages.eventNodeCapReached", "Name=="+e.Source)
+		if data, ok := e.Data.(*eventbus.NodeCapData); ok {
+			msg += "\n" + common.FormatTraffic(data.UsedBytes) + " / " + common.FormatTraffic(data.CapBytes)
+			if data.Stopped {
+				msg += "\n" + t.I18nBot("tgbot.messages.eventNodeCapStopped")
+			}
+		}
+		return msg
+
 	case eventbus.EventCPUHigh:
 		if data, ok := e.Data.(*eventbus.SystemMetricData); ok {
 			tgCpu, err := t.settingService.GetTgCpu()

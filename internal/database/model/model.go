@@ -919,6 +919,24 @@ type Node struct {
 	ConfigDirty   bool  `json:"configDirty" gorm:"default:false"`
 	ConfigDirtyAt int64 `json:"configDirtyAt"`
 
+	// Metered-VPS settings, master-local. The cap counts traffic the panel
+	// accounts on this node's inbounds, not the provider's NIC meter.
+	MonthlyCapGB float64 `json:"monthlyCapGB" form:"monthlyCapGB" gorm:"column:monthly_cap_gb;default:0" validate:"gte=0" example:"1000"`
+	CapAction    string  `json:"capAction" form:"capAction" gorm:"column:cap_action;default:alert" validate:"omitempty,oneof=alert disable" example:"alert"`
+	BillingDay   int     `json:"billingDay" form:"billingDay" gorm:"column:billing_day;default:1" validate:"gte=0,lte=28" example:"1"`
+	MonthlyCost  float64 `json:"monthlyCost" form:"monthlyCost" gorm:"column:monthly_cost;default:0" validate:"gte=0" example:"5"`
+	CostCurrency string  `json:"costCurrency" form:"costCurrency" gorm:"column:cost_currency;default:''" example:"USD"`
+
+	// Observed cap state for the current billing period; never user-edited.
+	// CapLastTotal is the inbound-counter sum at the previous tick, so a counter
+	// reset cannot be mistaken for traffic.
+	PeriodStart         int64  `json:"periodStart" gorm:"column:period_start;default:0" example:"1772323200"`
+	PeriodBytes         int64  `json:"periodBytes" gorm:"column:period_bytes;default:0" example:"1073741824"`
+	CapState            string `json:"capState" gorm:"column:cap_state;default:''" example:""`
+	CapLastTotal        int64  `json:"-" gorm:"column:cap_last_total;default:0"`
+	CapPrimed           bool   `json:"-" gorm:"column:cap_primed;default:false"`
+	CapDisabledInbounds []int  `json:"-" gorm:"serializer:json;column:cap_disabled_inbounds"`
+
 	// InboundsAdoptedAt is the clean sync that imported the node's inbounds; a
 	// save that grows the selection zeroes it so reconcile waits before sweeping.
 	InboundsAdoptedAt int64 `json:"-" gorm:"column:inbounds_adopted_at;default:0"`

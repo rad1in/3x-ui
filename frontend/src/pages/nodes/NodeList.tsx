@@ -23,6 +23,7 @@ import {
 } from '@ant-design/icons';
 
 import NodeHistoryPanel from './NodeHistoryPanel';
+import NodeUsageCell from './NodeUsageCell';
 import type { NodeRecord } from '@/api/queries/useNodesQuery';
 import { isPanelUpdateAvailable } from '@/lib/panel-version';
 import { activateOnKey } from '@/utils/a11y';
@@ -527,6 +528,12 @@ export default function NodeList({
           record.latencyMs && record.latencyMs > 0 ? `${record.latencyMs} ms` : '-',
       },
       {
+        title: t('pages.nodes.metered.usage'),
+        key: 'usage',
+        width: 180,
+        render: (_value, record) => <NodeUsageCell node={record} />,
+      },
+      {
         title: t('pages.nodes.lastHeartbeat'),
         dataIndex: 'lastHeartbeat',
         align: 'center',
@@ -839,6 +846,10 @@ export default function NodeList({
                       ? `${statsNode.latencyMs} ms`
                       : '-'}
                   </Tag>
+                </div>
+                <div className="stat-row">
+                  <span className="stat-label">{t('pages.nodes.metered.usage')}</span>
+                  <NodeUsageCell node={statsNode} />
                 </div>
                 <div className="stat-row">
                   <span className="stat-label">{t('clients')}</span>

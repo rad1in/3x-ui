@@ -4,6 +4,7 @@ import {
   Alert,
   Button,
   Col,
+  Divider,
   Form,
   Input,
   InputNumber,
@@ -53,6 +54,11 @@ function defaultValues(): NodeFormValues {
     inboundSyncMode: 'all',
     inboundTags: [],
     outboundTag: '',
+    monthlyCapGB: 0,
+    capAction: 'alert',
+    billingDay: 1,
+    monthlyCost: 0,
+    costCurrency: '',
   };
 }
 
@@ -153,6 +159,11 @@ export default function NodeFormModal({
       inboundSyncMode: values.inboundSyncMode,
       inboundTags: values.inboundSyncMode === 'selected' ? values.inboundTags : [],
       outboundTag: values.outboundTag || '',
+      monthlyCapGB: values.monthlyCapGB || 0,
+      capAction: values.capAction,
+      billingDay: values.billingDay || 1,
+      monthlyCost: values.monthlyCost || 0,
+      costCurrency: values.costCurrency.trim(),
     };
     if (token) payload.apiToken = token;
     return payload;
@@ -409,6 +420,50 @@ export default function NodeFormModal({
                 options={outboundOptions}
               />
             </FormField>
+
+            <Divider titlePlacement="start" plain>
+              {t('pages.nodes.metered.title')}
+            </Divider>
+            <Row gutter={16}>
+              <Col xs={24} md={12}>
+                <FormField
+                  label={t('pages.nodes.metered.cap')}
+                  name="monthlyCapGB"
+                  tooltip={t('pages.nodes.metered.capHint')}
+                >
+                  <InputNumber min={0} style={{ width: '100%' }} addonAfter="GB" />
+                </FormField>
+              </Col>
+              <Col xs={24} md={12}>
+                <FormField label={t('pages.nodes.metered.action')} name="capAction">
+                  <Select
+                    options={[
+                      { value: 'alert', label: t('pages.nodes.metered.actionAlert') },
+                      { value: 'disable', label: t('pages.nodes.metered.actionDisable') },
+                    ]}
+                  />
+                </FormField>
+              </Col>
+              <Col xs={24} md={8}>
+                <FormField
+                  label={t('pages.nodes.metered.billingDay')}
+                  name="billingDay"
+                  tooltip={t('pages.nodes.metered.billingDayHint')}
+                >
+                  <InputNumber min={1} max={28} style={{ width: '100%' }} />
+                </FormField>
+              </Col>
+              <Col xs={24} md={8}>
+                <FormField label={t('pages.nodes.metered.cost')} name="monthlyCost">
+                  <InputNumber min={0} style={{ width: '100%' }} />
+                </FormField>
+              </Col>
+              <Col xs={24} md={8}>
+                <FormField label={t('pages.nodes.metered.currency')} name="costCurrency">
+                  <Input placeholder="USD" maxLength={8} style={{ direction: 'ltr' }} />
+                </FormField>
+              </Col>
+            </Row>
 
             <FormField
               label={t('pages.nodes.inboundSyncMode')}

@@ -48,6 +48,7 @@ const GROUPS: NotificationGroupConfig[] = [
     events: [
       { key: 'node.down', label: 'eventNodeDown', settingKey: '' },
       { key: 'node.up', label: 'eventNodeUp', settingKey: '' },
+      { key: 'node.cap_reached', label: 'eventNodeCapReached', settingKey: '' },
     ],
   },
   {
