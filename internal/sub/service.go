@@ -3106,6 +3106,13 @@ type PageData struct {
 	Emails        []string
 	VPN           []VPNAccount
 	Outline       []OutlineKey
+	Profiles      []ProfileLink
+}
+
+// ProfileLink is a Surge, Quantumult X or Loon profile URL the subscription page lists.
+type ProfileLink struct {
+	Kind string `json:"kind"`
+	URL  string `json:"url"`
 }
 
 // ResolveRequest extracts scheme, host, and header information from an HTTP request.
@@ -3196,6 +3203,12 @@ func (s *SubService) formatsBase(configuredSubURI, base string) string {
 func (s *SubService) SingboxURL(subId string) string {
 	configuredSubURI, _ := s.settingService.GetSubURI()
 	return s.buildSingleURL("", s.formatsBase(configuredSubURI, s.settingService.BuildSubURIBase(s.address)), subSingboxPath, subId)
+}
+
+// ProfileURL is the URL of an alias-path profile (Surge, Quantumult X, Loon).
+func (s *SubService) ProfileURL(path, subId string) string {
+	configuredSubURI, _ := s.settingService.GetSubURI()
+	return s.buildSingleURL("", s.formatsBase(configuredSubURI, s.settingService.BuildSubURIBase(s.address)), path, subId)
 }
 
 // extractBaseFromURI extracts scheme://host from a configured URI.

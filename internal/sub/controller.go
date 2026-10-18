@@ -91,6 +91,7 @@ type SUBController struct {
 	shortLinks      service.SubShortLinkService
 	shortLinksOn    bool
 	ipLimiter       *fixedWindowLimiter
+	profileAliases  []profileFormat
 	subLimiter      *fixedWindowLimiter
 
 	subTemplateMu    sync.RWMutex
@@ -412,6 +413,16 @@ func (a *SUBController) initRouter(g *gin.RouterGroup) {
 			gSingbox.GET(":subid", a.subSingbox)
 			gSingbox.HEAD(":subid", a.subSingbox)
 		}
+		for _, f := range profileFormats {
+			if owner := a.configuredSubscriptionPathOwner(f.path); owner != "" {
+				logger.Warningf("Subscription alias %q is unavailable because it conflicts with the configured %s path", f.path, owner)
+				continue
+			}
+			a.profileAliases = append(a.profileAliases, f)
+			gProfile := g.Group(f.path)
+			gProfile.GET(":subid", a.profileHandler(f))
+			gProfile.HEAD(":subid", a.profileHandler(f))
+		}
 	}
 }
 
@@ -495,6 +506,10 @@ func (a *SUBController) buildSubPageData(c *gin.Context) (PageData, bool) {
 	page.SubAnnounce = metadata.Announce
 	if a.singboxEnabled {
 		page.SubSingbox = subReq.SingboxURL(subId)
+	}
+	kinds := map[string]string{surgeFormat.path: "SURGE", quanxFormat.path: "QUANX", loonFormat.path: "LOON"}
+	for _, f := range a.profileAliases {
+		page.Profiles = append(page.Profiles, ProfileLink{Kind: kinds[f.path], URL: subReq.ProfileURL(f.path, subId)})
 	}
 	page.Outline = a.subClashService.OutlineKeys(subId, host, subURL)
 	return page, true
@@ -773,6 +788,7 @@ func (a *SUBController) subPageContext(page PageData) map[string]any {
 		"announce":      page.SubAnnounce,
 		"vpn":           page.VPN,
 		"outline":       page.Outline,
+		"profiles":      page.Profiles,
 	}
 }
 
@@ -1085,6 +1101,44 @@ func (a *SUBController) subSingbox(c *gin.Context) {
 	a.ApplyCommonHeaders(c, header, a.updateInterval, metadata.Title, metadata.SupportURL, metadata.ProfileURL, metadata.Announce, a.subEnableRouting, a.subRoutingRules, a.subHideSettings)
 	c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(body))
 	a.recordSubscriptionFetch(c)
+}
+
+// profileHandler serves a Surge, Quantumult X or Loon profile built from the Clash proxy list.
+func (a *SUBController) profileHandler(f profileFormat) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if a.maybeServeSubPage(c) {
+			return
+		}
+		if !a.enforceHwid(c) {
+			return
+		}
+		subId := c.Param("subid")
+		scheme, host, hostWithPort, _ := a.subService.ResolveRequest(c)
+		hours, _ := strconv.Atoi(a.updateInterval)
+		opts := profileOptions{
+			managedURL:      fmt.Sprintf("%s://%s%s", scheme, hostWithPort, c.Request.URL.EscapedPath()),
+			intervalSeconds: hours * 3600,
+		}
+		body, header, err := a.subClashService.GetProfile(f, subId, host, opts)
+		if errors.Is(err, errNoProfileProxies) {
+			c.String(http.StatusUnprocessableEntity, err.Error())
+			return
+		}
+		if err != nil || (body == "" && header == "") {
+			writeSubError(c, err)
+			return
+		}
+		var subReq *SubService
+		metadata := a.metadataForSubRequest(func() *SubService {
+			if subReq == nil {
+				subReq = a.subService.ForRequest(host)
+			}
+			return subReq
+		}, subId, builtinProfileURL(c, scheme, hostWithPort))
+		a.ApplyCommonHeaders(c, header, a.updateInterval, metadata.Title, metadata.SupportURL, metadata.ProfileURL, metadata.Announce, a.subEnableRouting, a.subRoutingRules, a.subHideSettings)
+		c.Data(http.StatusOK, "text/plain; charset=utf-8", []byte(body))
+		a.recordSubscriptionFetch(c)
+	}
 }
 
 func builtinProfileURL(c *gin.Context, scheme, hostWithPort string) string {
