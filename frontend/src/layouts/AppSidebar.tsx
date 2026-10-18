@@ -22,6 +22,8 @@ import {
   GithubOutlined,
   GlobalOutlined,
   HistoryOutlined,
+  SafetyCertificateOutlined,
+  UserSwitchOutlined,
   HeartOutlined,
   ImportOutlined,
   LogoutOutlined,
@@ -48,6 +50,8 @@ import { formatPanelVersion } from '@/lib/panel-version';
 import { pauseAnimationsUntilLeave, useTheme } from '@/hooks/useTheme';
 import { useAllSettings } from '@/api/queries/useAllSettings';
 import { useHostedStatus } from '@/api/queries/useHostedStatus';
+import { useCurrentAdmin } from '@/api/queries/useCurrentAdmin';
+import { canOpenPage } from '@/lib/adminRole';
 import { useCommandPalette } from '@/components/command-palette/useCommandPalette';
 import { BrandMark } from '@/components/ui';
 import './AppSidebar.css';
@@ -80,6 +84,8 @@ type IconName =
   | 'outbound'
   | 'routing'
   | 'audit'
+  | 'admins'
+  | 'sessions'
   | 'panels';
 
 const iconByName: Record<IconName, ComponentType> = {
@@ -97,6 +103,8 @@ const iconByName: Record<IconName, ComponentType> = {
   outbound: ExportOutlined,
   routing: SwapOutlined,
   audit: HistoryOutlined,
+  admins: UserSwitchOutlined,
+  sessions: SafetyCertificateOutlined,
   panels: AppstoreOutlined,
 };
 
@@ -200,6 +208,7 @@ export default function AppSidebar() {
   const showSubFormats = !!(allSetting.subJsonEnable || allSetting.subClashEnable);
   const showSubBalancers = !!allSetting.subJsonEnable;
   const isHostedPanel = !!useHostedStatus().data?.enabled;
+  const role = useCurrentAdmin().data?.role;
 
   const [hovered, setHovered] = useState(() => hoveredAcrossRemounts);
   const [pinned, setPinned] = useState(readSidebarPinned);
@@ -233,27 +242,33 @@ export default function AppSidebar() {
   const currentTheme: 'light' | 'dark' = isDark ? 'dark' : 'light';
   const panelVersion = window.X_UI_CUR_VER || '';
 
-  const tabs = useMemo<{ key: string; icon: IconName; title: string }[]>(
-    () => [
-      { key: '/', icon: 'dashboard', title: t('menu.dashboard') },
-      { key: '/inbounds', icon: 'inbound', title: t('menu.inbounds') },
-      { key: '/clients', icon: 'team', title: t('menu.clients') },
-      { key: '/groups', icon: 'groups', title: t('menu.groups') },
-      { key: '/nodes', icon: 'cluster', title: t('menu.nodes') },
-      ...(isHostedPanel
-        ? []
-        : [{ key: '/panels', icon: 'panels' as const, title: t('menu.panels') }]),
-      { key: '/hosts', icon: 'hosts', title: t('menu.hosts') },
-      { key: '/outbound', icon: 'outbound', title: t('menu.outbounds') },
-      { key: '/routing', icon: 'routing', title: t('menu.routing') },
-      { key: '/settings', icon: 'setting', title: t('menu.settings') },
-      { key: '/xray', icon: 'tool', title: t('menu.xray') },
-      { key: '/audit', icon: 'audit', title: t('menu.audit') },
-      { key: '/api-docs', icon: 'apidocs', title: t('menu.apiDocs') },
-      { key: '/sponsors', icon: 'sponsors', title: t('menu.sponsors') },
-      { key: LOGOUT_KEY, icon: 'logout', title: t('logout') },
-    ],
-    [t, isHostedPanel],
+  type Tab = { key: string; icon: IconName; title: string };
+  const tabs = useMemo<Tab[]>(
+    () =>
+      (
+        [
+          { key: '/', icon: 'dashboard', title: t('menu.dashboard') },
+          { key: '/inbounds', icon: 'inbound', title: t('menu.inbounds') },
+          { key: '/clients', icon: 'team', title: t('menu.clients') },
+          { key: '/groups', icon: 'groups', title: t('menu.groups') },
+          { key: '/nodes', icon: 'cluster', title: t('menu.nodes') },
+          ...(isHostedPanel
+            ? []
+            : [{ key: '/panels', icon: 'panels' as const, title: t('menu.panels') }]),
+          { key: '/hosts', icon: 'hosts', title: t('menu.hosts') },
+          { key: '/outbound', icon: 'outbound', title: t('menu.outbounds') },
+          { key: '/routing', icon: 'routing', title: t('menu.routing') },
+          { key: '/settings', icon: 'setting', title: t('menu.settings') },
+          { key: '/xray', icon: 'tool', title: t('menu.xray') },
+          { key: '/audit', icon: 'audit', title: t('menu.audit') },
+          { key: '/admins', icon: 'admins', title: t('menu.admins') },
+          { key: '/sessions', icon: 'sessions', title: t('menu.sessions') },
+          { key: '/api-docs', icon: 'apidocs', title: t('menu.apiDocs') },
+          { key: '/sponsors', icon: 'sponsors', title: t('menu.sponsors') },
+          { key: LOGOUT_KEY, icon: 'logout', title: t('logout') },
+        ] as Tab[]
+      ).filter((tab) => tab.key === LOGOUT_KEY || canOpenPage(role, tab.key)),
+    [t, isHostedPanel, role],
   );
 
   const navItems = useMemo(() => tabs.filter((tab) => tab.icon !== 'logout'), [tabs]);

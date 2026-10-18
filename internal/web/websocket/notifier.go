@@ -31,6 +31,13 @@ func HasClients() bool {
 	return hub != nil && hub.GetClientCount() > 0
 }
 
+// DisconnectUser closes every live socket of one admin.
+func DisconnectUser(userId int) {
+	if hub := GetHub(); hub != nil {
+		hub.DisconnectUser(userId)
+	}
+}
+
 // BroadcastStatus broadcasts server status update to all connected clients.
 func BroadcastStatus(status any) {
 	if hub := GetHub(); hub != nil {

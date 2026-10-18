@@ -17,6 +17,9 @@ import (
 )
 
 // getRemoteIp extracts the real IP address from the request headers or remote address.
+// RemoteIP is the client address after trusted-proxy header handling.
+func RemoteIP(c *gin.Context) string { return getRemoteIp(c) }
+
 func getRemoteIp(c *gin.Context) string {
 	remoteIP, ok := extractTrustedIP(c.Request.RemoteAddr)
 	if !ok {

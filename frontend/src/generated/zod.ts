@@ -24,6 +24,25 @@ export type trafficLocalApplyAction = z.infer<typeof trafficLocalApplyActionSche
 export const transportBitsSchema = z.number().int();
 export type transportBits = z.infer<typeof transportBitsSchema>;
 
+export const AdminInputSchema = z.object({
+  groups: z.array(z.string()),
+  inboundIds: z.array(z.number().int()),
+  password: z.string(),
+  role: z.string(),
+  username: z.string(),
+});
+export type AdminInput = z.infer<typeof AdminInputSchema>;
+
+export const AdminViewSchema = z.object({
+  createdAt: z.number().int(),
+  groups: z.array(z.string()),
+  id: z.number().int(),
+  inboundIds: z.array(z.number().int()),
+  role: z.string(),
+  username: z.string(),
+});
+export type AdminView = z.infer<typeof AdminViewSchema>;
+
 export const AllSettingSchema = z.object({
   autoDeleteDepletedDays: z.number().int().min(0),
   backupKeep: z.number().int().min(0),
@@ -76,8 +95,11 @@ export const AllSettingSchema = z.object({
   ldapUserAttr: z.string(),
   ldapUserFilter: z.string(),
   ldapVlessField: z.string(),
+  loginLockoutMinutes: z.number().int().min(1).max(10080),
+  loginMaxFailures: z.number().int().min(1).max(100),
   outboundDownThreshold: z.number().int().min(1).max(100),
   pageSize: z.number().int().min(0).max(1000),
+  panelAllowedCidrs: z.string(),
   panelBrandColor: z.string(),
   panelBrandLogo: z.string(),
   panelBrandName: z.string(),
@@ -292,8 +314,11 @@ export const AllSettingViewSchema = z.object({
   ldapUserAttr: z.string(),
   ldapUserFilter: z.string(),
   ldapVlessField: z.string(),
+  loginLockoutMinutes: z.number().int().min(1).max(10080),
+  loginMaxFailures: z.number().int().min(1).max(100),
   outboundDownThreshold: z.number().int().min(1).max(100),
   pageSize: z.number().int().min(0).max(1000),
+  panelAllowedCidrs: z.string(),
   panelBrandColor: z.string(),
   panelBrandLogo: z.string(),
   panelBrandName: z.string(),
@@ -454,6 +479,7 @@ export const AmneziaWGLogsSchema = z.object({
 export type AmneziaWGLogs = z.infer<typeof AmneziaWGLogsSchema>;
 
 export const ApiTokenSchema = z.object({
+  allowedCidrs: z.string(),
   createdAt: z.number().int(),
   enabled: z.boolean(),
   expiresAt: z.number().int(),
@@ -465,6 +491,7 @@ export const ApiTokenSchema = z.object({
 export type ApiToken = z.infer<typeof ApiTokenSchema>;
 
 export const ApiTokenViewSchema = z.object({
+  allowedCidrs: z.string(),
   createdAt: z.number().int(),
   enabled: z.boolean(),
   expiresAt: z.number().int(),
@@ -1258,6 +1285,18 @@ export const ServerSettingsSchema = z.object({
 });
 export type ServerSettings = z.infer<typeof ServerSettingsSchema>;
 
+export const SessionViewSchema = z.object({
+  createdAt: z.number().int(),
+  current: z.boolean(),
+  id: z.string(),
+  ip: z.string(),
+  lastSeen: z.number().int(),
+  userAgent: z.string(),
+  userId: z.number().int(),
+  username: z.string(),
+});
+export type SessionView = z.infer<typeof SessionViewSchema>;
+
 export const SettingSchema = z.object({
   id: z.number().int(),
   key: z.string(),
@@ -1372,8 +1411,10 @@ export const TuicServerSettingsSchema = z.object({
 export type TuicServerSettings = z.infer<typeof TuicServerSettingsSchema>;
 
 export const UserSchema = z.object({
+  createdAt: z.number().int(),
   id: z.number().int(),
   password: z.string(),
+  role: z.string(),
   username: z.string(),
 });
 export type User = z.infer<typeof UserSchema>;

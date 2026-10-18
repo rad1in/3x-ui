@@ -2147,8 +2147,15 @@ export const sections: readonly Section[] = [
             desc: 'Future Unix milliseconds, or 0 for no expiry.',
             optional: true,
           },
+          {
+            name: 'allowedCidrs',
+            in: 'body',
+            type: 'string',
+            desc: 'Comma-separated IPs or CIDRs the token may be used from. Empty (default) means any address; a call from elsewhere gets 401.',
+            optional: true,
+          },
         ],
-        body: '{\n  "name": "central-panel-a",\n  "scope": "node-sync",\n  "expiresAt": 1798761600000\n}',
+        body: '{\n  "name": "central-panel-a",\n  "scope": "node-sync",\n  "expiresAt": 1798761600000,\n  "allowedCidrs": "203.0.113.0/24"\n}',
         responseSchema: 'ApiTokenView',
         errorResponse:
           '{\n  "success": false,\n  "msg": "a token with that name already exists"\n}',
@@ -2186,6 +2193,23 @@ export const sections: readonly Section[] = [
           },
         ],
         body: '{\n  "enabled": false,\n  "expectedScope": "node-sync"\n}',
+        response: '{\n  "success": true\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/setting/apiTokens/setAllowedCidrs/:id',
+        summary:
+          'Replace the addresses a token may be used from. An empty list lifts the restriction. Rotating a token by name keeps its list.',
+        params: [
+          { name: 'id', in: 'path', type: 'number', desc: 'Token row ID.' },
+          {
+            name: 'allowedCidrs',
+            in: 'body',
+            type: 'string',
+            desc: 'Comma-separated IPs or CIDRs, e.g. "203.0.113.0/24,198.51.100.4".',
+          },
+        ],
+        body: '{\n  "allowedCidrs": "203.0.113.0/24"\n}',
         response: '{\n  "success": true\n}',
       },
     ],
@@ -2299,6 +2323,102 @@ export const sections: readonly Section[] = [
             in: 'body (json)',
             type: 'string',
             desc: 'https:// contact link, or empty.',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'admins',
+    title: 'Admins',
+    description:
+      'Admin accounts and their roles. owner: everything; admin: everything except managing admins, API tokens, the database file and security settings; operator: only the inbounds and client groups in its scope; viewer: read-only. Every endpoint except /me is owner-only. API tokens are not admins and keep their own scopes. All endpoints under /panel/api/admins.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/admins/me',
+        summary:
+          'The signed-in admin with its role and, for an operator, its scope. An API token answers as the oldest owner.',
+        responseSchema: 'AdminView',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/admins/list',
+        summary: 'Every admin account, oldest first. Password hashes are never returned.',
+        responseSchema: 'AdminView',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/admins/create',
+        summary:
+          'Create an admin. username is unique (case-insensitive), password is required, role is owner, admin, operator or viewer. inboundIds and groups are kept only for an operator.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'AdminInput.' }],
+        responseSchema: 'AdminView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/admins/update/:id',
+        summary:
+          "Replace an admin. An empty password keeps the current one; a new one ends that admin's sessions. The panel always keeps one owner, and nobody can change their own role or scope.",
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Admin id.' },
+          { name: 'body', in: 'body (json)', type: 'object', desc: 'AdminInput.' },
+        ],
+        responseSchema: 'AdminView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/admins/del/:id',
+        summary:
+          'Delete an admin and close its live connections. The last owner and yourself cannot be deleted.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Admin id.' }],
+      },
+    ],
+  },
+
+  {
+    id: 'sessions',
+    title: 'Sessions',
+    description:
+      'Browsers signed in to the panel. Every role may list and end its own sessions; owners may also act on other admins. API tokens are not sessions. All endpoints under /panel/api/sessions.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/sessions/list',
+        summary:
+          'Active sessions with address, user agent and last-seen time; current marks the browser making the request. Non-owners always get their own; an owner gets everyone unless userId is given.',
+        params: [
+          {
+            name: 'userId',
+            in: 'query',
+            type: 'integer',
+            desc: 'Owner only: limit to this admin.',
+            optional: true,
+          },
+        ],
+        responseSchema: 'SessionView',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sessions/revoke/:id',
+        summary:
+          'End one session. The browser is signed out on its next request. Non-owners can only end their own.',
+        params: [{ name: 'id', in: 'path', type: 'string', desc: 'Session id from the list.' }],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sessions/revokeAll',
+        summary:
+          'Log an admin out everywhere. userId 0 means yourself; only an owner may name someone else. keepCurrent spares the session making the request.',
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{ "userId": 0, "keepCurrent": true }',
           },
         ],
       },

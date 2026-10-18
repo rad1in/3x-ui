@@ -26,6 +26,86 @@
       }
     },
     "schemas": {
+      "AdminInput": {
+        "description": "AdminInput creates or edits an admin. An empty Password on edit keeps it.",
+        "properties": {
+          "groups": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "inboundIds": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "password": {
+            "example": "a-long-password",
+            "type": "string"
+          },
+          "role": {
+            "example": "operator",
+            "type": "string"
+          },
+          "username": {
+            "example": "support",
+            "type": "string"
+          }
+        },
+        "required": [
+          "groups",
+          "inboundIds",
+          "password",
+          "role",
+          "username"
+        ],
+        "type": "object"
+      },
+      "AdminView": {
+        "description": "AdminView is an admin account as the owner sees it; it never carries the hash.",
+        "properties": {
+          "createdAt": {
+            "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "groups": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "example": 2,
+            "type": "integer"
+          },
+          "inboundIds": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "role": {
+            "example": "operator",
+            "type": "string"
+          },
+          "username": {
+            "example": "support",
+            "type": "string"
+          }
+        },
+        "required": [
+          "createdAt",
+          "groups",
+          "id",
+          "inboundIds",
+          "role",
+          "username"
+        ],
+        "type": "object"
+      },
       "AllSetting": {
         "properties": {
           "autoDeleteDepletedDays": {
@@ -193,6 +273,16 @@
           "ldapVlessField": {
             "type": "string"
           },
+          "loginLockoutMinutes": {
+            "maximum": 10080,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "loginMaxFailures": {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          },
           "outboundDownThreshold": {
             "maximum": 100,
             "minimum": 1,
@@ -202,6 +292,9 @@
             "maximum": 1000,
             "minimum": 0,
             "type": "integer"
+          },
+          "panelAllowedCidrs": {
+            "type": "string"
           },
           "panelBrandColor": {
             "type": "string"
@@ -729,8 +822,11 @@
           "ldapUserAttr",
           "ldapUserFilter",
           "ldapVlessField",
+          "loginLockoutMinutes",
+          "loginMaxFailures",
           "outboundDownThreshold",
           "pageSize",
+          "panelAllowedCidrs",
           "panelBrandColor",
           "panelBrandLogo",
           "panelBrandName",
@@ -1080,6 +1176,16 @@
           "ldapVlessField": {
             "type": "string"
           },
+          "loginLockoutMinutes": {
+            "maximum": 10080,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "loginMaxFailures": {
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          },
           "outboundDownThreshold": {
             "maximum": 100,
             "minimum": 1,
@@ -1089,6 +1195,9 @@
             "maximum": 1000,
             "minimum": 0,
             "type": "integer"
+          },
+          "panelAllowedCidrs": {
+            "type": "string"
           },
           "panelBrandColor": {
             "type": "string"
@@ -1626,8 +1735,11 @@
           "ldapUserAttr",
           "ldapUserFilter",
           "ldapVlessField",
+          "loginLockoutMinutes",
+          "loginMaxFailures",
           "outboundDownThreshold",
           "pageSize",
+          "panelAllowedCidrs",
           "panelBrandColor",
           "panelBrandLogo",
           "panelBrandName",
@@ -1812,6 +1924,10 @@
       },
       "ApiToken": {
         "properties": {
+          "allowedCidrs": {
+            "description": "Comma-separated IPs/CIDRs the token may be used from; empty means any address.",
+            "type": "string"
+          },
           "createdAt": {
             "format": "int64",
             "type": "integer"
@@ -1838,6 +1954,7 @@
           }
         },
         "required": [
+          "allowedCidrs",
           "createdAt",
           "enabled",
           "expiresAt",
@@ -1850,6 +1967,11 @@
       },
       "ApiTokenView": {
         "properties": {
+          "allowedCidrs": {
+            "description": "AllowedCidrs limits where the token works from; empty means anywhere.",
+            "example": "203.0.113.0/24,198.51.100.4",
+            "type": "string"
+          },
           "createdAt": {
             "example": 1736000000,
             "format": "int64",
@@ -1882,6 +2004,7 @@
           }
         },
         "required": [
+          "allowedCidrs",
           "createdAt",
           "enabled",
           "expiresAt",
@@ -5208,6 +5331,56 @@
         ],
         "type": "object"
       },
+      "SessionView": {
+        "description": "SessionView is one signed-in browser of an admin account.",
+        "properties": {
+          "createdAt": {
+            "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "current": {
+            "example": true,
+            "type": "boolean"
+          },
+          "id": {
+            "example": "q3Zk0m1u0Vw5gq8mYz1lJm0o3Wq2B8Xc",
+            "type": "string"
+          },
+          "ip": {
+            "example": "203.0.113.5",
+            "type": "string"
+          },
+          "lastSeen": {
+            "example": 1760688000000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "userAgent": {
+            "example": "Mozilla/5.0 (X11; Linux x86_64)",
+            "type": "string"
+          },
+          "userId": {
+            "example": 1,
+            "type": "integer"
+          },
+          "username": {
+            "example": "admin",
+            "type": "string"
+          }
+        },
+        "required": [
+          "createdAt",
+          "current",
+          "id",
+          "ip",
+          "lastSeen",
+          "userAgent",
+          "userId",
+          "username"
+        ],
+        "type": "object"
+      },
       "Setting": {
         "description": "Setting stores key-value configuration settings for the 3x-ui panel.",
         "properties": {
@@ -5651,12 +5824,20 @@
         "type": "object"
       },
       "User": {
-        "description": "User represents a user account in the 3x-ui panel.",
+        "description": "User represents an admin account in the 3x-ui panel.",
         "properties": {
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
           "id": {
             "type": "integer"
           },
           "password": {
+            "type": "string"
+          },
+          "role": {
+            "description": "The column default makes every account that predates roles an owner.",
             "type": "string"
           },
           "username": {
@@ -5664,8 +5845,10 @@
           }
         },
         "required": [
+          "createdAt",
           "id",
           "password",
+          "role",
           "username"
         ],
         "type": "object"
@@ -5782,6 +5965,14 @@
     {
       "name": "Sponsors",
       "description": "Manage the sponsor placements this panel shows on its login page, dashboard and sponsors page, and optionally read them from another panel's feed instead."
+    },
+    {
+      "name": "Admins",
+      "description": "Admin accounts and their roles. owner: everything; admin: everything except managing admins, API tokens, the database file and security settings; operator: only the inbounds and client groups in its scope; viewer: read-only. Every endpoint except /me is owner-only. API tokens are not admins and keep their own scopes. All endpoints under /panel/api/admins."
+    },
+    {
+      "name": "Sessions",
+      "description": "Browsers signed in to the panel. Every role may list and end its own sessions; owners may also act on other admins. API tokens are not sessions. All endpoints under /panel/api/sessions."
     },
     {
       "name": "Activity Log",
@@ -14688,6 +14879,10 @@
                   "expiresAt": {
                     "type": "integer",
                     "description": "Future Unix milliseconds, or 0 for no expiry."
+                  },
+                  "allowedCidrs": {
+                    "type": "string",
+                    "description": "Comma-separated IPs or CIDRs the token may be used from. Empty (default) means any address; a call from elsewhere gets 401."
                   }
                 },
                 "required": [
@@ -14697,7 +14892,8 @@
               "example": {
                 "name": "central-panel-a",
                 "scope": "node-sync",
-                "expiresAt": 1798761600000
+                "expiresAt": 1798761600000,
+                "allowedCidrs": "203.0.113.0/24"
               }
             }
           }
@@ -14724,6 +14920,7 @@
                 "example": {
                   "success": true,
                   "obj": {
+                    "allowedCidrs": "203.0.113.0/24,198.51.100.4",
                     "createdAt": 1736000000,
                     "enabled": true,
                     "expiresAt": 0,
@@ -14869,6 +15066,72 @@
               "example": {
                 "enabled": false,
                 "expectedScope": "node-sync"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/setting/apiTokens/setAllowedCidrs/{id}": {
+      "post": {
+        "tags": [
+          "API Tokens"
+        ],
+        "summary": "Replace the addresses a token may be used from. An empty list lifts the restriction. Rotating a token by name keeps its list.",
+        "operationId": "post_panel_api_setting_apiTokens_setAllowedCidrs_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Token row ID.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "allowedCidrs": {
+                    "type": "string",
+                    "description": "Comma-separated IPs or CIDRs, e.g. \"203.0.113.0/24,198.51.100.4\"."
+                  }
+                },
+                "required": [
+                  "allowedCidrs"
+                ]
+              },
+              "example": {
+                "allowedCidrs": "203.0.113.0/24"
               }
             }
           }
@@ -15452,6 +15715,440 @@
                 "required": [
                   "feedUrl",
                   "contact"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/admins/me": {
+      "get": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "The signed-in admin with its role and, for an operator, its scope. An API token answers as the oldest owner.",
+        "operationId": "get_panel_api_admins_me",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/AdminView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "createdAt": 1760684400000,
+                    "groups": [
+                      ""
+                    ],
+                    "id": 2,
+                    "inboundIds": [
+                      0
+                    ],
+                    "role": "operator",
+                    "username": "support"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/admins/list": {
+      "get": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Every admin account, oldest first. Password hashes are never returned.",
+        "operationId": "get_panel_api_admins_list",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdminView"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "createdAt": 1760684400000,
+                      "groups": [
+                        ""
+                      ],
+                      "id": 2,
+                      "inboundIds": [
+                        0
+                      ],
+                      "role": "operator",
+                      "username": "support"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/admins/create": {
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Create an admin. username is unique (case-insensitive), password is required, role is owner, admin, operator or viewer. inboundIds and groups are kept only for an operator.",
+        "operationId": "post_panel_api_admins_create",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "AdminInput."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/AdminView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "createdAt": 1760684400000,
+                    "groups": [
+                      ""
+                    ],
+                    "id": 2,
+                    "inboundIds": [
+                      0
+                    ],
+                    "role": "operator",
+                    "username": "support"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/admins/update/{id}": {
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Replace an admin. An empty password keeps the current one; a new one ends that admin's sessions. The panel always keeps one owner, and nobody can change their own role or scope.",
+        "operationId": "post_panel_api_admins_update_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Admin id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "AdminInput."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/AdminView"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "createdAt": 1760684400000,
+                    "groups": [
+                      ""
+                    ],
+                    "id": 2,
+                    "inboundIds": [
+                      0
+                    ],
+                    "role": "operator",
+                    "username": "support"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/admins/del/{id}": {
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Delete an admin and close its live connections. The last owner and yourself cannot be deleted.",
+        "operationId": "post_panel_api_admins_del_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Admin id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sessions/list": {
+      "get": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Active sessions with address, user agent and last-seen time; current marks the browser making the request. Non-owners always get their own; an owner gets everyone unless userId is given.",
+        "operationId": "get_panel_api_sessions_list",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "description": "Owner only: limit to this admin.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SessionView"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "createdAt": 1760684400000,
+                      "current": true,
+                      "id": "q3Zk0m1u0Vw5gq8mYz1lJm0o3Wq2B8Xc",
+                      "ip": "203.0.113.5",
+                      "lastSeen": 1760688000000,
+                      "userAgent": "Mozilla/5.0 (X11; Linux x86_64)",
+                      "userId": 1,
+                      "username": "admin"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sessions/revoke/{id}": {
+      "post": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "End one session. The browser is signed out on its next request. Non-owners can only end their own.",
+        "operationId": "post_panel_api_sessions_revoke_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Session id from the list.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sessions/revokeAll": {
+      "post": {
+        "tags": [
+          "Sessions"
+        ],
+        "summary": "Log an admin out everywhere. userId 0 means yourself; only an owner may name someone else. keepCurrent spares the session making the request.",
+        "operationId": "post_panel_api_sessions_revokeAll",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{ \"userId\": 0, \"keepCurrent\": true }"
+                  }
+                },
+                "required": [
+                  "body"
                 ]
               }
             }

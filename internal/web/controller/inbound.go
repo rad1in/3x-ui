@@ -46,7 +46,7 @@ func (a *InboundController) broadcastInboundsUpdate(userId int) {
 	if !websocket.HasClients() {
 		return
 	}
-	inbounds, err := a.inboundService.GetInbounds(userId)
+	inbounds, err := a.inboundService.GetInbounds(nil)
 	if err != nil {
 		return
 	}
@@ -100,8 +100,7 @@ func (a *InboundController) initRouter(g *gin.RouterGroup) {
 
 // getInbounds retrieves the list of inbounds for the logged-in user.
 func (a *InboundController) getInbounds(c *gin.Context) {
-	user := session.GetLoginUser(c)
-	inbounds, err := a.inboundService.GetInbounds(user.Id)
+	inbounds, err := a.inboundService.GetInbounds(requestScope(c))
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return
@@ -112,8 +111,7 @@ func (a *InboundController) getInbounds(c *gin.Context) {
 // getInboundsSlim is the list-page variant that strips full client
 // payloads from settings.clients[]. Detail-view flows still use /get/:id.
 func (a *InboundController) getInboundsSlim(c *gin.Context) {
-	user := session.GetLoginUser(c)
-	inbounds, err := a.inboundService.GetInboundsSlim(user.Id)
+	inbounds, err := a.inboundService.GetInboundsSlim(requestScope(c))
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return
@@ -125,8 +123,7 @@ func (a *InboundController) getInboundsSlim(c *gin.Context) {
 // rendered through the same subscription engine the client pages use so the
 // remark template (name-only display part) is applied consistently.
 func (a *InboundController) getAllInboundLinks(c *gin.Context) {
-	user := session.GetLoginUser(c)
-	links, err := a.inboundService.GetAllInboundLinks(resolveHost(c), user.Id)
+	links, err := a.inboundService.GetAllInboundLinks(resolveHost(c), requestScope(c))
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return
@@ -138,8 +135,7 @@ func (a *InboundController) getAllInboundLinks(c *gin.Context) {
 // (id, remark, protocol, port, tlsFlowCapable) for pickers in the clients UI.
 // Avoids shipping per-client settings and traffic stats just to fill a dropdown.
 func (a *InboundController) getInboundOptions(c *gin.Context) {
-	user := session.GetLoginUser(c)
-	options, err := a.inboundService.GetInboundOptions(user.Id)
+	options, err := a.inboundService.GetInboundOptions(requestScope(c))
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return

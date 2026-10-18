@@ -80,6 +80,9 @@ var defaultValueMap = map[string]string{
 	"trustedProxyCIDRs":           DefaultTrustedProxyCIDRs,
 	"realityScanCandidates":       DefaultRealityScanCandidatesCSV,
 	"ipLimitAllowlist":            "",
+	"panelAllowedCidrs":           "",
+	"loginMaxFailures":            "5",
+	"loginLockoutMinutes":         "15",
 	"pageSize":                    "25",
 	"expireDiff":                  "0",
 	"trafficDiff":                 "0",
@@ -794,6 +797,22 @@ func (s *SettingService) GetSessionMaxAge() (int, error) {
 
 // GetIpLimitAllowlist returns the operator's trusted addresses and networks,
 // which the IP limit neither counts nor bans.
+func (s *SettingService) GetLoginMaxFailures() (int, error) {
+	return s.getInt("loginMaxFailures")
+}
+
+func (s *SettingService) GetLoginLockoutMinutes() (int, error) {
+	return s.getInt("loginLockoutMinutes")
+}
+
+func (s *SettingService) GetPanelAllowedCidrs() (string, error) {
+	return s.getString("panelAllowedCidrs")
+}
+
+func (s *SettingService) SetPanelAllowedCidrs(list string) error {
+	return s.setString("panelAllowedCidrs", list)
+}
+
 func (s *SettingService) GetIpLimitAllowlist() (string, error) {
 	return s.getString("ipLimitAllowlist")
 }

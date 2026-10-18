@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/crypto"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
@@ -80,6 +81,7 @@ func (a *SettingController) initRouter(g *gin.RouterGroup) {
 	g.POST("/apiTokens/create", a.createApiToken)
 	g.POST("/apiTokens/delete/:id", a.deleteApiToken)
 	g.POST("/apiTokens/setEnabled/:id", a.setApiTokenEnabled)
+	g.POST("/apiTokens/setAllowedCidrs/:id", a.setApiTokenAllowedCidrs)
 	g.POST("/testSmtp", a.testSmtp)
 	g.POST("/testTgBot", a.testTgBot)
 	g.POST("/testDiscord", a.testDiscord)
@@ -132,6 +134,21 @@ func (a *SettingController) updateSetting(c *gin.Context) {
 		return
 	}
 	allSetting := &form.AllSetting
+	if role := c.GetString(adminRoleKey); role != "" && role != model.AdminRoleOwner {
+		stored, err := a.settingService.GetAllSetting()
+		if err != nil {
+			jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), err)
+			return
+		}
+		if service.SecuritySettingsChanged(stored, allSetting, form.ClearLdapPassword) {
+			c.AbortWithStatusJSON(http.StatusForbidden, entity.Msg{Success: false, Msg: I18nWeb(c, "pages.admins.securityOwnerOnly")})
+			return
+		}
+	}
+	if !middleware.IPAllowlistContains(allSetting.PanelAllowedCidrs, getRemoteIp(c)) {
+		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), errors.New(I18nWeb(c, "pages.settings.panelAllowedCidrsLockout")))
+		return
+	}
 	oldTwoFactor, twoFactorErr := a.settingService.GetTwoFactorEnable()
 	oldPanelOutbound, _ := a.settingService.GetPanelOutbound()
 	oldTgEnable, _ := a.settingService.GetTgbotEnabled()
@@ -162,6 +179,9 @@ func (a *SettingController) updateSetting(c *gin.Context) {
 		WebhookSecret:   form.ClearWebhookSecret,
 		BackupS3Secret:  form.ClearBackupS3Secret,
 	})
+	if err == nil {
+		middleware.InvalidateIPAllowlist()
+	}
 	if err == nil && twoFactorErr == nil && !oldTwoFactor && allSetting.TwoFactorEnable {
 		if bumpErr := a.userService.BumpLoginEpoch(); bumpErr != nil {
 			err = bumpErr
@@ -214,9 +234,11 @@ func (a *SettingController) updateUser(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifyUserError"), errors.New(I18nWeb(c, "pages.settings.toasts.userPassMustBeNotEmpty")))
 		return
 	}
-	if err := a.settingService.VerifyTwoFactorCode(form.TwoFactorCode); err != nil {
-		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifyUserError"), err)
-		return
+	if user.Role == model.AdminRoleOwner {
+		if err := a.settingService.VerifyTwoFactorCode(form.TwoFactorCode); err != nil {
+			jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifyUserError"), err)
+			return
+		}
 	}
 	err = a.userService.UpdateUser(user.Id, form.NewUsername, form.NewPassword)
 	if err == nil {
@@ -246,9 +268,28 @@ func (a *SettingController) getDefaultXrayConfig(c *gin.Context) {
 }
 
 type apiTokenCreateForm struct {
-	Name      string `json:"name" form:"name"`
-	Scope     string `json:"scope" form:"scope"`
-	ExpiresAt int64  `json:"expiresAt" form:"expiresAt"`
+	Name         string `json:"name" form:"name"`
+	Scope        string `json:"scope" form:"scope"`
+	ExpiresAt    int64  `json:"expiresAt" form:"expiresAt"`
+	AllowedCidrs string `json:"allowedCidrs" form:"allowedCidrs"`
+}
+
+type apiTokenCidrsForm struct {
+	AllowedCidrs string `json:"allowedCidrs" form:"allowedCidrs"`
+}
+
+func (a *SettingController) setApiTokenAllowedCidrs(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), err)
+		return
+	}
+	form := &apiTokenCidrsForm{}
+	if err := c.ShouldBind(form); err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), err)
+		return
+	}
+	jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), a.apiTokenService.SetAllowedCidrs(id, form.AllowedCidrs))
 }
 
 type apiTokenEnabledForm struct {
@@ -275,7 +316,7 @@ func (a *SettingController) createApiToken(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), err)
 		return
 	}
-	row, err := a.apiTokenService.Create(form.Name, form.Scope, form.ExpiresAt)
+	row, err := a.apiTokenService.CreateRestricted(form.Name, form.Scope, form.ExpiresAt, form.AllowedCidrs)
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.settings.toasts.modifySettings"), err)
 		return

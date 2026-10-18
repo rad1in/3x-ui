@@ -4,7 +4,7 @@ import { Spin } from 'antd';
 
 import PanelLayout from '@/layouts/PanelLayout';
 
-const IndexPage = lazy(() => import('@/pages/index/IndexPage'));
+const HomeRoute = lazy(() => import('@/pages/index/HomeRoute'));
 const InboundsPage = lazy(() => import('@/pages/inbounds/InboundsPage'));
 const ClientsPage = lazy(() => import('@/pages/clients/ClientsPage'));
 const GroupsPage = lazy(() => import('@/pages/groups/GroupsPage'));
@@ -15,6 +15,8 @@ const XrayPage = lazy(() => import('@/pages/xray/XrayPage'));
 const ApiDocsPage = lazy(() => import('@/pages/api-docs/ApiDocsPage'));
 const SponsorsPage = lazy(() => import('@/pages/sponsors/SponsorsPage'));
 const AuditPage = lazy(() => import('@/pages/audit/AuditPage'));
+const AdminsPage = lazy(() => import('@/pages/admins/AdminsPage'));
+const SessionsPage = lazy(() => import('@/pages/sessions/SessionsPage'));
 const PanelsPage = lazy(() => import('@/pages/panels/PanelsPage'));
 
 function withSuspense(node: React.ReactNode) {
@@ -43,7 +45,7 @@ const routes: RouteObject[] = [
     path: '/',
     element: <PanelLayout />,
     children: [
-      { index: true, element: withSuspense(<IndexPage />) },
+      { index: true, element: withSuspense(<HomeRoute />) },
       { path: 'inbounds', element: withSuspense(<InboundsPage />) },
       { path: 'clients', element: withSuspense(<ClientsPage />) },
       { path: 'groups', element: withSuspense(<GroupsPage />) },
@@ -56,6 +58,8 @@ const routes: RouteObject[] = [
       { path: 'api-docs', element: withSuspense(<ApiDocsPage />) },
       { path: 'sponsors', element: withSuspense(<SponsorsPage />) },
       { path: 'audit', element: withSuspense(<AuditPage />) },
+      { path: 'admins', element: withSuspense(<AdminsPage />) },
+      { path: 'sessions', element: withSuspense(<SessionsPage />) },
       { path: 'panels', element: withSuspense(<PanelsPage />) },
     ],
   },

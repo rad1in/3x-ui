@@ -100,7 +100,7 @@ func (a *ClientController) initRouter(g *gin.RouterGroup) {
 }
 
 func (a *ClientController) list(c *gin.Context) {
-	rows, err := a.clientService.List()
+	rows, err := a.clientService.List(requestScope(c))
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return
@@ -124,6 +124,7 @@ func (a *ClientController) listPaged(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return
 	}
+	params.Scope = requestScope(c)
 	resp, err := a.clientService.ListPaged(&a.inboundService, &a.settingService, params)
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
@@ -629,7 +630,8 @@ func (a *ClientController) deleteHwid(c *gin.Context) {
 }
 
 func (a *ClientController) onlines(c *gin.Context) {
-	jsonObj(c, a.inboundService.GetOnlineClients(), nil)
+	online, err := requestScope(c).VisibleEmails(a.inboundService.GetOnlineClients())
+	jsonObj(c, online, err)
 }
 
 func (a *ClientController) onlinesByGuid(c *gin.Context) {
@@ -642,6 +644,9 @@ func (a *ClientController) activeInbounds(c *gin.Context) {
 
 func (a *ClientController) lastOnline(c *gin.Context) {
 	data, err := a.inboundService.GetClientsLastOnline()
+	if err == nil {
+		data, err = requestScope(c).KeepLastOnline(data)
+	}
 	jsonObj(c, data, err)
 }
 

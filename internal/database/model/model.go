@@ -40,12 +40,46 @@ const (
 	L2TP        Protocol = "l2tp"
 )
 
-// User represents a user account in the 3x-ui panel.
+// Admin roles, from most to least privileged. An operator only reaches the
+// inbounds and client groups listed in its scope; a viewer only reads.
+const (
+	AdminRoleOwner    = "owner"
+	AdminRoleAdmin    = "admin"
+	AdminRoleOperator = "operator"
+	AdminRoleViewer   = "viewer"
+)
+
+func IsKnownAdminRole(role string) bool {
+	switch role {
+	case AdminRoleOwner, AdminRoleAdmin, AdminRoleOperator, AdminRoleViewer:
+		return true
+	}
+	return false
+}
+
+// User represents an admin account in the 3x-ui panel.
 type User struct {
 	Id         int    `json:"id" gorm:"primaryKey;autoIncrement"`
 	Username   string `json:"username"`
 	Password   string `json:"password"`
 	LoginEpoch int64  `json:"-" gorm:"default:0"`
+	// The column default makes every account that predates roles an owner.
+	Role string `json:"role" gorm:"not null;default:'owner'"`
+	// JSON arrays; read only for operators.
+	ScopeInboundIds string `json:"-" gorm:"column:scope_inbound_ids;not null;default:'[]'"`
+	ScopeGroups     string `json:"-" gorm:"column:scope_groups;not null;default:'[]'"`
+	CreatedAt       int64  `json:"createdAt" gorm:"not null;default:0"`
+}
+
+// AdminSession is one signed-in browser. The cookie carries only Id; deleting
+// the row signs that browser out, which a stateless cookie could not do.
+type AdminSession struct {
+	Id        string `json:"id" gorm:"primaryKey;size:64"`
+	UserId    int    `json:"userId" gorm:"index;not null"`
+	Ip        string `json:"ip" gorm:"not null;default:''"`
+	UserAgent string `json:"userAgent" gorm:"not null;default:''"`
+	CreatedAt int64  `json:"createdAt" gorm:"not null"`
+	LastSeen  int64  `json:"lastSeen" gorm:"index;not null"`
 }
 
 // Inbound represents an Xray inbound configuration with traffic statistics and settings.
@@ -181,6 +215,8 @@ type ApiToken struct {
 	CreatedAt int64  `json:"createdAt" gorm:"autoCreateTime"`
 	Scope     string `json:"scope" gorm:"not null;default:admin"`
 	ExpiresAt int64  `json:"expiresAt" gorm:"not null;default:0"`
+	// Comma-separated IPs/CIDRs the token may be used from; empty means any address.
+	AllowedCidrs string `json:"allowedCidrs" gorm:"column:allowed_cidrs;not null;default:''"`
 }
 
 // AuditLog is one admin action: a state-changing API call or a login attempt.

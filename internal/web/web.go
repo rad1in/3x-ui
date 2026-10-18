@@ -197,6 +197,21 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		engine.Use(middleware.DomainValidatorMiddleware(webDomain, s.settingService.DecoySite().Handler()))
 	}
 
+	engine.Use(middleware.IPAllowlistMiddleware(
+		func() string {
+			list, _ := s.settingService.GetPanelAllowedCidrs()
+			return list
+		},
+		controller.RemoteIP,
+		func(c *gin.Context) {
+			if decoy := s.settingService.DecoySite().Handler(); decoy != nil {
+				decoy(c)
+				return
+			}
+			c.Status(http.StatusNotFound)
+		},
+	))
+
 	secret, err := s.settingService.GetSecret()
 	if err != nil {
 		return nil, err

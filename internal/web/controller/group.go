@@ -37,7 +37,7 @@ func (a *GroupController) list(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return
 	}
-	jsonObj(c, rows, nil)
+	jsonObj(c, requestScope(c).KeepGroups(rows), nil)
 }
 
 func (a *GroupController) emails(c *gin.Context) {

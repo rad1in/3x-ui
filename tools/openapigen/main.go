@@ -127,7 +127,7 @@ func run(root, outDir string) error {
 		},
 		{
 			Path:        resolveRel(root, "internal/web/service/panel"),
-			StructAllow: setOf("ApiTokenView", "PanelUpdateStatus", "Sponsor", "SponsorList", "SponsorConfig", "SponsorAdminView", "HostedPanelInput", "HostedPanelView"),
+			StructAllow: setOf("ApiTokenView", "PanelUpdateStatus", "Sponsor", "SponsorList", "SponsorConfig", "SponsorAdminView", "HostedPanelInput", "HostedPanelView", "AdminView", "AdminInput", "SessionView"),
 		},
 		{
 			Path:        resolveRel(root, "internal/amneziawg"),

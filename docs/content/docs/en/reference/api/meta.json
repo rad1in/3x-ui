@@ -6,6 +6,8 @@
     "authentication",
     "api-tokens",
     "activity-log",
+    "admins",
+    "sessions",
     "sponsors",
     "hosted-panel",
     "hosted-panels",

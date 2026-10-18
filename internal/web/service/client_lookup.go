@@ -179,10 +179,10 @@ func (s *ClientService) TunnelAllowedIPsByInbound(inboundSvc *InboundService, em
 	return result, nil
 }
 
-func (s *ClientService) List() ([]ClientWithAttachments, error) {
+func (s *ClientService) List(scope *AdminScope) ([]ClientWithAttachments, error) {
 	db := database.GetDB()
 	var rows []model.ClientRecord
-	if err := db.Order("id ASC").Find(&rows).Error; err != nil {
+	if err := scope.restrictClients(db.Table("clients AS c").Select("c.*"), "c").Order("c.id ASC").Find(&rows).Error; err != nil {
 		return nil, err
 	}
 	if len(rows) == 0 {

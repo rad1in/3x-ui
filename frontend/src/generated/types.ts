@@ -8,6 +8,23 @@ export type staticEgressResolver = string;
 export type trafficLocalApplyAction = number;
 export type transportBits = number;
 
+export interface AdminInput {
+  groups: string[];
+  inboundIds: number[];
+  password: string;
+  role: string;
+  username: string;
+}
+
+export interface AdminView {
+  createdAt: number;
+  groups: string[];
+  id: number;
+  inboundIds: number[];
+  role: string;
+  username: string;
+}
+
 export interface AllSetting {
   autoDeleteDepletedDays: number;
   backupKeep: number;
@@ -60,8 +77,11 @@ export interface AllSetting {
   ldapUserAttr: string;
   ldapUserFilter: string;
   ldapVlessField: string;
+  loginLockoutMinutes: number;
+  loginMaxFailures: number;
   outboundDownThreshold: number;
   pageSize: number;
+  panelAllowedCidrs: string;
   panelBrandColor: string;
   panelBrandLogo: string;
   panelBrandName: string;
@@ -275,8 +295,11 @@ export interface AllSettingView {
   ldapUserAttr: string;
   ldapUserFilter: string;
   ldapVlessField: string;
+  loginLockoutMinutes: number;
+  loginMaxFailures: number;
   outboundDownThreshold: number;
   pageSize: number;
+  panelAllowedCidrs: string;
   panelBrandColor: string;
   panelBrandLogo: string;
   panelBrandName: string;
@@ -435,6 +458,7 @@ export interface AmneziaWGLogs {
 }
 
 export interface ApiToken {
+  allowedCidrs: string;
   createdAt: number;
   enabled: boolean;
   expiresAt: number;
@@ -445,6 +469,7 @@ export interface ApiToken {
 }
 
 export interface ApiTokenView {
+  allowedCidrs: string;
   createdAt: number;
   enabled: boolean;
   expiresAt: number;
@@ -1186,6 +1211,17 @@ export interface ServerSettings {
   subnetIp: string;
 }
 
+export interface SessionView {
+  createdAt: number;
+  current: boolean;
+  id: string;
+  ip: string;
+  lastSeen: number;
+  userAgent: string;
+  userId: number;
+  username: string;
+}
+
 export interface Setting {
   id: number;
   key: string;
@@ -1288,8 +1324,10 @@ export interface TuicServerSettings {
 }
 
 export interface User {
+  createdAt: number;
   id: number;
   password: string;
+  role: string;
   username: string;
 }
 

@@ -83,10 +83,10 @@ func TestAllAPIsPostgresScale(t *testing.T) {
 			}
 			emailsM := emails[:m]
 
-			run("GetInbounds", func() error { _, err := inboundSvc.GetInbounds(userId); return err })
-			run("GetInboundsSlim", func() error { _, err := inboundSvc.GetInboundsSlim(userId); return err })
+			run("GetInbounds", func() error { _, err := inboundSvc.GetInbounds(nil); return err })
+			run("GetInboundsSlim", func() error { _, err := inboundSvc.GetInboundsSlim(nil); return err })
 			run("GetInboundDetail", func() error { _, err := inboundSvc.GetInboundDetail(ib.Id); return err })
-			run("GetInboundOptions", func() error { _, err := inboundSvc.GetInboundOptions(userId); return err })
+			run("GetInboundOptions", func() error { _, err := inboundSvc.GetInboundOptions(nil); return err })
 			run("ListPaged", func() error {
 				_, err := svc.ListPaged(inboundSvc, settingSvc, ClientPageParams{Page: 1, PageSize: 25})
 				return err
