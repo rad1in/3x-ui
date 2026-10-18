@@ -1569,6 +1569,9 @@ export const SecurityConfigSchema = z.object({
   captchaEnable: z.boolean(),
   clearBackupPassphrase: z.boolean().optional(),
   newLocationAlert: z.boolean(),
+  rotateSubSigningKey: z.boolean().optional(),
+  subSigningEnable: z.boolean(),
+  subSigningKey: z.string(),
 });
 export type SecurityConfig = z.infer<typeof SecurityConfigSchema>;
 
@@ -1578,6 +1581,9 @@ export const SecurityConfigViewSchema = z.object({
   clearBackupPassphrase: z.boolean().optional(),
   hasBackupPassphrase: z.boolean(),
   newLocationAlert: z.boolean(),
+  rotateSubSigningKey: z.boolean().optional(),
+  subSigningEnable: z.boolean(),
+  subSigningKey: z.string(),
 });
 export type SecurityConfigView = z.infer<typeof SecurityConfigViewSchema>;
 
@@ -1685,6 +1691,12 @@ export const ShopWalletSchema = z.object({
   referralCode: z.string(),
 });
 export type ShopWallet = z.infer<typeof ShopWalletSchema>;
+
+export const SignedSubLinkSchema = z.object({
+  expiresAt: z.number().int(),
+  url: z.string(),
+});
+export type SignedSubLink = z.infer<typeof SignedSubLinkSchema>;
 
 export const SponsorSchema = z.object({
   enable: z.boolean().nullable().optional(),

@@ -94,6 +94,7 @@ var operatorRoutes = map[string]operatorRule{
 	"GET /clients/traffic/:email":        emailParamInScope,
 	"GET /clients/links/:email":          emailParamInScope,
 	"GET /clients/subLinks/:subId":       subIdParamInScope,
+	"POST /clients/signedSubLink/:subId": subIdParamInScope,
 	"POST /clients/happLink/:id":         clientIdParamInScope,
 	"POST /clients/add":                  clientCreateInScope,
 	"POST /clients/bulkCreate":           clientBulkCreateInScope,

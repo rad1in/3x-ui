@@ -114,6 +114,7 @@ func run(root, outDir string) error {
 				"ResellerPrices",
 				"SecurityConfig",
 				"SecurityConfigView",
+				"SignedSubLink",
 				"ClientTransferRequest",
 				"ClientTransferResult",
 				"ClientTransferSkip",

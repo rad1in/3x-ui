@@ -44,6 +44,7 @@ type ClientController struct {
 	subFetches      service.SubFetchService
 	reseller        service.ResellerService
 	transferService service.ClientTransferService
+	subSigning      service.SubSigningService
 }
 
 func NewClientController(g *gin.RouterGroup) *ClientController {
@@ -67,6 +68,7 @@ func (a *ClientController) initRouter(g *gin.RouterGroup) {
 	g.GET("/links/:email", a.getClientLinks)
 	g.POST("/happLink/:id", a.generateHappLink)
 	g.GET("/subFetches/:subId", a.getSubFetches)
+	g.POST("/signedSubLink/:subId", a.signedSubLink)
 	g.GET("/subShortLink/:subId", a.getSubShortLink)
 	g.POST("/subShortLink/:subId", a.createSubShortLink)
 	g.POST("/subShortLink/:subId/revoke", a.revokeSubShortLink)

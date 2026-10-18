@@ -39,6 +39,7 @@ import { tunnelConfigEndpoints, tunnelEndpointLabel } from './tunnelEndpoints';
 import ClientUsageChart from './ClientUsageChart';
 import type { HostRecord } from '@/schemas/api/host';
 import SubFetchList from './SubFetchList';
+import SignedSubLinkRow from './SignedSubLinkRow';
 import SubShortLinkRow from './SubShortLinkRow';
 import './ClientInfoModal.css';
 
@@ -83,6 +84,7 @@ interface SubSettings {
   subClashEnable: boolean;
   publicHost?: string;
   shortLinkEnable?: boolean;
+  signedLinkEnable?: boolean;
 }
 
 interface ClientInfoModalProps {
@@ -667,6 +669,9 @@ export default function ClientInfoModal({
                 </div>
                 {subSettings.shortLinkEnable && client.subId && (
                   <SubShortLinkRow subId={client.subId} email={client.email} onCopy={copyValue} />
+                )}
+                {subSettings.signedLinkEnable && client.subId && (
+                  <SignedSubLinkRow subId={client.subId} email={client.email} onCopy={copyValue} />
                 )}
                 {client.subId && <SubFetchList subId={client.subId} datepicker={datepicker} />}
                 {subJsonLink && (

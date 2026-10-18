@@ -63,6 +63,24 @@ function ExtraForm({
           </Checkbox>
         )}
       </SettingListItem>
+      <SettingListItem
+        paddings="small"
+        title={t('pages.settings.security.extra.subSigning')}
+        description={t('pages.settings.security.extra.subSigningDesc')}
+      >
+        <Switch
+          checked={cfg.subSigningEnable}
+          onChange={(v) => setCfg({ ...cfg, subSigningEnable: v })}
+        />
+        {initial.subSigningEnable && (
+          <Checkbox
+            checked={cfg.rotateSubSigningKey ?? false}
+            onChange={(e) => setCfg({ ...cfg, rotateSubSigningKey: e.target.checked })}
+          >
+            {t('pages.settings.security.extra.subSigningRotate')}
+          </Checkbox>
+        )}
+      </SettingListItem>
       <Button type="primary" loading={saving} onClick={() => onSave(cfg)}>
         {t('save')}
       </Button>

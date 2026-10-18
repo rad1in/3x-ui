@@ -1678,14 +1678,20 @@ export const EXAMPLES: Record<string, unknown> = {
     "backupPassphrase": "",
     "captchaEnable": false,
     "clearBackupPassphrase": false,
-    "newLocationAlert": false
+    "newLocationAlert": false,
+    "rotateSubSigningKey": false,
+    "subSigningEnable": false,
+    "subSigningKey": ""
   },
   "SecurityConfigView": {
     "backupPassphrase": "",
     "captchaEnable": false,
     "clearBackupPassphrase": false,
     "hasBackupPassphrase": false,
-    "newLocationAlert": false
+    "newLocationAlert": false,
+    "rotateSubSigningKey": false,
+    "subSigningEnable": false,
+    "subSigningKey": ""
   },
   "ServerSettings": {
     "contentPaddingAddition": "",
@@ -1806,6 +1812,10 @@ export const EXAMPLES: Record<string, unknown> = {
       }
     ],
     "referralCode": "K7M2QX9P"
+  },
+  "SignedSubLink": {
+    "expiresAt": 1792411200000,
+    "url": "https://sub.example.com:2096/sub/Ab3dE5gH9k?exp=1792411200\u0026sig=Zk3Wq1"
   },
   "Sponsor": {
     "enable": true,

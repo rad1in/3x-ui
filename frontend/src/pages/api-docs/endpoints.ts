@@ -1454,6 +1454,17 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/panel/api/clients/signedSubLink/:subId',
+        summary:
+          'Issue a signed subscription URL (?exp=<unix s>&sig=<HMAC>) for a subscription id. ttlSeconds 0 never expires. Requires signed subscription links to be enabled under /panel/api/security; once they are, the subscription server answers 404 to any raw, JSON, Clash or sing-box link without a valid signature.',
+        params: [
+          { name: 'subId', in: 'path', type: 'string', desc: 'Subscription id of the client.' },
+          { name: 'body', in: 'body (json)', type: 'object', desc: '{"ttlSeconds": 604800}' },
+        ],
+        responseSchema: 'SignedSubLink',
+      },
+      {
+        method: 'POST',
         path: '/panel/api/clients/bulkEnable',
         summary:
           'Enable many clients in one call. Emails are grouped by inbound and applied with a single read-modify-write per inbound; the running Xray (local or remote node) is updated to add each user. Note that enabling a client whose quota is exhausted or whose expiry has passed only flips the flag — the traffic loop will disable it again on the next tick. Returns the changed count and per-email skip reasons.',
@@ -2931,7 +2942,7 @@ export const sections: readonly Section[] = [
         method: 'POST',
         path: '/panel/api/security/config/save',
         summary:
-          'Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form.',
+          'Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.',
         params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SecurityConfig.' }],
       },
     ],

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"crypto/rand"
+	"encoding/base64"
 	"encoding/json"
 	"strings"
 
@@ -16,6 +18,12 @@ type SecurityConfig struct {
 	NewLocationAlert      bool   `json:"newLocationAlert"`
 	BackupPassphrase      string `json:"backupPassphrase"`
 	ClearBackupPassphrase bool   `json:"clearBackupPassphrase,omitempty"`
+	// With SubSigningEnable the subscription server only answers links carrying a
+	// valid signature. The key is server-made and never served; rotating it
+	// voids every link issued so far.
+	SubSigningEnable    bool   `json:"subSigningEnable"`
+	SubSigningKey       string `json:"subSigningKey"`
+	RotateSubSigningKey bool   `json:"rotateSubSigningKey,omitempty"`
 }
 
 // SecurityConfigView is the configuration as the admin API serves it: secrets
@@ -28,6 +36,7 @@ type SecurityConfigView struct {
 const securityConfigKey = "securityConfig"
 
 func backupPassphraseAAD() []byte { return []byte("settings/securityConfig/backupPassphrase") }
+func subSigningKeyAAD() []byte    { return []byte("settings/securityConfig/subSigningKey") }
 
 // SecurityConfigService reads and writes the security configuration.
 type SecurityConfigService struct {
@@ -45,7 +54,10 @@ func (s *SecurityConfigService) Get() (*SecurityConfig, error) {
 	if err := json.Unmarshal([]byte(raw), cfg); err != nil {
 		return nil, err
 	}
-	cfg.BackupPassphrase, err = nodetoken.DecryptBound(backupPassphraseAAD(), cfg.BackupPassphrase)
+	if cfg.BackupPassphrase, err = nodetoken.DecryptBound(backupPassphraseAAD(), cfg.BackupPassphrase); err != nil {
+		return nil, err
+	}
+	cfg.SubSigningKey, err = nodetoken.DecryptBound(subSigningKeyAAD(), cfg.SubSigningKey)
 	return cfg, err
 }
 
@@ -56,6 +68,7 @@ func (s *SecurityConfigService) GetView() (*SecurityConfigView, error) {
 	}
 	view := &SecurityConfigView{HasBackupPassphrase: cfg.BackupPassphrase != ""}
 	cfg.BackupPassphrase = ""
+	cfg.SubSigningKey = ""
 	view.SecurityConfig = *cfg
 	return view, nil
 }
@@ -74,8 +87,20 @@ func (s *SecurityConfigService) Save(cfg *SecurityConfig) error {
 	case stored.BackupPassphrase == "":
 		stored.BackupPassphrase = existing.BackupPassphrase
 	}
+	stored.RotateSubSigningKey = false
+	stored.SubSigningKey = existing.SubSigningKey
+	if cfg.RotateSubSigningKey || (stored.SubSigningEnable && stored.SubSigningKey == "") {
+		if stored.SubSigningKey, err = newSigningKey(); err != nil {
+			return err
+		}
+	}
 	if stored.BackupPassphrase != "" {
 		if stored.BackupPassphrase, err = nodetoken.EncryptBound(backupPassphraseAAD(), stored.BackupPassphrase); err != nil {
+			return err
+		}
+	}
+	if stored.SubSigningKey != "" {
+		if stored.SubSigningKey, err = nodetoken.EncryptBound(subSigningKeyAAD(), stored.SubSigningKey); err != nil {
 			return err
 		}
 	}
@@ -84,4 +109,12 @@ func (s *SecurityConfigService) Save(cfg *SecurityConfig) error {
 		return err
 	}
 	return s.settings.saveSetting(securityConfigKey, string(raw))
+}
+
+func newSigningKey() (string, error) {
+	raw := make([]byte, 32)
+	if _, err := rand.Read(raw); err != nil {
+		return "", err
+	}
+	return base64.RawURLEncoding.EncodeToString(raw), nil
 }

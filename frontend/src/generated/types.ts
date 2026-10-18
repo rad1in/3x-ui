@@ -1473,6 +1473,9 @@ export interface SecurityConfig {
   captchaEnable: boolean;
   clearBackupPassphrase?: boolean;
   newLocationAlert: boolean;
+  rotateSubSigningKey?: boolean;
+  subSigningEnable: boolean;
+  subSigningKey: string;
 }
 
 export interface SecurityConfigView {
@@ -1481,6 +1484,9 @@ export interface SecurityConfigView {
   clearBackupPassphrase?: boolean;
   hasBackupPassphrase: boolean;
   newLocationAlert: boolean;
+  rotateSubSigningKey?: boolean;
+  subSigningEnable: boolean;
+  subSigningKey: string;
 }
 
 export interface ServerSettings {
@@ -1579,6 +1585,11 @@ export interface ShopWallet {
   balances: WalletBalance[];
   entries: WalletEntry[];
   referralCode: string;
+}
+
+export interface SignedSubLink {
+  expiresAt: number;
+  url: string;
 }
 
 export interface Sponsor {

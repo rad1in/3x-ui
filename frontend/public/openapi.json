@@ -6534,12 +6534,24 @@
           },
           "newLocationAlert": {
             "type": "boolean"
+          },
+          "rotateSubSigningKey": {
+            "type": "boolean"
+          },
+          "subSigningEnable": {
+            "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.",
+            "type": "boolean"
+          },
+          "subSigningKey": {
+            "type": "string"
           }
         },
         "required": [
           "backupPassphrase",
           "captchaEnable",
-          "newLocationAlert"
+          "newLocationAlert",
+          "subSigningEnable",
+          "subSigningKey"
         ],
         "type": "object"
       },
@@ -6560,13 +6572,25 @@
           },
           "newLocationAlert": {
             "type": "boolean"
+          },
+          "rotateSubSigningKey": {
+            "type": "boolean"
+          },
+          "subSigningEnable": {
+            "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.",
+            "type": "boolean"
+          },
+          "subSigningKey": {
+            "type": "string"
           }
         },
         "required": [
           "backupPassphrase",
           "captchaEnable",
           "hasBackupPassphrase",
-          "newLocationAlert"
+          "newLocationAlert",
+          "subSigningEnable",
+          "subSigningKey"
         ],
         "type": "object"
       },
@@ -6966,6 +6990,25 @@
           "balances",
           "entries",
           "referralCode"
+        ],
+        "type": "object"
+      },
+      "SignedSubLink": {
+        "description": "SignedSubLink is a subscription URL carrying its signature. ExpiresAt is unix\nms, 0 for a link that never expires.",
+        "properties": {
+          "expiresAt": {
+            "example": 1792411200000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "url": {
+            "example": "https://sub.example.com:2096/sub/Ab3dE5gH9k?exp=1792411200&sig=Zk3Wq1",
+            "type": "string"
+          }
+        },
+        "required": [
+          "expiresAt",
+          "url"
         ],
         "type": "object"
       },
@@ -12505,6 +12548,75 @@
                         "reason": "shared_inbound"
                       }
                     ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/clients/signedSubLink/{subId}": {
+      "post": {
+        "tags": [
+          "Clients"
+        ],
+        "summary": "Issue a signed subscription URL (?exp=<unix s>&sig=<HMAC>) for a subscription id. ttlSeconds 0 never expires. Requires signed subscription links to be enabled under /panel/api/security; once they are, the subscription server answers 404 to any raw, JSON, Clash or sing-box link without a valid signature.",
+        "operationId": "post_panel_api_clients_signedSubLink_subId",
+        "parameters": [
+          {
+            "name": "subId",
+            "in": "path",
+            "required": true,
+            "description": "Subscription id of the client.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{\"ttlSeconds\": 604800}"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/SignedSubLink"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "expiresAt": 1792411200000,
+                    "url": "https://sub.example.com:2096/sub/Ab3dE5gH9k?exp=1792411200&sig=Zk3Wq1"
                   }
                 }
               }
@@ -20398,7 +20510,10 @@
                     "captchaEnable": false,
                     "clearBackupPassphrase": false,
                     "hasBackupPassphrase": false,
-                    "newLocationAlert": false
+                    "newLocationAlert": false,
+                    "rotateSubSigningKey": false,
+                    "subSigningEnable": false,
+                    "subSigningKey": ""
                   }
                 }
               }
@@ -20412,7 +20527,7 @@
         "tags": [
           "Extra security"
         ],
-        "summary": "Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form.",
+        "summary": "Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.",
         "operationId": "post_panel_api_security_config_save",
         "requestBody": {
           "required": true,

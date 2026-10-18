@@ -94,6 +94,7 @@ type SUBController struct {
 	ipLimiter       *fixedWindowLimiter
 	profileAliases  []profileFormat
 	subLimiter      *fixedWindowLimiter
+	signing         signingState
 
 	subTemplateMu    sync.RWMutex
 	subTemplateCache map[string]*cachedSubTemplate
@@ -361,6 +362,7 @@ func NewSUBController(g *gin.RouterGroup, options ...SUBControllerOption) *SUBCo
 // initRouter registers HTTP routes for subscription links and JSON endpoints
 // on the provided router group.
 func (a *SUBController) initRouter(g *gin.RouterGroup) {
+	g = g.Group("", a.requireSignature)
 	if a.ipLimiter != nil || a.subLimiter != nil {
 		g = g.Group("", a.rateLimit)
 	}

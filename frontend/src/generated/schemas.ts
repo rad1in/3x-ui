@@ -6508,12 +6508,24 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "newLocationAlert": {
         "type": "boolean"
+      },
+      "rotateSubSigningKey": {
+        "type": "boolean"
+      },
+      "subSigningEnable": {
+        "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.",
+        "type": "boolean"
+      },
+      "subSigningKey": {
+        "type": "string"
       }
     },
     "required": [
       "backupPassphrase",
       "captchaEnable",
-      "newLocationAlert"
+      "newLocationAlert",
+      "subSigningEnable",
+      "subSigningKey"
     ],
     "type": "object"
   },
@@ -6534,13 +6546,25 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "newLocationAlert": {
         "type": "boolean"
+      },
+      "rotateSubSigningKey": {
+        "type": "boolean"
+      },
+      "subSigningEnable": {
+        "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.",
+        "type": "boolean"
+      },
+      "subSigningKey": {
+        "type": "string"
       }
     },
     "required": [
       "backupPassphrase",
       "captchaEnable",
       "hasBackupPassphrase",
-      "newLocationAlert"
+      "newLocationAlert",
+      "subSigningEnable",
+      "subSigningKey"
     ],
     "type": "object"
   },
@@ -6940,6 +6964,25 @@ export const SCHEMAS: Record<string, unknown> = {
       "balances",
       "entries",
       "referralCode"
+    ],
+    "type": "object"
+  },
+  "SignedSubLink": {
+    "description": "SignedSubLink is a subscription URL carrying its signature. ExpiresAt is unix\nms, 0 for a link that never expires.",
+    "properties": {
+      "expiresAt": {
+        "example": 1792411200000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "url": {
+        "example": "https://sub.example.com:2096/sub/Ab3dE5gH9k?exp=1792411200\u0026sig=Zk3Wq1",
+        "type": "string"
+      }
+    },
+    "required": [
+      "expiresAt",
+      "url"
     ],
     "type": "object"
   },
