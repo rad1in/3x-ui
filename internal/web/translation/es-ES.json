@@ -1413,6 +1413,10 @@
       "panelAllowedCidrs": "Lista de IP permitidas del panel",
       "panelAllowedCidrsDesc": "IP o CIDR separados por comas que pueden acceder al panel. El resto ve el sitio señuelo o un 404. Déjalo vacío para permitir cualquier dirección. Tu propia dirección debe estar en la lista. ¿Te has bloqueado? Ejecuta: x-ui setting -resetLoginRestrictions",
       "panelAllowedCidrsLockout": "Esta lista no incluye tu IP actual, así que al guardarla te quedarías fuera.",
+      "loginMaxFailures": "Intentos fallidos antes del bloqueo",
+      "loginMaxFailuresDesc": "Tras este número de contraseñas erróneas para un usuario desde una misma dirección, esa dirección queda bloqueada. También se bloquea una dirección que falla cuatro veces más con usuarios distintos.",
+      "loginLockoutMinutes": "Duración del bloqueo (minutos)",
+      "loginLockoutMinutesDesc": "Cuánto debe esperar una dirección bloqueada. Los bloqueos se guardan en memoria y se borran al reiniciar el panel.",
       "realityScanCandidates": "Candidatos de escaneo Reality",
       "realityScanCandidatesDesc": "Lista de destinos host:port (o CIDR) separados por comas usada por defecto cuando Buscar objetivos se ejecuta con la búsqueda vacía. Personalízala con destinos que uses a menudo.",
       "ldap": {

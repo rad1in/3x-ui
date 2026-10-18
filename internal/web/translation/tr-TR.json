@@ -1413,6 +1413,10 @@
       "panelAllowedCidrs": "Panel IP izin listesi",
       "panelAllowedCidrsDesc": "Panele erişebilecek, virgülle ayrılmış IP veya CIDR'ler. Diğerleri tuzak siteyi veya 404 görür. Her adrese izin vermek için boş bırakın. Kendi adresiniz listede olmalıdır. Dışarıda mı kaldınız? Şunu çalıştırın: x-ui setting -resetLoginRestrictions",
       "panelAllowedCidrsLockout": "Bu liste mevcut IP adresinizi içermiyor; kaydederseniz erişiminizi kaybedersiniz.",
+      "loginMaxFailures": "Kilitlenmeden önce başarısız giriş sayısı",
+      "loginMaxFailuresDesc": "Tek bir adresten tek bir kullanıcı adı için bu kadar yanlış şifre girilirse o adres kilitlenir. Farklı kullanıcı adlarıyla bunun dört katı hata yapan adres de kilitlenir.",
+      "loginLockoutMinutes": "Kilit süresi (dakika)",
+      "loginLockoutMinutesDesc": "Kilitlenen adresin ne kadar beklemesi gerektiği. Kilitler bellekte tutulur ve panel yeniden başlayınca silinir.",
       "realityScanCandidates": "Reality tarama adayları",
       "realityScanCandidatesDesc": "Arama boşken Hedef Bul için varsayılan olarak kullanılan, virgülle ayrılmış host:port hedefleri (veya CIDR). Sık kullandığınız hedeflere göre özelleştirin.",
       "ldap": {

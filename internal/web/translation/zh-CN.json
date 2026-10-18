@@ -1413,6 +1413,10 @@
       "panelAllowedCidrs": "面板 IP 白名单",
       "panelAllowedCidrsDesc": "允许访问面板的 IP 或 CIDR，以逗号分隔。其他地址只会看到伪装站点或 404。留空表示允许任何地址。你自己的地址必须在名单内。被锁在外面了？运行：x-ui setting -resetLoginRestrictions",
       "panelAllowedCidrsLockout": "此名单不包含你当前的 IP 地址，保存后你将被锁在外面。",
+      "loginMaxFailures": "锁定前允许的登录失败次数",
+      "loginMaxFailuresDesc": "同一地址对同一用户名输错密码达到此次数后，该地址会被锁定。在不同用户名上累计失败达到此次数四倍的地址也会被锁定。",
+      "loginLockoutMinutes": "锁定时长（分钟）",
+      "loginLockoutMinutesDesc": "被锁定的地址需要等待多久。锁定记录保存在内存中，面板重启后清除。",
       "realityScanCandidates": "Reality 扫描候选列表",
       "realityScanCandidatesDesc": "逗号分隔的 host:port 目标（或 CIDR），作为“查找目标”在搜索框为空时的默认列表。可按常用目标自定义。",
       "ldap": {

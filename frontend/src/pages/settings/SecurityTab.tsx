@@ -5,6 +5,7 @@ import {
   Empty,
   Form,
   Input,
+  InputNumber,
   Modal,
   Select,
   Space,
@@ -23,6 +24,7 @@ import {
 import { ClipboardManager, HttpUtil, IntlUtil, RandomUtil } from '@/utils';
 import type { AllSetting } from '@/models/setting';
 import { SettingListItem } from '@/components/ui';
+import { onNumber } from '@/utils/onNumber';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { catTabLabel } from './catTabLabel';
 import TwoFactorModal from './TwoFactorModal';
@@ -453,18 +455,46 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
             key: '5',
             label: catTabLabel(<LockOutlined />, t('pages.settings.security.access'), isMobile),
             children: (
-              <SettingListItem
-                paddings="small"
-                title={t('pages.settings.panelAllowedCidrs')}
-                description={t('pages.settings.panelAllowedCidrsDesc')}
-              >
-                <Input
-                  value={allSetting.panelAllowedCidrs}
-                  placeholder="203.0.113.0/24,2001:db8::/32"
-                  style={{ direction: 'ltr' }}
-                  onChange={(e) => updateSetting({ panelAllowedCidrs: e.target.value })}
-                />
-              </SettingListItem>
+              <>
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.panelAllowedCidrs')}
+                  description={t('pages.settings.panelAllowedCidrsDesc')}
+                >
+                  <Input
+                    value={allSetting.panelAllowedCidrs}
+                    placeholder="203.0.113.0/24,2001:db8::/32"
+                    style={{ direction: 'ltr' }}
+                    onChange={(e) => updateSetting({ panelAllowedCidrs: e.target.value })}
+                  />
+                </SettingListItem>
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.loginMaxFailures')}
+                  description={t('pages.settings.loginMaxFailuresDesc')}
+                >
+                  <InputNumber
+                    value={allSetting.loginMaxFailures}
+                    min={1}
+                    max={100}
+                    style={{ width: '100%' }}
+                    onChange={onNumber((v) => updateSetting({ loginMaxFailures: v }))}
+                  />
+                </SettingListItem>
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.loginLockoutMinutes')}
+                  description={t('pages.settings.loginLockoutMinutesDesc')}
+                >
+                  <InputNumber
+                    value={allSetting.loginLockoutMinutes}
+                    min={1}
+                    max={10080}
+                    style={{ width: '100%' }}
+                    onChange={onNumber((v) => updateSetting({ loginLockoutMinutes: v }))}
+                  />
+                </SettingListItem>
+              </>
             ),
           },
         ]}

@@ -1413,6 +1413,10 @@
       "panelAllowedCidrs": "パネルの許可 IP リスト",
       "panelAllowedCidrsDesc": "パネルへのアクセスを許可する IP または CIDR をカンマ区切りで指定します。それ以外のアドレスにはおとりサイトまたは 404 が返ります。空欄ならすべてのアドレスを許可します。自分のアドレスを必ず含めてください。締め出された場合は次を実行します: x-ui setting -resetLoginRestrictions",
       "panelAllowedCidrsLockout": "このリストには現在の IP アドレスが含まれていないため、保存すると自分が締め出されます。",
+      "loginMaxFailures": "ロックアウトまでのログイン失敗回数",
+      "loginMaxFailuresDesc": "同じアドレスから同じユーザー名でこの回数パスワードを間違えると、そのアドレスがロックされます。異なるユーザー名を合わせてその 4 倍失敗したアドレスもロックされます。",
+      "loginLockoutMinutes": "ロックアウト時間（分）",
+      "loginLockoutMinutesDesc": "ロックされたアドレスが待つ時間です。ロックアウトはメモリ上に保持され、パネルの再起動で消えます。",
       "realityScanCandidates": "Reality スキャン候補",
       "realityScanCandidatesDesc": "検索が空のときに「ターゲットを探す」で使うデフォルトの host:port（または CIDR）一覧（カンマ区切り）。よく使う宛先に合わせて編集できます。",
       "ldap": {

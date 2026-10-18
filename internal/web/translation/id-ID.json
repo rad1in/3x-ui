@@ -1413,6 +1413,10 @@
       "panelAllowedCidrs": "Daftar IP yang diizinkan untuk panel",
       "panelAllowedCidrsDesc": "IP atau CIDR yang boleh mengakses panel, dipisah koma. Yang lain melihat situs kamuflase atau 404. Kosongkan untuk mengizinkan semua alamat. Alamat Anda sendiri harus ada di daftar. Terkunci? Jalankan: x-ui setting -resetLoginRestrictions",
       "panelAllowedCidrsLockout": "Daftar ini tidak memuat alamat IP Anda saat ini, sehingga menyimpannya akan mengunci Anda.",
+      "loginMaxFailures": "Gagal login sebelum dikunci",
+      "loginMaxFailuresDesc": "Setelah sebanyak ini kata sandi salah untuk satu nama pengguna dari satu alamat, alamat itu dikunci. Alamat yang gagal empat kali lebih banyak di berbagai nama pengguna juga dikunci.",
+      "loginLockoutMinutes": "Durasi penguncian (menit)",
+      "loginLockoutMinutesDesc": "Berapa lama alamat yang dikunci harus menunggu. Penguncian disimpan di memori dan hilang saat panel dimulai ulang.",
       "realityScanCandidates": "Kandidat pemindaian Reality",
       "realityScanCandidatesDesc": "Daftar target host:port (atau CIDR) dipisahkan koma yang dipakai sebagai default saat Cari Target dijalankan dengan pencarian kosong. Sesuaikan dengan tujuan yang sering Anda gunakan.",
       "ldap": {

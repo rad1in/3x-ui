@@ -81,6 +81,8 @@ type AllSetting struct {
 	RealityScanCandidates string `json:"realityScanCandidates" form:"realityScanCandidates"`
 	IpLimitAllowlist      string `json:"ipLimitAllowlist" form:"ipLimitAllowlist"`
 	PanelAllowedCidrs     string `json:"panelAllowedCidrs" form:"panelAllowedCidrs"`
+	LoginMaxFailures      int    `json:"loginMaxFailures" form:"loginMaxFailures" validate:"gte=1,lte=100"`
+	LoginLockoutMinutes   int    `json:"loginLockoutMinutes" form:"loginLockoutMinutes" validate:"gte=1,lte=10080"`
 	PanelOutbound         string `json:"panelOutbound" form:"panelOutbound"`
 	PanelBrandName        string `json:"panelBrandName" form:"panelBrandName"`
 	PanelBrandColor       string `json:"panelBrandColor" form:"panelBrandColor"`

@@ -1413,6 +1413,10 @@
       "panelAllowedCidrs": "Lista de IPs permitidos do painel",
       "panelAllowedCidrsDesc": "IPs ou CIDRs, separados por vírgula, que podem acessar o painel. Os demais veem o site isca ou um 404. Deixe vazio para permitir qualquer endereço. Seu próprio endereço precisa estar na lista. Ficou de fora? Execute: x-ui setting -resetLoginRestrictions",
       "panelAllowedCidrsLockout": "Esta lista não inclui o seu IP atual; salvá-la deixaria você de fora.",
+      "loginMaxFailures": "Falhas de login antes do bloqueio",
+      "loginMaxFailuresDesc": "Depois desta quantidade de senhas erradas para um usuário a partir de um endereço, esse endereço é bloqueado. Um endereço que falha quatro vezes mais entre usuários diferentes também é bloqueado.",
+      "loginLockoutMinutes": "Duração do bloqueio (minutos)",
+      "loginLockoutMinutesDesc": "Quanto tempo um endereço bloqueado precisa esperar. Os bloqueios ficam na memória e somem quando o painel reinicia.",
       "realityScanCandidates": "Candidatos de varredura Reality",
       "realityScanCandidatesDesc": "Lista de alvos host:port (ou CIDRs) separados por vírgula usada como padrão quando Procurar alvos roda com a busca vazia. Personalize com destinos que você usa com frequência.",
       "ldap": {

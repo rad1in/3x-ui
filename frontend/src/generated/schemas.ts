@@ -247,6 +247,16 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapVlessField": {
         "type": "string"
       },
+      "loginLockoutMinutes": {
+        "maximum": 10080,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "loginMaxFailures": {
+        "maximum": 100,
+        "minimum": 1,
+        "type": "integer"
+      },
       "outboundDownThreshold": {
         "maximum": 100,
         "minimum": 1,
@@ -774,6 +784,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapUserAttr",
       "ldapUserFilter",
       "ldapVlessField",
+      "loginLockoutMinutes",
+      "loginMaxFailures",
       "outboundDownThreshold",
       "pageSize",
       "panelAllowedCidrs",
@@ -1121,6 +1133,16 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "ldapVlessField": {
         "type": "string"
+      },
+      "loginLockoutMinutes": {
+        "maximum": 10080,
+        "minimum": 1,
+        "type": "integer"
+      },
+      "loginMaxFailures": {
+        "maximum": 100,
+        "minimum": 1,
+        "type": "integer"
       },
       "outboundDownThreshold": {
         "maximum": 100,
@@ -1659,6 +1681,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "ldapUserAttr",
       "ldapUserFilter",
       "ldapVlessField",
+      "loginLockoutMinutes",
+      "loginMaxFailures",
       "outboundDownThreshold",
       "pageSize",
       "panelAllowedCidrs",

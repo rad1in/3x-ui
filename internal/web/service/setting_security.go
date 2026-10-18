@@ -17,6 +17,8 @@ func SecuritySettingsChanged(stored, submitted *entity.AllSetting, clearLdapPass
 		secretChanged(stored.TwoFactorToken, submitted.TwoFactorToken) ||
 		stored.SessionMaxAge != submitted.SessionMaxAge ||
 		stored.PanelAllowedCidrs != submitted.PanelAllowedCidrs ||
+		stored.LoginMaxFailures != submitted.LoginMaxFailures ||
+		stored.LoginLockoutMinutes != submitted.LoginLockoutMinutes ||
 		stored.LdapEnable != submitted.LdapEnable ||
 		stored.LdapHost != submitted.LdapHost ||
 		stored.LdapPort != submitted.LdapPort ||

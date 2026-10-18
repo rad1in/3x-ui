@@ -130,6 +130,7 @@ func (a *IndexController) login(c *gin.Context) {
 	remoteIP := getRemoteIp(c)
 	safeUser := template.HTMLEscapeString(form.Username)
 	timeStr := time.Now().Format("2006-01-02 15:04:05")
+	a.applyLockoutSettings()
 	if blockedUntil, ok := defaultLoginLimiter.allow(remoteIP, form.Username); !ok {
 		reason := "too many failed attempts"
 		logger.Warningf("failed login: username=%q, IP=%q, reason=%q, blocked_until=%s", form.Username, remoteIP, reason, blockedUntil.Format(time.RFC3339))
@@ -182,6 +183,17 @@ func (a *IndexController) login(c *gin.Context) {
 	}
 
 	jsonMsg(c, I18nWeb(c, "pages.login.toasts.successLogin"), nil)
+}
+
+// applyLockoutSettings reads the operator's limits on every attempt so a
+// change takes effect at once; an unreadable value keeps the built-in default.
+func (a *IndexController) applyLockoutSettings() {
+	maxFailures, err1 := a.settingService.GetLoginMaxFailures()
+	minutes, err2 := a.settingService.GetLoginLockoutMinutes()
+	if err1 != nil || err2 != nil || maxFailures < 1 || minutes < 1 {
+		return
+	}
+	defaultLoginLimiter.configure(maxFailures, time.Duration(minutes)*time.Minute)
 }
 
 func loginFailureReason(err error) string {

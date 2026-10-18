@@ -77,6 +77,8 @@ export interface AllSetting {
   ldapUserAttr: string;
   ldapUserFilter: string;
   ldapVlessField: string;
+  loginLockoutMinutes: number;
+  loginMaxFailures: number;
   outboundDownThreshold: number;
   pageSize: number;
   panelAllowedCidrs: string;
@@ -289,6 +291,8 @@ export interface AllSettingView {
   ldapUserAttr: string;
   ldapUserFilter: string;
   ldapVlessField: string;
+  loginLockoutMinutes: number;
+  loginMaxFailures: number;
   outboundDownThreshold: number;
   pageSize: number;
   panelAllowedCidrs: string;

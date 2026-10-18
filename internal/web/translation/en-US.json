@@ -1535,6 +1535,10 @@
       "panelAllowedCidrs": "Panel IP allowlist",
       "panelAllowedCidrsDesc": "Comma-separated IPs or CIDRs allowed to reach the panel. Everyone else sees the decoy site or a 404. Leave empty to allow any address. Your own address must be on the list. Locked out? Run: x-ui setting -resetLoginRestrictions",
       "panelAllowedCidrsLockout": "This list does not include your current IP address, so saving it would lock you out.",
+      "loginMaxFailures": "Failed logins before lockout",
+      "loginMaxFailuresDesc": "After this many wrong passwords for one username from one address, that address is locked out. An address that fails four times as often across different usernames is locked out too.",
+      "loginLockoutMinutes": "Lockout duration (minutes)",
+      "loginLockoutMinutesDesc": "How long a locked-out address must wait. Lockouts are kept in memory and clear when the panel restarts.",
       "realityScanCandidates": "Reality scan candidates",
       "realityScanCandidatesDesc": "Comma-separated host:port targets (or CIDRs) used as the default list when Find Targets runs with an empty search. Customize this with destinations you reuse often.",
       "ldap": {

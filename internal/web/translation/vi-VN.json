@@ -1413,6 +1413,10 @@
       "panelAllowedCidrs": "Danh sách IP được phép vào bảng điều khiển",
       "panelAllowedCidrsDesc": "Các IP hoặc CIDR, cách nhau bằng dấu phẩy, được phép truy cập bảng điều khiển. Những địa chỉ khác thấy trang giả hoặc lỗi 404. Để trống để cho phép mọi địa chỉ. Địa chỉ của chính bạn phải có trong danh sách. Bị khóa ngoài? Chạy lệnh: x-ui setting -resetLoginRestrictions",
       "panelAllowedCidrsLockout": "Danh sách này không có địa chỉ IP hiện tại của bạn, lưu lại sẽ khiến bạn bị khóa ngoài.",
+      "loginMaxFailures": "Số lần đăng nhập sai trước khi khóa",
+      "loginMaxFailuresDesc": "Sau chừng này lần sai mật khẩu cho một tên người dùng từ một địa chỉ, địa chỉ đó bị khóa. Địa chỉ sai nhiều gấp bốn lần trên các tên người dùng khác nhau cũng bị khóa.",
+      "loginLockoutMinutes": "Thời gian khóa (phút)",
+      "loginLockoutMinutesDesc": "Địa chỉ bị khóa phải chờ bao lâu. Các khóa được giữ trong bộ nhớ và mất khi khởi động lại bảng điều khiển.",
       "realityScanCandidates": "Danh sách ứng viên quét Reality",
       "realityScanCandidatesDesc": "Danh sách host:port (hoặc CIDR) cách nhau bằng dấu phẩy dùng làm mặc định khi Tìm mục tiêu chạy với ô tìm kiếm trống. Tuỳ chỉnh theo các đích bạn dùng thường xuyên.",
       "ldap": {
