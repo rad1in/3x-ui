@@ -164,13 +164,19 @@
       "captcha": "Comprobación de seguridad",
       "captchaPlaceholder": "Resultado de la suma",
       "captchaRefresh": "Mostrar otra imagen",
+      "tgCode": "Código de Telegram",
+      "tgCodePlaceholder": "Código de 6 dígitos de Telegram",
+      "tgCodeMessage": "Tu código de acceso al panel:",
       "toasts": {
         "invalidFormData": "El formato de los datos de entrada es inválido.",
         "emptyUsername": "Por favor ingresa el nombre de usuario.",
         "emptyPassword": "Por favor ingresa la contraseña.",
         "wrongUsernameOrPassword": "Nombre de usuario, contraseña o código de dos factores incorrecto.",
         "successLogin": "Has iniciado sesión en tu cuenta correctamente.",
-        "wrongCaptcha": "La respuesta de la comprobación de seguridad es incorrecta."
+        "wrongCaptcha": "La respuesta de la comprobación de seguridad es incorrecta.",
+        "tgCodeSent": "Se envió un código de acceso a tu Telegram.",
+        "tgCodeWait": "Se envió un código hace un momento, espera antes de pedir otro.",
+        "tgCodeWrong": "El código de Telegram es incorrecto o ha caducado."
       }
     },
     "index": {
@@ -1642,6 +1648,8 @@
           "subSigning": "Enlaces de suscripción firmados",
           "subSigningDesc": "El servidor de suscripción solo responde a enlaces con firma válida; los enlaces simples reciben 404. Los enlaces actuales dejan de funcionar, así que genera otros desde la ventana de cada cliente. Un enlace puede caducar.",
           "subSigningRotate": "Rotar la clave de firma (invalida todos los enlaces emitidos)",
+          "tgLogin": "Código de acceso por Telegram",
+          "tgLoginDesc": "Pide a los administradores con un chat de Telegram vinculado un código de un solo uso, enviado por el bot, tras la contraseña. Se omite mientras el bot no esté en marcha, para que un bot averiado nunca te deje fuera. Los administradores sin chat vinculado no lo reciben.",
           "saved": "Ajustes de seguridad guardados"
         },
         "show": "Mostrar",
@@ -2806,6 +2814,8 @@
       "you": "tú",
       "passwordKeep": "Déjalo vacío para conservar la contraseña actual.",
       "selfNote": "No puedes cambiar tu propio rol ni tu acceso.",
+      "tgChatId": "ID del chat de Telegram",
+      "tgChatIdHint": "Opcional. El chat que recibe los códigos de acceso de este administrador cuando el código por Telegram está activo. Envía /id al bot para averiguarlo. 0 significa ninguno.",
       "transfer": {
         "title": "Transferir clientes",
         "action": "Transferir clientes",

@@ -49,6 +49,11 @@
             "example": "operator",
             "type": "string"
           },
+          "tgChatId": {
+            "example": 123456789,
+            "format": "int64",
+            "type": "integer"
+          },
           "username": {
             "example": "support",
             "type": "string"
@@ -59,6 +64,7 @@
           "inboundIds",
           "password",
           "role",
+          "tgChatId",
           "username"
         ],
         "type": "object"
@@ -109,6 +115,11 @@
             "example": "operator",
             "type": "string"
           },
+          "tgChatId": {
+            "example": 123456789,
+            "format": "int64",
+            "type": "integer"
+          },
           "username": {
             "example": "support",
             "type": "string"
@@ -121,6 +132,7 @@
           "id",
           "inboundIds",
           "role",
+          "tgChatId",
           "username"
         ],
         "type": "object"
@@ -6539,11 +6551,14 @@
             "type": "boolean"
           },
           "subSigningEnable": {
-            "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.",
             "type": "boolean"
           },
           "subSigningKey": {
             "type": "string"
+          },
+          "tgLoginEnable": {
+            "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.\nTgLoginEnable asks admins with a linked Telegram chat for a one-time code\nafter the password, while the Telegram bot is running.",
+            "type": "boolean"
           }
         },
         "required": [
@@ -6551,7 +6566,8 @@
           "captchaEnable",
           "newLocationAlert",
           "subSigningEnable",
-          "subSigningKey"
+          "subSigningKey",
+          "tgLoginEnable"
         ],
         "type": "object"
       },
@@ -6577,11 +6593,14 @@
             "type": "boolean"
           },
           "subSigningEnable": {
-            "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.",
             "type": "boolean"
           },
           "subSigningKey": {
             "type": "string"
+          },
+          "tgLoginEnable": {
+            "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.\nTgLoginEnable asks admins with a linked Telegram chat for a one-time code\nafter the password, while the Telegram bot is running.",
+            "type": "boolean"
           }
         },
         "required": [
@@ -6590,7 +6609,8 @@
           "hasBackupPassphrase",
           "newLocationAlert",
           "subSigningEnable",
-          "subSigningKey"
+          "subSigningKey",
+          "tgLoginEnable"
         ],
         "type": "object"
       },
@@ -19805,6 +19825,7 @@
                     "pricePerDay": 10,
                     "pricePerGb": 100,
                     "role": "operator",
+                    "tgChatId": 123456789,
                     "username": "support"
                   }
                 }
@@ -19859,6 +19880,7 @@
                       "pricePerDay": 10,
                       "pricePerGb": 100,
                       "role": "operator",
+                      "tgChatId": 123456789,
                       "username": "support"
                     }
                   ]
@@ -19929,6 +19951,7 @@
                     "pricePerDay": 10,
                     "pricePerGb": 100,
                     "role": "operator",
+                    "tgChatId": 123456789,
                     "username": "support"
                   }
                 }
@@ -20009,6 +20032,7 @@
                     "pricePerDay": 10,
                     "pricePerGb": 100,
                     "role": "operator",
+                    "tgChatId": 123456789,
                     "username": "support"
                   }
                 }
@@ -20513,7 +20537,8 @@
                     "newLocationAlert": false,
                     "rotateSubSigningKey": false,
                     "subSigningEnable": false,
-                    "subSigningKey": ""
+                    "subSigningKey": "",
+                    "tgLoginEnable": false
                   }
                 }
               }

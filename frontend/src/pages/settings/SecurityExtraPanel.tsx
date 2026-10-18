@@ -65,6 +65,16 @@ function ExtraForm({
       </SettingListItem>
       <SettingListItem
         paddings="small"
+        title={t('pages.settings.security.extra.tgLogin')}
+        description={t('pages.settings.security.extra.tgLoginDesc')}
+      >
+        <Switch
+          checked={cfg.tgLoginEnable}
+          onChange={(v) => setCfg({ ...cfg, tgLoginEnable: v })}
+        />
+      </SettingListItem>
+      <SettingListItem
+        paddings="small"
         title={t('pages.settings.security.extra.subSigning')}
         description={t('pages.settings.security.extra.subSigningDesc')}
       >

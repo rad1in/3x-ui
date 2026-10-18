@@ -9,6 +9,7 @@ export const EXAMPLES: Record<string, unknown> = {
     ],
     "password": "a-long-password",
     "role": "operator",
+    "tgChatId": 123456789,
     "username": "support"
   },
   "AdminView": {
@@ -24,6 +25,7 @@ export const EXAMPLES: Record<string, unknown> = {
     "pricePerDay": 10,
     "pricePerGb": 100,
     "role": "operator",
+    "tgChatId": 123456789,
     "username": "support"
   },
   "AllSetting": {
@@ -1681,7 +1683,8 @@ export const EXAMPLES: Record<string, unknown> = {
     "newLocationAlert": false,
     "rotateSubSigningKey": false,
     "subSigningEnable": false,
-    "subSigningKey": ""
+    "subSigningKey": "",
+    "tgLoginEnable": false
   },
   "SecurityConfigView": {
     "backupPassphrase": "",
@@ -1691,7 +1694,8 @@ export const EXAMPLES: Record<string, unknown> = {
     "newLocationAlert": false,
     "rotateSubSigningKey": false,
     "subSigningEnable": false,
-    "subSigningKey": ""
+    "subSigningKey": "",
+    "tgLoginEnable": false
   },
   "ServerSettings": {
     "contentPaddingAddition": "",

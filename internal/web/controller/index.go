@@ -6,6 +6,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/captcha"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
@@ -25,7 +26,17 @@ type LoginForm struct {
 	TwoFactorCode string `json:"twoFactorCode" form:"twoFactorCode"`
 	CaptchaId     string `json:"captchaId" form:"captchaId"`
 	CaptchaAnswer string `json:"captchaAnswer" form:"captchaAnswer"`
+	TgCode        string `json:"tgCode" form:"tgCode"`
 }
+
+// telegramLogin is how the login step reaches the bot, replaceable in tests.
+type telegramLogin struct {
+	running func() bool
+	send    func(chatId int64, text string)
+}
+
+// loginCodes holds the open Telegram login codes.
+var loginCodes = service.NewLoginCodeService()
 
 // loginCaptcha holds the open login challenges; a restart simply drops them.
 var loginCaptcha = captcha.NewStore(5*time.Minute, 5000)
@@ -37,6 +48,7 @@ type IndexController struct {
 	settingService service.SettingService
 	security       service.SecurityConfigService
 	alerts         service.LoginAlertService
+	tgLogin        telegramLogin
 	userService    panel.UserService
 	sessionService panel.SessionService
 	panelService   panel.PanelService
@@ -46,6 +58,7 @@ type IndexController struct {
 // NewIndexController creates a new IndexController and initializes its routes.
 func NewIndexController(g *gin.RouterGroup) *IndexController {
 	a := &IndexController{}
+	a.tgLogin = telegramLogin{running: a.tgbot.IsRunning, send: func(chatId int64, text string) { a.tgbot.SendMsgToTgbot(chatId, text) }}
 	a.initRouter(g)
 	return a
 }
@@ -182,6 +195,10 @@ func (a *IndexController) login(c *gin.Context) {
 		return
 	}
 
+	if !a.passTelegramStep(c, user, form.TgCode, remoteIP) {
+		return
+	}
+
 	defaultLoginLimiter.registerSuccess(remoteIP, form.Username)
 	logger.Infof("logged in successfully: username=%q, IP=%q", form.Username, remoteIP)
 	a.tgbot.UserLoginNotify(tgbot.LoginAttempt{
@@ -202,6 +219,34 @@ func (a *IndexController) login(c *gin.Context) {
 	}
 
 	jsonMsg(c, I18nWeb(c, "pages.login.toasts.successLogin"), nil)
+}
+
+// passTelegramStep asks an admin with a linked chat for the code sent there
+// after the password. It is skipped when the bot is not running, so a broken
+// bot token can never lock everyone out.
+func (a *IndexController) passTelegramStep(c *gin.Context, user *model.User, code, remoteIP string) bool {
+	cfg, err := a.security.Get()
+	if err != nil || !cfg.TgLoginEnable || user.TgChatId == 0 || !a.tgLogin.running() {
+		return true
+	}
+	if code == "" {
+		issued, err := loginCodes.Issue(user.Id)
+		if err != nil {
+			c.JSON(http.StatusOK, entity.Msg{Msg: I18nWeb(c, "pages.login.toasts.tgCodeWait")})
+			return false
+		}
+		a.tgLogin.send(user.TgChatId, I18nWeb(c, "pages.login.tgCodeMessage")+"\n"+issued)
+		c.JSON(http.StatusOK, entity.Msg{Msg: I18nWeb(c, "pages.login.toasts.tgCodeSent"), Obj: gin.H{"tgCodeRequired": true}})
+		return false
+	}
+	if !loginCodes.Verify(user.Id, code) {
+		if _, blocked := defaultLoginLimiter.registerFailure(remoteIP, user.Username); blocked {
+			logger.Warningf("failed login: username=%q, IP=%q, reason=%q", user.Username, remoteIP, "invalid telegram code")
+		}
+		c.JSON(http.StatusOK, entity.Msg{Msg: I18nWeb(c, "pages.login.toasts.tgCodeWrong"), Obj: gin.H{"tgCodeRequired": true}})
+		return false
+	}
+	return true
 }
 
 // applyLockoutSettings reads the operator's limits on every attempt so a

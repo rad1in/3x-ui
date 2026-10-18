@@ -30,6 +30,7 @@ import SponsorSlot from '@/components/sponsor/SponsorSlot';
 import { pauseAnimationsUntilLeave, useTheme } from '@/hooks/useTheme';
 import {
   CaptchaAnswerSchema,
+  TgCodeSchema,
   LoginFormSchema,
   TwoFactorCodeSchema,
   type LoginFormValues,
@@ -55,10 +56,17 @@ export default function LoginPage() {
   const [fetched, setFetched] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [twoFactorEnable, setTwoFactorEnable] = useState(false);
+  const [tgCodeRequired, setTgCodeRequired] = useState(false);
   const [captcha, setCaptcha] = useState<{ id: string; image: string } | null>(null);
   const [headlineIndex, setHeadlineIndex] = useState(0);
   const methods = useForm<LoginForm>({
-    defaultValues: { username: '', password: '', twoFactorCode: '', captchaAnswer: '' },
+    defaultValues: {
+      username: '',
+      password: '',
+      twoFactorCode: '',
+      captchaAnswer: '',
+      tgCode: '',
+    },
   });
   const [lang, setLang] = useState<string>(() => LanguageManager.getLanguage());
 
@@ -97,7 +105,10 @@ export default function LoginPage() {
       try {
         const msg = await HttpUtil.post('/login', { ...values, captchaId: captcha?.id ?? '' });
         if (msg.success) window.location.href = basePath + 'panel/';
-        else if (captcha) {
+        else if ((msg.obj as { tgCodeRequired?: boolean } | null)?.tgCodeRequired) {
+          setTgCodeRequired(true);
+          if (captcha) await loadCaptcha();
+        } else if (captcha) {
           methods.setValue('captchaAnswer', '');
           await loadCaptcha();
         }
@@ -252,6 +263,22 @@ export default function LoginPage() {
                           autoComplete="one-time-code"
                           size="large"
                           placeholder={t('twoFactorCode')}
+                        />
+                      </FormField>
+                    )}
+
+                    {tgCodeRequired && (
+                      <FormField
+                        name="tgCode"
+                        label={t('pages.login.tgCode')}
+                        rules={{ validate: rhfZodValidate(TgCodeSchema) }}
+                      >
+                        <Input
+                          prefix={<KeyOutlined />}
+                          autoComplete="one-time-code"
+                          inputMode="numeric"
+                          size="large"
+                          placeholder={t('pages.login.tgCodePlaceholder')}
                         />
                       </FormField>
                     )}

@@ -23,6 +23,11 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": "operator",
         "type": "string"
       },
+      "tgChatId": {
+        "example": 123456789,
+        "format": "int64",
+        "type": "integer"
+      },
       "username": {
         "example": "support",
         "type": "string"
@@ -33,6 +38,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "inboundIds",
       "password",
       "role",
+      "tgChatId",
       "username"
     ],
     "type": "object"
@@ -83,6 +89,11 @@ export const SCHEMAS: Record<string, unknown> = {
         "example": "operator",
         "type": "string"
       },
+      "tgChatId": {
+        "example": 123456789,
+        "format": "int64",
+        "type": "integer"
+      },
       "username": {
         "example": "support",
         "type": "string"
@@ -95,6 +106,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "id",
       "inboundIds",
       "role",
+      "tgChatId",
       "username"
     ],
     "type": "object"
@@ -6513,11 +6525,14 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "boolean"
       },
       "subSigningEnable": {
-        "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.",
         "type": "boolean"
       },
       "subSigningKey": {
         "type": "string"
+      },
+      "tgLoginEnable": {
+        "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.\nTgLoginEnable asks admins with a linked Telegram chat for a one-time code\nafter the password, while the Telegram bot is running.",
+        "type": "boolean"
       }
     },
     "required": [
@@ -6525,7 +6540,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "captchaEnable",
       "newLocationAlert",
       "subSigningEnable",
-      "subSigningKey"
+      "subSigningKey",
+      "tgLoginEnable"
     ],
     "type": "object"
   },
@@ -6551,11 +6567,14 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "boolean"
       },
       "subSigningEnable": {
-        "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.",
         "type": "boolean"
       },
       "subSigningKey": {
         "type": "string"
+      },
+      "tgLoginEnable": {
+        "description": "With SubSigningEnable the subscription server only answers links carrying a\nvalid signature. The key is server-made and never served; rotating it\nvoids every link issued so far.\nTgLoginEnable asks admins with a linked Telegram chat for a one-time code\nafter the password, while the Telegram bot is running.",
+        "type": "boolean"
       }
     },
     "required": [
@@ -6564,7 +6583,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "hasBackupPassphrase",
       "newLocationAlert",
       "subSigningEnable",
-      "subSigningKey"
+      "subSigningKey",
+      "tgLoginEnable"
     ],
     "type": "object"
   },

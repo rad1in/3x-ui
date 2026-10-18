@@ -15,6 +15,7 @@ export function adminFormSchema(isNew: boolean) {
       role: z.enum(ADMIN_ROLES),
       inboundIds: z.array(z.number().int()),
       groups: z.array(z.string()),
+      tgChatId: z.number().int().min(0),
     })
     .superRefine((v, ctx) => {
       if (isNew && v.password === '') {

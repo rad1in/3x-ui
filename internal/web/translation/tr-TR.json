@@ -164,13 +164,19 @@
       "captcha": "Güvenlik kontrolü",
       "captchaPlaceholder": "İşlemin sonucu",
       "captchaRefresh": "Başka bir resim göster",
+      "tgCode": "Telegram kodu",
+      "tgCodePlaceholder": "Telegram'dan 6 haneli kod",
+      "tgCodeMessage": "Panel giriş kodunuz:",
       "toasts": {
         "invalidFormData": "Veri formatı geçersiz.",
         "emptyUsername": "Kullanıcı adı zorunludur",
         "emptyPassword": "Şifre zorunludur",
         "wrongUsernameOrPassword": "Geçersiz kullanıcı adı, şifre veya iki adımlı doğrulama kodu.",
         "successLogin": "Hesabınıza başarıyla giriş yaptınız.",
-        "wrongCaptcha": "Güvenlik kontrolü yanıtı yanlış."
+        "wrongCaptcha": "Güvenlik kontrolü yanıtı yanlış.",
+        "tgCodeSent": "Giriş kodu Telegram'ınıza gönderildi.",
+        "tgCodeWait": "Biraz önce bir kod gönderildi, yenisini istemeden önce bekleyin.",
+        "tgCodeWrong": "Telegram kodu yanlış veya süresi dolmuş."
       }
     },
     "index": {
@@ -1642,6 +1648,8 @@
           "subSigning": "İmzalı abonelik bağlantıları",
           "subSigningDesc": "Abonelik sunucusu yalnızca geçerli imzalı bağlantılara yanıt verir; düz bağlantılar 404 alır. Mevcut bağlantılar çalışmaz, bu yüzden her istemcinin bilgi penceresinden yenisini oluşturun. Bağlantı süresi dolabilir.",
           "subSigningRotate": "İmza anahtarını yenile (verilen tüm bağlantıları geçersiz kılar)",
+          "tgLogin": "Telegram giriş kodu",
+          "tgLoginDesc": "Telegram sohbeti bağlı yöneticilerden, parolanın ardından botun gönderdiği tek kullanımlık bir kod ister. Telegram botu çalışmadığı sürece atlanır, böylece bozuk bir bot sizi dışarıda bırakmaz. Bağlı sohbeti olmayan yöneticilere sorulmaz.",
           "saved": "Güvenlik ayarları kaydedildi"
         },
         "show": "Göster",
@@ -2806,6 +2814,8 @@
       "you": "siz",
       "passwordKeep": "Mevcut şifreyi korumak için boş bırakın.",
       "selfNote": "Kendi rolünüzü veya erişiminizi değiştiremezsiniz.",
+      "tgChatId": "Telegram sohbet kimliği",
+      "tgChatIdHint": "İsteğe bağlı. Telegram giriş kodu açıkken bu yöneticinin giriş kodlarını alan sohbet. Öğrenmek için bota /id gönderin. 0 yok demektir.",
       "transfer": {
         "title": "İstemcileri devret",
         "action": "İstemcileri devret",

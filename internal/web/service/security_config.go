@@ -21,6 +21,9 @@ type SecurityConfig struct {
 	// With SubSigningEnable the subscription server only answers links carrying a
 	// valid signature. The key is server-made and never served; rotating it
 	// voids every link issued so far.
+	// TgLoginEnable asks admins with a linked Telegram chat for a one-time code
+	// after the password, while the Telegram bot is running.
+	TgLoginEnable       bool   `json:"tgLoginEnable"`
 	SubSigningEnable    bool   `json:"subSigningEnable"`
 	SubSigningKey       string `json:"subSigningKey"`
 	RotateSubSigningKey bool   `json:"rotateSubSigningKey,omitempty"`

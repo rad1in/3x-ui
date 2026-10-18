@@ -13,6 +13,7 @@ export interface AdminInput {
   inboundIds: number[];
   password: string;
   role: string;
+  tgChatId: number;
   username: string;
 }
 
@@ -25,6 +26,7 @@ export interface AdminView {
   pricePerDay?: number | null;
   pricePerGb?: number | null;
   role: string;
+  tgChatId: number;
   username: string;
 }
 
@@ -1476,6 +1478,7 @@ export interface SecurityConfig {
   rotateSubSigningKey?: boolean;
   subSigningEnable: boolean;
   subSigningKey: string;
+  tgLoginEnable: boolean;
 }
 
 export interface SecurityConfigView {
@@ -1487,6 +1490,7 @@ export interface SecurityConfigView {
   rotateSubSigningKey?: boolean;
   subSigningEnable: boolean;
   subSigningKey: string;
+  tgLoginEnable: boolean;
 }
 
 export interface ServerSettings {

@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Form, Input, Modal, Select } from 'antd';
+import { Alert, Form, Input, InputNumber, Modal, Select } from 'antd';
 import { FormProvider, useWatch } from 'react-hook-form';
 
 import { FormField, useZodForm } from '@/components/form/rhf';
@@ -15,6 +15,7 @@ function initialValues(admin: AdminView | null): AdminFormValues {
     role: (admin?.role as AdminRole | undefined) ?? 'operator',
     inboundIds: admin?.inboundIds ?? [],
     groups: admin?.groups ?? [],
+    tgChatId: admin?.tgChatId ?? 0,
   };
 }
 
@@ -102,6 +103,13 @@ export default function AdminFormModal({
               </FormField>
             </>
           )}
+          <FormField
+            label={t('pages.admins.tgChatId')}
+            name="tgChatId"
+            extra={t('pages.admins.tgChatIdHint')}
+          >
+            <InputNumber min={0} precision={0} style={{ width: '100%' }} />
+          </FormField>
           {isSelf && <Alert type="info" showIcon title={t('pages.admins.selfNote')} />}
         </Form>
       </FormProvider>

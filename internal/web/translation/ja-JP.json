@@ -164,13 +164,19 @@
       "captcha": "セキュリティチェック",
       "captchaPlaceholder": "計算の答え",
       "captchaRefresh": "別の画像を表示",
+      "tgCode": "Telegramコード",
+      "tgCodePlaceholder": "Telegramの6桁コード",
+      "tgCodeMessage": "パネルのログインコード:",
       "toasts": {
         "invalidFormData": "データ形式エラー",
         "emptyUsername": "ユーザー名を入力してください",
         "emptyPassword": "パスワードを入力してください",
         "wrongUsernameOrPassword": "ユーザー名、パスワード、または二段階認証コードが無効です。",
         "successLogin": "アカウントに正常にログインしました。",
-        "wrongCaptcha": "セキュリティチェックの答えが違います。"
+        "wrongCaptcha": "セキュリティチェックの答えが違います。",
+        "tgCodeSent": "ログインコードをTelegramに送信しました。",
+        "tgCodeWait": "少し前にコードを送信しました。再要求の前にお待ちください。",
+        "tgCodeWrong": "Telegramコードが違うか、期限切れです。"
       }
     },
     "index": {
@@ -1642,6 +1648,8 @@
           "subSigning": "署名付きサブスクリプションリンク",
           "subSigningDesc": "有効な署名のあるリンクだけにサブスクリプションサーバーが応答し、通常のリンクは404になります。既存のリンクは使えなくなるため、各クライアントの情報画面で新しく発行してください。リンクには有効期限を付けられます。",
           "subSigningRotate": "署名キーをローテーション（発行済みのリンクがすべて無効になります）",
+          "tgLogin": "Telegramログインコード",
+          "tgLoginDesc": "Telegramチャットを紐付けた管理者に、パスワードの後でボットが送るワンタイムコードを求めます。Telegramボットが動いていない間は省略されるため、ボットの不具合で締め出されることはありません。チャット未設定の管理者は対象外です。",
           "saved": "セキュリティ設定を保存しました"
         },
         "show": "表示",
@@ -2806,6 +2814,8 @@
       "you": "あなた",
       "passwordKeep": "現在のパスワードを維持する場合は空欄のままにします。",
       "selfNote": "自分のロールやアクセス範囲は変更できません。",
+      "tgChatId": "TelegramチャットID",
+      "tgChatIdHint": "任意。Telegramログインコードが有効なときに、この管理者のログインコードを受け取るチャットです。ボットに /id を送ると確認できます。0は未設定です。",
       "transfer": {
         "title": "クライアントを移管",
         "action": "クライアントを移管",

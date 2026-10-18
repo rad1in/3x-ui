@@ -23,6 +23,7 @@ import (
 )
 
 type loginHarness struct {
+	ctl    *IndexController
 	t      *testing.T
 	srv    *httptest.Server
 	client *http.Client
@@ -44,11 +45,11 @@ func newLoginHarness(t *testing.T) *loginHarness {
 	}
 	engine := gin.New()
 	engine.Use(sessions.Sessions("3x-ui", cookie.NewStore([]byte("login-captcha-test-secret"))))
-	NewIndexController(engine.Group("/"))
+	ctl := NewIndexController(engine.Group("/"))
 	srv := httptest.NewServer(engine)
 	t.Cleanup(srv.Close)
 	jar, _ := cookiejar.New(nil)
-	h := &loginHarness{t: t, srv: srv, client: &http.Client{Jar: jar}}
+	h := &loginHarness{ctl: ctl, t: t, srv: srv, client: &http.Client{Jar: jar}}
 	var out struct{ Obj string }
 	h.get("/csrf-token", &out)
 	h.csrf = out.Obj

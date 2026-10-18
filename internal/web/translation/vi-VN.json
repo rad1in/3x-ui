@@ -164,13 +164,19 @@
       "captcha": "Kiểm tra bảo mật",
       "captchaPlaceholder": "Kết quả phép tính",
       "captchaRefresh": "Hiện hình khác",
+      "tgCode": "Mã Telegram",
+      "tgCodePlaceholder": "Mã 6 chữ số từ Telegram",
+      "tgCodeMessage": "Mã đăng nhập bảng điều khiển của bạn:",
       "toasts": {
         "invalidFormData": "Dạng dữ liệu nhập không hợp lệ.",
         "emptyUsername": "Vui lòng nhập tên người dùng.",
         "emptyPassword": "Vui lòng nhập mật khẩu.",
         "wrongUsernameOrPassword": "Tên người dùng, mật khẩu hoặc mã xác thực hai yếu tố không hợp lệ.",
         "successLogin": "Bạn đã đăng nhập vào tài khoản thành công.",
-        "wrongCaptcha": "Đáp án kiểm tra bảo mật không đúng."
+        "wrongCaptcha": "Đáp án kiểm tra bảo mật không đúng.",
+        "tgCodeSent": "Mã đăng nhập đã được gửi tới Telegram của bạn.",
+        "tgCodeWait": "Mã vừa được gửi, hãy chờ trước khi yêu cầu lại.",
+        "tgCodeWrong": "Mã Telegram sai hoặc đã hết hạn."
       }
     },
     "index": {
@@ -1642,6 +1648,8 @@
           "subSigning": "Liên kết đăng ký có chữ ký",
           "subSigningDesc": "Máy chủ đăng ký chỉ trả lời các liên kết có chữ ký hợp lệ; liên kết thường nhận 404. Các liên kết hiện có sẽ ngừng hoạt động, hãy tạo liên kết mới từ cửa sổ thông tin của từng khách. Liên kết có thể hết hạn.",
           "subSigningRotate": "Xoay khóa ký (vô hiệu mọi liên kết đã cấp)",
+          "tgLogin": "Mã đăng nhập Telegram",
+          "tgLoginDesc": "Yêu cầu quản trị viên có cuộc trò chuyện Telegram được liên kết nhập mã dùng một lần do bot gửi, sau mật khẩu. Bỏ qua khi bot Telegram không chạy để bot hỏng không khóa bạn. Quản trị viên chưa liên kết thì không bị hỏi.",
           "saved": "Đã lưu cài đặt bảo mật"
         },
         "show": "Hiển thị",
@@ -2806,6 +2814,8 @@
       "you": "bạn",
       "passwordKeep": "Để trống để giữ mật khẩu hiện tại.",
       "selfNote": "Bạn không thể thay đổi vai trò hoặc quyền truy cập của chính mình.",
+      "tgChatId": "ID cuộc trò chuyện Telegram",
+      "tgChatIdHint": "Tùy chọn. Cuộc trò chuyện nhận mã đăng nhập của quản trị viên này khi bật mã đăng nhập Telegram. Gửi /id cho bot để biết. 0 nghĩa là không có.",
       "transfer": {
         "title": "Chuyển khách hàng",
         "action": "Chuyển khách hàng",

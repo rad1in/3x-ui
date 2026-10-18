@@ -34,6 +34,7 @@ type AdminView struct {
 	InboundIds []int    `json:"inboundIds"`
 	Groups     []string `json:"groups"`
 	CreatedAt  int64    `json:"createdAt" example:"1760684400000"`
+	TgChatId   int64    `json:"tgChatId" example:"123456789"`
 	// A reseller's credit and own price list; a nil price follows the panel's list.
 	Credit      int64  `json:"credit" example:"8500"`
 	PricePerGB  *int64 `json:"pricePerGb" example:"100"`
@@ -47,6 +48,7 @@ type AdminInput struct {
 	Role       string   `json:"role" example:"operator"`
 	InboundIds []int    `json:"inboundIds"`
 	Groups     []string `json:"groups"`
+	TgChatId   int64    `json:"tgChatId" example:"123456789"`
 }
 
 func ToAdminView(u *model.User) AdminView {
@@ -57,6 +59,7 @@ func ToAdminView(u *model.User) AdminView {
 		InboundIds: service.ParseScopeInboundIds(u.ScopeInboundIds),
 		Groups:     service.ParseScopeGroups(u.ScopeGroups),
 		CreatedAt:  u.CreatedAt,
+		TgChatId:   u.TgChatId,
 
 		PricePerGB:  u.PricePerGB,
 		PricePerDay: u.PricePerDay,
@@ -217,6 +220,10 @@ func applyAdminInput(tx *gorm.DB, row *model.User, in AdminInput) error {
 	}
 	rawInbounds, _ := json.Marshal(inboundIds)
 	rawGroups, _ := json.Marshal(groups)
+	if in.TgChatId < 0 {
+		return common.NewError("telegram chat id cannot be negative")
+	}
+	row.TgChatId = in.TgChatId
 	row.Username = username
 	row.Role = role
 	row.ScopeInboundIds = string(rawInbounds)

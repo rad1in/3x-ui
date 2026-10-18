@@ -164,13 +164,19 @@
       "captcha": "安全驗證",
       "captchaPlaceholder": "算式的答案",
       "captchaRefresh": "換一張圖片",
+      "tgCode": "Telegram 驗證碼",
+      "tgCodePlaceholder": "來自 Telegram 的 6 位驗證碼",
+      "tgCodeMessage": "你的面板登入驗證碼：",
       "toasts": {
         "invalidFormData": "資料格式錯誤",
         "emptyUsername": "請輸入使用者名稱",
         "emptyPassword": "請輸入密碼",
         "wrongUsernameOrPassword": "用戶名、密碼或雙重驗證碼無效。",
         "successLogin": "您已成功登入您的帳戶。",
-        "wrongCaptcha": "安全驗證的答案不正確。"
+        "wrongCaptcha": "安全驗證的答案不正確。",
+        "tgCodeSent": "登入驗證碼已傳送到你的 Telegram。",
+        "tgCodeWait": "剛剛已傳送過驗證碼，請稍後再試。",
+        "tgCodeWrong": "Telegram 驗證碼錯誤或已過期。"
       }
     },
     "index": {
@@ -1642,6 +1648,8 @@
           "subSigning": "簽章訂閱連結",
           "subSigningDesc": "訂閱伺服器只回應帶有效簽章的連結，一般連結會回傳 404。現有連結將失效，請在每位客戶的資訊視窗重新產生。連結可設定到期時間。",
           "subSigningRotate": "輪替簽章金鑰（使所有已簽發的連結失效）",
+          "tgLogin": "Telegram 登入驗證碼",
+          "tgLoginDesc": "對已綁定 Telegram 聊天的管理員，在輸入密碼後要求輸入由機器人傳送的一次性驗證碼。Telegram 機器人未執行時會略過此步驟，避免機器人故障把你鎖在門外。未綁定聊天的管理員不受影響。",
           "saved": "安全設定已儲存"
         },
         "show": "顯示",
@@ -2806,6 +2814,8 @@
       "you": "你",
       "passwordKeep": "留空以保留目前的密碼。",
       "selfNote": "你無法修改自己的角色或存取範圍。",
+      "tgChatId": "Telegram 聊天 ID",
+      "tgChatIdHint": "選填。開啟 Telegram 登入驗證碼後，接收此管理員登入驗證碼的聊天。向機器人傳送 /id 可查到。0 表示未設定。",
       "transfer": {
         "title": "轉移客戶",
         "action": "轉移客戶",

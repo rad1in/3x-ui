@@ -164,13 +164,19 @@
       "captcha": "Security check",
       "captchaPlaceholder": "Answer of the sum",
       "captchaRefresh": "Show another picture",
+      "tgCode": "Telegram code",
+      "tgCodePlaceholder": "6-digit code from Telegram",
+      "tgCodeMessage": "Your panel login code:",
       "toasts": {
         "invalidFormData": "The input data format is invalid.",
         "emptyUsername": "Username is required",
         "emptyPassword": "Password is required",
         "wrongUsernameOrPassword": "Invalid username or password or two-factor code.",
         "successLogin": "You have successfully logged into your account.",
-        "wrongCaptcha": "The security check answer is wrong."
+        "wrongCaptcha": "The security check answer is wrong.",
+        "tgCodeSent": "A login code was sent to your Telegram.",
+        "tgCodeWait": "A code was sent a moment ago, wait before asking again.",
+        "tgCodeWrong": "The Telegram code is wrong or has expired."
       }
     },
     "index": {
@@ -1764,6 +1770,8 @@
           "subSigning": "Signed subscription links",
           "subSigningDesc": "Only links carrying a valid signature are answered by the subscription server; plain links get 404. Existing links stop working, so issue new ones from each client's info window. A link can expire.",
           "subSigningRotate": "Rotate the signing key (voids every issued link)",
+          "tgLogin": "Telegram login code",
+          "tgLoginDesc": "Asks admins who have a Telegram chat linked for a one-time code, sent by the bot, after the password. Skipped while the Telegram bot is not running so a broken bot never locks you out. Admins without a linked chat are not asked.",
           "saved": "Security settings saved"
         },
         "show": "Show",
@@ -2806,6 +2814,8 @@
       "you": "you",
       "passwordKeep": "Leave empty to keep the current password.",
       "selfNote": "You cannot change your own role or access.",
+      "tgChatId": "Telegram chat ID",
+      "tgChatIdHint": "Optional. The chat that receives this admin's login codes when the Telegram login code is on. Send /id to the bot to find it. 0 means none.",
       "transfer": {
         "title": "Transfer clients",
         "action": "Transfer clients",

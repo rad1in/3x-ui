@@ -164,13 +164,19 @@
       "captcha": "安全验证",
       "captchaPlaceholder": "算式的答案",
       "captchaRefresh": "换一张图片",
+      "tgCode": "Telegram 验证码",
+      "tgCodePlaceholder": "来自 Telegram 的 6 位验证码",
+      "tgCodeMessage": "你的面板登录验证码：",
       "toasts": {
         "invalidFormData": "数据格式错误",
         "emptyUsername": "请输入用户名",
         "emptyPassword": "请输入密码",
         "wrongUsernameOrPassword": "用户名、密码或双重验证码无效。",
         "successLogin": "您已成功登录您的账户。",
-        "wrongCaptcha": "安全验证的答案不正确。"
+        "wrongCaptcha": "安全验证的答案不正确。",
+        "tgCodeSent": "登录验证码已发送到你的 Telegram。",
+        "tgCodeWait": "刚刚已发送过验证码，请稍后再试。",
+        "tgCodeWrong": "Telegram 验证码错误或已过期。"
       }
     },
     "index": {
@@ -1642,6 +1648,8 @@
           "subSigning": "签名订阅链接",
           "subSigningDesc": "订阅服务器只响应带有效签名的链接，普通链接会返回 404。现有链接将失效，请在每个客户的信息窗口中重新生成。链接可设置过期时间。",
           "subSigningRotate": "轮换签名密钥（使所有已签发的链接失效）",
+          "tgLogin": "Telegram 登录验证码",
+          "tgLoginDesc": "对已绑定 Telegram 聊天的管理员，在输入密码后要求输入由机器人发送的一次性验证码。Telegram 机器人未运行时会跳过此步骤，避免机器人故障把你锁在门外。未绑定聊天的管理员不受影响。",
           "saved": "安全设置已保存"
         },
         "show": "显示",
@@ -2806,6 +2814,8 @@
       "you": "你",
       "passwordKeep": "留空以保留当前密码。",
       "selfNote": "你不能修改自己的角色或访问范围。",
+      "tgChatId": "Telegram 聊天 ID",
+      "tgChatIdHint": "可选。开启 Telegram 登录验证码后，接收此管理员登录验证码的聊天。向机器人发送 /id 可查到。0 表示未设置。",
       "transfer": {
         "title": "转移客户",
         "action": "转移客户",

@@ -29,6 +29,7 @@ export const AdminInputSchema = z.object({
   inboundIds: z.array(z.number().int()),
   password: z.string(),
   role: z.string(),
+  tgChatId: z.number().int(),
   username: z.string(),
 });
 export type AdminInput = z.infer<typeof AdminInputSchema>;
@@ -42,6 +43,7 @@ export const AdminViewSchema = z.object({
   pricePerDay: z.number().int().nullable().optional(),
   pricePerGb: z.number().int().nullable().optional(),
   role: z.string(),
+  tgChatId: z.number().int(),
   username: z.string(),
 });
 export type AdminView = z.infer<typeof AdminViewSchema>;
@@ -1572,6 +1574,7 @@ export const SecurityConfigSchema = z.object({
   rotateSubSigningKey: z.boolean().optional(),
   subSigningEnable: z.boolean(),
   subSigningKey: z.string(),
+  tgLoginEnable: z.boolean(),
 });
 export type SecurityConfig = z.infer<typeof SecurityConfigSchema>;
 
@@ -1584,6 +1587,7 @@ export const SecurityConfigViewSchema = z.object({
   rotateSubSigningKey: z.boolean().optional(),
   subSigningEnable: z.boolean(),
   subSigningKey: z.string(),
+  tgLoginEnable: z.boolean(),
 });
 export type SecurityConfigView = z.infer<typeof SecurityConfigViewSchema>;
 
