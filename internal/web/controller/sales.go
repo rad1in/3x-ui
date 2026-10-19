@@ -17,6 +17,7 @@ type SalesController struct {
 	configService  service.SalesConfigService
 	discounts      service.DiscountService
 	wallets        service.WalletService
+	tickets        service.TicketService
 	inboundService service.InboundService
 	xrayService    service.XrayService
 }
@@ -34,6 +35,11 @@ func NewSalesController(g *gin.RouterGroup) *SalesController {
 	g.POST("/discounts/del/:id", a.deleteDiscount)
 	g.GET("/wallet", a.getWallet)
 	g.POST("/wallet/adjust", a.adjustWallet)
+	g.GET("/tickets", a.listTickets)
+	g.GET("/tickets/:id", a.getTicket)
+	g.POST("/tickets/reply/:id", a.replyTicket)
+	g.POST("/tickets/close/:id", a.closeTicket)
+	g.POST("/tickets/reopen/:id", a.reopenTicket)
 	g.GET("/config", a.getConfig)
 	g.POST("/config/save", a.saveConfig)
 	return a
@@ -176,4 +182,60 @@ func (a *SalesController) adjustWallet(c *gin.Context) {
 	}
 	entry, err := a.wallets.Adjust(body.Email, body.Currency, body.Amount, body.Note)
 	respondDone(c, "pages.sales.wallets.adjusted", entry, err)
+}
+
+func (a *SalesController) listTickets(c *gin.Context) {
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	offset, _ := strconv.Atoi(c.Query("offset"))
+	page, err := a.tickets.List(c.Query("status"), limit, offset)
+	jsonObj(c, page, err)
+}
+
+func (a *SalesController) getTicket(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	detail, err := a.tickets.Get(id)
+	jsonObj(c, detail, err)
+}
+
+type replyTicketBody struct {
+	Body string `json:"body"`
+}
+
+func (a *SalesController) replyTicket(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	var body replyTicketBody
+	if err := c.ShouldBindJSON(&body); err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	detail, err := a.tickets.AdminReply(id, body.Body)
+	respondDone(c, "pages.sales.tickets.replied", detail, err)
+}
+
+func (a *SalesController) closeTicket(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	ticket, err := a.tickets.Close(id)
+	respondDone(c, "pages.sales.tickets.closed", ticket, err)
+}
+
+func (a *SalesController) reopenTicket(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	ticket, err := a.tickets.Reopen(id)
+	respondDone(c, "pages.sales.tickets.reopened", ticket, err)
 }

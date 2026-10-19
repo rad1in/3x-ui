@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/fs"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -31,6 +32,7 @@ const (
 // order token a customer was given. Errors travel as stable codes in msg.
 type ShopController struct {
 	orderService   *service.OrderService
+	ticketService  service.TicketService
 	configService  service.SalesConfigService
 	inboundService service.InboundService
 	xrayService    service.XrayService
@@ -55,6 +57,10 @@ func newShopController(g *gin.RouterGroup, notFound gin.HandlerFunc, orders *ser
 	api.POST("/orders/:token/receipt", a.rateLimited, a.submitReceipt)
 	api.POST("/quote", a.rateLimited, a.quote)
 	api.GET("/wallet", a.rateLimited, a.wallet)
+	api.GET("/tickets", a.rateLimited, a.listTickets)
+	api.POST("/tickets", a.rateLimited, a.openTicket)
+	api.GET("/tickets/:id", a.rateLimited, a.getTicket)
+	api.POST("/tickets/:id/reply", a.rateLimited, a.replyTicket)
 	api.POST("/ipn/nowpayments", a.ipn)
 	api.POST("/webhook/stripe", a.stripeWebhook)
 	api.GET("/callback/:gateway", a.rateLimited, a.callback)
@@ -286,6 +292,58 @@ func (a *ShopController) quote(c *gin.Context) {
 func (a *ShopController) wallet(c *gin.Context) {
 	view, err := a.orderService.CustomerWallet(c.Query("email"), c.Query("proof"))
 	a.reply(c, view, err)
+}
+
+// ticketAuth reads the proof a customer sends with every ticket call: the
+// client's username and subscription id, or one of its order tokens.
+func ticketAuth(email, proof, orderToken string) service.TicketAuth {
+	return service.TicketAuth{Email: email, Proof: proof, OrderToken: orderToken}
+}
+
+func (a *ShopController) listTickets(c *gin.Context) {
+	list, err := a.ticketService.CustomerList(ticketAuth(c.Query("email"), c.Query("proof"), c.Query("order")))
+	a.reply(c, list, err)
+}
+
+func (a *ShopController) getTicket(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		a.reply(c, nil, &service.SalesError{Code: service.ErrTicketNotFound})
+		return
+	}
+	detail, err := a.ticketService.CustomerGet(ticketAuth(c.Query("email"), c.Query("proof"), c.Query("order")), id)
+	a.reply(c, detail, err)
+}
+
+type shopTicketBody struct {
+	Email      string `json:"email"`
+	Proof      string `json:"proof"`
+	OrderToken string `json:"order"`
+	Subject    string `json:"subject"`
+	Body       string `json:"body"`
+}
+
+func (a *ShopController) openTicket(c *gin.Context) {
+	var in shopTicketBody
+	if !a.bind(c, &in) {
+		return
+	}
+	detail, err := a.ticketService.Open(ticketAuth(in.Email, in.Proof, in.OrderToken), in.Subject, in.Body)
+	a.reply(c, detail, err)
+}
+
+func (a *ShopController) replyTicket(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		a.reply(c, nil, &service.SalesError{Code: service.ErrTicketNotFound})
+		return
+	}
+	var in shopTicketBody
+	if !a.bind(c, &in) {
+		return
+	}
+	detail, err := a.ticketService.CustomerReply(ticketAuth(in.Email, in.Proof, in.OrderToken), id, in.Body)
+	a.reply(c, detail, err)
 }
 
 type shopReceiptBody struct {

@@ -8,8 +8,10 @@ description: 'The customer-facing purchase API. It needs no panel session: a
   email_unknown, gateway_unavailable, order_not_found, order_state,
   receipt_invalid, currency_unsupported, gateway_failed, bad_signature,
   amount_mismatch, discount_invalid, discount_used, referral_invalid,
-  wallet_insufficient, proof_invalid); rate_limited arrives with HTTP 429 and
-  internal_error with 500. Writes are limited to 30 per 10 minutes per address.'
+  wallet_insufficient, proof_invalid, ticket_invalid, ticket_not_found,
+  ticket_limit, ticket_closed, rate_limited); rate_limited also arrives with
+  HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes
+  per address.'
 full: true
 _openapi:
   preload:
@@ -48,6 +50,27 @@ _openapi:
         last numbers (up to 64 characters), note is free text (up to 500). Moves
         the order to review; allowed while it is pending or already in review.'
       url: '#tell-the-shop-a-card-transfer-was-made-ref-is-the-tracking-number-or-last-numbers-up-to-64-characters-note-is-free-text-up-to-500-moves-the-order-to-review-allowed-while-it-is-pending-or-already-in-review'
+    - depth: 2
+      title: 'The support tickets of an account, most recently active first, for
+        whoever proves the account: the client subscription id (email and proof)
+        or one of its order tokens (order). A wrong proof answers
+        proof_invalid.'
+      url: '#the-support-tickets-of-an-account-most-recently-active-first-for-whoever-proves-the-account-the-client-subscription-id-email-and-proof-or-one-of-its-order-tokens-order-a-wrong-proof-answers-proof_invalid'
+    - depth: 2
+      title: 'Open a ticket. subject is up to 120 characters and body up to 2000, both
+        plain text (control and direction-override characters are dropped,
+        markup is kept as literal text). Limits: 5 unclosed tickets and 20
+        customer messages per hour per account (ticket_limit, rate_limited).
+        Admins are notified through the ticket.opened event.'
+      url: '#open-a-ticket-subject-is-up-to-120-characters-and-body-up-to-2000-both-plain-text-control-and-direction-override-characters-are-dropped-markup-is-kept-as-literal-text-limits-5-unclosed-tickets-and-20-customer-messages-per-hour-per-account-ticket_limit-rate_limited-admins-are-notified-through-the-ticketopened-event'
+    - depth: 2
+      title: One ticket of the account with its conversation. Another account ticket
+        answers ticket_not_found.
+      url: '#one-ticket-of-the-account-with-its-conversation-another-account-ticket-answers-ticket_not_found'
+    - depth: 2
+      title: Add a message to a ticket and leave it open for the admins
+        (ticket.replied event). A closed ticket answers ticket_closed.
+      url: '#add-a-message-to-a-ticket-and-leave-it-open-for-the-admins-ticketreplied-event-a-closed-ticket-answers-ticket_closed'
     - depth: 2
       title: 'Where Zarinpal (Status and Authority in the query), IDPay (a form POST,
         see the POST entry), Stripe Checkout and PayPal (success URL, or
@@ -121,6 +144,23 @@ _openapi:
           Moves the order to review; allowed while it is pending or already in
           review.'
         id: tell-the-shop-a-card-transfer-was-made-ref-is-the-tracking-number-or-last-numbers-up-to-64-characters-note-is-free-text-up-to-500-moves-the-order-to-review-allowed-while-it-is-pending-or-already-in-review
+      - content: 'The support tickets of an account, most recently active first, for
+          whoever proves the account: the client subscription id (email and
+          proof) or one of its order tokens (order). A wrong proof answers
+          proof_invalid.'
+        id: the-support-tickets-of-an-account-most-recently-active-first-for-whoever-proves-the-account-the-client-subscription-id-email-and-proof-or-one-of-its-order-tokens-order-a-wrong-proof-answers-proof_invalid
+      - content: 'Open a ticket. subject is up to 120 characters and body up to 2000,
+          both plain text (control and direction-override characters are
+          dropped, markup is kept as literal text). Limits: 5 unclosed tickets
+          and 20 customer messages per hour per account (ticket_limit,
+          rate_limited). Admins are notified through the ticket.opened event.'
+        id: open-a-ticket-subject-is-up-to-120-characters-and-body-up-to-2000-both-plain-text-control-and-direction-override-characters-are-dropped-markup-is-kept-as-literal-text-limits-5-unclosed-tickets-and-20-customer-messages-per-hour-per-account-ticket_limit-rate_limited-admins-are-notified-through-the-ticketopened-event
+      - content: One ticket of the account with its conversation. Another account ticket
+          answers ticket_not_found.
+        id: one-ticket-of-the-account-with-its-conversation-another-account-ticket-answers-ticket_not_found
+      - content: Add a message to a ticket and leave it open for the admins
+          (ticket.replied event). A closed ticket answers ticket_closed.
+        id: add-a-message-to-a-ticket-and-leave-it-open-for-the-admins-ticketreplied-event-a-closed-ticket-answers-ticket_closed
       - content: 'Where Zarinpal (Status and Authority in the query), IDPay (a form
           POST, see the POST entry), Stripe Checkout and PayPal (success URL, or
           cancel=1 when the customer backs out) send the customer back. For
@@ -173,7 +213,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/shop/api/plans","method":"get"},{"path":"/shop/api/quote","method":"post"},{"path":"/shop/api/wallet","method":"get"},{"path":"/shop/api/orders","method":"post"},{"path":"/shop/api/orders/{token}","method":"get"},{"path":"/shop/api/orders/{token}/receipt","method":"post"},{"path":"/shop/api/callback/{gateway}","method":"get"},{"path":"/shop/api/callback/{gateway}","method":"post"},{"path":"/shop/api/ipn/nowpayments","method":"post"},{"path":"/shop/api/webhook/stripe","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/shop/api/plans","method":"get"},{"path":"/shop/api/quote","method":"post"},{"path":"/shop/api/wallet","method":"get"},{"path":"/shop/api/orders","method":"post"},{"path":"/shop/api/orders/{token}","method":"get"},{"path":"/shop/api/orders/{token}/receipt","method":"post"},{"path":"/shop/api/tickets","method":"get"},{"path":"/shop/api/tickets","method":"post"},{"path":"/shop/api/tickets/{id}","method":"get"},{"path":"/shop/api/tickets/{id}/reply","method":"post"},{"path":"/shop/api/callback/{gateway}","method":"get"},{"path":"/shop/api/callback/{gateway}","method":"post"},{"path":"/shop/api/ipn/nowpayments","method":"post"},{"path":"/shop/api/webhook/stripe","method":"post"}]} showTitle />
     </>
   );
 }

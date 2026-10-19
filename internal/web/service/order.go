@@ -48,6 +48,11 @@ const (
 	ErrWalletInsufficient  = "wallet_insufficient"
 	ErrProofInvalid        = "proof_invalid"
 	ErrAmountMismatch      = "amount_mismatch"
+	ErrTicketInvalid       = "ticket_invalid"
+	ErrTicketNotFound      = "ticket_not_found"
+	ErrTicketLimit         = "ticket_limit"
+	ErrTicketClosed        = "ticket_closed"
+	ErrRateLimited         = "rate_limited"
 )
 
 // SalesError is a refusal that is safe to show a customer verbatim by code.
@@ -75,6 +80,9 @@ type CreateOrderInput struct {
 	DiscountCode string `json:"discountCode"`
 	ReferralCode string `json:"referralCode"`
 	Proof        string `json:"proof"`
+	// TgId is set only by the Telegram bot, which has already identified the
+	// buyer; it must never be bindable from the public API.
+	TgId int64 `json:"-"`
 }
 
 // shopUsername is the pattern a new customer's username must match; it is
@@ -205,6 +213,9 @@ func (s *OrderService) CreateOrder(in CreateOrderInput) (*model.Order, error) {
 	if err := s.checkUsername(in.Kind, email); err != nil {
 		return nil, err
 	}
+	if err := s.checkTelegramOwner(in, email); err != nil {
+		return nil, err
+	}
 	referrer, err := s.referrerFor(cfg, in, email)
 	if err != nil {
 		return nil, err
@@ -224,6 +235,7 @@ func (s *OrderService) CreateOrder(in CreateOrderInput) (*model.Order, error) {
 		Kind:         in.Kind,
 		ClientEmail:  email,
 		Contact:      truncate(strings.TrimSpace(in.Contact), maxContactLen),
+		TgId:         in.TgId,
 		Amount:       price.Final,
 		ListAmount:   price.List,
 		Currency:     plan.Currency,
@@ -269,7 +281,8 @@ func (s *OrderService) createWalletOrder(order *model.Order, proof string) error
 	if err != nil {
 		return salesErr(ErrEmailUnknown)
 	}
-	if proof == "" || subtle.ConstantTimeCompare([]byte(rec.SubID), []byte(proof)) != 1 {
+	ownedByBuyer := order.TgId != 0 && rec.TgID == order.TgId
+	if !ownedByBuyer && (proof == "" || subtle.ConstantTimeCompare([]byte(rec.SubID), []byte(proof)) != 1) {
 		return salesErr(ErrProofInvalid)
 	}
 	walletMu.Lock()

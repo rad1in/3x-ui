@@ -89,8 +89,10 @@ type SalesConfig struct {
 	Stripe        StripeConfig   `json:"stripe"`
 	PayPal        PayPalConfig   `json:"paypal"`
 	WalletEnabled bool           `json:"walletEnabled"`
-	Referral      ReferralConfig `json:"referral"`
-	ClearSecrets  []string       `json:"clearSecrets,omitempty"`
+	// TelegramShop opens the shop to customers inside the Telegram bot.
+	TelegramShop bool           `json:"telegramShop"`
+	Referral     ReferralConfig `json:"referral"`
+	ClearSecrets []string       `json:"clearSecrets,omitempty"`
 }
 
 // SalesConfigView is the configuration as the admin API serves it: secrets are

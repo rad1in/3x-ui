@@ -39,6 +39,26 @@ _openapi:
         sees. A rejected order cannot be approved afterwards.
       url: '#reject-a-pending-or-in-review-order-with-an-optional-reason-the-customer-sees-a-rejected-order-cannot-be-approved-afterwards'
     - depth: 2
+      title: Support tickets, most recently active first, with the total for the
+        filter. status is open (the customer spoke last), answered or closed;
+        empty lists all.
+      url: '#support-tickets-most-recently-active-first-with-the-total-for-the-filter-status-is-open-the-customer-spoke-last-answered-or-closed-empty-lists-all'
+    - depth: 2
+      title: One ticket with its whole conversation, oldest message first. Message
+        bodies are plain text.
+      url: '#one-ticket-with-its-whole-conversation-oldest-message-first-message-bodies-are-plain-text'
+    - depth: 2
+      title: Answer a ticket as an admin and mark it answered. Plain text, 1 to 2000
+        characters. Fails with ticket_closed on a closed ticket and
+        ticket_invalid on an empty or oversized text.
+      url: '#answer-a-ticket-as-an-admin-and-mark-it-answered-plain-text-1-to-2000-characters-fails-with-ticket_closed-on-a-closed-ticket-and-ticket_invalid-on-an-empty-or-oversized-text'
+    - depth: 2
+      title: Close a ticket; the customer can no longer reply to it.
+      url: '#close-a-ticket-the-customer-can-no-longer-reply-to-it'
+    - depth: 2
+      title: Take a closed ticket back to open.
+      url: '#take-a-closed-ticket-back-to-open'
+    - depth: 2
       title: 'Every discount code, newest first, with uses: how many orders currently
         hold a use of it (orders failed, canceled or rejected give theirs
         back).'
@@ -116,6 +136,21 @@ _openapi:
       - content: Reject a pending or in-review order, with an optional reason the
           customer sees. A rejected order cannot be approved afterwards.
         id: reject-a-pending-or-in-review-order-with-an-optional-reason-the-customer-sees-a-rejected-order-cannot-be-approved-afterwards
+      - content: Support tickets, most recently active first, with the total for the
+          filter. status is open (the customer spoke last), answered or closed;
+          empty lists all.
+        id: support-tickets-most-recently-active-first-with-the-total-for-the-filter-status-is-open-the-customer-spoke-last-answered-or-closed-empty-lists-all
+      - content: One ticket with its whole conversation, oldest message first. Message
+          bodies are plain text.
+        id: one-ticket-with-its-whole-conversation-oldest-message-first-message-bodies-are-plain-text
+      - content: Answer a ticket as an admin and mark it answered. Plain text, 1 to 2000
+          characters. Fails with ticket_closed on a closed ticket and
+          ticket_invalid on an empty or oversized text.
+        id: answer-a-ticket-as-an-admin-and-mark-it-answered-plain-text-1-to-2000-characters-fails-with-ticket_closed-on-a-closed-ticket-and-ticket_invalid-on-an-empty-or-oversized-text
+      - content: Close a ticket; the customer can no longer reply to it.
+        id: close-a-ticket-the-customer-can-no-longer-reply-to-it
+      - content: Take a closed ticket back to open.
+        id: take-a-closed-ticket-back-to-open
       - content: 'Every discount code, newest first, with uses: how many orders
           currently hold a use of it (orders failed, canceled or rejected give
           theirs back).'
@@ -172,7 +207,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/sales/plans","method":"get"},{"path":"/panel/api/sales/plans/save","method":"post"},{"path":"/panel/api/sales/plans/del/{id}","method":"post"},{"path":"/panel/api/sales/orders","method":"get"},{"path":"/panel/api/sales/orders/approve/{id}","method":"post"},{"path":"/panel/api/sales/orders/reject/{id}","method":"post"},{"path":"/panel/api/sales/discounts","method":"get"},{"path":"/panel/api/sales/discounts/save","method":"post"},{"path":"/panel/api/sales/discounts/del/{id}","method":"post"},{"path":"/panel/api/sales/wallet","method":"get"},{"path":"/panel/api/sales/wallet/adjust","method":"post"},{"path":"/panel/api/sales/config","method":"get"},{"path":"/panel/api/sales/config/save","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/sales/plans","method":"get"},{"path":"/panel/api/sales/plans/save","method":"post"},{"path":"/panel/api/sales/plans/del/{id}","method":"post"},{"path":"/panel/api/sales/orders","method":"get"},{"path":"/panel/api/sales/orders/approve/{id}","method":"post"},{"path":"/panel/api/sales/orders/reject/{id}","method":"post"},{"path":"/panel/api/sales/tickets","method":"get"},{"path":"/panel/api/sales/tickets/{id}","method":"get"},{"path":"/panel/api/sales/tickets/reply/{id}","method":"post"},{"path":"/panel/api/sales/tickets/close/{id}","method":"post"},{"path":"/panel/api/sales/tickets/reopen/{id}","method":"post"},{"path":"/panel/api/sales/discounts","method":"get"},{"path":"/panel/api/sales/discounts/save","method":"post"},{"path":"/panel/api/sales/discounts/del/{id}","method":"post"},{"path":"/panel/api/sales/wallet","method":"get"},{"path":"/panel/api/sales/wallet/adjust","method":"post"},{"path":"/panel/api/sales/config","method":"get"},{"path":"/panel/api/sales/config/save","method":"post"}]} showTitle />
     </>
   );
 }

@@ -2112,6 +2112,8 @@
       "eventWeeklyReport": "Haftalık özet",
       "eventLoginNewLocation": "Yöneticinin yeni bir yerden girişi",
       "eventClientSharedAccount": "Paylaşılan hesap şüphesi",
+      "eventTicketOpened": "Yeni destek talebi",
+      "eventTicketReplied": "Müşteri bir talebi yanıtladı",
       "testDiscordDesc": "Bot belirtecinizi ve kanal kimliğinizi doğrulamak için bir test bildirimi gönderin",
       "discordNotInitialized": "Discord servisi başlatılmadı",
       "discordBotNotEnabled": "Discord botu etkin değil",
@@ -2958,6 +2960,7 @@
       "ordersTab": "Siparişler",
       "discountsTab": "İndirimler",
       "walletsTab": "Cüzdanlar",
+      "ticketsTab": "Destek talepleri",
       "settingsTab": "Ayarlar",
       "plans": {
         "add": "Paket ekle",
@@ -3015,6 +3018,26 @@
           "canceled": "İptal edildi"
         }
       },
+      "tickets": {
+        "replied": "Yanıt gönderildi",
+        "closed": "Talep kapatıldı",
+        "reopened": "Talep yeniden açıldı",
+        "subject": "Konu",
+        "client": "Müşteri",
+        "status": "Durum",
+        "statuses": {
+          "open": "Yanıt bekliyor",
+          "answered": "Yanıtlandı",
+          "closed": "Kapalı"
+        },
+        "updated": "Son etkinlik",
+        "allStatuses": "Tüm durumlar",
+        "reopen": "Yeniden aç",
+        "close": "Kapat",
+        "confirmClose": "Bu talep kapatılsın mı?",
+        "replyHint": "Bir yanıt yazın (düz metin)",
+        "send": "Yanıtı gönder"
+      },
       "config": {
         "saved": "Satış ayarları kaydedildi",
         "publicEnabled": "Herkese açık satın alma sayfası",
@@ -3022,6 +3045,8 @@
         "shopLink": "Mağaza bağlantınız:",
         "publicBaseUrl": "Herkese açık temel URL",
         "publicBaseUrlHint": "Müşterilerin mağazaya ulaştığı adres; ödeme geçitleri müşterileri buraya geri yönlendirir.",
+        "telegramShop": "Telegram botunda sat",
+        "telegramShopHint": "Müşteriler Telegram botunda /shop ile planlara bakabilir, satın alabilir ve yenileyebilir. Botun açık olması gerekir. Varsayılan olarak kapalı.",
         "cardTitle": "Karttan karta ödeme",
         "cardEnabled": "Etkin",
         "cardNumber": "Kart numarası (16 hane)",
@@ -3214,6 +3239,21 @@
     "receiptNote": "Not (isteğe bağlı)",
     "receiptSent": "Dekont gönderildi. Kısa süre içinde incelenecek.",
     "sendReceipt": "Dekontu gönder",
+    "tickets": {
+      "title": "Destek",
+      "show": "Taleplerimi göster",
+      "empty": "Henüz talep yok",
+      "subject": "Yeni talebin konusu",
+      "message": "Mesajınız (düz metin)",
+      "send": "Gönder",
+      "back": "Listeye dön",
+      "closed": "Bu talep kapalı.",
+      "statuses": {
+        "open": "Yanıt bekliyor",
+        "answered": "Yanıtlandı",
+        "closed": "Kapalı"
+      }
+    },
     "errors": {
       "plan_unavailable": "Bu paket mevcut değil.",
       "invalid_email": "Bu kullanıcı adı geçersiz.",
@@ -3231,6 +3271,10 @@
       "referral_invalid": "Bu yönlendirme kodu geçersiz.",
       "wallet_insufficient": "Cüzdan bakiyeniz yetersiz.",
       "proof_invalid": "Abonelik kimliği bu hesapla eşleşmiyor.",
+      "ticket_invalid": "Bir konu (en fazla 120 karakter) ve mesaj (en fazla 2000) girin.",
+      "ticket_not_found": "Talep bulunamadı.",
+      "ticket_limit": "Çok fazla açık talebiniz var. Yanıt bekleyin veya birini kapatın.",
+      "ticket_closed": "Bu talep kapalı.",
       "rate_limited": "Çok fazla istek. Lütfen biraz bekleyip tekrar deneyin.",
       "network": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
     }
@@ -3451,6 +3495,40 @@
       "chooseClient": "Gelen Bağlantı {{ .Inbound }} için bir Kullanıcı Seçin",
       "chooseInbound": "Bir Gelen Bağlantı Seçin",
       "qrCodeForClient": "{{ .Email }} istemcisi için QR Kodu:"
+    },
+    "shop": {
+      "disabled": "Mağaza şu anda kullanılamıyor.",
+      "menu": "🛒 Mağaza\r\nNe yapmak istersiniz?",
+      "plansTitle": "🛒 Bir plan seçin:",
+      "noPlans": "Şu anda satışta plan yok.",
+      "planDetail": "<b>{{ .Name }}</b>\r\n{{ .Description }}\r\nVeri: {{ .Quota }}\r\nSüre: {{ .Duration }}\r\nCihaz: {{ .Devices }}\r\nFiyat: {{ .Price }}\r\n\r\nKimin için?",
+      "noExpiry": "Süresiz",
+      "confirm": "<b>{{ .Plan }}</b> - <code>{{ .Email }}</code>\r\nToplam: {{ .Amount }}\r\nÖdeme yöntemini seçin:",
+      "discountLine": "\r\nListe fiyatı {{ .List }}, kod {{ .Code }}",
+      "askCode": "İndirim kodunuzu mesaj olarak gönderin.",
+      "askReceipt": "Havalenizin takip numarasını mesaj olarak gönderin.",
+      "receiptSent": "✅ Dekont gönderildi. Kısa sürede incelenecek.",
+      "expired": "Seçiminizin süresi doldu. Yeniden başlamak için /shop gönderin.",
+      "ordersTitle": "📦 Son siparişleriniz:",
+      "noOrders": "Henüz siparişiniz yok.",
+      "order": "📦 Sipariş #{{ .Id }} - {{ .Plan }}\r\nTutar: {{ .Amount }}\r\nDurum: {{ .Status }}",
+      "cardInfo": "\r\n\r\nBu karta tam olarak {{ .Amount }} gönderin:\r\n<code>{{ .Card }}</code>\r\n{{ .Holder }} {{ .Bank }}\r\n{{ .Instructions }}",
+      "payLink": "\r\n\r\nÖdemeyi tamamlayın: {{ .URL }}",
+      "delivered": "✅ Ödendi ve etkinleştirildi. Aboneliğiniz:",
+      "buttons": {
+        "plans": "🛒 Planlar",
+        "orders": "📦 Siparişlerim",
+        "newAccount": "🆕 Yeni hesap",
+        "renew": "🔄 {{ .Email }} yenile",
+        "code": "🏷 İndirim kodu",
+        "card": "💳 Karttan karta",
+        "wallet": "👛 Cüzdan",
+        "zarinpal": "Zarinpal",
+        "idpay": "IDPay",
+        "crypto": "Kripto",
+        "receipt": "🧾 Dekont gönder",
+        "refresh": "🔄 Yenile"
+      }
     }
   },
   "discord": {

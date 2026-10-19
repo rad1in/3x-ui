@@ -54,7 +54,21 @@ const (
 	// A client is being used from more addresses or countries than the shared-account
 	// thresholds allow; Source is the client's email, Data a *SharedAccountData.
 	EventClientSharedAccount EventType = "client.shared_account"
+
+	// A customer opened a support ticket, or replied to one; Source is
+	// "ticket-<id>", Data a *TicketEventData.
+	EventTicketOpened  EventType = "ticket.opened"
+	EventTicketReplied EventType = "ticket.replied"
 )
+
+// TicketEventData is the ticket a support event is about. Excerpt is the start
+// of the message, plain text.
+type TicketEventData struct {
+	TicketId int    `json:"ticketId"`
+	Email    string `json:"email"`
+	Subject  string `json:"subject"`
+	Excerpt  string `json:"excerpt"`
+}
 
 // SharedAccountData describes a client that looks shared between several people.
 type SharedAccountData struct {

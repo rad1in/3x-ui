@@ -28,6 +28,8 @@ export const ORDER_STATUSES = [
 ] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
+export const TICKET_STATUSES = ['open', 'answered', 'closed'] as const;
+
 export const salesConfigSchema = z.object({
   publicEnabled: z.boolean(),
   publicBaseUrl: z.string().trim(),
@@ -54,6 +56,7 @@ export const salesConfigSchema = z.object({
     sandbox: z.boolean(),
   }),
   walletEnabled: z.boolean(),
+  telegramShop: z.boolean(),
   referral: z.object({
     enabled: z.boolean(),
     bonusPercent: z

@@ -12,6 +12,7 @@ import DiscountsTab from './DiscountsTab';
 import OrdersTab from './OrdersTab';
 import PlansTab from './PlansTab';
 import SalesSettingsTab from './SalesSettingsTab';
+import TicketsTab from './TicketsTab';
 import WalletsTab from './WalletsTab';
 import './SalesPage.css';
 
@@ -55,6 +56,7 @@ export default function SalesPage() {
                     children: <DiscountsTab />,
                   },
                   { key: 'wallets', label: t('pages.sales.walletsTab'), children: <WalletsTab /> },
+                  { key: 'tickets', label: t('pages.sales.ticketsTab'), children: <TicketsTab /> },
                   ...(isOwner
                     ? [
                         {

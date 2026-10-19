@@ -1510,6 +1510,7 @@ export interface SalesConfig {
   publicEnabled: boolean;
   referral: ReferralConfig;
   stripe: StripeConfig;
+  telegramShop: boolean;
   walletEnabled: boolean;
   zarinpal: ZarinpalConfig;
 }
@@ -1531,6 +1532,7 @@ export interface SalesConfigView {
   publicEnabled: boolean;
   referral: ReferralConfig;
   stripe: StripeConfig;
+  telegramShop: boolean;
   walletEnabled: boolean;
   zarinpal: ZarinpalConfig;
 }
@@ -1718,6 +1720,33 @@ export interface SubFetchInfo {
 export interface SubShortLinkView {
   token: string;
   url: string;
+}
+
+export interface Ticket {
+  clientEmail: string;
+  createdAt: number;
+  id: number;
+  status: string;
+  subject: string;
+  updatedAt: number;
+}
+
+export interface TicketDetail {
+  messages: TicketMessage[];
+  ticket: Ticket;
+}
+
+export interface TicketMessage {
+  author: string;
+  body: string;
+  createdAt: number;
+  id: number;
+  ticketId: number;
+}
+
+export interface TicketPage {
+  items: Ticket[];
+  total: number;
 }
 
 export interface Traffic {

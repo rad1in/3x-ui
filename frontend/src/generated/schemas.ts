@@ -6683,6 +6683,10 @@ export const SCHEMAS: Record<string, unknown> = {
       "stripe": {
         "$ref": "#/components/schemas/StripeConfig"
       },
+      "telegramShop": {
+        "description": "TelegramShop opens the shop to customers inside the Telegram bot.",
+        "type": "boolean"
+      },
       "walletEnabled": {
         "type": "boolean"
       },
@@ -6699,6 +6703,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "publicEnabled",
       "referral",
       "stripe",
+      "telegramShop",
       "walletEnabled",
       "zarinpal"
     ],
@@ -6759,6 +6764,10 @@ export const SCHEMAS: Record<string, unknown> = {
       "stripe": {
         "$ref": "#/components/schemas/StripeConfig"
       },
+      "telegramShop": {
+        "description": "TelegramShop opens the shop to customers inside the Telegram bot.",
+        "type": "boolean"
+      },
       "walletEnabled": {
         "type": "boolean"
       },
@@ -6782,6 +6791,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "publicEnabled",
       "referral",
       "stripe",
+      "telegramShop",
       "walletEnabled",
       "zarinpal"
     ],
@@ -7558,6 +7568,116 @@ export const SCHEMAS: Record<string, unknown> = {
     "required": [
       "token",
       "url"
+    ],
+    "type": "object"
+  },
+  "Ticket": {
+    "description": "Ticket is a support thread opened by a customer, who is the client with\nClientEmail. Subject and every message body are plain text.",
+    "properties": {
+      "clientEmail": {
+        "example": "alice",
+        "type": "string"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "status": {
+        "example": "open",
+        "type": "string"
+      },
+      "subject": {
+        "example": "Connection drops every hour",
+        "type": "string"
+      },
+      "updatedAt": {
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "clientEmail",
+      "createdAt",
+      "id",
+      "status",
+      "subject",
+      "updatedAt"
+    ],
+    "type": "object"
+  },
+  "TicketDetail": {
+    "description": "TicketDetail is a ticket with its whole conversation, oldest message first.",
+    "properties": {
+      "messages": {
+        "items": {
+          "$ref": "#/components/schemas/TicketMessage"
+        },
+        "type": "array"
+      },
+      "ticket": {
+        "$ref": "#/components/schemas/Ticket"
+      }
+    },
+    "required": [
+      "messages",
+      "ticket"
+    ],
+    "type": "object"
+  },
+  "TicketMessage": {
+    "description": "TicketMessage is one line of a ticket's conversation.",
+    "properties": {
+      "author": {
+        "example": "customer",
+        "type": "string"
+      },
+      "body": {
+        "example": "It disconnects about once an hour.",
+        "type": "string"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "ticketId": {
+        "example": 1,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "author",
+      "body",
+      "createdAt",
+      "id",
+      "ticketId"
+    ],
+    "type": "object"
+  },
+  "TicketPage": {
+    "description": "TicketPage is one page of tickets, most recently active first, with the\nunpaged total.",
+    "properties": {
+      "items": {
+        "items": {
+          "$ref": "#/components/schemas/Ticket"
+        },
+        "type": "array"
+      },
+      "total": {
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "items",
+      "total"
     ],
     "type": "object"
   },

@@ -1680,6 +1680,7 @@ export const EXAMPLES: Record<string, unknown> = {
       "secretKey": "",
       "webhookSecret": ""
     },
+    "telegramShop": false,
     "walletEnabled": false,
     "zarinpal": {
       "enabled": false,
@@ -1733,6 +1734,7 @@ export const EXAMPLES: Record<string, unknown> = {
       "secretKey": "",
       "webhookSecret": ""
     },
+    "telegramShop": false,
     "walletEnabled": false,
     "zarinpal": {
       "enabled": false,
@@ -1956,6 +1958,53 @@ export const EXAMPLES: Record<string, unknown> = {
   "SubShortLinkView": {
     "token": "Ab3dE5gH9k",
     "url": "https://sub.example.com:2096/s/Ab3dE5gH9k"
+  },
+  "Ticket": {
+    "clientEmail": "alice",
+    "createdAt": 0,
+    "id": 1,
+    "status": "open",
+    "subject": "Connection drops every hour",
+    "updatedAt": 0
+  },
+  "TicketDetail": {
+    "messages": [
+      {
+        "author": "customer",
+        "body": "It disconnects about once an hour.",
+        "createdAt": 0,
+        "id": 1,
+        "ticketId": 1
+      }
+    ],
+    "ticket": {
+      "clientEmail": "alice",
+      "createdAt": 0,
+      "id": 1,
+      "status": "open",
+      "subject": "Connection drops every hour",
+      "updatedAt": 0
+    }
+  },
+  "TicketMessage": {
+    "author": "customer",
+    "body": "It disconnects about once an hour.",
+    "createdAt": 0,
+    "id": 1,
+    "ticketId": 1
+  },
+  "TicketPage": {
+    "items": [
+      {
+        "clientEmail": "alice",
+        "createdAt": 0,
+        "id": 1,
+        "status": "open",
+        "subject": "Connection drops every hour",
+        "updatedAt": 0
+      }
+    ],
+    "total": 0
   },
   "Traffic": {
     "Down": 2097152,

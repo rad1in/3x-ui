@@ -2112,6 +2112,8 @@
       "eventWeeklyReport": "Resumen semanal",
       "eventLoginNewLocation": "Acceso de administrador desde un lugar nuevo",
       "eventClientSharedAccount": "Posible cuenta compartida",
+      "eventTicketOpened": "Nuevo ticket de soporte",
+      "eventTicketReplied": "Un cliente respondió a un ticket",
       "testDiscordDesc": "Enviar una notificación de prueba para verificar el token del bot y el ID del canal",
       "discordNotInitialized": "Servicio de Discord no inicializado",
       "discordBotNotEnabled": "El bot de Discord no está habilitado",
@@ -2958,6 +2960,7 @@
       "ordersTab": "Pedidos",
       "discountsTab": "Descuentos",
       "walletsTab": "Monederos",
+      "ticketsTab": "Tickets",
       "settingsTab": "Ajustes",
       "plans": {
         "add": "Añadir plan",
@@ -3015,6 +3018,26 @@
           "canceled": "Cancelado"
         }
       },
+      "tickets": {
+        "replied": "Respuesta enviada",
+        "closed": "Ticket cerrado",
+        "reopened": "Ticket reabierto",
+        "subject": "Asunto",
+        "client": "Cliente",
+        "status": "Estado",
+        "statuses": {
+          "open": "Esperando respuesta",
+          "answered": "Respondido",
+          "closed": "Cerrado"
+        },
+        "updated": "Última actividad",
+        "allStatuses": "Todos los estados",
+        "reopen": "Reabrir",
+        "close": "Cerrar",
+        "confirmClose": "¿Cerrar este ticket?",
+        "replyHint": "Escribe una respuesta (texto plano)",
+        "send": "Enviar respuesta"
+      },
       "config": {
         "saved": "Ajustes de ventas guardados",
         "publicEnabled": "Página de compra pública",
@@ -3022,6 +3045,8 @@
         "shopLink": "Enlace de tu tienda:",
         "publicBaseUrl": "URL pública base",
         "publicBaseUrlHint": "La dirección con la que los clientes llegan a la tienda; las pasarelas de pago les devuelven a ella.",
+        "telegramShop": "Vender en el bot de Telegram",
+        "telegramShopHint": "Los clientes pueden ver planes, comprar y renovar con /shop en el bot de Telegram. Requiere el bot activo. Desactivado por defecto.",
         "cardTitle": "Pago de tarjeta a tarjeta",
         "cardEnabled": "Activado",
         "cardNumber": "Número de tarjeta (16 dígitos)",
@@ -3214,6 +3239,21 @@
     "receiptNote": "Nota (opcional)",
     "receiptSent": "Recibo enviado. Se revisará en breve.",
     "sendReceipt": "Enviar recibo",
+    "tickets": {
+      "title": "Soporte",
+      "show": "Ver mis tickets",
+      "empty": "Aún no hay tickets",
+      "subject": "Asunto del nuevo ticket",
+      "message": "Tu mensaje (texto plano)",
+      "send": "Enviar",
+      "back": "Volver a la lista",
+      "closed": "Este ticket está cerrado.",
+      "statuses": {
+        "open": "Esperando respuesta",
+        "answered": "Respondido",
+        "closed": "Cerrado"
+      }
+    },
     "errors": {
       "plan_unavailable": "Ese plan no está disponible.",
       "invalid_email": "Ese usuario no es válido.",
@@ -3231,6 +3271,10 @@
       "referral_invalid": "Ese código de referido no es válido.",
       "wallet_insufficient": "El saldo de tu monedero no es suficiente.",
       "proof_invalid": "El id de suscripción no corresponde a esta cuenta.",
+      "ticket_invalid": "Escribe un asunto (hasta 120 caracteres) y un mensaje (hasta 2000).",
+      "ticket_not_found": "Ticket no encontrado.",
+      "ticket_limit": "Tienes demasiados tickets abiertos. Espera una respuesta o cierra uno.",
+      "ticket_closed": "Este ticket está cerrado.",
       "rate_limited": "Demasiadas solicitudes. Espera un poco e inténtalo de nuevo.",
       "network": "Algo salió mal. Inténtalo de nuevo."
     }
@@ -3451,6 +3495,40 @@
       "chooseClient": "Elige un Cliente para Inbound {{ .Inbound }}",
       "chooseInbound": "Elige un Inbound",
       "qrCodeForClient": "Código QR para el cliente {{ .Email }}:"
+    },
+    "shop": {
+      "disabled": "La tienda no está disponible ahora.",
+      "menu": "🛒 Tienda\r\n¿Qué quieres hacer?",
+      "plansTitle": "🛒 Elige un plan:",
+      "noPlans": "No hay planes a la venta ahora.",
+      "planDetail": "<b>{{ .Name }}</b>\r\n{{ .Description }}\r\nDatos: {{ .Quota }}\r\nDuración: {{ .Duration }}\r\nDispositivos: {{ .Devices }}\r\nPrecio: {{ .Price }}\r\n\r\n¿Para quién?",
+      "noExpiry": "Sin caducidad",
+      "confirm": "<b>{{ .Plan }}</b> para <code>{{ .Email }}</code>\r\nTotal: {{ .Amount }}\r\nElige cómo pagar:",
+      "discountLine": "\r\nPrecio de lista {{ .List }}, código {{ .Code }}",
+      "askCode": "Envía tu código de descuento en un mensaje.",
+      "askReceipt": "Envía en un mensaje el número de seguimiento de tu transferencia.",
+      "receiptSent": "✅ Comprobante enviado. Se revisará en breve.",
+      "expired": "Tu selección ha caducado. Envía /shop para empezar de nuevo.",
+      "ordersTitle": "📦 Tus últimos pedidos:",
+      "noOrders": "Aún no tienes pedidos.",
+      "order": "📦 Pedido #{{ .Id }} - {{ .Plan }}\r\nImporte: {{ .Amount }}\r\nEstado: {{ .Status }}",
+      "cardInfo": "\r\n\r\nTransfiere exactamente {{ .Amount }} a esta tarjeta:\r\n<code>{{ .Card }}</code>\r\n{{ .Holder }} {{ .Bank }}\r\n{{ .Instructions }}",
+      "payLink": "\r\n\r\nCompleta el pago: {{ .URL }}",
+      "delivered": "✅ Pagado y activado. Tu suscripción:",
+      "buttons": {
+        "plans": "🛒 Planes",
+        "orders": "📦 Mis pedidos",
+        "newAccount": "🆕 Cuenta nueva",
+        "renew": "🔄 Renovar {{ .Email }}",
+        "code": "🏷 Código de descuento",
+        "card": "💳 Tarjeta a tarjeta",
+        "wallet": "👛 Monedero",
+        "zarinpal": "Zarinpal",
+        "idpay": "IDPay",
+        "crypto": "Cripto",
+        "receipt": "🧾 Enviar comprobante",
+        "refresh": "🔄 Actualizar"
+      }
     }
   },
   "discord": {

@@ -14,6 +14,7 @@ const view = {
   idpay: { enabled: false, apiKey: '', sandbox: false },
   crypto: { enabled: false, apiKey: '', ipnSecret: '', sandbox: false },
   walletEnabled: false,
+  telegramShop: false,
   referral: { enabled: false, bonusPercent: 10 },
   hasZarinpalMerchantId: true,
   hasIdpayApiKey: false,
@@ -61,6 +62,14 @@ describe('SalesSettingsTab secrets', () => {
     expect((savedBodies()[0] as { clearSecrets: string[] }).clearSecrets).toEqual([
       'zarinpal.merchantId',
     ]);
+  });
+
+  it('saves the Telegram shop switch the operator turns on', async () => {
+    await renderLoaded();
+    fireEvent.click(screen.getByLabelText('Sell in the Telegram bot'));
+    fireEvent.click(screen.getByText('Save'));
+    await waitFor(() => expect(savedBodies()).toHaveLength(1));
+    expect((savedBodies()[0] as { telegramShop: boolean }).telegramShop).toBe(true);
   });
 
   it('shows the link customers open to buy, built from the public base URL', async () => {

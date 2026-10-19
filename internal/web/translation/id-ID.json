@@ -2112,6 +2112,8 @@
       "eventWeeklyReport": "Ringkasan mingguan",
       "eventLoginNewLocation": "Login admin dari tempat baru",
       "eventClientSharedAccount": "Dugaan akun bersama",
+      "eventTicketOpened": "Tiket dukungan baru",
+      "eventTicketReplied": "Pelanggan membalas tiket",
       "testDiscordDesc": "Kirim notifikasi uji untuk memverifikasi token bot dan ID saluran Anda",
       "discordNotInitialized": "Layanan Discord belum diinisialisasi",
       "discordBotNotEnabled": "Bot Discord belum diaktifkan",
@@ -2958,6 +2960,7 @@
       "ordersTab": "Pesanan",
       "discountsTab": "Diskon",
       "walletsTab": "Dompet",
+      "ticketsTab": "Tiket",
       "settingsTab": "Pengaturan",
       "plans": {
         "add": "Tambah paket",
@@ -3015,6 +3018,26 @@
           "canceled": "Dibatalkan"
         }
       },
+      "tickets": {
+        "replied": "Balasan terkirim",
+        "closed": "Tiket ditutup",
+        "reopened": "Tiket dibuka kembali",
+        "subject": "Subjek",
+        "client": "Pelanggan",
+        "status": "Status",
+        "statuses": {
+          "open": "Menunggu balasan",
+          "answered": "Sudah dijawab",
+          "closed": "Ditutup"
+        },
+        "updated": "Aktivitas terakhir",
+        "allStatuses": "Semua status",
+        "reopen": "Buka kembali",
+        "close": "Tutup",
+        "confirmClose": "Tutup tiket ini?",
+        "replyHint": "Tulis balasan (teks biasa)",
+        "send": "Kirim balasan"
+      },
       "config": {
         "saved": "Pengaturan penjualan disimpan",
         "publicEnabled": "Halaman pembelian publik",
@@ -3022,6 +3045,8 @@
         "shopLink": "Tautan toko Anda:",
         "publicBaseUrl": "URL dasar publik",
         "publicBaseUrlHint": "Alamat tempat pelanggan membuka toko; gerbang pembayaran mengembalikan pelanggan ke sana.",
+        "telegramShop": "Jual di bot Telegram",
+        "telegramShopHint": "Pelanggan dapat melihat paket, membeli, dan memperpanjang dengan /shop di bot Telegram. Memerlukan bot aktif. Nonaktif secara default.",
         "cardTitle": "Pembayaran kartu ke kartu",
         "cardEnabled": "Aktif",
         "cardNumber": "Nomor kartu (16 digit)",
@@ -3214,6 +3239,21 @@
     "receiptNote": "Catatan (opsional)",
     "receiptSent": "Bukti terkirim. Akan segera ditinjau.",
     "sendReceipt": "Kirim bukti",
+    "tickets": {
+      "title": "Dukungan",
+      "show": "Tampilkan tiket saya",
+      "empty": "Belum ada tiket",
+      "subject": "Subjek tiket baru",
+      "message": "Pesan Anda (teks biasa)",
+      "send": "Kirim",
+      "back": "Kembali ke daftar",
+      "closed": "Tiket ini sudah ditutup.",
+      "statuses": {
+        "open": "Menunggu balasan",
+        "answered": "Sudah dijawab",
+        "closed": "Ditutup"
+      }
+    },
     "errors": {
       "plan_unavailable": "Paket itu tidak tersedia.",
       "invalid_email": "Username tidak valid.",
@@ -3231,6 +3271,10 @@
       "referral_invalid": "Kode referral tidak valid.",
       "wallet_insufficient": "Saldo dompet Anda tidak cukup.",
       "proof_invalid": "ID langganan tidak cocok dengan akun ini.",
+      "ticket_invalid": "Isi subjek (maks. 120 karakter) dan pesan (maks. 2000).",
+      "ticket_not_found": "Tiket tidak ditemukan.",
+      "ticket_limit": "Tiket terbuka Anda terlalu banyak. Tunggu balasan atau tutup salah satu.",
+      "ticket_closed": "Tiket ini sudah ditutup.",
       "rate_limited": "Terlalu banyak permintaan. Tunggu sebentar lalu coba lagi.",
       "network": "Terjadi kesalahan. Silakan coba lagi."
     }
@@ -3451,6 +3495,40 @@
       "chooseClient": "Pilih Klien untuk Inbound {{ .Inbound }}",
       "chooseInbound": "Pilih Inbound",
       "qrCodeForClient": "Kode QR untuk klien {{ .Email }}:"
+    },
+    "shop": {
+      "disabled": "Toko sedang tidak tersedia.",
+      "menu": "🛒 Toko\r\nApa yang ingin Anda lakukan?",
+      "plansTitle": "🛒 Pilih paket:",
+      "noPlans": "Belum ada paket yang dijual.",
+      "planDetail": "<b>{{ .Name }}</b>\r\n{{ .Description }}\r\nData: {{ .Quota }}\r\nDurasi: {{ .Duration }}\r\nPerangkat: {{ .Devices }}\r\nHarga: {{ .Price }}\r\n\r\nUntuk siapa?",
+      "noExpiry": "Tanpa kedaluwarsa",
+      "confirm": "<b>{{ .Plan }}</b> untuk <code>{{ .Email }}</code>\r\nTotal: {{ .Amount }}\r\nPilih cara pembayaran:",
+      "discountLine": "\r\nHarga normal {{ .List }}, kode {{ .Code }}",
+      "askCode": "Kirim kode diskon Anda dalam satu pesan.",
+      "askReceipt": "Kirim nomor pelacakan transfer Anda dalam satu pesan.",
+      "receiptSent": "✅ Bukti terkirim. Akan segera ditinjau.",
+      "expired": "Pilihan Anda kedaluwarsa. Kirim /shop untuk memulai lagi.",
+      "ordersTitle": "📦 Pesanan terbaru Anda:",
+      "noOrders": "Anda belum punya pesanan.",
+      "order": "📦 Pesanan #{{ .Id }} - {{ .Plan }}\r\nJumlah: {{ .Amount }}\r\nStatus: {{ .Status }}",
+      "cardInfo": "\r\n\r\nTransfer tepat {{ .Amount }} ke kartu ini:\r\n<code>{{ .Card }}</code>\r\n{{ .Holder }} {{ .Bank }}\r\n{{ .Instructions }}",
+      "payLink": "\r\n\r\nSelesaikan pembayaran: {{ .URL }}",
+      "delivered": "✅ Dibayar dan diaktifkan. Langganan Anda:",
+      "buttons": {
+        "plans": "🛒 Paket",
+        "orders": "📦 Pesanan saya",
+        "newAccount": "🆕 Akun baru",
+        "renew": "🔄 Perpanjang {{ .Email }}",
+        "code": "🏷 Kode diskon",
+        "card": "💳 Kartu ke kartu",
+        "wallet": "👛 Dompet",
+        "zarinpal": "Zarinpal",
+        "idpay": "IDPay",
+        "crypto": "Kripto",
+        "receipt": "🧾 Kirim bukti",
+        "refresh": "🔄 Segarkan"
+      }
     }
   },
   "discord": {

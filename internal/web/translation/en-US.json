@@ -2262,6 +2262,8 @@
       "eventWeeklyReport": "Weekly summary",
       "eventLoginNewLocation": "Admin login from a new place",
       "eventClientSharedAccount": "Shared account suspected",
+      "eventTicketOpened": "New support ticket",
+      "eventTicketReplied": "Customer replied to a ticket",
       "testDiscordDesc": "Send a test notification to verify your bot token and channel ID",
       "discordNotInitialized": "Discord service not initialized",
       "discordBotNotEnabled": "Discord bot is not enabled",
@@ -2958,6 +2960,7 @@
       "ordersTab": "Orders",
       "discountsTab": "Discounts",
       "walletsTab": "Wallets",
+      "ticketsTab": "Tickets",
       "settingsTab": "Settings",
       "plans": {
         "add": "Add plan",
@@ -3015,6 +3018,26 @@
           "canceled": "Canceled"
         }
       },
+      "tickets": {
+        "replied": "Reply sent",
+        "closed": "Ticket closed",
+        "reopened": "Ticket reopened",
+        "subject": "Subject",
+        "client": "Customer",
+        "status": "Status",
+        "statuses": {
+          "open": "Awaiting reply",
+          "answered": "Answered",
+          "closed": "Closed"
+        },
+        "updated": "Last activity",
+        "allStatuses": "All statuses",
+        "reopen": "Reopen",
+        "close": "Close",
+        "confirmClose": "Close this ticket?",
+        "replyHint": "Write a reply (plain text)",
+        "send": "Send reply"
+      },
       "config": {
         "saved": "Sales settings saved",
         "publicEnabled": "Public purchase page",
@@ -3022,6 +3045,8 @@
         "shopLink": "Your shop link:",
         "publicBaseUrl": "Public base URL",
         "publicBaseUrlHint": "The address customers reach the shop at; payment gateways send customers back to it.",
+        "telegramShop": "Sell in the Telegram bot",
+        "telegramShopHint": "Customers can browse plans, buy and renew with /shop in the Telegram bot. Needs the bot to be on. Off by default.",
         "cardTitle": "Card-to-card payment",
         "cardEnabled": "Enabled",
         "cardNumber": "Card number (16 digits)",
@@ -3214,6 +3239,21 @@
     "receiptNote": "Note (optional)",
     "receiptSent": "Receipt sent. It will be reviewed shortly.",
     "sendReceipt": "Send receipt",
+    "tickets": {
+      "title": "Support",
+      "show": "Show my tickets",
+      "empty": "No tickets yet",
+      "subject": "Subject of a new ticket",
+      "message": "Your message (plain text)",
+      "send": "Send",
+      "back": "Back to the list",
+      "closed": "This ticket is closed.",
+      "statuses": {
+        "open": "Awaiting reply",
+        "answered": "Answered",
+        "closed": "Closed"
+      }
+    },
     "errors": {
       "plan_unavailable": "That plan is not available.",
       "invalid_email": "That username is not valid.",
@@ -3231,6 +3271,10 @@
       "referral_invalid": "That referral code is not valid.",
       "wallet_insufficient": "Your wallet balance is not enough.",
       "proof_invalid": "The subscription id does not match this account.",
+      "ticket_invalid": "Enter a subject (up to 120 characters) and a message (up to 2000).",
+      "ticket_not_found": "Ticket not found.",
+      "ticket_limit": "You have too many open tickets. Wait for a reply or close one.",
+      "ticket_closed": "This ticket is closed.",
       "rate_limited": "Too many requests. Please wait a little and try again.",
       "network": "Something went wrong. Please try again."
     }
@@ -3451,6 +3495,40 @@
       "chooseClient": "Choose a Client for Inbound {{ .Inbound }}",
       "chooseInbound": "Choose an Inbound",
       "qrCodeForClient": "QRCode for client {{ .Email }}:"
+    },
+    "shop": {
+      "disabled": "The shop is not available right now.",
+      "menu": "🛒 Shop\r\nWhat would you like to do?",
+      "plansTitle": "🛒 Choose a plan:",
+      "noPlans": "No plans are on sale right now.",
+      "planDetail": "<b>{{ .Name }}</b>\r\n{{ .Description }}\r\nData: {{ .Quota }}\r\nDuration: {{ .Duration }}\r\nDevices: {{ .Devices }}\r\nPrice: {{ .Price }}\r\n\r\nWho is it for?",
+      "noExpiry": "No expiry",
+      "confirm": "<b>{{ .Plan }}</b> for <code>{{ .Email }}</code>\r\nTotal: {{ .Amount }}\r\nChoose how to pay:",
+      "discountLine": "\r\nList price {{ .List }}, code {{ .Code }}",
+      "askCode": "Send your discount code as a message.",
+      "askReceipt": "Send the tracking number of your transfer as a message.",
+      "receiptSent": "✅ Receipt sent. It will be reviewed shortly.",
+      "expired": "Your selection has expired. Send /shop to start again.",
+      "ordersTitle": "📦 Your latest orders:",
+      "noOrders": "You have no orders yet.",
+      "order": "📦 Order #{{ .Id }} - {{ .Plan }}\r\nAmount: {{ .Amount }}\r\nStatus: {{ .Status }}",
+      "cardInfo": "\r\n\r\nTransfer exactly {{ .Amount }} to this card:\r\n<code>{{ .Card }}</code>\r\n{{ .Holder }} {{ .Bank }}\r\n{{ .Instructions }}",
+      "payLink": "\r\n\r\nComplete the payment: {{ .URL }}",
+      "delivered": "✅ Paid and activated. Your subscription:",
+      "buttons": {
+        "plans": "🛒 Plans",
+        "orders": "📦 My orders",
+        "newAccount": "🆕 New account",
+        "renew": "🔄 Renew {{ .Email }}",
+        "code": "🏷 Discount code",
+        "card": "💳 Card to card",
+        "wallet": "👛 Wallet",
+        "zarinpal": "Zarinpal",
+        "idpay": "IDPay",
+        "crypto": "Crypto",
+        "receipt": "🧾 Send receipt",
+        "refresh": "🔄 Refresh"
+      }
     }
   },
   "discord": {
