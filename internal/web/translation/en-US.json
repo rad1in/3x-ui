@@ -149,13 +149,12 @@
     "audit": "Activity",
     "admins": "Admins",
     "sessions": "Sessions",
-    "reseller": "Resellers",
+    "reseller": "Reseller",
     "sales": "Sales",
     "openMenu": "Open menu",
     "pinSidebar": "Pin sidebar",
     "unpinSidebar": "Unpin sidebar",
-    "subFormats": "Sub Formats",
-    "panels": "Panels"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "Keyboard shortcuts",
@@ -2261,7 +2260,6 @@
       "eventClientQuotaWarning": "Quota warning",
       "eventClientExpiryWarning": "Expiry warning",
       "eventWeeklyReport": "Weekly summary",
-      "eventResellerCreditLow": "Reseller credit low",
       "eventLoginNewLocation": "Admin login from a new place",
       "eventClientSharedAccount": "Shared account suspected",
       "testDiscordDesc": "Send a test notification to verify your bot token and channel ID",
@@ -2881,39 +2879,7 @@
       "tag": "Sponsor",
       "visit": "Visit",
       "yourBrand": "Your brand here",
-      "yourBrandText": "Put your brand in front of everyone who uses this panel.",
-      "admin": {
-        "title": "Manage sponsors",
-        "add": "Add sponsor",
-        "edit": "Edit sponsor",
-        "name": "Name",
-        "headline": "Headline",
-        "text": "Text",
-        "link": "Link",
-        "slots": "Show on",
-        "slotDashboard": "Dashboard",
-        "slotLogin": "Login page",
-        "slotPage": "Sponsors page",
-        "from": "Start",
-        "until": "End",
-        "untilHint": "Leave empty to run until you turn it off.",
-        "window": "Runs",
-        "always": "Always",
-        "deleteConfirm": "Delete this sponsor?",
-        "setup": "Setup",
-        "contact": "“Become a sponsor” link",
-        "contactHint": "https:// link people use to contact you about sponsoring. Leave empty to hide the button.",
-        "feedUrl": "Read sponsors from another panel",
-        "feedUrlHint": "Paste another panel's sponsor feed URL to show its sponsors here instead of your own. Leave empty to use the list above.",
-        "ownFeed": "This panel's own feed, for other panels to use:",
-        "feedActive": "A sponsor feed is set, so this panel shows the feed's sponsors and the list below is not shown to users.",
-        "saved": "Saved",
-        "deleted": "Deleted",
-        "errName": "Enter a name of up to 64 characters",
-        "errLink": "The link must start with https://",
-        "errSlots": "Pick at least one place to show it",
-        "errWindow": "The end must be after the start"
-      }
+      "yourBrandText": "Put your brand in front of everyone who uses this panel."
     },
     "audit": {
       "title": "Activity log",
@@ -2984,57 +2950,6 @@
       "toasts": {
         "saved": "Admin saved",
         "deleted": "Admin deleted"
-      }
-    },
-    "reseller": {
-      "title": "Reseller credit",
-      "mine": "My credit",
-      "hint": "Resellers are debited by their price list when they create or renew clients. Top up their credit and follow what they sell.",
-      "hintSelf": "You are debited by your price list when you create or renew clients.",
-      "credit": "Credit",
-      "pricePerGb": "Price per GB",
-      "pricePerDay": "Price per day",
-      "manage": "Manage",
-      "topupTitle": "Add or remove credit",
-      "amountHint": "Amount (negative removes)",
-      "note": "Note",
-      "topup": "Apply",
-      "pricesTitle": "Price list",
-      "wholesale": "Wholesale price list",
-      "wholesaleHint": "Resellers without their own prices are billed by this list. Credit is the panel's own unit; set the alert level to be notified when a reseller runs low (0 = off).",
-      "lowCredit": "Alert below",
-      "priceFallback": "Leave a price empty to follow the panel's price list.",
-      "ranges": {
-        "all": "All time",
-        "7": "7 days",
-        "30": "30 days",
-        "90": "90 days"
-      },
-      "report": {
-        "reseller": "Reseller",
-        "created": "Created",
-        "renewed": "Renewed",
-        "spent": "Spent",
-        "traffic": "Traffic sold",
-        "days": "Days sold",
-        "toppedUp": "Credit added"
-      },
-      "ledger": {
-        "title": "Credit history",
-        "time": "Time",
-        "kind": "Type",
-        "amount": "Amount",
-        "client": "Client"
-      },
-      "kinds": {
-        "topup": "Top-up",
-        "create": "New client",
-        "renew": "Renewal"
-      },
-      "toasts": {
-        "toppedUp": "Credit updated",
-        "pricesSaved": "Price list saved",
-        "configSaved": "Price list saved"
       }
     },
     "sales": {
@@ -3197,7 +3112,7 @@
       "saved": "Panel saved",
       "deleted": "Panel deleted",
       "usageReset": "Usage reset",
-      "title": "Hosted panels",
+      "title": "Reseller",
       "hint": "Create separate panels on this server and hand them to other people. Each one has its own login, address, database and inbound port range, and can't go past the limits you set here.",
       "add": "New panel",
       "edit": "Edit panel",
@@ -3232,7 +3147,7 @@
       "resetUsageConfirm": "Start a new usage period for this panel?",
       "deleteConfirm": "Delete this panel?",
       "deleteWarning": "Its database, inbounds and clients are removed for good.",
-      "empty": "No hosted panels yet",
+      "empty": "No reseller panels yet",
       "emptyHint": "Create a panel to give someone their own login with the quota, inbounds and clients you choose.",
       "errName": "Enter a name of up to 64 characters",
       "errUsername": "Enter a username without spaces",

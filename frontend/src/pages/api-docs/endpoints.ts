@@ -240,29 +240,8 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/sponsors',
         summary:
-          "Public. Active sponsor placements: the panel owner's own sponsors, or another panel's feed when sponsorFeedUrl is set (cached for 1h). Entries outside their from/until window are dropped. Logos are proxied by the panel at /sponsors/logo/{name}. Used by the login page and panel sponsor slots.",
+          "Public. Active sponsor placements from the project owner's sponsors.json (fetched from GitHub, cached for 1h). Entries outside their from/until window are dropped, and a missing feed means an empty list. Logos are proxied by the panel at /sponsors/logo/{name}. Used by the login page and panel sponsor slots. Read-only: no panel can edit sponsors.",
         responseSchema: 'SponsorList',
-      },
-      {
-        method: 'GET',
-        path: '/sponsors/feed/sponsors.json',
-        summary:
-          "Public. This panel's own live sponsors as a feed for other panels: point another panel's sponsor feed setting at this URL. Logo fields are bare file names served from the sibling logos/ path. The body is the bare SponsorList, not wrapped in a Msg envelope.",
-        responseSchema: 'SponsorList',
-      },
-      {
-        method: 'GET',
-        path: '/sponsors/feed/logos/:name',
-        summary:
-          "Public. Logo image (PNG, JPEG or WebP) of a live sponsor in this panel's feed; 404 for anything else.",
-        params: [
-          {
-            name: 'name',
-            in: 'path',
-            type: 'string',
-            desc: 'Logo file name from the feed, e.g. local-1.png.',
-          },
-        ],
       },
       {
         method: 'POST',
@@ -2503,7 +2482,7 @@ export const sections: readonly Section[] = [
 
   {
     id: 'hosted',
-    title: 'Hosted Panel',
+    title: 'Reseller Panel',
     description:
       'A panel the owner of this server runs for someone else. Its inbound, client, port, traffic and expiry limits are set by the owner and cannot be changed from inside the panel.',
     endpoints: [
@@ -2519,7 +2498,7 @@ export const sections: readonly Section[] = [
 
   {
     id: 'hosted-panels',
-    title: 'Hosted Panels',
+    title: 'Reseller Panels',
     description:
       'Separate panels this server runs for other people. Each has its own database, login, address and inbound port range, and enforces the limits set here. Not available from inside a hosted panel.',
     endpoints: [
@@ -2562,55 +2541,6 @@ export const sections: readonly Section[] = [
         summary:
           'Start a new usage period: the hosted panel zeroes its traffic meter and resumes if traffic was what stopped it.',
         params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Hosted panel id.' }],
-      },
-    ],
-  },
-
-  {
-    id: 'sponsors',
-    title: 'Sponsors',
-    description:
-      "Manage the sponsor placements this panel shows on its login page, dashboard and sponsors page, and optionally read them from another panel's feed instead.",
-    endpoints: [
-      {
-        method: 'GET',
-        path: '/panel/api/sponsors/list',
-        summary: 'Every locally stored sponsor record plus the feed URL and contact link.',
-        responseSchema: 'SponsorAdminView',
-      },
-      {
-        method: 'POST',
-        path: '/panel/api/sponsors/save',
-        summary:
-          'Create (id 0) or replace a sponsor record. The link must be https://; slots are any of dashboard, page and login; from/until are unix ms with 0 meaning unbounded; the logo is an optional PNG, JPEG or WebP data URL of at most 64 KB.',
-        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SponsorRecord.' }],
-        responseSchema: 'SponsorRecord',
-      },
-      {
-        method: 'POST',
-        path: '/panel/api/sponsors/del/:id',
-        summary: 'Delete a sponsor record.',
-        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Sponsor record id.' }],
-      },
-      {
-        method: 'POST',
-        path: '/panel/api/sponsors/config',
-        summary:
-          'Set where sponsors come from and the "become a sponsor" link. An empty feedUrl shows this panel\'s own records; otherwise it must be https://, or http:// to a loopback address on this server.',
-        params: [
-          {
-            name: 'feedUrl',
-            in: 'body (json)',
-            type: 'string',
-            desc: "Another panel's /sponsors/feed/sponsors.json, or empty.",
-          },
-          {
-            name: 'contact',
-            in: 'body (json)',
-            type: 'string',
-            desc: 'https:// contact link, or empty.',
-          },
-        ],
       },
     ],
   },
@@ -2955,101 +2885,6 @@ export const sections: readonly Section[] = [
         summary:
           'Delete an admin and close its live connections. The last owner and yourself cannot be deleted.',
         params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Admin id.' }],
-      },
-    ],
-  },
-
-  {
-    id: 'reseller',
-    title: 'Reseller credit',
-    description:
-      'Credit and sales of resellers, the admins with the operator role. A reseller is debited by its price list (credit per GiB and per day) when it creates or renews clients; amounts are credit units. The price list and top-ups are owner-only. All endpoints under /panel/api/reseller.',
-    endpoints: [
-      {
-        method: 'GET',
-        path: '/panel/api/reseller/me',
-        summary:
-          "The signed-in reseller's credit, price list and latest ledger lines. Any other role gets an empty account.",
-        responseSchema: 'ResellerAccount',
-      },
-      {
-        method: 'GET',
-        path: '/panel/api/reseller/report',
-        summary:
-          'Sales per reseller between from and to: clients created and renewed, credit spent, traffic and days sold, credit added and the balance. A reseller only sees its own row.',
-        params: [
-          {
-            name: 'from',
-            in: 'query',
-            type: 'integer',
-            desc: 'Window start, unix ms. Omit for no start.',
-          },
-          {
-            name: 'to',
-            in: 'query',
-            type: 'integer',
-            desc: 'Window end, unix ms. Omit for no end.',
-          },
-        ],
-        responseSchema: 'ResellerReport',
-      },
-      {
-        method: 'GET',
-        path: '/panel/api/reseller/account/:id',
-        summary: "One reseller's credit, price list and latest ledger lines. Owner only.",
-        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Admin id of an operator.' }],
-        responseSchema: 'ResellerAccount',
-      },
-      {
-        method: 'POST',
-        path: '/panel/api/reseller/topup/:id',
-        summary:
-          'Add credit to a reseller, or take it back with a negative amount (the balance never goes below zero). Owner only.',
-        params: [
-          { name: 'id', in: 'path', type: 'integer', desc: 'Admin id of an operator.' },
-          {
-            name: 'body',
-            in: 'body (json)',
-            type: 'object',
-            desc: '{"amount": 5000, "note": "paid by card"}',
-          },
-        ],
-        responseSchema: 'ResellerEntry',
-      },
-      {
-        method: 'GET',
-        path: '/panel/api/reseller/config',
-        summary:
-          "The panel's wholesale price list, which every reseller without its own price follows, and the credit level that raises the reseller.credit_low alert (0 = off). Owner only.",
-        responseSchema: 'ResellerConfig',
-      },
-      {
-        method: 'POST',
-        path: '/panel/api/reseller/config/save',
-        summary: 'Save the wholesale price list and the low-credit alert level. Owner only.',
-        params: [
-          {
-            name: 'body',
-            in: 'body (json)',
-            type: 'object',
-            desc: '{"pricePerGb": 100, "pricePerDay": 10, "lowCredit": 1000}',
-          },
-        ],
-      },
-      {
-        method: 'POST',
-        path: '/panel/api/reseller/prices/:id',
-        summary:
-          "Set a reseller's own price list. A null price falls back to the panel's list; 0 makes that dimension free. Owner only.",
-        params: [
-          { name: 'id', in: 'path', type: 'integer', desc: 'Admin id of an operator.' },
-          {
-            name: 'body',
-            in: 'body (json)',
-            type: 'object',
-            desc: '{"pricePerGb": 100, "pricePerDay": null}',
-          },
-        ],
       },
     ],
   },

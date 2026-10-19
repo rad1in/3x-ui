@@ -71,12 +71,9 @@ type User struct {
 	// JSON arrays; read only for operators.
 	ScopeInboundIds string `json:"-" gorm:"column:scope_inbound_ids;not null;default:'[]'"`
 	ScopeGroups     string `json:"-" gorm:"column:scope_groups;not null;default:'[]'"`
-	// A reseller's own price list in credit units; nil falls back to the panel's list.
 	// The Telegram chat that receives this admin's login codes; 0 means none.
-	TgChatId    int64  `json:"-" gorm:"column:tg_chat_id;not null;default:0"`
-	PricePerGB  *int64 `json:"-" gorm:"column:price_per_gb"`
-	PricePerDay *int64 `json:"-" gorm:"column:price_per_day"`
-	CreatedAt   int64  `json:"createdAt" gorm:"not null;default:0"`
+	TgChatId  int64 `json:"-" gorm:"column:tg_chat_id;not null;default:0"`
+	CreatedAt int64 `json:"createdAt" gorm:"not null;default:0"`
 }
 
 // AdminSession is one signed-in browser. The cookie carries only Id; deleting
@@ -237,21 +234,6 @@ type AuditLog struct {
 	Action    string `json:"action" gorm:"index;not null" example:"POST /clients/update/:email"`
 	Target    string `json:"target" gorm:"not null;default:''" example:"email=alice@example.com"`
 	Success   bool   `json:"success" gorm:"not null" example:"true"`
-}
-
-// SponsorRecord is a sponsor placement the panel owner manages locally. A zero
-// FromMs/UntilMs means no start/end bound.
-type SponsorRecord struct {
-	Id      int      `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
-	Name    string   `json:"name" gorm:"not null" example:"Acme VPS"`
-	Enable  bool     `json:"enable" gorm:"not null" example:"true"`
-	Slots   []string `json:"slots" gorm:"serializer:json" example:"[\"dashboard\",\"login\"]"`
-	FromMs  int64    `json:"from" gorm:"not null;default:0" example:"0"`
-	UntilMs int64    `json:"until" gorm:"not null;default:0" example:"1790000000000"`
-	Title   string   `json:"title" gorm:"not null;default:''" example:"Acme VPS — 20% off"`
-	Text    string   `json:"text" gorm:"not null;default:''" example:"Use code PANEL at checkout."`
-	Link    string   `json:"link" gorm:"not null" example:"https://acme.example/"`
-	Logo    string   `json:"logo" gorm:"type:text;not null;default:''" example:""`
 }
 
 // HostedPanel is a separate panel process the master runs on this server for

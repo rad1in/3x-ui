@@ -154,8 +154,7 @@
     "openMenu": "Abrir menu",
     "pinSidebar": "Fixar barra lateral",
     "unpinSidebar": "Desafixar barra lateral",
-    "subFormats": "Sub Formats",
-    "panels": "Painéis"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "Atalhos de teclado",
@@ -2111,7 +2110,6 @@
       "eventClientQuotaWarning": "Aviso de cota",
       "eventClientExpiryWarning": "Aviso de expiração",
       "eventWeeklyReport": "Resumo semanal",
-      "eventResellerCreditLow": "Crédito de revendedor baixo",
       "eventLoginNewLocation": "Login de administrador de um local novo",
       "eventClientSharedAccount": "Suspeita de conta compartilhada",
       "testDiscordDesc": "Enviar uma notificação de teste para verificar o token do bot e o ID do canal",
@@ -2881,39 +2879,7 @@
       "tag": "Patrocinador",
       "visit": "Visitar",
       "yourBrand": "Sua marca aqui",
-      "yourBrandText": "Mostre sua marca para todos que usam este painel.",
-      "admin": {
-        "title": "Gerenciar patrocinadores",
-        "add": "Adicionar patrocinador",
-        "edit": "Editar patrocinador",
-        "name": "Nome",
-        "headline": "Título",
-        "text": "Texto",
-        "link": "Link",
-        "slots": "Exibir em",
-        "slotDashboard": "Painel",
-        "slotLogin": "Tela de login",
-        "slotPage": "Página de patrocinadores",
-        "from": "Início",
-        "until": "Fim",
-        "untilHint": "Deixe vazio para exibir até você desativar.",
-        "window": "Período",
-        "always": "Sempre",
-        "deleteConfirm": "Excluir este patrocinador?",
-        "setup": "Configuração",
-        "contact": "Link “Seja um patrocinador”",
-        "contactHint": "Link https:// para falar com você sobre patrocínio. Deixe vazio para ocultar o botão.",
-        "feedUrl": "Ler patrocinadores de outro painel",
-        "feedUrlHint": "Cole a URL do feed de patrocinadores de outro painel para exibir os dele no lugar dos seus. Deixe vazio para usar a lista acima.",
-        "ownFeed": "Feed deste painel para outros painéis:",
-        "feedActive": "Um feed está configurado: este painel exibe os patrocinadores do feed e a lista abaixo não aparece para os usuários.",
-        "saved": "Salvo",
-        "deleted": "Excluído",
-        "errName": "Informe um nome de até 64 caracteres",
-        "errLink": "O link deve começar com https://",
-        "errSlots": "Escolha pelo menos um local",
-        "errWindow": "O fim deve ser depois do início"
-      }
+      "yourBrandText": "Mostre sua marca para todos que usam este painel."
     },
     "audit": {
       "title": "Registro de atividades",
@@ -2984,57 +2950,6 @@
       "toasts": {
         "saved": "Administrador salvo",
         "deleted": "Administrador excluído"
-      }
-    },
-    "reseller": {
-      "title": "Crédito de revendedores",
-      "mine": "Meu crédito",
-      "hint": "Os revendedores são debitados conforme a sua lista de preços ao criar ou renovar clientes. Recarregue o crédito deles e acompanhe as vendas.",
-      "hintSelf": "Você é debitado conforme a sua lista de preços ao criar ou renovar clientes.",
-      "credit": "Crédito",
-      "pricePerGb": "Preço por GB",
-      "pricePerDay": "Preço por dia",
-      "manage": "Gerenciar",
-      "topupTitle": "Adicionar ou remover crédito",
-      "amountHint": "Valor (negativo remove)",
-      "note": "Observação",
-      "topup": "Aplicar",
-      "pricesTitle": "Lista de preços",
-      "wholesale": "Lista de preços de atacado",
-      "wholesaleHint": "Revendedores sem preços próprios são cobrados por esta lista. O crédito é a unidade do próprio painel; defina o nível de alerta para ser avisado quando um revendedor ficar sem crédito (0 = desligado).",
-      "lowCredit": "Alertar abaixo de",
-      "priceFallback": "Deixe um preço vazio para seguir a lista de preços do painel.",
-      "ranges": {
-        "all": "Todo o período",
-        "7": "7 dias",
-        "30": "30 dias",
-        "90": "90 dias"
-      },
-      "report": {
-        "reseller": "Revendedor",
-        "created": "Criados",
-        "renewed": "Renovados",
-        "spent": "Gasto",
-        "traffic": "Tráfego vendido",
-        "days": "Dias vendidos",
-        "toppedUp": "Crédito adicionado"
-      },
-      "ledger": {
-        "title": "Histórico de crédito",
-        "time": "Hora",
-        "kind": "Tipo",
-        "amount": "Valor",
-        "client": "Cliente"
-      },
-      "kinds": {
-        "topup": "Recarga",
-        "create": "Novo cliente",
-        "renew": "Renovação"
-      },
-      "toasts": {
-        "toppedUp": "Crédito atualizado",
-        "pricesSaved": "Lista de preços salva",
-        "configSaved": "Lista de preços salva"
       }
     },
     "sales": {
@@ -3197,7 +3112,7 @@
       "saved": "Painel salvo",
       "deleted": "Painel excluído",
       "usageReset": "Consumo zerado",
-      "title": "Painéis hospedados",
+      "title": "Revendedores",
       "hint": "Crie painéis separados neste servidor e entregue-os a outras pessoas. Cada um tem login, endereço, banco de dados e faixa de portas próprios, e não pode ultrapassar os limites definidos aqui.",
       "add": "Novo painel",
       "edit": "Editar painel",
@@ -3232,7 +3147,7 @@
       "resetUsageConfirm": "Iniciar um novo período de consumo para este painel?",
       "deleteConfirm": "Excluir este painel?",
       "deleteWarning": "O banco de dados, as entradas e os clientes dele serão apagados para sempre.",
-      "empty": "Nenhum painel hospedado ainda",
+      "empty": "Nenhum painel de revendedor ainda",
       "emptyHint": "Crie um painel para dar a alguém um login próprio com a cota, as entradas e os clientes que você escolher.",
       "errName": "Informe um nome de até 64 caracteres",
       "errUsername": "Informe um usuário sem espaços",

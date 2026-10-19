@@ -8,13 +8,6 @@ import (
 )
 
 // Lines renders the alert as plain text for channels without their own layout.
-func (d ResellerCreditData) Lines() []string {
-	return []string{
-		fmt.Sprintf("Reseller %s is low on credit: %d left, alert level %d", d.Username, d.Balance, d.Threshold),
-	}
-}
-
-// Lines renders the alert as plain text for channels without their own layout.
 func (d NewLoginLocationData) Lines() []string {
 	place := d.IP
 	if d.Country != "" {

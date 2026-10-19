@@ -13,12 +13,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 )
 
-// Sponsor is one paid placement published in the repo's sponsors.json.
+// Sponsor is one paid placement listed in the owner's sponsors.json.
 type Sponsor struct {
 	ID     string            `json:"id" example:"acme-2026-10"`
 	Name   string            `json:"name" example:"Acme VPS"`
@@ -46,6 +45,13 @@ const (
 	sponsorLogoPath  = "/sponsors/logo/"
 )
 
+// DefaultSponsorFeedURL is the only sponsor source: the project owner's
+// sponsors.json, with logos in the logos/ directory beside it. No panel can write it.
+const DefaultSponsorFeedURL = "https://raw.githubusercontent.com/rad1in/sponsors/main/sponsors.json"
+
+// errSponsorFeedMissing is a 404: a feed not published yet means no sponsors.
+var errSponsorFeedMissing = errors.New("sponsor feed not found")
+
 // ErrSponsorLogoUnknown rejects logo names not used by an active sponsor.
 var ErrSponsorLogoUnknown = errors.New("unknown sponsor logo")
 
@@ -57,7 +63,8 @@ type sponsorLogo struct {
 }
 
 var (
-	sponsorNow = time.Now
+	sponsorNow  = time.Now
+	sponsorFeed = DefaultSponsorFeedURL
 
 	// The panel proxies feed logos: CSP stays 'self' and no third party sees admin IPs.
 	sponsorLogoRe = regexp.MustCompile(`^[A-Za-z0-9_-][A-Za-z0-9._-]*\.(png|webp|jpg)$`)
@@ -73,29 +80,14 @@ var (
 	logos   = map[string]sponsorLogo{}
 )
 
-// GetSponsors returns the currently active sponsors: the panel's own records,
-// or another panel's feed when sponsorFeedUrl is set. The window is re-checked
-// on every call so a slot starts exactly at From and ends at Until.
+// GetSponsors returns the currently active sponsors from the owner's feed. The
+// window is re-checked on every call so a slot starts exactly at From and ends at Until.
 func (s *PanelService) GetSponsors() (*SponsorList, error) {
-	if dir := hosted.Dir(); dir != "" {
-		return hostedActiveSponsors(dir), nil
-	}
-	feed, err := sponsorFeedURL()
-	if err != nil {
-		return nil, err
-	}
-	if feed == "" {
-		return s.localSponsors()
-	}
-	raw, err := cachedSponsors(feed)
+	raw, err := cachedSponsors(sponsorFeed)
 	if err != nil {
 		return nil, err
 	}
 	return activeSponsors(raw, sponsorNow()), nil
-}
-
-func sponsorFeedURL() (string, error) {
-	return (&service.SettingService{}).GetSponsorFeedURL()
 }
 
 // sponsorFeedLogoBase follows the feed layout: sponsors.json beside a logos/ directory.
@@ -133,16 +125,6 @@ func (s *PanelService) GetSponsorLogo(name string) ([]byte, string, error) {
 	if !sponsorLogoRe.MatchString(name) {
 		return nil, "", ErrSponsorLogoUnknown
 	}
-	if dir := hosted.Dir(); dir != "" {
-		return hostedSponsorLogo(dir, name)
-	}
-	feed, err := sponsorFeedURL()
-	if err != nil {
-		return nil, "", err
-	}
-	if feed == "" {
-		return s.GetSponsorFeedLogo(name)
-	}
 	sponsors, err := s.GetSponsors()
 	if err != nil {
 		return nil, "", err
@@ -153,13 +135,13 @@ func (s *PanelService) GetSponsorLogo(name string) ([]byte, string, error) {
 	logosMu.Lock()
 	defer logosMu.Unlock()
 	now := sponsorNow()
-	key := feed + "\x00" + name
+	key := sponsorFeed + "\x00" + name
 	l, ok := logos[key]
 	if ok && now.Before(l.retryAt) {
 		return l.data, l.contentType, l.err
 	}
 	// Failures are cached too: this route is public and each miss is an outbound fetch.
-	data, contentType, err := fetchSponsorLogo(sponsorFeedLogoBase(feed), name)
+	data, contentType, err := fetchSponsorLogo(sponsorFeedLogoBase(sponsorFeed), name)
 	switch {
 	case err == nil:
 		l = sponsorLogo{data: data, contentType: contentType, retryAt: now.Add(sponsorsTTL)}
@@ -201,6 +183,9 @@ func fetchLimited(url string, limit int) ([]byte, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode == http.StatusNotFound {
+		return nil, fmt.Errorf("%w: %s", errSponsorFeedMissing, url)
+	}
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("fetch %s returned status %d", url, resp.StatusCode)
 	}
@@ -216,6 +201,9 @@ func fetchLimited(url string, limit int) ([]byte, error) {
 
 func fetchSponsors(feed string) (*SponsorList, error) {
 	body, err := fetchLimited(feed, maxSponsorsBytes)
+	if errors.Is(err, errSponsorFeedMissing) {
+		return &SponsorList{Sponsors: []Sponsor{}}, nil
+	}
 	if err != nil {
 		return nil, err
 	}

@@ -25,7 +25,6 @@ import {
   HistoryOutlined,
   SafetyCertificateOutlined,
   UserSwitchOutlined,
-  WalletOutlined,
   ImportOutlined,
   LogoutOutlined,
   MailOutlined,
@@ -84,9 +83,8 @@ type IconName =
   | 'routing'
   | 'audit'
   | 'admins'
-  | 'reseller'
   | 'sessions'
-  | 'panels';
+  | 'reseller';
 
 const iconByName: Record<IconName, ComponentType> = {
   dashboard: DashboardOutlined,
@@ -105,9 +103,8 @@ const iconByName: Record<IconName, ComponentType> = {
   routing: SwapOutlined,
   audit: HistoryOutlined,
   admins: UserSwitchOutlined,
-  reseller: WalletOutlined,
   sessions: SafetyCertificateOutlined,
-  panels: AppstoreOutlined,
+  reseller: AppstoreOutlined,
 };
 
 function VersionBadge({ version, collapsed }: { version: string; collapsed?: boolean }) {
@@ -219,7 +216,7 @@ export default function AppSidebar() {
           { key: '/nodes', icon: 'cluster', title: t('menu.nodes') },
           ...(isHostedPanel
             ? []
-            : [{ key: '/panels', icon: 'panels' as const, title: t('menu.panels') }]),
+            : [{ key: '/reseller', icon: 'reseller' as const, title: t('menu.reseller') }]),
           { key: '/hosts', icon: 'hosts', title: t('menu.hosts') },
           { key: '/outbound', icon: 'outbound', title: t('menu.outbounds') },
           { key: '/routing', icon: 'routing', title: t('menu.routing') },
@@ -228,7 +225,6 @@ export default function AppSidebar() {
           { key: '/sales', icon: 'sales', title: t('menu.sales') },
           { key: '/audit', icon: 'audit', title: t('menu.audit') },
           { key: '/admins', icon: 'admins', title: t('menu.admins') },
-          { key: '/reseller', icon: 'reseller', title: t('menu.reseller') },
           { key: '/sessions', icon: 'sessions', title: t('menu.sessions') },
           { key: '/api-docs', icon: 'apidocs', title: t('menu.apiDocs') },
           { key: '/sponsors', icon: 'sponsors', title: t('menu.sponsors') },

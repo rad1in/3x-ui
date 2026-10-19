@@ -1,7 +1,7 @@
 export const ADMIN_ROLES = ['owner', 'admin', 'operator', 'viewer'] as const;
 export type AdminRole = (typeof ADMIN_ROLES)[number];
 
-const OPERATOR_PAGES = new Set(['/inbounds', '/clients', '/groups', '/sessions', '/reseller']);
+const OPERATOR_PAGES = new Set(['/inbounds', '/clients', '/groups', '/sessions']);
 
 // Mirrors the server's role tables so nobody is offered a page that only answers 403.
 export function canOpenPage(role: string | undefined, page: string): boolean {

@@ -40,7 +40,7 @@ The first rows are shared with 3x-ui; the rest exist only in Eternal. The compar
 | Built-in shop: plans, orders, public purchase page | ✅ | ❌ |
 | Card-to-card, Zarinpal, IDPay and crypto (NOWPayments) payments | ✅ | ❌ |
 | Customer wallet, discount codes, referral bonus | ✅ | ❌ |
-| Reseller credit wallet, wholesale prices, sales report | ✅ | ❌ |
+| Reseller panels: separate isolated panels with their own login, address and quotas | ✅ | ❌ |
 | Roles and per-admin scoping (RBAC), admin sessions | ✅ | ❌ |
 | Panel IP allow-list, login lockout, captcha, new-IP/country alerts | ✅ | ❌ |
 | Telegram one-time-code login, signed subscription links | ✅ | ❌ |
@@ -75,7 +75,8 @@ On top of everything 3x-ui provides (VLESS, VMess, Trojan, Shadowsocks, REALITY,
 - Plans, orders and a public purchase page that needs no panel login
 - Card-to-card payments with admin approval, Zarinpal, IDPay and NOWPayments (crypto)
 - Customer wallet, discount codes and referral bonuses
-- Reseller credit wallets with wholesale price lists, sales reports and client transfer
+- Reseller panels: separate isolated panels with their own login, address and quotas
+- Client transfer between admins
 
 **Operations**
 - Roles and per-admin scoping (RBAC), admin sessions, panel IP allow-list, login lockout, login captcha
@@ -101,7 +102,7 @@ On top of everything 3x-ui provides (VLESS, VMess, Trojan, Shadowsocks, REALITY,
 - Webhooks, ntfy, Gotify, Slack, Bale, editable bot texts, weekly summary, quota and expiry warnings
 
 **Interface**
-- A redesigned, minimal interface with a new login page, dashboard widgets, branding settings, audit log, sponsor/announcement manager and a decoy site for unknown visitors
+- A redesigned, minimal interface with a new login page, dashboard widgets, branding settings, audit log, a read-only sponsors page and a decoy site for unknown visitors
 - 13 UI languages with dark and light themes, RTL included
 
 ## Install
@@ -141,6 +142,50 @@ XUI_DB_DSN=postgres://user:password@127.0.0.1:5432/db?sslmode=disable
 ```
 
 `eternal migrate-db --dsn "<dsn>"` copies an existing SQLite database into PostgreSQL or MySQL.
+
+## Sponsors
+
+Sponsors are one JSON file in a GitHub repository that only the project owner
+can edit; there is no sponsor setting, page or API in any panel. Every panel,
+including the panels of hosted resellers, reads
+
+```
+https://raw.githubusercontent.com/rad1in/sponsors/main/sponsors.json
+```
+
+and the logos from `logos/` next to it. Panels cache the file for an hour
+(10 minutes after a failed fetch, keeping the last good list), re-check each
+entry's `from` and `until` on every request, and show no sponsors, without any
+error, when the file is missing or unreachable.
+
+To publish a sponsor, add an entry to that file and its logo to `logos/`. The
+format, with every field explained in the [sponsors reference](docs/content/docs/en/reference/sponsors.mdx):
+
+```json
+{
+  "contact": "https://t.me/example",
+  "sponsors": [
+    {
+      "id": "acme-2026-10",
+      "name": "Acme VPS",
+      "enable": true,
+      "slots": ["dashboard", "page", "login"],
+      "from": "2026-10-01T00:00:00Z",
+      "until": "2026-11-01T00:00:00Z",
+      "logo": "acme.png",
+      "title": {
+        "en": "Acme VPS: 20% off",
+        "fa": "Acme VPS: ۲۰٪ تخفیف"
+      },
+      "text": {
+        "en": "Fast servers for your panel. Use code ETERNAL at checkout.",
+        "fa": "سرورهای سریع برای پنل شما. هنگام خرید از کد ETERNAL استفاده کنید."
+      },
+      "link": "https://acme.example/?utm_source=eternal"
+    }
+  ]
+}
+```
 
 ## Documentation
 

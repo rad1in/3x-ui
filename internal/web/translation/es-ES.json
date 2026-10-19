@@ -154,8 +154,7 @@
     "openMenu": "Abrir menú",
     "pinSidebar": "Fijar barra lateral",
     "unpinSidebar": "Desfijar barra lateral",
-    "subFormats": "Sub Formats",
-    "panels": "Paneles"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "Atajos de teclado",
@@ -2111,7 +2110,6 @@
       "eventClientQuotaWarning": "Aviso de cuota",
       "eventClientExpiryWarning": "Aviso de vencimiento",
       "eventWeeklyReport": "Resumen semanal",
-      "eventResellerCreditLow": "Crédito de revendedor bajo",
       "eventLoginNewLocation": "Acceso de administrador desde un lugar nuevo",
       "eventClientSharedAccount": "Posible cuenta compartida",
       "testDiscordDesc": "Enviar una notificación de prueba para verificar el token del bot y el ID del canal",
@@ -2881,39 +2879,7 @@
       "tag": "Patrocinador",
       "visit": "Visitar",
       "yourBrand": "Tu marca aquí",
-      "yourBrandText": "Muestra tu marca a todos los que usan este panel.",
-      "admin": {
-        "title": "Gestionar patrocinadores",
-        "add": "Añadir patrocinador",
-        "edit": "Editar patrocinador",
-        "name": "Nombre",
-        "headline": "Titular",
-        "text": "Texto",
-        "link": "Enlace",
-        "slots": "Mostrar en",
-        "slotDashboard": "Panel",
-        "slotLogin": "Inicio de sesión",
-        "slotPage": "Página de patrocinadores",
-        "from": "Inicio",
-        "until": "Fin",
-        "untilHint": "Déjalo vacío para mostrarlo hasta que lo desactives.",
-        "window": "Periodo",
-        "always": "Siempre",
-        "deleteConfirm": "¿Eliminar este patrocinador?",
-        "setup": "Configuración",
-        "contact": "Enlace «Hazte patrocinador»",
-        "contactHint": "Enlace https:// para contactarte sobre patrocinios. Déjalo vacío para ocultar el botón.",
-        "feedUrl": "Leer patrocinadores de otro panel",
-        "feedUrlHint": "Pega la URL del feed de patrocinadores de otro panel para mostrar los suyos en lugar de los tuyos. Déjalo vacío para usar la lista de arriba.",
-        "ownFeed": "Feed de este panel para otros paneles:",
-        "feedActive": "Hay un feed configurado: este panel muestra los patrocinadores del feed y la lista de abajo no se muestra.",
-        "saved": "Guardado",
-        "deleted": "Eliminado",
-        "errName": "Escribe un nombre de hasta 64 caracteres",
-        "errLink": "El enlace debe empezar por https://",
-        "errSlots": "Elige al menos un lugar",
-        "errWindow": "El fin debe ser posterior al inicio"
-      }
+      "yourBrandText": "Muestra tu marca a todos los que usan este panel."
     },
     "audit": {
       "title": "Registro de actividad",
@@ -2984,57 +2950,6 @@
       "toasts": {
         "saved": "Administrador guardado",
         "deleted": "Administrador eliminado"
-      }
-    },
-    "reseller": {
-      "title": "Crédito de revendedores",
-      "mine": "Mi crédito",
-      "hint": "A los revendedores se les descuenta según su lista de precios cuando crean o renuevan clientes. Recarga su crédito y sigue sus ventas.",
-      "hintSelf": "Se te descuenta según tu lista de precios cuando creas o renuevas clientes.",
-      "credit": "Crédito",
-      "pricePerGb": "Precio por GB",
-      "pricePerDay": "Precio por día",
-      "manage": "Gestionar",
-      "topupTitle": "Añadir o quitar crédito",
-      "amountHint": "Importe (negativo resta)",
-      "note": "Nota",
-      "topup": "Aplicar",
-      "pricesTitle": "Lista de precios",
-      "wholesale": "Lista de precios mayorista",
-      "wholesaleHint": "Los revendedores sin precios propios se facturan con esta lista. El crédito es la unidad propia del panel; fija el nivel de alerta para saber cuándo un revendedor se queda corto (0 = desactivado).",
-      "lowCredit": "Alertar por debajo de",
-      "priceFallback": "Deja un precio vacío para seguir la lista de precios del panel.",
-      "ranges": {
-        "all": "Todo el tiempo",
-        "7": "7 días",
-        "30": "30 días",
-        "90": "90 días"
-      },
-      "report": {
-        "reseller": "Revendedor",
-        "created": "Creados",
-        "renewed": "Renovados",
-        "spent": "Gastado",
-        "traffic": "Tráfico vendido",
-        "days": "Días vendidos",
-        "toppedUp": "Crédito añadido"
-      },
-      "ledger": {
-        "title": "Historial de crédito",
-        "time": "Hora",
-        "kind": "Tipo",
-        "amount": "Importe",
-        "client": "Cliente"
-      },
-      "kinds": {
-        "topup": "Recarga",
-        "create": "Cliente nuevo",
-        "renew": "Renovación"
-      },
-      "toasts": {
-        "toppedUp": "Crédito actualizado",
-        "pricesSaved": "Lista de precios guardada",
-        "configSaved": "Lista de precios guardada"
       }
     },
     "sales": {
@@ -3197,7 +3112,7 @@
       "saved": "Panel guardado",
       "deleted": "Panel eliminado",
       "usageReset": "Consumo reiniciado",
-      "title": "Paneles alojados",
+      "title": "Revendedores",
       "hint": "Crea paneles independientes en este servidor y entrégalos a otras personas. Cada uno tiene su propio acceso, dirección, base de datos y rango de puertos, y no puede superar los límites que fijes aquí.",
       "add": "Nuevo panel",
       "edit": "Editar panel",
@@ -3232,7 +3147,7 @@
       "resetUsageConfirm": "¿Iniciar un nuevo periodo de consumo para este panel?",
       "deleteConfirm": "¿Eliminar este panel?",
       "deleteWarning": "Su base de datos, entradas y clientes se borran definitivamente.",
-      "empty": "Aún no hay paneles alojados",
+      "empty": "Aún no hay paneles de revendedor",
       "emptyHint": "Crea un panel para dar a alguien su propio acceso con la cuota, entradas y clientes que elijas.",
       "errName": "Introduce un nombre de hasta 64 caracteres",
       "errUsername": "Introduce un usuario sin espacios",

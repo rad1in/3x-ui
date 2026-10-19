@@ -154,8 +154,7 @@
     "openMenu": "開啟選單",
     "pinSidebar": "固定側邊欄",
     "unpinSidebar": "取消固定側邊欄",
-    "subFormats": "Sub Formats",
-    "panels": "面板"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "鍵盤快速鍵",
@@ -2111,7 +2110,6 @@
       "eventClientQuotaWarning": "流量預警",
       "eventClientExpiryWarning": "到期預警",
       "eventWeeklyReport": "每週摘要",
-      "eventResellerCreditLow": "分銷商額度不足",
       "eventLoginNewLocation": "管理員從新位置登入",
       "eventClientSharedAccount": "疑似共用帳號",
       "testDiscordDesc": "傳送測試通知以驗證您的機器人權杖與頻道 ID",
@@ -2881,39 +2879,7 @@
       "tag": "贊助",
       "visit": "造訪",
       "yourBrand": "您的品牌展示位",
-      "yourBrandText": "向此面板的所有使用者展示你的品牌。",
-      "admin": {
-        "title": "管理贊助商",
-        "add": "新增贊助商",
-        "edit": "編輯贊助商",
-        "name": "名稱",
-        "headline": "標題",
-        "text": "內文",
-        "link": "連結",
-        "slots": "顯示位置",
-        "slotDashboard": "儀表板",
-        "slotLogin": "登入頁",
-        "slotPage": "贊助商頁",
-        "from": "開始",
-        "until": "結束",
-        "untilHint": "留空則持續顯示，直到你關閉。",
-        "window": "展示時間",
-        "always": "一律",
-        "deleteConfirm": "刪除此贊助商？",
-        "setup": "設定",
-        "contact": "「成為贊助商」連結",
-        "contactHint": "用於贊助洽談的 https:// 連結。留空則隱藏按鈕。",
-        "feedUrl": "從其他面板讀取贊助商",
-        "feedUrlHint": "貼上其他面板的贊助商訂閱源網址，即可顯示其贊助商而非你自己的。留空則使用上方清單。",
-        "ownFeed": "本面板的訂閱源，供其他面板使用：",
-        "feedActive": "已設定贊助商訂閱源，本面板顯示訂閱源中的贊助商，下方清單不會顯示給使用者。",
-        "saved": "已儲存",
-        "deleted": "已刪除",
-        "errName": "請輸入不超過 64 個字元的名稱",
-        "errLink": "連結必須以 https:// 開頭",
-        "errSlots": "請至少選擇一個顯示位置",
-        "errWindow": "結束時間必須晚於開始時間"
-      }
+      "yourBrandText": "向此面板的所有使用者展示你的品牌。"
     },
     "audit": {
       "title": "操作日誌",
@@ -2984,57 +2950,6 @@
       "toasts": {
         "saved": "管理員已儲存",
         "deleted": "管理員已刪除"
-      }
-    },
-    "reseller": {
-      "title": "分銷商額度",
-      "mine": "我的額度",
-      "hint": "分銷商建立或續期客戶時，會依其價格表扣除額度。可在此為其儲值並查看銷售情況。",
-      "hintSelf": "建立或續期客戶時，會依您的價格表扣除額度。",
-      "credit": "額度",
-      "pricePerGb": "每 GB 價格",
-      "pricePerDay": "每天價格",
-      "manage": "管理",
-      "topupTitle": "增加或扣減額度",
-      "amountHint": "金額（負數為扣減）",
-      "note": "備註",
-      "topup": "套用",
-      "pricesTitle": "價格表",
-      "wholesale": "批發價格表",
-      "wholesaleHint": "沒有自訂價格的分銷商依此價格表計費。額度是面板自己的單位；設定提醒線，可在分銷商額度不足時收到通知（0 = 關閉）。",
-      "lowCredit": "低於此值時提醒",
-      "priceFallback": "價格留空則沿用面板價格表。",
-      "ranges": {
-        "all": "全部時間",
-        "7": "7 天",
-        "30": "30 天",
-        "90": "90 天"
-      },
-      "report": {
-        "reseller": "分銷商",
-        "created": "新建",
-        "renewed": "續期",
-        "spent": "已消耗",
-        "traffic": "售出流量",
-        "days": "售出天數",
-        "toppedUp": "已儲值額度"
-      },
-      "ledger": {
-        "title": "額度記錄",
-        "time": "時間",
-        "kind": "類型",
-        "amount": "金額",
-        "client": "客戶"
-      },
-      "kinds": {
-        "topup": "儲值",
-        "create": "新客戶",
-        "renew": "續期"
-      },
-      "toasts": {
-        "toppedUp": "額度已更新",
-        "pricesSaved": "價格表已儲存",
-        "configSaved": "價格表已儲存"
       }
     },
     "sales": {
@@ -3197,7 +3112,7 @@
       "saved": "面板已儲存",
       "deleted": "面板已刪除",
       "usageReset": "用量已重設",
-      "title": "託管面板",
+      "title": "分銷商",
       "hint": "在本伺服器上建立獨立的面板並交給他人使用。每個面板都有自己的登入、位址、資料庫和入站連接埠範圍，且不能超出你在此設定的限制。",
       "add": "新增面板",
       "edit": "編輯面板",
@@ -3232,7 +3147,7 @@
       "resetUsageConfirm": "為此面板開始新的用量週期？",
       "deleteConfirm": "刪除此面板？",
       "deleteWarning": "其資料庫、入站和用戶端將被永久刪除。",
-      "empty": "還沒有託管面板",
+      "empty": "還沒有分銷商面板",
       "emptyHint": "建立面板，讓他人擁有獨立登入，並使用你設定的流量、入站和用戶端數量。",
       "errName": "請輸入不超過 64 個字元的名稱",
       "errUsername": "請輸入不含空格的使用者名稱",

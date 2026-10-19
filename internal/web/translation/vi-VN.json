@@ -154,8 +154,7 @@
     "openMenu": "Mở menu",
     "pinSidebar": "Ghim thanh bên",
     "unpinSidebar": "Bỏ ghim thanh bên",
-    "subFormats": "Sub Formats",
-    "panels": "Bảng điều khiển"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "Phím tắt",
@@ -2111,7 +2110,6 @@
       "eventClientQuotaWarning": "Cảnh báo hạn mức",
       "eventClientExpiryWarning": "Cảnh báo hết hạn",
       "eventWeeklyReport": "Tóm tắt hằng tuần",
-      "eventResellerCreditLow": "Tín dụng đại lý thấp",
       "eventLoginNewLocation": "Quản trị viên đăng nhập từ nơi mới",
       "eventClientSharedAccount": "Nghi ngờ tài khoản dùng chung",
       "testDiscordDesc": "Gửi thông báo thử nghiệm để xác minh token bot và ID kênh",
@@ -2881,39 +2879,7 @@
       "tag": "Tài trợ",
       "visit": "Truy cập",
       "yourBrand": "Thương hiệu của bạn ở đây",
-      "yourBrandText": "Giới thiệu thương hiệu của bạn tới mọi người dùng bảng điều khiển này.",
-      "admin": {
-        "title": "Quản lý nhà tài trợ",
-        "add": "Thêm nhà tài trợ",
-        "edit": "Sửa nhà tài trợ",
-        "name": "Tên",
-        "headline": "Tiêu đề",
-        "text": "Nội dung",
-        "link": "Liên kết",
-        "slots": "Hiển thị ở",
-        "slotDashboard": "Bảng điều khiển",
-        "slotLogin": "Trang đăng nhập",
-        "slotPage": "Trang nhà tài trợ",
-        "from": "Bắt đầu",
-        "until": "Kết thúc",
-        "untilHint": "Để trống để hiển thị cho tới khi bạn tắt.",
-        "window": "Thời gian",
-        "always": "Luôn luôn",
-        "deleteConfirm": "Xoá nhà tài trợ này?",
-        "setup": "Thiết lập",
-        "contact": "Liên kết “Trở thành nhà tài trợ”",
-        "contactHint": "Liên kết https:// để liên hệ với bạn về tài trợ. Để trống để ẩn nút.",
-        "feedUrl": "Lấy nhà tài trợ từ bảng điều khiển khác",
-        "feedUrlHint": "Dán URL nguồn nhà tài trợ của bảng điều khiển khác để hiển thị nhà tài trợ của nó thay cho của bạn. Để trống để dùng danh sách ở trên.",
-        "ownFeed": "Nguồn của bảng điều khiển này cho nơi khác dùng:",
-        "feedActive": "Đã đặt nguồn nhà tài trợ: bảng điều khiển này hiển thị nhà tài trợ từ nguồn và danh sách bên dưới không hiển thị cho người dùng.",
-        "saved": "Đã lưu",
-        "deleted": "Đã xoá",
-        "errName": "Nhập tên tối đa 64 ký tự",
-        "errLink": "Liên kết phải bắt đầu bằng https://",
-        "errSlots": "Chọn ít nhất một vị trí",
-        "errWindow": "Thời điểm kết thúc phải sau khi bắt đầu"
-      }
+      "yourBrandText": "Giới thiệu thương hiệu của bạn tới mọi người dùng bảng điều khiển này."
     },
     "audit": {
       "title": "Nhật ký hoạt động",
@@ -2984,57 +2950,6 @@
       "toasts": {
         "saved": "Đã lưu quản trị viên",
         "deleted": "Đã xóa quản trị viên"
-      }
-    },
-    "reseller": {
-      "title": "Tín dụng đại lý",
-      "mine": "Tín dụng của tôi",
-      "hint": "Đại lý bị trừ tín dụng theo bảng giá khi tạo hoặc gia hạn khách hàng. Nạp tín dụng cho họ và theo dõi doanh số.",
-      "hintSelf": "Bạn bị trừ tín dụng theo bảng giá của mình khi tạo hoặc gia hạn khách hàng.",
-      "credit": "Tín dụng",
-      "pricePerGb": "Giá mỗi GB",
-      "pricePerDay": "Giá mỗi ngày",
-      "manage": "Quản lý",
-      "topupTitle": "Cộng hoặc trừ tín dụng",
-      "amountHint": "Số tiền (số âm sẽ trừ)",
-      "note": "Ghi chú",
-      "topup": "Áp dụng",
-      "pricesTitle": "Bảng giá",
-      "wholesale": "Bảng giá sỉ",
-      "wholesaleHint": "Đại lý không có giá riêng sẽ bị tính theo bảng này. Tín dụng là đơn vị riêng của bảng điều khiển; đặt mức cảnh báo để được báo khi tín dụng của đại lý sắp hết (0 = tắt).",
-      "lowCredit": "Cảnh báo khi dưới",
-      "priceFallback": "Để trống giá để theo bảng giá của bảng điều khiển.",
-      "ranges": {
-        "all": "Toàn bộ thời gian",
-        "7": "7 ngày",
-        "30": "30 ngày",
-        "90": "90 ngày"
-      },
-      "report": {
-        "reseller": "Đại lý",
-        "created": "Đã tạo",
-        "renewed": "Đã gia hạn",
-        "spent": "Đã chi",
-        "traffic": "Lưu lượng đã bán",
-        "days": "Số ngày đã bán",
-        "toppedUp": "Tín dụng đã nạp"
-      },
-      "ledger": {
-        "title": "Lịch sử tín dụng",
-        "time": "Thời gian",
-        "kind": "Loại",
-        "amount": "Số tiền",
-        "client": "Khách hàng"
-      },
-      "kinds": {
-        "topup": "Nạp tiền",
-        "create": "Khách mới",
-        "renew": "Gia hạn"
-      },
-      "toasts": {
-        "toppedUp": "Đã cập nhật tín dụng",
-        "pricesSaved": "Đã lưu bảng giá",
-        "configSaved": "Đã lưu bảng giá"
       }
     },
     "sales": {
@@ -3197,7 +3112,7 @@
       "saved": "Đã lưu bảng điều khiển",
       "deleted": "Đã xóa bảng điều khiển",
       "usageReset": "Đã đặt lại mức dùng",
-      "title": "Bảng điều khiển lưu trữ",
+      "title": "Đại lý",
       "hint": "Tạo các bảng điều khiển riêng trên máy chủ này và giao cho người khác. Mỗi bảng có đăng nhập, địa chỉ, cơ sở dữ liệu và dải cổng riêng, và không thể vượt giới hạn bạn đặt ở đây.",
       "add": "Bảng mới",
       "edit": "Sửa bảng",
@@ -3232,7 +3147,7 @@
       "resetUsageConfirm": "Bắt đầu kỳ sử dụng mới cho bảng này?",
       "deleteConfirm": "Xóa bảng này?",
       "deleteWarning": "Cơ sở dữ liệu, inbound và khách hàng của nó sẽ bị xóa vĩnh viễn.",
-      "empty": "Chưa có bảng lưu trữ nào",
+      "empty": "Chưa có bảng đại lý nào",
       "emptyHint": "Tạo một bảng để cấp cho ai đó đăng nhập riêng với hạn mức, inbound và khách hàng do bạn chọn.",
       "errName": "Nhập tên tối đa 64 ký tự",
       "errUsername": "Nhập tên người dùng không có khoảng trắng",

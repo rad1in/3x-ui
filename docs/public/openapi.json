@@ -77,12 +77,6 @@
             "format": "int64",
             "type": "integer"
           },
-          "credit": {
-            "description": "A reseller's credit and own price list; a nil price follows the panel's list.",
-            "example": 8500,
-            "format": "int64",
-            "type": "integer"
-          },
           "groups": {
             "items": {
               "type": "string"
@@ -98,18 +92,6 @@
               "type": "integer"
             },
             "type": "array"
-          },
-          "pricePerDay": {
-            "example": 10,
-            "format": "int64",
-            "nullable": true,
-            "type": "integer"
-          },
-          "pricePerGb": {
-            "example": 100,
-            "format": "int64",
-            "nullable": true,
-            "type": "integer"
           },
           "role": {
             "example": "operator",
@@ -127,7 +109,6 @@
         },
         "required": [
           "createdAt",
-          "credit",
           "groups",
           "id",
           "inboundIds",
@@ -6632,213 +6613,6 @@
         ],
         "type": "object"
       },
-      "ResellerAccount": {
-        "description": "ResellerAccount is a reseller's standing and latest ledger lines.",
-        "properties": {
-          "balance": {
-            "example": 8500,
-            "format": "int64",
-            "type": "integer"
-          },
-          "entries": {
-            "items": {
-              "$ref": "#/components/schemas/ResellerEntry"
-            },
-            "type": "array"
-          },
-          "prices": {
-            "$ref": "#/components/schemas/ResellerPrices"
-          },
-          "userId": {
-            "example": 2,
-            "type": "integer"
-          }
-        },
-        "required": [
-          "balance",
-          "entries",
-          "prices",
-          "userId"
-        ],
-        "type": "object"
-      },
-      "ResellerConfig": {
-        "description": "ResellerConfig is the panel's wholesale price list, which every reseller\nwithout its own price follows, and the credit level that raises an alert.",
-        "properties": {
-          "lowCredit": {
-            "example": 1000,
-            "format": "int64",
-            "type": "integer"
-          },
-          "pricePerDay": {
-            "example": 10,
-            "format": "int64",
-            "type": "integer"
-          },
-          "pricePerGb": {
-            "example": 100,
-            "format": "int64",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "lowCredit",
-          "pricePerDay",
-          "pricePerGb"
-        ],
-        "type": "object"
-      },
-      "ResellerEntry": {
-        "description": "ResellerEntry is one line of a reseller's credit ledger; the balance is the\nsum of the Amount column. Create and renew lines name the client and the\ntraffic and days that were billed.",
-        "properties": {
-          "amount": {
-            "example": -1500,
-            "format": "int64",
-            "type": "integer"
-          },
-          "bytes": {
-            "example": 53687091200,
-            "format": "int64",
-            "type": "integer"
-          },
-          "clientEmail": {
-            "example": "alice",
-            "type": "string"
-          },
-          "createdAt": {
-            "example": 1760684400000,
-            "format": "int64",
-            "type": "integer"
-          },
-          "days": {
-            "example": 30,
-            "format": "int64",
-            "type": "integer"
-          },
-          "id": {
-            "example": 1,
-            "type": "integer"
-          },
-          "kind": {
-            "example": "create",
-            "type": "string"
-          },
-          "note": {
-            "type": "string"
-          },
-          "userId": {
-            "example": 2,
-            "type": "integer"
-          }
-        },
-        "required": [
-          "amount",
-          "bytes",
-          "clientEmail",
-          "createdAt",
-          "days",
-          "id",
-          "kind",
-          "note",
-          "userId"
-        ],
-        "type": "object"
-      },
-      "ResellerPrices": {
-        "description": "ResellerPrices is a price list in credit units; a zero price makes that dimension free.",
-        "properties": {
-          "pricePerDay": {
-            "example": 10,
-            "format": "int64",
-            "type": "integer"
-          },
-          "pricePerGb": {
-            "example": 100,
-            "format": "int64",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "pricePerDay",
-          "pricePerGb"
-        ],
-        "type": "object"
-      },
-      "ResellerReport": {
-        "description": "ResellerReport lists every reseller, or one, with sales between from and to (unix ms, 0 = open).",
-        "properties": {
-          "rows": {
-            "items": {
-              "$ref": "#/components/schemas/ResellerReportRow"
-            },
-            "type": "array"
-          }
-        },
-        "required": [
-          "rows"
-        ],
-        "type": "object"
-      },
-      "ResellerReportRow": {
-        "description": "ResellerReportRow is one reseller's sales in the reported window. Spent is\ncredit used on clients; ToppedUp is credit added by the owner.",
-        "properties": {
-          "balance": {
-            "example": 8500,
-            "format": "int64",
-            "type": "integer"
-          },
-          "bytes": {
-            "example": 1073741824000,
-            "format": "int64",
-            "type": "integer"
-          },
-          "created": {
-            "example": 12,
-            "format": "int64",
-            "type": "integer"
-          },
-          "days": {
-            "example": 570,
-            "format": "int64",
-            "type": "integer"
-          },
-          "renewed": {
-            "example": 7,
-            "format": "int64",
-            "type": "integer"
-          },
-          "spent": {
-            "example": 15000,
-            "format": "int64",
-            "type": "integer"
-          },
-          "toppedUp": {
-            "example": 20000,
-            "format": "int64",
-            "type": "integer"
-          },
-          "userId": {
-            "example": 2,
-            "type": "integer"
-          },
-          "username": {
-            "example": "shop-a",
-            "type": "string"
-          }
-        },
-        "required": [
-          "balance",
-          "bytes",
-          "created",
-          "days",
-          "renewed",
-          "spent",
-          "toppedUp",
-          "userId",
-          "username"
-        ],
-        "type": "object"
-      },
       "RotationResult": {
         "description": "RotationResult is what one rotation changed. A zero Old/New SNI means SNI was not rotated.",
         "properties": {
@@ -7528,7 +7302,7 @@
         "type": "object"
       },
       "Sponsor": {
-        "description": "Sponsor is one paid placement published in the repo's sponsors.json.",
+        "description": "Sponsor is one paid placement listed in the owner's sponsors.json.",
         "properties": {
           "enable": {
             "example": true,
@@ -7592,42 +7366,6 @@
         ],
         "type": "object"
       },
-      "SponsorAdminView": {
-        "description": "SponsorAdminView is what the sponsor manager page loads.",
-        "properties": {
-          "config": {
-            "$ref": "#/components/schemas/SponsorConfig"
-          },
-          "records": {
-            "items": {
-              "$ref": "#/components/schemas/SponsorRecord"
-            },
-            "type": "array"
-          }
-        },
-        "required": [
-          "config",
-          "records"
-        ],
-        "type": "object"
-      },
-      "SponsorConfig": {
-        "description": "SponsorConfig is the owner-level sponsor setup: where sponsors come from and\nthe \"become a sponsor\" contact link.",
-        "properties": {
-          "contact": {
-            "example": "https://t.me/example",
-            "type": "string"
-          },
-          "feedUrl": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "contact",
-          "feedUrl"
-        ],
-        "type": "object"
-      },
       "SponsorList": {
         "description": "SponsorList is the active sponsor set plus the contact link for new sponsors.",
         "properties": {
@@ -7644,71 +7382,6 @@
         },
         "required": [
           "sponsors"
-        ],
-        "type": "object"
-      },
-      "SponsorRecord": {
-        "description": "SponsorRecord is a sponsor placement the panel owner manages locally. A zero\nFromMs/UntilMs means no start/end bound.",
-        "properties": {
-          "enable": {
-            "example": true,
-            "type": "boolean"
-          },
-          "from": {
-            "example": 0,
-            "format": "int64",
-            "type": "integer"
-          },
-          "id": {
-            "example": 1,
-            "type": "integer"
-          },
-          "link": {
-            "example": "https://acme.example/",
-            "type": "string"
-          },
-          "logo": {
-            "type": "string"
-          },
-          "name": {
-            "example": "Acme VPS",
-            "type": "string"
-          },
-          "slots": {
-            "example": [
-              "dashboard",
-              "login"
-            ],
-            "items": {
-              "type": "string"
-            },
-            "type": "array"
-          },
-          "text": {
-            "example": "Use code PANEL at checkout.",
-            "type": "string"
-          },
-          "title": {
-            "example": "Acme VPS — 20% off",
-            "type": "string"
-          },
-          "until": {
-            "example": 1790000000000,
-            "format": "int64",
-            "type": "integer"
-          }
-        },
-        "required": [
-          "enable",
-          "from",
-          "id",
-          "link",
-          "logo",
-          "name",
-          "slots",
-          "text",
-          "title",
-          "until"
         ],
         "type": "object"
       },
@@ -8195,16 +7868,12 @@
       "description": "Manage scoped Bearer tokens for programmatic auth. Tokens grant admin, monitor, or node-sync access, may expire, and are stored as SHA-256 hashes. The plaintext is returned only once at creation."
     },
     {
-      "name": "Hosted Panel",
+      "name": "Reseller Panel",
       "description": "A panel the owner of this server runs for someone else. Its inbound, client, port, traffic and expiry limits are set by the owner and cannot be changed from inside the panel."
     },
     {
-      "name": "Hosted Panels",
+      "name": "Reseller Panels",
       "description": "Separate panels this server runs for other people. Each has its own database, login, address and inbound port range, and enforces the limits set here. Not available from inside a hosted panel."
-    },
-    {
-      "name": "Sponsors",
-      "description": "Manage the sponsor placements this panel shows on its login page, dashboard and sponsors page, and optionally read them from another panel's feed instead."
     },
     {
       "name": "Sales",
@@ -8217,10 +7886,6 @@
     {
       "name": "Admins",
       "description": "Admin accounts and their roles. owner: everything; admin: everything except managing admins, API tokens, the database file and security settings; operator: only the inbounds and client groups in its scope; viewer: read-only. Every endpoint except /me is owner-only. API tokens are not admins and keep their own scopes. All endpoints under /panel/api/admins."
-    },
-    {
-      "name": "Reseller credit",
-      "description": "Credit and sales of resellers, the admins with the operator role. A reseller is debited by its price list (credit per GiB and per day) when it creates or renews clients; amounts are credit units. The price list and top-ups are owner-only. All endpoints under /panel/api/reseller."
     },
     {
       "name": "Extra security",
@@ -8413,7 +8078,7 @@
         "tags": [
           "Authentication"
         ],
-        "summary": "Public. Active sponsor placements: the panel owner's own sponsors, or another panel's feed when sponsorFeedUrl is set (cached for 1h). Entries outside their from/until window are dropped. Logos are proxied by the panel at /sponsors/logo/{name}. Used by the login page and panel sponsor slots.",
+        "summary": "Public. Active sponsor placements from the project owner's sponsors.json (fetched from GitHub, cached for 1h). Entries outside their from/until window are dropped, and a missing feed means an empty list. Logos are proxied by the panel at /sponsors/logo/{name}. Used by the login page and panel sponsor slots. Read-only: no panel can edit sponsors.",
         "operationId": "get_sponsors",
         "responses": {
           "200": {
@@ -8454,101 +8119,6 @@
                         "until": "2026-11-01T00:00:00Z"
                       }
                     ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sponsors/feed/sponsors.json": {
-      "get": {
-        "tags": [
-          "Authentication"
-        ],
-        "summary": "Public. This panel's own live sponsors as a feed for other panels: point another panel's sponsor feed setting at this URL. Logo fields are bare file names served from the sibling logos/ path. The body is the bare SponsorList, not wrapped in a Msg envelope.",
-        "operationId": "get_sponsors_feed_sponsors_json",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {
-                      "$ref": "#/components/schemas/SponsorList"
-                    }
-                  }
-                },
-                "example": {
-                  "success": true,
-                  "obj": {
-                    "contact": "https://t.me/example",
-                    "sponsors": [
-                      {
-                        "enable": true,
-                        "from": "2026-10-01T00:00:00Z",
-                        "id": "acme-2026-10",
-                        "link": "https://acme.example/?utm_source=eternal",
-                        "logo": "/sponsors/logo/acme.png",
-                        "name": "Acme VPS",
-                        "slots": [
-                          ""
-                        ],
-                        "text": {},
-                        "title": {},
-                        "until": "2026-11-01T00:00:00Z"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/sponsors/feed/logos/{name}": {
-      "get": {
-        "tags": [
-          "Authentication"
-        ],
-        "summary": "Public. Logo image (PNG, JPEG or WebP) of a live sponsor in this panel's feed; 404 for anything else.",
-        "operationId": "get_sponsors_feed_logos_name",
-        "parameters": [
-          {
-            "name": "name",
-            "in": "path",
-            "required": true,
-            "description": "Logo file name from the feed, e.g. local-1.png.",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {}
                   }
                 }
               }
@@ -18964,7 +18534,7 @@
     "/panel/api/hosted/status": {
       "get": {
         "tags": [
-          "Hosted Panel"
+          "Reseller Panel"
         ],
         "summary": "This panel's limits and usage. enabled is false on an ordinary panel. blocked is expired, traffic or no-limits while Xray is held stopped, otherwise empty. Zero limits mean unlimited.",
         "operationId": "get_panel_api_hosted_status",
@@ -19015,7 +18585,7 @@
     "/panel/api/hostedPanels/list": {
       "get": {
         "tags": [
-          "Hosted Panels"
+          "Reseller Panels"
         ],
         "summary": "Every hosted panel with its last reported usage (status) and its process state. status.updatedAt is 0 until the panel has reported once.",
         "operationId": "get_panel_api_hostedPanels_list",
@@ -19088,7 +18658,7 @@
     "/panel/api/hostedPanels/add": {
       "post": {
         "tags": [
-          "Hosted Panels"
+          "Reseller Panels"
         ],
         "summary": "Create a hosted panel and start it when enable is true. The password must be at least 8 characters. webPort, subPort and the portMin-portMax inbound range must not collide with this panel, its inbounds or another hosted panel. Zero limits mean unlimited; expiresAt is unix ms.",
         "operationId": "post_panel_api_hostedPanels_add",
@@ -19159,7 +18729,7 @@
     "/panel/api/hostedPanels/update/{id}": {
       "post": {
         "tags": [
-          "Hosted Panels"
+          "Reseller Panels"
         ],
         "summary": "Replace the settings of a hosted panel. An empty password keeps the current login; a new one also turns off its 2FA. Changing the address restarts the panel; limits apply live.",
         "operationId": "post_panel_api_hostedPanels_update_id",
@@ -19241,7 +18811,7 @@
     "/panel/api/hostedPanels/del/{id}": {
       "post": {
         "tags": [
-          "Hosted Panels"
+          "Reseller Panels"
         ],
         "summary": "Stop a hosted panel and delete it together with its database and files.",
         "operationId": "post_panel_api_hostedPanels_del_id",
@@ -19282,7 +18852,7 @@
     "/panel/api/hostedPanels/resetUsage/{id}": {
       "post": {
         "tags": [
-          "Hosted Panels"
+          "Reseller Panels"
         ],
         "summary": "Start a new usage period: the hosted panel zeroes its traffic meter and resumes if traffic was what stopped it.",
         "operationId": "post_panel_api_hostedPanels_resetUsage_id",
@@ -19297,228 +18867,6 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {}
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/panel/api/sponsors/list": {
-      "get": {
-        "tags": [
-          "Sponsors"
-        ],
-        "summary": "Every locally stored sponsor record plus the feed URL and contact link.",
-        "operationId": "get_panel_api_sponsors_list",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {
-                      "$ref": "#/components/schemas/SponsorAdminView"
-                    }
-                  }
-                },
-                "example": {
-                  "success": true,
-                  "obj": {
-                    "config": {
-                      "contact": "https://t.me/example",
-                      "feedUrl": ""
-                    },
-                    "records": [
-                      {
-                        "enable": true,
-                        "from": 0,
-                        "id": 1,
-                        "link": "https://acme.example/",
-                        "logo": "",
-                        "name": "Acme VPS",
-                        "slots": [
-                          "dashboard",
-                          "login"
-                        ],
-                        "text": "Use code PANEL at checkout.",
-                        "title": "Acme VPS — 20% off",
-                        "until": 1790000000000
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/panel/api/sponsors/save": {
-      "post": {
-        "tags": [
-          "Sponsors"
-        ],
-        "summary": "Create (id 0) or replace a sponsor record. The link must be https://; slots are any of dashboard, page and login; from/until are unix ms with 0 meaning unbounded; the logo is an optional PNG, JPEG or WebP data URL of at most 64 KB.",
-        "operationId": "post_panel_api_sponsors_save",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "body": {
-                    "type": "object",
-                    "description": "SponsorRecord."
-                  }
-                },
-                "required": [
-                  "body"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {
-                      "$ref": "#/components/schemas/SponsorRecord"
-                    }
-                  }
-                },
-                "example": {
-                  "success": true,
-                  "obj": {
-                    "enable": true,
-                    "from": 0,
-                    "id": 1,
-                    "link": "https://acme.example/",
-                    "logo": "",
-                    "name": "Acme VPS",
-                    "slots": [
-                      "dashboard",
-                      "login"
-                    ],
-                    "text": "Use code PANEL at checkout.",
-                    "title": "Acme VPS — 20% off",
-                    "until": 1790000000000
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/panel/api/sponsors/del/{id}": {
-      "post": {
-        "tags": [
-          "Sponsors"
-        ],
-        "summary": "Delete a sponsor record.",
-        "operationId": "post_panel_api_sponsors_del_id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Sponsor record id.",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {}
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/panel/api/sponsors/config": {
-      "post": {
-        "tags": [
-          "Sponsors"
-        ],
-        "summary": "Set where sponsors come from and the \"become a sponsor\" link. An empty feedUrl shows this panel's own records; otherwise it must be https://, or http:// to a loopback address on this server.",
-        "operationId": "post_panel_api_sponsors_config",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "feedUrl": {
-                    "type": "string",
-                    "description": "Another panel's /sponsors/feed/sponsors.json, or empty."
-                  },
-                  "contact": {
-                    "type": "string",
-                    "description": "https:// contact link, or empty."
-                  }
-                },
-                "required": [
-                  "feedUrl",
-                  "contact"
-                ]
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Successful response",
@@ -21044,7 +20392,6 @@
                   "success": true,
                   "obj": {
                     "createdAt": 1760684400000,
-                    "credit": 8500,
                     "groups": [
                       ""
                     ],
@@ -21052,8 +20399,6 @@
                     "inboundIds": [
                       0
                     ],
-                    "pricePerDay": 10,
-                    "pricePerGb": 100,
                     "role": "operator",
                     "tgChatId": 123456789,
                     "username": "support"
@@ -21099,7 +20444,6 @@
                   "obj": [
                     {
                       "createdAt": 1760684400000,
-                      "credit": 8500,
                       "groups": [
                         ""
                       ],
@@ -21107,8 +20451,6 @@
                       "inboundIds": [
                         0
                       ],
-                      "pricePerDay": 10,
-                      "pricePerGb": 100,
                       "role": "operator",
                       "tgChatId": 123456789,
                       "username": "support"
@@ -21170,7 +20512,6 @@
                   "success": true,
                   "obj": {
                     "createdAt": 1760684400000,
-                    "credit": 8500,
                     "groups": [
                       ""
                     ],
@@ -21178,8 +20519,6 @@
                     "inboundIds": [
                       0
                     ],
-                    "pricePerDay": 10,
-                    "pricePerGb": 100,
                     "role": "operator",
                     "tgChatId": 123456789,
                     "username": "support"
@@ -21251,7 +20590,6 @@
                   "success": true,
                   "obj": {
                     "createdAt": 1760684400000,
-                    "credit": 8500,
                     "groups": [
                       ""
                     ],
@@ -21259,8 +20597,6 @@
                     "inboundIds": [
                       0
                     ],
-                    "pricePerDay": 10,
-                    "pricePerGb": 100,
                     "role": "operator",
                     "tgChatId": 123456789,
                     "username": "support"
@@ -21290,424 +20626,6 @@
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {}
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/panel/api/reseller/me": {
-      "get": {
-        "tags": [
-          "Reseller credit"
-        ],
-        "summary": "The signed-in reseller's credit, price list and latest ledger lines. Any other role gets an empty account.",
-        "operationId": "get_panel_api_reseller_me",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {
-                      "$ref": "#/components/schemas/ResellerAccount"
-                    }
-                  }
-                },
-                "example": {
-                  "success": true,
-                  "obj": {
-                    "balance": 8500,
-                    "entries": [
-                      {
-                        "amount": -1500,
-                        "bytes": 53687091200,
-                        "clientEmail": "alice",
-                        "createdAt": 1760684400000,
-                        "days": 30,
-                        "id": 1,
-                        "kind": "create",
-                        "note": "",
-                        "userId": 2
-                      }
-                    ],
-                    "prices": {
-                      "pricePerDay": 10,
-                      "pricePerGb": 100
-                    },
-                    "userId": 2
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/panel/api/reseller/report": {
-      "get": {
-        "tags": [
-          "Reseller credit"
-        ],
-        "summary": "Sales per reseller between from and to: clients created and renewed, credit spent, traffic and days sold, credit added and the balance. A reseller only sees its own row.",
-        "operationId": "get_panel_api_reseller_report",
-        "parameters": [
-          {
-            "name": "from",
-            "in": "query",
-            "required": true,
-            "description": "Window start, unix ms. Omit for no start.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "to",
-            "in": "query",
-            "required": true,
-            "description": "Window end, unix ms. Omit for no end.",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {
-                      "$ref": "#/components/schemas/ResellerReport"
-                    }
-                  }
-                },
-                "example": {
-                  "success": true,
-                  "obj": {
-                    "rows": [
-                      {
-                        "balance": 8500,
-                        "bytes": 1073741824000,
-                        "created": 12,
-                        "days": 570,
-                        "renewed": 7,
-                        "spent": 15000,
-                        "toppedUp": 20000,
-                        "userId": 2,
-                        "username": "shop-a"
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/panel/api/reseller/account/{id}": {
-      "get": {
-        "tags": [
-          "Reseller credit"
-        ],
-        "summary": "One reseller's credit, price list and latest ledger lines. Owner only.",
-        "operationId": "get_panel_api_reseller_account_id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Admin id of an operator.",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {
-                      "$ref": "#/components/schemas/ResellerAccount"
-                    }
-                  }
-                },
-                "example": {
-                  "success": true,
-                  "obj": {
-                    "balance": 8500,
-                    "entries": [
-                      {
-                        "amount": -1500,
-                        "bytes": 53687091200,
-                        "clientEmail": "alice",
-                        "createdAt": 1760684400000,
-                        "days": 30,
-                        "id": 1,
-                        "kind": "create",
-                        "note": "",
-                        "userId": 2
-                      }
-                    ],
-                    "prices": {
-                      "pricePerDay": 10,
-                      "pricePerGb": 100
-                    },
-                    "userId": 2
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/panel/api/reseller/topup/{id}": {
-      "post": {
-        "tags": [
-          "Reseller credit"
-        ],
-        "summary": "Add credit to a reseller, or take it back with a negative amount (the balance never goes below zero). Owner only.",
-        "operationId": "post_panel_api_reseller_topup_id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Admin id of an operator.",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "body": {
-                    "type": "object",
-                    "description": "{\"amount\": 5000, \"note\": \"paid by card\"}"
-                  }
-                },
-                "required": [
-                  "body"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {
-                      "$ref": "#/components/schemas/ResellerEntry"
-                    }
-                  }
-                },
-                "example": {
-                  "success": true,
-                  "obj": {
-                    "amount": -1500,
-                    "bytes": 53687091200,
-                    "clientEmail": "alice",
-                    "createdAt": 1760684400000,
-                    "days": 30,
-                    "id": 1,
-                    "kind": "create",
-                    "note": "",
-                    "userId": 2
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/panel/api/reseller/config": {
-      "get": {
-        "tags": [
-          "Reseller credit"
-        ],
-        "summary": "The panel's wholesale price list, which every reseller without its own price follows, and the credit level that raises the reseller.credit_low alert (0 = off). Owner only.",
-        "operationId": "get_panel_api_reseller_config",
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {
-                      "$ref": "#/components/schemas/ResellerConfig"
-                    }
-                  }
-                },
-                "example": {
-                  "success": true,
-                  "obj": {
-                    "lowCredit": 1000,
-                    "pricePerDay": 10,
-                    "pricePerGb": 100
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/panel/api/reseller/config/save": {
-      "post": {
-        "tags": [
-          "Reseller credit"
-        ],
-        "summary": "Save the wholesale price list and the low-credit alert level. Owner only.",
-        "operationId": "post_panel_api_reseller_config_save",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "body": {
-                    "type": "object",
-                    "description": "{\"pricePerGb\": 100, \"pricePerDay\": 10, \"lowCredit\": 1000}"
-                  }
-                },
-                "required": [
-                  "body"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean"
-                    },
-                    "msg": {
-                      "type": "string"
-                    },
-                    "obj": {}
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/panel/api/reseller/prices/{id}": {
-      "post": {
-        "tags": [
-          "Reseller credit"
-        ],
-        "summary": "Set a reseller's own price list. A null price falls back to the panel's list; 0 makes that dimension free. Owner only.",
-        "operationId": "post_panel_api_reseller_prices_id",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Admin id of an operator.",
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "body": {
-                    "type": "object",
-                    "description": "{\"pricePerGb\": 100, \"pricePerDay\": null}"
-                  }
-                },
-                "required": [
-                  "body"
-                ]
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Successful response",

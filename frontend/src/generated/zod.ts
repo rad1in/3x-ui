@@ -36,12 +36,9 @@ export type AdminInput = z.infer<typeof AdminInputSchema>;
 
 export const AdminViewSchema = z.object({
   createdAt: z.number().int(),
-  credit: z.number().int(),
   groups: z.array(z.string()),
   id: z.number().int(),
   inboundIds: z.array(z.number().int()),
-  pricePerDay: z.number().int().nullable().optional(),
-  pricePerGb: z.number().int().nullable().optional(),
   role: z.string(),
   tgChatId: z.number().int(),
   username: z.string(),
@@ -1583,58 +1580,6 @@ export const ReferralConfigSchema = z.object({
 });
 export type ReferralConfig = z.infer<typeof ReferralConfigSchema>;
 
-export const ResellerAccountSchema = z.object({
-  balance: z.number().int(),
-  entries: z.array(z.lazy(() => ResellerEntrySchema)),
-  prices: z.lazy(() => ResellerPricesSchema),
-  userId: z.number().int(),
-});
-export type ResellerAccount = z.infer<typeof ResellerAccountSchema>;
-
-export const ResellerConfigSchema = z.object({
-  lowCredit: z.number().int(),
-  pricePerDay: z.number().int(),
-  pricePerGb: z.number().int(),
-});
-export type ResellerConfig = z.infer<typeof ResellerConfigSchema>;
-
-export const ResellerEntrySchema = z.object({
-  amount: z.number().int(),
-  bytes: z.number().int(),
-  clientEmail: z.string(),
-  createdAt: z.number().int(),
-  days: z.number().int(),
-  id: z.number().int(),
-  kind: z.string(),
-  note: z.string(),
-  userId: z.number().int(),
-});
-export type ResellerEntry = z.infer<typeof ResellerEntrySchema>;
-
-export const ResellerPricesSchema = z.object({
-  pricePerDay: z.number().int(),
-  pricePerGb: z.number().int(),
-});
-export type ResellerPrices = z.infer<typeof ResellerPricesSchema>;
-
-export const ResellerReportSchema = z.object({
-  rows: z.array(z.lazy(() => ResellerReportRowSchema)),
-});
-export type ResellerReport = z.infer<typeof ResellerReportSchema>;
-
-export const ResellerReportRowSchema = z.object({
-  balance: z.number().int(),
-  bytes: z.number().int(),
-  created: z.number().int(),
-  days: z.number().int(),
-  renewed: z.number().int(),
-  spent: z.number().int(),
-  toppedUp: z.number().int(),
-  userId: z.number().int(),
-  username: z.string(),
-});
-export type ResellerReportRow = z.infer<typeof ResellerReportRowSchema>;
-
 export const RotationResultSchema = z.object({
   inboundId: z.number().int(),
   needRestart: z.boolean(),
@@ -1835,37 +1780,11 @@ export const SponsorSchema = z.object({
 });
 export type Sponsor = z.infer<typeof SponsorSchema>;
 
-export const SponsorAdminViewSchema = z.object({
-  config: z.lazy(() => SponsorConfigSchema),
-  records: z.array(z.lazy(() => SponsorRecordSchema)),
-});
-export type SponsorAdminView = z.infer<typeof SponsorAdminViewSchema>;
-
-export const SponsorConfigSchema = z.object({
-  contact: z.string(),
-  feedUrl: z.string(),
-});
-export type SponsorConfig = z.infer<typeof SponsorConfigSchema>;
-
 export const SponsorListSchema = z.object({
   contact: z.string().optional(),
   sponsors: z.array(z.lazy(() => SponsorSchema)),
 });
 export type SponsorList = z.infer<typeof SponsorListSchema>;
-
-export const SponsorRecordSchema = z.object({
-  enable: z.boolean(),
-  from: z.number().int(),
-  id: z.number().int(),
-  link: z.string(),
-  logo: z.string(),
-  name: z.string(),
-  slots: z.array(z.string()),
-  text: z.string(),
-  title: z.string(),
-  until: z.number().int(),
-});
-export type SponsorRecord = z.infer<typeof SponsorRecordSchema>;
 
 export const SubBalancerSchema = z.object({
   createdAt: z.number().int(),

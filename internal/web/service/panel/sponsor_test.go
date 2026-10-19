@@ -11,7 +11,6 @@ import (
 
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/dbtest"
-	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 )
 
 var sponsorTestNow = time.Date(2026, 10, 15, 0, 0, 0, 0, time.UTC)
@@ -124,13 +123,11 @@ func setupSponsorServer(t *testing.T, body string) *atomic.Int32 {
 	}))
 	t.Cleanup(srv.Close)
 
-	if err := (&service.SettingService{}).SetSponsorSettings(srv.URL+"/sponsors.json", ""); err != nil {
-		t.Fatal(err)
-	}
-	prevNow := sponsorNow
+	prevNow, prevFeed := sponsorNow, sponsorFeed
+	sponsorFeed = srv.URL + "/sponsors.json"
 	resetSponsorCache()
 	t.Cleanup(func() {
-		sponsorNow = prevNow
+		sponsorNow, sponsorFeed = prevNow, prevFeed
 		failSponsorList.Store(false)
 		failSponsorLogos.Store(false)
 		resetSponsorCache()
@@ -266,8 +263,7 @@ func TestGetSponsorsCachesAndExpiresWhileCached(t *testing.T) {
 func TestGetSponsorsRejectsOversizeBody(t *testing.T) {
 	setupSponsorServer(t, `{"contact":"`+strings.Repeat("a", maxSponsorsBytes)+`"}`)
 	_, err := (&PanelService{}).GetSponsors()
-	feed, _ := sponsorFeedURL()
-	want := feed + " exceeds 262144 bytes"
+	want := sponsorFeed + " exceeds 262144 bytes"
 	if err == nil || err.Error() != want {
 		t.Fatalf("err = %v, want %q", err, want)
 	}

@@ -10,12 +10,13 @@ import {
   UserSwitchOutlined,
 } from '@ant-design/icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { z } from 'zod';
 
 import { keys } from '@/api/queryKeys';
-import { useAdminList } from '@/api/queries/useAdminList';
 import { useCurrentAdmin } from '@/api/queries/useCurrentAdmin';
 import { useInboundOptions } from '@/api/queries/useInboundOptions';
 import {
+  AdminViewSchema,
   ClientTransferResultSchema,
   type AdminView,
   type ClientTransferResult,
@@ -28,7 +29,6 @@ import type { AdminFormValues, TransferFormValues } from '@/schemas/admin';
 import { HttpUtil } from '@/utils';
 import { setMessageInstance } from '@/utils/messageBus';
 import { parseMsg } from '@/utils/zodValidate';
-import { formatCredit } from '@/pages/reseller/credit';
 import AdminFormModal from './AdminFormModal';
 import TransferClientsModal from './TransferClientsModal';
 import './AdminsPage.css';
@@ -41,6 +41,12 @@ const ROLE_COLORS: Record<string, string> = {
   operator: 'green',
   viewer: 'default',
 };
+
+async function fetchAdmins(): Promise<AdminView[]> {
+  const msg = await HttpUtil.get('/panel/api/admins/list', undefined, { silent: true });
+  if (!msg?.success) throw new Error(msg?.msg || 'Failed to load admins');
+  return parseMsg(msg, z.array(AdminViewSchema), 'admins/list').obj ?? [];
+}
 
 async function fetchGroupNames(): Promise<string[]> {
   const msg = await HttpUtil.get('/panel/api/clients/groups', undefined, { silent: true });
@@ -59,7 +65,10 @@ export default function AdminsPage() {
   }, [messageApi]);
 
   const me = useCurrentAdmin().data;
-  const { data: admins = [], isLoading } = useAdminList();
+  const { data: admins = [], isLoading } = useQuery({
+    queryKey: keys.admins.list(),
+    queryFn: fetchAdmins,
+  });
   const { data: inbounds = [] } = useInboundOptions();
   const { data: groupNames = [] } = useQuery({
     queryKey: keys.clients.groups(),
@@ -160,12 +169,6 @@ export default function AdminsPage() {
             )}
           </Space>
         ),
-    },
-    {
-      title: t('pages.reseller.credit'),
-      dataIndex: 'credit',
-      width: 110,
-      render: (credit: number, a) => (a.role === 'operator' ? formatCredit(credit) : ''),
     },
     {
       width: 130,
