@@ -2,6 +2,11 @@ name: Release Eternal
 
 on:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Existing release tag (e.g. v1.0.0) to build from this ref and upload the archives to"
+        required: false
+        default: ""
   # Only main (dev channel) and version tags ship binaries; build any other
   # branch on demand via workflow_dispatch.
   push:
@@ -64,7 +69,9 @@ jobs:
           npm run build
         working-directory: frontend
 
-      - name: Build 3X-UI
+      - name: Build Eternal
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           CURL_RETRY="--retry 5 --retry-all-errors --retry-delay 3"
           fetch() { wget -q --tries=5 --waitretry=10 --retry-on-http-error=429,500,502,503 "$@"; }
@@ -97,7 +104,7 @@ jobs:
           # Stamp the commit into per-commit (dev channel) builds only; tagged
           # stable releases stay unstamped so config.IsDevBuild() returns false.
           LDFLAGS="-w -s -linkmode external -extldflags '-static'"
-          if [[ "$GITHUB_REF" != refs/tags/* ]]; then
+          if [[ "$GITHUB_REF" != refs/tags/* && -z "$RELEASE_TAG" ]]; then
             LDFLAGS="$LDFLAGS -X github.com/mhsanaei/3x-ui/v3/internal/config.buildCommit=${GITHUB_SHA::8} -X github.com/mhsanaei/3x-ui/v3/internal/config.buildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           fi
           go build -buildvcs=true -ldflags "$LDFLAGS" -o xui-release -v .
@@ -188,10 +195,10 @@ jobs:
 
       - name: Upload files to GH release
         uses: svenstaro/upload-release-action@v2
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) || (github.event_name == 'workflow_dispatch' && inputs.release_tag != '')
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
+          tag: ${{ inputs.release_tag || github.ref_name }}
           file: eternal-linux-${{ matrix.platform }}.tar.gz*
           file_glob: true
           overwrite: true
@@ -247,8 +254,10 @@ jobs:
             mingw-w64-x86_64-sqlite3
             mingw-w64-x86_64-pkg-config
 
-      - name: Build 3X-UI for Windows (CGO)
+      - name: Build Eternal for Windows (CGO)
         shell: msys2 {0}
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
         run: |
           export PATH="/c/hostedtoolcache/windows/go/$(ls /c/hostedtoolcache/windows/go | sort -V | tail -n1)/x64/bin:$PATH"
 
@@ -268,7 +277,7 @@ jobs:
 
           # Stamp the commit into per-commit (dev channel) builds only.
           LDFLAGS="-w -s"
-          if [[ "$GITHUB_REF" != refs/tags/* ]]; then
+          if [[ "$GITHUB_REF" != refs/tags/* && -z "$RELEASE_TAG" ]]; then
             LDFLAGS="$LDFLAGS -X github.com/mhsanaei/3x-ui/v3/internal/config.buildCommit=${GITHUB_SHA:0:8} -X github.com/mhsanaei/3x-ui/v3/internal/config.buildDate=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           fi
           go build -buildvcs=true -ldflags "$LDFLAGS" -o xui-release.exe -v .
@@ -329,10 +338,10 @@ jobs:
 
       - name: Upload files to GH release
         uses: svenstaro/upload-release-action@v2
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')) || (github.event_name == 'workflow_dispatch' && inputs.release_tag != '')
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
+          tag: ${{ inputs.release_tag || github.ref_name }}
           file: eternal-windows-amd64.zip*
           file_glob: true
           overwrite: true
