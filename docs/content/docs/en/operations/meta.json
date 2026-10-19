@@ -4,6 +4,7 @@
   "pages": [
     "reverse-proxy",
     "multi-node",
+    "kubernetes",
     "outbounds-routing",
     "backup-restore",
     "monitoring",

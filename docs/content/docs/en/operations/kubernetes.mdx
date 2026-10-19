@@ -1,0 +1,74 @@
+---
+title: Kubernetes (Helm)
+description: Deploy Eternal on Kubernetes with the bundled Helm chart, persistent storage, an external database and host networking for proxy ports.
+icon: Container
+---
+
+The chart in `deploy/helm/eternal` runs the panel as a single-replica Deployment
+with a PersistentVolumeClaim mounted at `/etc/eternal`, a Service and an optional
+Ingress. The image is `ghcr.io/rad1in/eternal`; CI publishes the `main` branch,
+release tags and bare semver tags, so pin a release version in production.
+
+## Install
+
+```bash
+helm install eternal ./deploy/helm/eternal \
+  --set image.tag=<release-version>
+```
+
+The panel listens on `panel.port` (default 2053). Without an Ingress, reach it
+with `kubectl port-forward svc/eternal 2053:2053`. First login is `admin` /
+`admin`; change it immediately (see [First login](/docs/guide/first-login)).
+
+## Storage and database
+
+By default SQLite lives on the PVC (`persistence.size`, `persistence.storageClass`).
+The PVC carries `helm.sh/resource-policy: keep`, so `helm uninstall` does not
+delete your data. Use `persistence.existingClaim` to reuse one.
+
+For PostgreSQL or MySQL/MariaDB, set the type and DSN. The DSN is stored in a
+Secret and exposed as `XUI_DB_DSN`:
+
+```bash
+helm install eternal ./deploy/helm/eternal \
+  --set database.type=postgres \
+  --set database.dsn='postgres://user:pass@db:5432/eternal?sslmode=disable'
+```
+
+To keep the DSN out of Helm values, create the Secret yourself and pass
+`database.existingSecret` (and `database.existingSecretKey`, default `dsn`).
+The chart refuses to render with a non-SQLite type and no DSN or Secret.
+
+## Proxy ports
+
+Inbounds are created at runtime on arbitrary ports, and a Service must list its
+ports in advance. Two options:
+
+- **`hostNetwork: true`** — the pod uses the node network, so every inbound port
+  is reachable on the node without further configuration. Run one pod per node,
+  and make sure `panel.port` does not clash with anything on the host.
+- **`service.extraPorts`** — list the ports you plan to use and expose them with a
+  `LoadBalancer` or `NodePort` Service. Add a port here every time you add an
+  inbound on a new port. UDP protocols need `protocol: UDP`.
+
+## Ingress
+
+`ingress.enabled=true` publishes only the panel (`ingress.host`, `ingress.path`,
+`ingress.tls`). Proxy traffic does not go through an HTTP Ingress; see
+[Reverse proxy](/docs/operations/reverse-proxy) for fronting the panel and
+subscriptions.
+
+## Security context and probes
+
+The container runs as root because Xray, Fail2ban and the VPN helpers need it. The
+default `securityContext` drops all capabilities and adds back `NET_ADMIN`,
+`NET_RAW` and the file-ownership set; VPN inbounds (OpenVPN, IKEv2, L2TP) also need
+`/dev/net/tun` or `/dev/ppp`, which the chart does not mount, so use `hostNetwork`
+with a privileged override for those. Probes are TCP checks on the panel port
+because the health endpoint requires a login.
+
+## Constraints
+
+The chart always runs one replica with the `Recreate` strategy: Xray and the
+managed sidecars hold process state and SQLite allows one writer. For several
+servers, run one release per node and join them as [multi-node](/docs/operations/multi-node).
