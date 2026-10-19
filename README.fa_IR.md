@@ -1,6 +1,6 @@
 [English](/README.md) | [فارسی](/README.fa_IR.md)
 
-<h1 align="center" dir="ltr">RadPanel</h1>
+<h1 align="center" dir="ltr">Eternal</h1>
 
 <p align="center" dir="rtl">
   پنل مدیریتی خودمیزبان برای سرورهای پروکسی و VPN: پروتکل‌های Xray، OpenVPN، IKEv2، L2TP، SSTP، OpenConnect، تونل SSH، خانواده‌ی WireGuard، فروشگاه داخلی، نماینده‌ها و مدیریت چندنودی.

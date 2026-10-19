@@ -1,6 +1,6 @@
 [English](/README.md) | [فارسی](/README.fa_IR.md)
 
-<h1 align="center">RadPanel</h1>
+<h1 align="center">Eternal</h1>
 
 <p align="center">
   A self-hosted control panel for proxy and VPN servers: Xray-core, OpenVPN, IKEv2, L2TP, SSTP, OpenConnect, SSH tunnels, WireGuard-family protocols, a built-in shop, resellers and multi-node management.
@@ -11,14 +11,14 @@
 </p>
 
 > [!NOTE]
-> **RadPanel is a fork of [3x-ui](https://github.com/MHSanaei/3x-ui)** by MHSanaei (itself a fork of the original X-UI project). It keeps the 3x-ui core and adds many features of its own, listed below. 3x-ui is licensed under GPL-3.0, and so is this fork: the full license text is in [LICENSE](/LICENSE) and the copyright of the original authors is preserved. Many thanks to the 3x-ui maintainers and contributors.
+> **Eternal is a fork of [3x-ui](https://github.com/MHSanaei/3x-ui)** by MHSanaei (itself a fork of the original X-UI project). It keeps the 3x-ui core and adds many features of its own, listed below. 3x-ui is licensed under GPL-3.0, and so is this fork: the full license text is in [LICENSE](/LICENSE) and the copyright of the original authors is preserved. Many thanks to the 3x-ui maintainers and contributors.
 
 > [!IMPORTANT]
 > This project is intended for personal use. Please do not use it for illegal purposes.
 
 ## What the fork adds
 
-On top of everything 3x-ui provides (VLESS, VMess, Trojan, Shadowsocks, REALITY, Hysteria2, TUIC, AmneziaWG, MTProto, multi-node, subscriptions, Telegram and Discord bots, REST API), RadPanel adds:
+On top of everything 3x-ui provides (VLESS, VMess, Trojan, Shadowsocks, REALITY, Hysteria2, TUIC, AmneziaWG, MTProto, multi-node, subscriptions, Telegram and Discord bots, REST API), Eternal adds:
 
 **More protocols**
 - OpenVPN, IKEv2/IPsec (strongSwan), L2TP/IPsec, SSTP (Windows built-in VPN), OpenConnect / AnyConnect (ocserv)
@@ -109,7 +109,7 @@ English · فارسی · العربية · 中文（简体） · 中文（繁體
 
 ## License and credits
 
-RadPanel is free software under the **GNU GPL v3**. It is based on:
+Eternal is free software under the **GNU GPL v3**. It is based on:
 
 - [3x-ui](https://github.com/MHSanaei/3x-ui) by MHSanaei and contributors (GPL-3.0)
 - [X-UI](https://github.com/vaxilu/x-ui) by vaxilu, the project 3x-ui was forked from (GPL-3.0)
