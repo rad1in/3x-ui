@@ -27,7 +27,7 @@ import (
 func TestAddClientTraffic_MatchesByEmail(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	db := database.GetDB()
 
@@ -95,7 +95,7 @@ func TestAddClientTraffic_MatchesByEmail(t *testing.T) {
 func TestAdjustTraffics_DelayedStartConvertsDespiteStaleInboundId(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	db := database.GetDB()
 
@@ -161,7 +161,7 @@ func TestAdjustTraffics_DelayedStartConvertsDespiteStaleInboundId(t *testing.T) 
 func TestAddClientTraffic_ExpiryWriteOnlyForConvertedClients(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	db := database.GetDB()
 
@@ -227,7 +227,7 @@ func TestAddClientTraffic_ExpiryWriteOnlyForConvertedClients(t *testing.T) {
 func TestAddTrafficClientUpdateFailureRollsBackWholeBatch(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 	db := database.GetDB()
 
 	for _, email := range []string{"healthy@x", "rejected@x"} {
@@ -279,7 +279,7 @@ func TestAddTrafficClientUpdateFailureRollsBackWholeBatch(t *testing.T) {
 func TestAddClientTrafficResolvesRenamedTuicClientByStableIdentity(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 	db := database.GetDB()
 
 	const (

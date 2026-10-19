@@ -26,7 +26,7 @@ func newHostTestDB(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 }
 
 type hostEnvelope struct {

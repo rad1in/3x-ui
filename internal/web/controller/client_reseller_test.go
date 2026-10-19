@@ -40,7 +40,7 @@ func seedResellerDB(t *testing.T, role string, credit int64) (*model.User, int) 
 	t.Helper()
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 	db := database.GetDB()
 	perGB, perDay := int64(100), int64(10)
 	user := &model.User{Username: "shop", Password: "x", Role: role, ScopeInboundIds: "[]", ScopeGroups: "[]", PricePerGB: &perGB, PricePerDay: &perDay}

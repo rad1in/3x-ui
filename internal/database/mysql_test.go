@@ -91,7 +91,7 @@ func dropMySQLPanelTables(t *testing.T, dsn string) *gorm.DB {
 
 func seedMigrationSource(t *testing.T, seed func(src *gorm.DB)) string {
 	t.Helper()
-	srcPath := filepath.Join(t.TempDir(), "x-ui.db")
+	srcPath := filepath.Join(t.TempDir(), "eternal.db")
 	src, err := gorm.Open(sqlite.Open(srcPath), &gorm.Config{Logger: logger.Discard})
 	if err != nil {
 		t.Fatalf("open sqlite: %v", err)

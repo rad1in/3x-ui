@@ -14,7 +14,7 @@ import (
 func TestTuicShutdownJournalSurvivesDatabaseFailureAndReplaysOnce(t *testing.T) {
 	dir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dir)
-	dbtest.InitDB(t, filepath.Join(dir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dir, "eternal.db"))
 	db := database.GetDB()
 	row := xray.ClientTraffic{Email: "journal@x", Enable: true}
 	if err := db.Create(&row).Error; err != nil {

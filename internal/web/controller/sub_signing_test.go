@@ -33,7 +33,7 @@ func signedLinkRequest(t *testing.T, subID, body string) (*entity.Msg, *httptest
 }
 
 func TestSignedSubLinkEndpointIssuesLinksOnlyWhileSigningIsOn(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 
 	if msg, _ := signedLinkRequest(t, "sub-1", `{"ttlSeconds": 60}`); msg.Success {
 		t.Fatal("a link was issued while signing is off")

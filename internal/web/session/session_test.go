@@ -17,7 +17,7 @@ import (
 )
 
 func TestSetLoginUserStoresOnlyUserIDAndASessionId(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	router.Use(sessions.Sessions(sessionCookieName, cookie.NewStore([]byte("01234567890123456789012345678901"))))
@@ -61,7 +61,7 @@ type sessionRig struct {
 // and /legacy-login (the cookie an old build issued: user id and epoch, no session id).
 func newSessionRig(t *testing.T) *sessionRig {
 	t.Helper()
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	var user model.User
 	if err := database.GetDB().First(&user).Error; err != nil {
 		t.Fatalf("seed user: %v", err)

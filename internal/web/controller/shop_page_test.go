@@ -18,7 +18,7 @@ const fakeShopHTML = `<!doctype html><html><head><script type="module" src="/ass
 
 func shopPageEngine(t *testing.T, enabled bool) *gin.Engine {
 	t.Helper()
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	gin.SetMode(gin.TestMode)
 	previous := distFS
 	SetDistFS(fstest.MapFS{"dist/shop.html": {Data: []byte(fakeShopHTML)}})

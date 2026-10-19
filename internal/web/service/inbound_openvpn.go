@@ -48,7 +48,7 @@ func (s *InboundService) normalizeOpenVPNSettings(inbound *model.Inbound, oldSet
 	}
 	if !pki.Complete() {
 		var err error
-		if pki, err = openvpn.NewPKI("x-ui openvpn"); err != nil {
+		if pki, err = openvpn.NewPKI("eternal openvpn"); err != nil {
 			return err
 		}
 	}

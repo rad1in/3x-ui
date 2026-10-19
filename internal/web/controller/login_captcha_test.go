@@ -35,7 +35,7 @@ func newLoginHarness(t *testing.T) *loginHarness {
 	gin.SetMode(gin.TestMode)
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 	hash, err := crypto.HashPasswordAsBcrypt("s3cret-pass")
 	if err != nil {
 		t.Fatal(err)

@@ -24,7 +24,7 @@ file locations when it can answer in one hop.
   falls back to a process restart on older binaries. A client's panel-side
   traffic reset also calls `POST /secrets/{name}/reset-quota` so a renewed client
   is not re-blocked by the sidecar's quota counter.
-- Storage: SQLite by default (`/etc/x-ui/x-ui.db` on Linux; the executable dir on
+- Storage: SQLite by default (`/etc/eternal/eternal.db` on Linux, a pre-rename `x-ui.db` is still opened when no `eternal.db` exists; the executable dir on
   Windows), PostgreSQL or MySQL/MariaDB optional (`XUI_DB_TYPE` / `XUI_DB_DSN`).
   Raw SQL must run on all three: dialect helpers live in `internal/database/dialect.go`;
   MySQL sessions run with `ANSI_QUOTES`, so quote reserved columns as `"key"`. The CGo SQLite
@@ -33,8 +33,8 @@ file locations when it can answer in one hop.
   built into `internal/web/dist/` (gitignored) and embedded via `embed.FS`.
 
 ## Repo map
-- `main.go` — entry point + `x-ui` CLI (run, migrate, migrate-db, encrypt-tokens, setting, cert, client).
-- `internal/cliclient/` — `x-ui client`: manages clients through the running panel's API
+- `main.go` — entry point + `eternal` CLI (run, migrate, migrate-db, encrypt-tokens, setting, cert, client).
+- `internal/cliclient/` — `eternal client`: manages clients through the running panel's API
   with a short-lived admin token, so changes take the runtime path like the web UI.
 - `internal/config/` — env parsing (XUI_DEBUG, XUI_LOG_LEVEL, XUI_LOG_FOLDER,
   XUI_BIN_FOLDER, XUI_SKIP_HSTS, XUI_PORT, XUI_DB_*).
@@ -171,7 +171,7 @@ file locations when it can answer in one hop.
 - Stdlib `testing` only (no testify). Table-driven, `t.Run` subtests,
   `t.Helper()` on helpers. Assert the exact value / typed error / emitted
   string, never just `err != nil`. Prefer real deps over mocks: throwaway DB via
-  `dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))`
+  `dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))`
   (`internal/database/dbtest`: copies a once-migrated template and registers
   `CloseDB` cleanup; a fresh `database.InitDB` costs ~7x more, ~850ms under
   `-race`); `httptest` for HTTP. Keep `database.InitDB` for reopening a file or

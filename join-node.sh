@@ -19,8 +19,8 @@ fail() {
 [[ $EUID -ne 0 ]] && fail "Please run this script as root."
 command -v curl > /dev/null 2>&1 || fail "curl is required."
 
-installer_url="${XUI_INSTALLER_URL:-https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh}"
-result_file="${XUI_RESULT_FILE:-/etc/x-ui/install-result.env}"
+installer_url="${XUI_INSTALLER_URL:-https://raw.githubusercontent.com/rad1in/eternal/main/install.sh}"
+result_file="${XUI_RESULT_FILE:-/etc/eternal/install-result.env}"
 node_name="${XUI_NODE_NAME:-$(hostname)}"
 tls_verify="${XUI_NODE_TLS_VERIFY:-verify}"
 export XUI_NONINTERACTIVE=1

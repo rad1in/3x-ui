@@ -32,7 +32,7 @@ func warningLocalizer(t *testing.T) {
 
 // A quota warning reaches the admins and the client's own linked chat.
 func TestClientWarningReachesAdminsAndTheClient(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	db := database.GetDB()
 	if err := db.Create(&model.Setting{Key: "tgEnabledEvents", Value: "client.quota_warning"}).Error; err != nil {
 		t.Fatal(err)

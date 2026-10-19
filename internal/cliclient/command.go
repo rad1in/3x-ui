@@ -15,7 +15,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 )
 
-const Usage = `Usage: x-ui client <command> [arguments]
+const Usage = `Usage: eternal client <command> [arguments]
 
 Commands:
   list [-inbound ID]                      list every client, or those on one inbound
@@ -29,7 +29,7 @@ Commands:
 
 var errUsage = errors.New("see usage above")
 
-// Run executes one `x-ui client` command against the panel.
+// Run executes one `eternal client` command against the panel.
 func Run(api *API, args []string, out io.Writer, now time.Time) error {
 	if len(args) == 0 {
 		fmt.Fprint(out, Usage)

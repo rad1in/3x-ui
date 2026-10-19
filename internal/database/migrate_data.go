@@ -21,7 +21,7 @@ import (
 )
 
 // migrationModels is the FK-aware order in which tables are created and copied
-// during `x-ui migrate-db --dsn` (SQLite → PostgreSQL/MySQL data migration) and
+// during `eternal migrate-db --dsn` (SQLite → PostgreSQL/MySQL data migration) and
 // in related tests.
 //
 // Important: When adding a new top-level model (like OutboundSubscription),
@@ -86,7 +86,7 @@ func migrationModels() []any {
 }
 
 // MigrateData is MigrateDataTo with the destination kind inferred from dstDSN,
-// for `x-ui migrate-db --dsn`.
+// for `eternal migrate-db --dsn`.
 func MigrateData(srcPath, dstDSN string) error {
 	return MigrateDataTo(srcPath, DSNKind(dstDSN), dstDSN)
 }
@@ -209,7 +209,7 @@ func MigrateDataTo(srcPath, kind, dstDSN string) error {
 	}
 
 	log.Printf("Migration complete: %d rows across %d tables.", totalRows, len(migrationModels()))
-	log.Printf("Set XUI_DB_TYPE=%s and XUI_DB_DSN=... in /etc/default/x-ui, then restart x-ui.", kind)
+	log.Printf("Set XUI_DB_TYPE=%s and XUI_DB_DSN=... in /etc/default/eternal, then restart eternal.", kind)
 	return nil
 }
 

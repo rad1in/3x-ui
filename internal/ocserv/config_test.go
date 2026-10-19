@@ -57,12 +57,12 @@ func TestPasswdFileListsHashedAccounts(t *testing.T) {
 
 func TestRenderedConfigNamesTheInboundsOwnPortsFilesAndNetwork(t *testing.T) {
 	inst := testInstance(t)
-	p := pathsFor(inst.Id, "/var/x/ocserv.d", "/run/x-ui-ocserv")
+	p := pathsFor(inst.Id, "/var/x/ocserv.d", "/run/eternal-ocserv")
 	got := renderConfig(inst, p, "nobody", "nogroup")
 	for _, want := range []string{
 		"tcp-port = 24444", "udp-port = 24444", "listen-host = 127.0.0.1",
 		`auth = "plain[passwd=/var/x/ocserv.d/5/passwd]"`,
-		"socket-file = /run/x-ui-ocserv/oc5", "occtl-socket-file = /var/x/ocserv.d/5/occtl.sock",
+		"socket-file = /run/eternal-ocserv/oc5", "occtl-socket-file = /var/x/ocserv.d/5/occtl.sock",
 		"ipv4-network = 10.92.3.0", "ipv4-netmask = 255.255.255.0", "dns = 1.1.1.1", "dns = 9.9.9.9",
 		"device = ocv5", "disconnect-script = /var/x/ocserv.d/5/disconnect.sh", "stats-report-time = 5",
 		"max-same-clients = 0",

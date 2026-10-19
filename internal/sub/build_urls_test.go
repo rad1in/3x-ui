@@ -12,7 +12,7 @@ import (
 
 func initSubDB(t *testing.T) {
 	t.Helper()
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 }
 
 // The subscription page's Copy URL must be built from the same host the

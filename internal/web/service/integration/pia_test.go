@@ -48,7 +48,7 @@ func (f *fakePiaRegistrar) RegisterKey(_ context.Context, server piaprotocol.Wir
 
 func setupPiaService(t *testing.T) *PiaService {
 	t.Helper()
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	payload := []byte(`{"version":6,"groups":{"wg":[{"name":"wireguard","ports":[1337]}]},"regions":[{"id":"us-east","name":"US East","country":"US","geo":false,"offline":false,"port_forward":true,"servers":{"wg":[{"ip":"198.51.100.10","cn":"useast1"},{"ip":"198.51.100.20","cn":"useast2"}]}},{"id":"de-berlin","name":"Berlin","country":"DE","geo":false,"offline":false,"port_forward":false,"servers":{"wg":[{"ip":"203.0.113.10","cn":"berlin1"}]}}]}`)
 	svc := NewPiaService()
 	svc.Auth = fakePiaAuth{token: "tokentokentokentoken12"}

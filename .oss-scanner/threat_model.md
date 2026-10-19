@@ -56,7 +56,7 @@ responses for limited tokens, or node sync payloads.
 
 ## How to exercise it
 
-- Checkout at `/src`; the panel binary is `/usr/local/bin/x-ui` (debug build),
+- Checkout at `/src`; the panel binary is `/usr/local/bin/eternal` (debug build),
   Xray-core is `/usr/local/bin/xray`, and the sidecars and geo files are in
   `/src/build/bin`.
 - Go tests: `cd /src && go test -count=1 ./...`. Real-DB helpers live in
@@ -64,13 +64,13 @@ responses for limited tokens, or node sync payloads.
   `initSubDB(t)` is the template for subscription tests. `httptest` is used
   for HTTP. `XRAY_E2E_BINARY` is set, so the xray gRPC end-to-end tests run.
 - Master + node end to end:
-  `go build -o /tmp/x-ui . && XUI_NODE_E2E_BINARY=/tmp/x-ui go test -count=1 -v ./internal/nodee2e/`.
+  `go build -o /tmp/eternal . && XUI_NODE_E2E_BINARY=/tmp/eternal go test -count=1 -v ./internal/nodee2e/`.
 - Fuzz targets: `FuzzParseLink`, `FuzzDecodeCertPin` (`go test -fuzz=...`).
 - Frontend: `cd /src/frontend && npx vitest run --project unit --project components`.
   The Storybook browser project needs Chromium and is not provisioned.
 - Running a live panel: `XUI_DB_FOLDER=/tmp/xui XUI_LOG_FOLDER=/tmp/xui
-  XUI_BIN_FOLDER=/src/build/bin x-ui` (creates `admin`/`admin` on first start;
-  `x-ui setting -h` changes port, base path and credentials).
+  XUI_BIN_FOLDER=/src/build/bin eternal` (creates `admin`/`admin` on first start;
+  `eternal setting -h` changes port, base path and credentials).
 - Baseline logs from the image build: `/src/.oss-scanner-go-test.log` and
   `/src/.oss-scanner-vitest.log`. A built image does not prove the tests passed.
 - PostgreSQL is not installed: tests gated on `XUI_TEST_PG_DSN` skip, so a

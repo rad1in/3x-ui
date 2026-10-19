@@ -176,7 +176,7 @@ func (s *DiscordService) BuildReport(ctx context.Context, server ServerProvider,
 		} else if len(dbData) > 0 {
 			filename := server.BackupFilename("")
 			if filename == "" {
-				filename = "x-ui.db"
+				filename = "eternal.db"
 			}
 			if sealed, data, perr := service.ProtectBackup(filename, dbData); perr != nil {
 				logger.Warning("Discord report: failed to protect DB backup: ", perr)

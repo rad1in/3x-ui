@@ -13,7 +13,7 @@ import (
 // An upgraded panel keeps its nodes and gets the cap/cost columns with usable
 // defaults: no cap, alert action, billing on the 1st.
 func TestNodeCapColumnsAreAddedWithDefaultsToLegacyNodes(t *testing.T) {
-	dbPath := filepath.Join(t.TempDir(), "x-ui.db")
+	dbPath := filepath.Join(t.TempDir(), "eternal.db")
 	legacy, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 	if err != nil {
 		t.Fatalf("open legacy db: %v", err)

@@ -44,7 +44,7 @@ func socketDir() (string, error) {
 		if fi, err := os.Stat(base); err != nil || !fi.IsDir() {
 			continue
 		}
-		dir := filepath.Join(base, "x-ui-ocserv")
+		dir := filepath.Join(base, "eternal-ocserv")
 		if err := os.MkdirAll(dir, 0o755); err != nil {
 			continue
 		}

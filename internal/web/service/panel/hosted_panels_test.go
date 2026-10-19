@@ -22,7 +22,7 @@ import (
 
 const hostedHelperEnv = "XUI_HOSTED_PANEL_TEST_HELPER"
 
-// TestMain lets the test binary stand in for the x-ui executable the master spawns.
+// TestMain lets the test binary stand in for the eternal executable the master spawns.
 func TestMain(m *testing.M) {
 	if os.Getenv(hostedHelperEnv) != "" && len(os.Args) > 1 {
 		switch os.Args[1] {
@@ -69,7 +69,7 @@ func resellerInput() HostedPanelInput {
 
 func openChildDB(t *testing.T, id int) *gorm.DB {
 	t.Helper()
-	db, err := gorm.Open(sqlite.Open(filepath.Join(hostedPanelDir(id), "db", "x-ui.db")), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(filepath.Join(hostedPanelDir(id), "db", "eternal.db")), &gorm.Config{})
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -214,7 +214,7 @@ func TestHostedPanelEnvReplacesTheMastersOwnSettings(t *testing.T) {
 	t.Setenv("XUI_DB_TYPE", "postgres")
 	t.Setenv("XUI_DB_DSN", "postgres://master")
 	t.Setenv("XUI_PORT", "2053")
-	t.Setenv("XRAY_LOCATION_ASSET", "/usr/local/x-ui/bin")
+	t.Setenv("XRAY_LOCATION_ASSET", "/usr/local/eternal/bin")
 	t.Setenv("XUI_LOG_LEVEL", "debug")
 	env := hostedPanelEnv(&model.HostedPanel{Id: 251, WebPort: 20530})
 

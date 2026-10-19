@@ -9,7 +9,7 @@ import (
 )
 
 func TestSubFetchLog(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	var log SubFetchService
 	at := time.UnixMilli(1_700_000_000_000)
 
@@ -42,7 +42,7 @@ func TestSubFetchLog(t *testing.T) {
 }
 
 func TestSubFetchLogKeepsOnlyTheNewestDistinctFetchers(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	var log SubFetchService
 	at := time.UnixMilli(1_700_000_000_000)
 	for i := range subFetchKeep + 5 {
@@ -61,7 +61,7 @@ func TestSubFetchLogKeepsOnlyTheNewestDistinctFetchers(t *testing.T) {
 }
 
 func TestSubFetchLogTruncatesUserAgent(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	var log SubFetchService
 	long := make([]byte, 1000)
 	for i := range long {

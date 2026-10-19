@@ -16,7 +16,7 @@ import (
 
 func TestBackupSQLiteProducesValidSnapshotDuringWrites(t *testing.T) {
 	t.Setenv("XUI_DB_JOURNAL_MODE", "")
-	dbPath := filepath.Join(t.TempDir(), "x-ui.db")
+	dbPath := filepath.Join(t.TempDir(), "eternal.db")
 	if err := InitDB(dbPath); err != nil {
 		t.Fatalf("InitDB: %v", err)
 	}
@@ -97,7 +97,7 @@ func TestBackupSQLiteProducesValidSnapshotDuringWrites(t *testing.T) {
 
 func TestBackupSQLiteTimesOutWaitingForSourceConnection(t *testing.T) {
 	t.Setenv("XUI_DB_JOURNAL_MODE", "")
-	if err := InitDB(filepath.Join(t.TempDir(), "x-ui.db")); err != nil {
+	if err := InitDB(filepath.Join(t.TempDir(), "eternal.db")); err != nil {
 		t.Fatalf("InitDB: %v", err)
 	}
 	t.Cleanup(func() { _ = CloseDB() })
@@ -124,7 +124,7 @@ func TestBackupSQLiteTimesOutWaitingForSourceConnection(t *testing.T) {
 
 func TestBackupSQLiteRefusesExistingDestination(t *testing.T) {
 	t.Setenv("XUI_DB_JOURNAL_MODE", "")
-	if err := InitDB(filepath.Join(t.TempDir(), "x-ui.db")); err != nil {
+	if err := InitDB(filepath.Join(t.TempDir(), "eternal.db")); err != nil {
 		t.Fatalf("InitDB: %v", err)
 	}
 	t.Cleanup(func() { _ = CloseDB() })
@@ -168,12 +168,12 @@ func TestInitDBCleansBackupDirectories(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(orphanDir, "backup.db"), []byte("backup"), 0o600); err != nil {
 		t.Fatalf("write orphan backup: %v", err)
 	}
-	regularDir := filepath.Join(dbDir, ".x-ui-keep")
+	regularDir := filepath.Join(dbDir, ".eternal-keep")
 	if err := os.Mkdir(regularDir, 0o700); err != nil {
 		t.Fatalf("create regular directory: %v", err)
 	}
 
-	if err := InitDB(filepath.Join(dbDir, "x-ui.db")); err != nil {
+	if err := InitDB(filepath.Join(dbDir, "eternal.db")); err != nil {
 		t.Fatalf("InitDB: %v", err)
 	}
 	t.Cleanup(func() { _ = CloseDB() })

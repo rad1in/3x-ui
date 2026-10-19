@@ -18,7 +18,7 @@ import (
 
 func newAuditTestEngine(t *testing.T) *gin.Engine {
 	t.Helper()
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	gin.SetMode(gin.TestMode)
 	engine := gin.New()
 	api := engine.Group("/panel/api")

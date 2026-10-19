@@ -51,7 +51,7 @@ func (a *MetricsController) serve(c *gin.Context) {
 		return
 	}
 	if subtle.ConstantTimeCompare([]byte(scrapeToken(c)), []byte(token)) != 1 {
-		c.Header("WWW-Authenticate", `Basic realm="x-ui metrics"`)
+		c.Header("WWW-Authenticate", `Basic realm="eternal metrics"`)
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}

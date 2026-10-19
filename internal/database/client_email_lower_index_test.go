@@ -11,7 +11,7 @@ import (
 // The migration runs on every start, so its guard has to actually match the
 // index it created — otherwise every boot re-issues the CREATE.
 func TestMigrateClientEmailLowerIndexIsIdempotent(t *testing.T) {
-	if err := InitDB(filepath.Join(t.TempDir(), "x-ui.db")); err != nil {
+	if err := InitDB(filepath.Join(t.TempDir(), "eternal.db")); err != nil {
 		t.Fatalf("InitDB: %v", err)
 	}
 	t.Cleanup(func() { _ = CloseDB() })

@@ -56,7 +56,7 @@ icon: Bot
    - Select your preferred **Discord Bot Language**.
 3. Under **Notifications**:
    - Set the **Notification Time** schedule (e.g., `@daily`, `@weekly`, or custom crontab).
-   - Optionally toggle **Database Backups** to automatically attach `x-ui.db` with periodic reports.
+   - Optionally toggle **Database Backups** to automatically attach `eternal.db` with periodic reports.
    - Select which events trigger notifications and adjust CPU/RAM thresholds.
 4. Click **Send Test Notification** to verify delivery. A test embed will immediately appear in your Discord channel.
 5. Click **Save** to apply changes.
@@ -72,7 +72,7 @@ When enabled, the bot listens to commands in the configured Discord channel (sup
 | ------- | ----------- |
 | `!status` | Display system load, RAM, CPU usage, TCP/UDP connections, and active clients. |
 | `!report` | Generate and send a complete status report embed immediately. |
-| `!backup` | Download current database backup file (`x-ui.db`) and `config.json`. |
+| `!backup` | Download current database backup file (`eternal.db`) and `config.json`. |
 | `!usage <email>` | Query bandwidth usage (upload/download), quota limit, and expiration date for a client. |
 | `!inbounds` | List all active inbounds with port, protocol, traffic, and client counts. |
 | `!restart` | Safely restart the Xray core without restarting the web panel. |
@@ -109,7 +109,7 @@ Alerts are sent as Discord Embeds with color coding and relevant diagnostics:
 | `discordAdminIds` | _(none)_ | Comma-separated Discord user IDs allowed to run bot commands. Empty turns commands off. |
 | `discordLang` | `en-US` | Language for Discord bot messages and reports. |
 | `discordRunTime` | `@daily` | Cron expression or interval for periodic status reports. |
-| `discordBotBackup` | `false` | Whether to attach database backup (`x-ui.db`) to reports. |
+| `discordBotBackup` | `false` | Whether to attach database backup (`eternal.db`) to reports. |
 | `discordEnabledEvents` | `login.attempt,cpu.high` | Comma-separated list of enabled event types. |
 | `discordCpu` | `80` | CPU utilization percentage threshold for alerts (0–100). |
 | `discordMemory` | `80` | RAM utilization percentage threshold for alerts (0–100). |

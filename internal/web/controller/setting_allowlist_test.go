@@ -19,7 +19,7 @@ import (
 // at the next request, with no way back but the server shell.
 func TestUpdateSettingRefusesAnAllowlistThatLocksTheSaverOut(t *testing.T) {
 	t.Setenv("XUI_DB_FOLDER", t.TempDir())
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	settings := service.SettingService{}
 
 	save := func(list string) map[string]any {

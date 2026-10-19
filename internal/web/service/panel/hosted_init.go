@@ -21,7 +21,7 @@ type HostedAccount struct {
 }
 
 // RunHostedInit applies an account read from r to this process's own database.
-// The master runs it as `x-ui hosted-init` so the password never sits in argv.
+// The master runs it as `eternal hosted-init` so the password never sits in argv.
 func RunHostedInit(r io.Reader) error {
 	if !hosted.Enabled() {
 		return errors.New("hosted-init only runs inside a hosted panel")

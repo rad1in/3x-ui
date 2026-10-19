@@ -31,7 +31,7 @@ question it already answers.
   drives an amneziawg-go device over a gVisor userspace netstack and relays into a
   loopback SOCKS5 Xray inbound. `internal/amneziawg/` derives the instance and peers
   from an inbound and generates + validates the 3.1 obfuscation parameters.
-- Storage: SQLite by default (`/etc/x-ui/x-ui.db` on Linux, the executable
+- Storage: SQLite by default (`/etc/eternal/eternal.db` on Linux, the executable
   directory on Windows) or PostgreSQL (`XUI_DB_TYPE` / `XUI_DB_DSN`). The SQLite
   driver is CGo, so `CGO_ENABLED=0` builds fail.
 - Frontend: React 19 + Ant Design 6 + Vite 8 + TypeScript in `frontend/`, built
@@ -41,7 +41,7 @@ question it already answers.
 
 | area | path |
 | --- | --- |
-| entry point + `x-ui` CLI | `main.go` |
+| entry point + `eternal` CLI | `main.go` |
 | env parsing | `internal/config/` |
 | schema, migrations | `internal/database/`, `internal/database/model/` |
 | Xray child process + config | `internal/xray/` |
@@ -55,7 +55,7 @@ question it already answers.
 | master/sub-node over mTLS | `internal/web/runtime/` |
 | i18n | `internal/web/locale/`, `internal/web/translation/` |
 | UI source | `frontend/src/` |
-| install / upgrade | `install.sh`, `x-ui.sh`, `DockerInit.sh` |
+| install / upgrade | `install.sh`, `eternal.sh`, `DockerInit.sh` |
 
 ## Hard rules a change must respect
 
@@ -100,7 +100,7 @@ question it already answers.
   subtests and `t.Helper()` on helpers. An assertion must pin the exact value,
   typed error or emitted string — `err != nil` and `len(x) > 0` are findings,
   not nits. Prefer real dependencies: a throwaway DB via
-  `dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))`
+  `dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))`
   (`internal/database/dbtest`), and `httptest` for HTTP. `internal/sub`'s `initSubDB(t)` is the template.
   A test must FAIL without its fix; one that passes either way certifies
   nothing and then gets cited as proof the fix works.
@@ -169,20 +169,20 @@ test that cannot fail is invisible to CI. `make verify` is the local gate.
 
 ## Support facts reporters get wrong
 
-- Linux install: `bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)`
+- Linux install: `bash <(curl -Ls https://raw.githubusercontent.com/rad1in/eternal/main/install.sh)`
 - Install generates a RANDOM username, password and web base path — never
-  admin/admin. The `x-ui` menu on the server shows or resets them.
+  admin/admin. The `eternal` menu on the server shows or resets them.
 - The installer service environment file is DISTRO-DEPENDENT:
-  `/etc/default/x-ui` (Debian/Ubuntu), `/etc/conf.d/x-ui` (Arch),
-  `/etc/sysconfig/x-ui` (RHEL/Fedora). Naming the wrong one means the reporter's
+  `/etc/default/eternal` (Debian/Ubuntu), `/etc/conf.d/eternal` (Arch),
+  `/etc/sysconfig/eternal` (RHEL/Fedora). Naming the wrong one means the reporter's
   edit is silently never read by systemd — a common cause of "I set the variable
   and nothing happened".
 - Windows is supported. There the database sits next to the executable, not in
   `/etc` — never quote the Linux path to a Windows user.
-- SQLite to PostgreSQL: `x-ui migrate-db --dsn "postgres://..."`, then set
-  `XUI_DB_TYPE`/`XUI_DB_DSN` in that file and `systemctl restart x-ui`. The
+- SQLite to PostgreSQL: `eternal migrate-db --dsn "postgres://..."`, then set
+  `XUI_DB_TYPE`/`XUI_DB_DSN` in that file and `systemctl restart eternal`. The
   source SQLite file is left in place.
-- Docker image `ghcr.io/mhsanaei/3x-ui`; PostgreSQL profile
+- Docker image `ghcr.io/rad1in/eternal`; PostgreSQL profile
   `docker compose --profile postgres up -d`. Fail2ban IP-limit enforcement needs
   `NET_ADMIN` + `NET_RAW` (compose grants them; a bare `docker run` must add
   `--cap-add=NET_ADMIN --cap-add=NET_RAW`).

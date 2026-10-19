@@ -16,7 +16,7 @@ import (
 
 func seedPickerInbounds(t *testing.T, protocols ...model.Protocol) {
 	t.Helper()
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	for i, protocol := range protocols {
 		port := 20000 + i
 		ib := &model.Inbound{Remark: string(protocol), Enable: true, Port: port, Protocol: protocol, Tag: fmt.Sprintf("inbound-%d", port), Settings: `{}`}

@@ -8,7 +8,7 @@ import (
 // A replaced pool that stays open keeps its database file open; Windows then
 // cannot delete or replace that file.
 func TestInitDBClosesThePoolItReplaces(t *testing.T) {
-	dbPath := filepath.Join(t.TempDir(), "x-ui.db")
+	dbPath := filepath.Join(t.TempDir(), "eternal.db")
 	if err := InitDB(dbPath); err != nil {
 		t.Fatalf("first InitDB: %v", err)
 	}

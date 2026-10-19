@@ -8,7 +8,7 @@ import (
 )
 
 func TestFreshInstallFastPathMarksResetIpLimitSeeder(t *testing.T) {
-	if err := InitDB(filepath.Join(t.TempDir(), "x-ui.db")); err != nil {
+	if err := InitDB(filepath.Join(t.TempDir(), "eternal.db")); err != nil {
 		t.Fatalf("InitDB: %v", err)
 	}
 	t.Cleanup(func() { _ = CloseDB() })

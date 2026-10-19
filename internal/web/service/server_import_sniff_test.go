@@ -30,7 +30,7 @@ func TestSniffImportKind(t *testing.T) {
 	}
 
 	t.Run("panel migration dump", func(t *testing.T) {
-		dbPath := filepath.Join(t.TempDir(), "x-ui.db")
+		dbPath := filepath.Join(t.TempDir(), "eternal.db")
 		dbtest.InitDB(t, dbPath)
 		dump, err := database.DumpSQLiteToBytes(dbPath)
 		if err != nil {

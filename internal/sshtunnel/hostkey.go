@@ -14,7 +14,7 @@ func NewHostKey() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	block, err := ssh.MarshalPrivateKey(priv, "x-ui ssh tunnel")
+	block, err := ssh.MarshalPrivateKey(priv, "eternal ssh tunnel")
 	if err != nil {
 		return "", err
 	}

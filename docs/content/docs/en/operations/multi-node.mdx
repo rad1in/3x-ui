@@ -49,7 +49,7 @@ XUI_NONINTERACTIVE=1 XUI_JOIN_URL='https://panel.example.com:2053/abc/join/node'
 ```
 
 `join-node.sh` runs the normal non-interactive installer, reads the result it
-writes (`/etc/x-ui/install-result.env`: panel address, base path and API token),
+writes (`/etc/eternal/install-result.env`: panel address, base path and API token),
 and posts them with the token to `{basePath}/join/node` on the master. The master
 checks that it can reach the new panel and then adds it as an enabled node that
 syncs all inbounds, with `verify` TLS (or `skip`/`pin` if the script is given

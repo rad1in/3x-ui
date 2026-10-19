@@ -13,7 +13,7 @@ import (
 // MySQL evaluates UPDATE ... SET left to right against already-updated
 // columns, so the enable verdict must not see this merge's delta twice.
 func TestMergeNodeClientTrafficJudgesStaleDisableOnPreMergeCounters(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	db := database.GetDB()
 	master := xray.ClientTraffic{InboundId: 1, Email: "quota@x", Enable: true, Total: 1000, Up: 400}
 	if err := db.Create(&master).Error; err != nil {

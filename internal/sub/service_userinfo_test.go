@@ -13,7 +13,7 @@ import (
 func TestAggregateTrafficByEmails_FallsBackToClientLimits(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	const email = "node-client@example.com"
 	const totalBytes = int64(300) * 1024 * 1024 * 1024

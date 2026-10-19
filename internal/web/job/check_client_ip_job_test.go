@@ -198,7 +198,7 @@ func TestPartitionLiveIps_ConcurrentLiveIpsSortedAscending(t *testing.T) {
 func TestGetInboundByEmailFallbackIgnoresProtocolScalarFields(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	inbound := &model.Inbound{
 		UserId:   1,

@@ -11,7 +11,7 @@ import (
 )
 
 func TestPortBlockedMailNamesTheInboundAndAddress(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	sub := NewSubscriber(service.SettingService{}, nil)
 	subject, body := sub.formatMessage(eventbus.Event{
 		Type:   eventbus.EventPortBlocked,
