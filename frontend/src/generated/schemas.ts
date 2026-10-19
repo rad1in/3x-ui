@@ -3527,6 +3527,44 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "DashboardLayout": {
+    "description": "DashboardLayout is an admin's overview arrangement. Widgets absent from the\nlist keep their default place, so a new widget never disappears.",
+    "properties": {
+      "widgets": {
+        "items": {
+          "$ref": "#/components/schemas/DashboardWidget"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "widgets"
+    ],
+    "type": "object"
+  },
+  "DashboardWidget": {
+    "description": "DashboardWidget is one overview widget: its slot in the order, whether it is\nhidden and how many of the 12 grid columns it spans.",
+    "properties": {
+      "hidden": {
+        "example": false,
+        "type": "boolean"
+      },
+      "id": {
+        "example": "clientGeo",
+        "type": "string"
+      },
+      "span": {
+        "example": 6,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "hidden",
+      "id",
+      "span"
+    ],
+    "type": "object"
+  },
   "DiscountCode": {
     "description": "DiscountCode is a coupon. A code is stored upper-case; PlanIds empty means\nevery plan; MaxUses 0 means unlimited. Uses is filled in when listing.",
     "properties": {

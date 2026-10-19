@@ -821,6 +821,16 @@ export interface CryptoConfig {
   sandbox: boolean;
 }
 
+export interface DashboardLayout {
+  widgets: DashboardWidget[];
+}
+
+export interface DashboardWidget {
+  hidden: boolean;
+  id: string;
+  span: number;
+}
+
 export interface DiscountCode {
   code: string;
   createdAt: number;

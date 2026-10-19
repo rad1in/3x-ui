@@ -3553,6 +3553,44 @@
         ],
         "type": "object"
       },
+      "DashboardLayout": {
+        "description": "DashboardLayout is an admin's overview arrangement. Widgets absent from the\nlist keep their default place, so a new widget never disappears.",
+        "properties": {
+          "widgets": {
+            "items": {
+              "$ref": "#/components/schemas/DashboardWidget"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "widgets"
+        ],
+        "type": "object"
+      },
+      "DashboardWidget": {
+        "description": "DashboardWidget is one overview widget: its slot in the order, whether it is\nhidden and how many of the 12 grid columns it spans.",
+        "properties": {
+          "hidden": {
+            "example": false,
+            "type": "boolean"
+          },
+          "id": {
+            "example": "clientGeo",
+            "type": "string"
+          },
+          "span": {
+            "example": 6,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "hidden",
+          "id",
+          "span"
+        ],
+        "type": "object"
+      },
       "DiscountCode": {
         "description": "DiscountCode is a coupon. A code is stored upper-case; PlanIds empty means\nevery plan; MaxUses 0 means unlimited. Uses is filled in when listing.",
         "properties": {
@@ -20402,6 +20440,97 @@
                     "role": "operator",
                     "tgChatId": 123456789,
                     "username": "support"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/admins/me/dashboardLayout": {
+      "get": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "The signed-in admin's overview layout: widget order, hidden widgets and column spans. Empty widgets means the default layout.",
+        "operationId": "get_panel_api_admins_me_dashboardLayout",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/DashboardLayout"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "widgets": [
+                      {
+                        "hidden": false,
+                        "id": "clientGeo",
+                        "span": 6
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Replace the signed-in admin's overview layout. Spans are 1 to 12 grid columns, ids must be unique, at most 40 widgets.",
+        "operationId": "post_panel_api_admins_me_dashboardLayout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "widgets": [
+                  {
+                    "id": "clientGeo",
+                    "hidden": false,
+                    "span": 6
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
                   }
                 }
               }

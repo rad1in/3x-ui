@@ -883,6 +883,20 @@ export const EXAMPLES: Record<string, unknown> = {
     "ipnSecret": "",
     "sandbox": false
   },
+  "DashboardLayout": {
+    "widgets": [
+      {
+        "hidden": false,
+        "id": "clientGeo",
+        "span": 6
+      }
+    ]
+  },
+  "DashboardWidget": {
+    "hidden": false,
+    "id": "clientGeo",
+    "span": 6
+  },
   "DiscountCode": {
     "code": "WELCOME10",
     "createdAt": 0,

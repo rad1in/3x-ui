@@ -868,6 +868,18 @@ export const CryptoConfigSchema = z.object({
 });
 export type CryptoConfig = z.infer<typeof CryptoConfigSchema>;
 
+export const DashboardLayoutSchema = z.object({
+  widgets: z.array(z.lazy(() => DashboardWidgetSchema)),
+});
+export type DashboardLayout = z.infer<typeof DashboardLayoutSchema>;
+
+export const DashboardWidgetSchema = z.object({
+  hidden: z.boolean(),
+  id: z.string(),
+  span: z.number().int(),
+});
+export type DashboardWidget = z.infer<typeof DashboardWidgetSchema>;
+
 export const DiscountCodeSchema = z.object({
   code: z.string(),
   createdAt: z.number().int(),

@@ -2855,6 +2855,20 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/admins/me/dashboardLayout',
+        summary:
+          "The signed-in admin's overview layout: widget order, hidden widgets and column spans. Empty widgets means the default layout.",
+        responseSchema: 'DashboardLayout',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/admins/me/dashboardLayout',
+        summary:
+          "Replace the signed-in admin's overview layout. Spans are 1 to 12 grid columns, ids must be unique, at most 40 widgets.",
+        body: '{"widgets":[{"id":"clientGeo","hidden":false,"span":6}]}',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/admins/list',
         summary: 'Every admin account, oldest first. Password hashes are never returned.',
         responseSchema: 'AdminView',

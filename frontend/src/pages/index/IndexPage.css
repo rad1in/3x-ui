@@ -638,3 +638,73 @@
   font-size: 12.5px;
   color: var(--ov-faint);
 }
+
+/* — customizable widget grid — */
+
+.ov-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--ov-gap);
+}
+
+.ov-widget {
+  grid-column: span var(--ov-span, 12);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ov-gap);
+}
+
+.ov-widget-body:empty {
+  display: none;
+}
+
+.ov-widget:not(.is-editing):has(> .ov-widget-body:empty) {
+  display: none;
+}
+
+.ov-widget.is-editing {
+  border: 1px dashed var(--ant-color-border);
+  border-radius: 10px;
+  padding: 8px;
+  cursor: grab;
+}
+
+.ov-widget.is-hidden .ov-widget-body {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.ov-widget.is-drop-target {
+  border-color: var(--ant-color-primary);
+  background: var(--ant-color-primary-bg);
+}
+
+.ov-widget-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ov-widget-name {
+  flex: 1;
+  font-weight: 600;
+  min-width: 0;
+}
+
+.ov-widget-grip {
+  color: var(--ant-color-text-tertiary);
+}
+
+@media (max-width: 768px) {
+  .ov-widget {
+    grid-column: span 12;
+  }
+}
+
+.ov-customize {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

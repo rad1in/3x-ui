@@ -18,6 +18,8 @@ type AdminController struct {
 func NewAdminController(g *gin.RouterGroup) *AdminController {
 	a := &AdminController{}
 	g.GET("/me", a.me)
+	g.GET("/me/dashboardLayout", a.dashboardLayout)
+	g.POST("/me/dashboardLayout", a.saveDashboardLayout)
 	g.GET("/list", a.list)
 	g.POST("/create", a.create)
 	g.POST("/update/:id", a.update)
@@ -34,6 +36,20 @@ func (a *AdminController) me(c *gin.Context) {
 		return
 	}
 	jsonObj(c, panel.ToAdminView(user), nil)
+}
+
+func (a *AdminController) dashboardLayout(c *gin.Context) {
+	layout, err := a.userService.GetDashboardLayout(actorId(c))
+	jsonObj(c, layout, err)
+}
+
+func (a *AdminController) saveDashboardLayout(c *gin.Context) {
+	var in panel.DashboardLayout
+	if err := c.ShouldBindJSON(&in); err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	jsonMsg(c, I18nWeb(c, "pages.admins.toasts.saved"), a.userService.SetDashboardLayout(actorId(c), in))
 }
 
 func (a *AdminController) list(c *gin.Context) {
