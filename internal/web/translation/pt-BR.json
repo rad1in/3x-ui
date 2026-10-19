@@ -154,8 +154,7 @@
     "openMenu": "Abrir menu",
     "pinSidebar": "Fixar barra lateral",
     "unpinSidebar": "Desafixar barra lateral",
-    "subFormats": "Sub Formats",
-    "panels": "Painéis"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "Atalhos de teclado",
@@ -3197,7 +3196,7 @@
       "saved": "Painel salvo",
       "deleted": "Painel excluído",
       "usageReset": "Consumo zerado",
-      "title": "Painéis hospedados",
+      "title": "Revendedores",
       "hint": "Crie painéis separados neste servidor e entregue-os a outras pessoas. Cada um tem login, endereço, banco de dados e faixa de portas próprios, e não pode ultrapassar os limites definidos aqui.",
       "add": "Novo painel",
       "edit": "Editar painel",
@@ -3232,7 +3231,7 @@
       "resetUsageConfirm": "Iniciar um novo período de consumo para este painel?",
       "deleteConfirm": "Excluir este painel?",
       "deleteWarning": "O banco de dados, as entradas e os clientes dele serão apagados para sempre.",
-      "empty": "Nenhum painel hospedado ainda",
+      "empty": "Nenhum painel de revendedor ainda",
       "emptyHint": "Crie um painel para dar a alguém um login próprio com a cota, as entradas e os clientes que você escolher.",
       "errName": "Informe um nome de até 64 caracteres",
       "errUsername": "Informe um usuário sem espaços",

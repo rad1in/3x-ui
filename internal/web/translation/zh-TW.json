@@ -154,8 +154,7 @@
     "openMenu": "開啟選單",
     "pinSidebar": "固定側邊欄",
     "unpinSidebar": "取消固定側邊欄",
-    "subFormats": "Sub Formats",
-    "panels": "面板"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "鍵盤快速鍵",
@@ -3197,7 +3196,7 @@
       "saved": "面板已儲存",
       "deleted": "面板已刪除",
       "usageReset": "用量已重設",
-      "title": "託管面板",
+      "title": "分銷商",
       "hint": "在本伺服器上建立獨立的面板並交給他人使用。每個面板都有自己的登入、位址、資料庫和入站連接埠範圍，且不能超出你在此設定的限制。",
       "add": "新增面板",
       "edit": "編輯面板",
@@ -3232,7 +3231,7 @@
       "resetUsageConfirm": "為此面板開始新的用量週期？",
       "deleteConfirm": "刪除此面板？",
       "deleteWarning": "其資料庫、入站和用戶端將被永久刪除。",
-      "empty": "還沒有託管面板",
+      "empty": "還沒有分銷商面板",
       "emptyHint": "建立面板，讓他人擁有獨立登入，並使用你設定的流量、入站和用戶端數量。",
       "errName": "請輸入不超過 64 個字元的名稱",
       "errUsername": "請輸入不含空格的使用者名稱",

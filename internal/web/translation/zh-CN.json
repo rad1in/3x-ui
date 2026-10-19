@@ -154,8 +154,7 @@
     "openMenu": "打开菜单",
     "pinSidebar": "固定侧边栏",
     "unpinSidebar": "取消固定侧边栏",
-    "subFormats": "Sub Formats",
-    "panels": "面板"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "键盘快捷键",
@@ -3197,7 +3196,7 @@
       "saved": "面板已保存",
       "deleted": "面板已删除",
       "usageReset": "用量已重置",
-      "title": "托管面板",
+      "title": "分销商",
       "hint": "在本服务器上创建独立的面板并交给他人使用。每个面板都有自己的登录、地址、数据库和入站端口范围，且不能超出你在此设置的限制。",
       "add": "新建面板",
       "edit": "编辑面板",
@@ -3232,7 +3231,7 @@
       "resetUsageConfirm": "为此面板开始新的用量周期？",
       "deleteConfirm": "删除此面板？",
       "deleteWarning": "其数据库、入站和客户端将被永久删除。",
-      "empty": "还没有托管面板",
+      "empty": "还没有分销商面板",
       "emptyHint": "创建面板，让他人拥有独立登录，并使用你设定的流量、入站和客户端数量。",
       "errName": "请输入不超过 64 个字符的名称",
       "errUsername": "请输入不含空格的用户名",

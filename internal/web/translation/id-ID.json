@@ -154,8 +154,7 @@
     "openMenu": "Buka menu",
     "pinSidebar": "Sematkan bilah sisi",
     "unpinSidebar": "Lepas sematan bilah sisi",
-    "subFormats": "Sub Formats",
-    "panels": "Panel"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "Pintasan keyboard",
@@ -3197,7 +3196,7 @@
       "saved": "Panel disimpan",
       "deleted": "Panel dihapus",
       "usageReset": "Pemakaian direset",
-      "title": "Panel yang di-hosting",
+      "title": "Reseller",
       "hint": "Buat panel terpisah di server ini dan berikan kepada orang lain. Masing-masing punya login, alamat, database, dan rentang port sendiri, serta tidak dapat melewati batas yang Anda atur di sini.",
       "add": "Panel baru",
       "edit": "Edit panel",
@@ -3232,7 +3231,7 @@
       "resetUsageConfirm": "Mulai periode pemakaian baru untuk panel ini?",
       "deleteConfirm": "Hapus panel ini?",
       "deleteWarning": "Database, inbound, dan kliennya akan dihapus permanen.",
-      "empty": "Belum ada panel yang di-hosting",
+      "empty": "Belum ada panel reseller",
       "emptyHint": "Buat panel untuk memberi seseorang login sendiri dengan kuota, inbound, dan klien yang Anda pilih.",
       "errName": "Masukkan nama hingga 64 karakter",
       "errUsername": "Masukkan nama pengguna tanpa spasi",

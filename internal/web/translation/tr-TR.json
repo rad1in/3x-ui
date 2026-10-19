@@ -154,8 +154,7 @@
     "openMenu": "Menüyü aç",
     "pinSidebar": "Kenar çubuğunu sabitle",
     "unpinSidebar": "Kenar çubuğu sabitlemesini kaldır",
-    "subFormats": "Abonelik Formatları",
-    "panels": "Paneller"
+    "subFormats": "Abonelik Formatları"
   },
   "shortcuts": {
     "title": "Klavye kısayolları",
@@ -3197,7 +3196,7 @@
       "saved": "Panel kaydedildi",
       "deleted": "Panel silindi",
       "usageReset": "Kullanım sıfırlandı",
-      "title": "Barındırılan paneller",
+      "title": "Bayiler",
       "hint": "Bu sunucuda ayrı paneller oluşturun ve başkalarına verin. Her birinin kendi girişi, adresi, veritabanı ve port aralığı vardır ve burada belirlediğiniz sınırları aşamaz.",
       "add": "Yeni panel",
       "edit": "Paneli düzenle",
@@ -3232,7 +3231,7 @@
       "resetUsageConfirm": "Bu panel için yeni bir kullanım dönemi başlatılsın mı?",
       "deleteConfirm": "Bu panel silinsin mi?",
       "deleteWarning": "Veritabanı, gelen bağlantıları ve istemcileri kalıcı olarak silinir.",
-      "empty": "Henüz barındırılan panel yok",
+      "empty": "Henüz bayi paneli yok",
       "emptyHint": "Birine seçtiğiniz kota, gelen bağlantı ve istemci sayısıyla kendi girişini vermek için bir panel oluşturun.",
       "errName": "En fazla 64 karakterlik bir ad girin",
       "errUsername": "Boşluksuz bir kullanıcı adı girin",

@@ -88,11 +88,11 @@ test('labels the palette shortcut with the modifier the platform actually uses',
   expect(chip?.textContent).toBe('CtrlK');
 });
 
-test('hides the Panels page inside a panel that another panel hosts', async () => {
+test('hides the Reseller page inside a panel that another panel hosts', async () => {
   const get = vi.spyOn(HttpUtil, 'get');
   get.mockResolvedValue(new Msg(true, '', ordinaryView));
   const ordinary = await renderSidebar();
-  expect(await screen.findByRole('menuitem', { name: /Panels/ })).not.toBeNull();
+  expect(await screen.findByRole('menuitem', { name: /Reseller/ })).not.toBeNull();
   ordinary.unmount();
 
   get.mockResolvedValue(new Msg(true, '', hostedView));
@@ -101,6 +101,6 @@ test('hides the Panels page inside a panel that another panel hosts', async () =
     expect(get).toHaveBeenCalledWith('/panel/api/hosted/status', undefined, { silent: true }),
   );
   await act(async () => {});
-  expect(screen.queryByRole('menuitem', { name: /Panels/ })).toBeNull();
+  expect(screen.queryByRole('menuitem', { name: /Reseller/ })).toBeNull();
   get.mockRestore();
 });

@@ -149,13 +149,12 @@
     "audit": "Activity",
     "admins": "Admins",
     "sessions": "Sessions",
-    "reseller": "Resellers",
+    "reseller": "Reseller",
     "sales": "Sales",
     "openMenu": "Open menu",
     "pinSidebar": "Pin sidebar",
     "unpinSidebar": "Unpin sidebar",
-    "subFormats": "Sub Formats",
-    "panels": "Panels"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "Keyboard shortcuts",
@@ -3197,7 +3196,7 @@
       "saved": "Panel saved",
       "deleted": "Panel deleted",
       "usageReset": "Usage reset",
-      "title": "Hosted panels",
+      "title": "Reseller",
       "hint": "Create separate panels on this server and hand them to other people. Each one has its own login, address, database and inbound port range, and can't go past the limits you set here.",
       "add": "New panel",
       "edit": "Edit panel",
@@ -3232,7 +3231,7 @@
       "resetUsageConfirm": "Start a new usage period for this panel?",
       "deleteConfirm": "Delete this panel?",
       "deleteWarning": "Its database, inbounds and clients are removed for good.",
-      "empty": "No hosted panels yet",
+      "empty": "No reseller panels yet",
       "emptyHint": "Create a panel to give someone their own login with the quota, inbounds and clients you choose.",
       "errName": "Enter a name of up to 64 characters",
       "errUsername": "Enter a username without spaces",

@@ -2503,7 +2503,7 @@ export const sections: readonly Section[] = [
 
   {
     id: 'hosted',
-    title: 'Hosted Panel',
+    title: 'Reseller Panel',
     description:
       'A panel the owner of this server runs for someone else. Its inbound, client, port, traffic and expiry limits are set by the owner and cannot be changed from inside the panel.',
     endpoints: [
@@ -2519,7 +2519,7 @@ export const sections: readonly Section[] = [
 
   {
     id: 'hosted-panels',
-    title: 'Hosted Panels',
+    title: 'Reseller Panels',
     description:
       'Separate panels this server runs for other people. Each has its own database, login, address and inbound port range, and enforces the limits set here. Not available from inside a hosted panel.',
     endpoints: [

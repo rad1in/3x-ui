@@ -8195,11 +8195,11 @@
       "description": "Manage scoped Bearer tokens for programmatic auth. Tokens grant admin, monitor, or node-sync access, may expire, and are stored as SHA-256 hashes. The plaintext is returned only once at creation."
     },
     {
-      "name": "Hosted Panel",
+      "name": "Reseller Panel",
       "description": "A panel the owner of this server runs for someone else. Its inbound, client, port, traffic and expiry limits are set by the owner and cannot be changed from inside the panel."
     },
     {
-      "name": "Hosted Panels",
+      "name": "Reseller Panels",
       "description": "Separate panels this server runs for other people. Each has its own database, login, address and inbound port range, and enforces the limits set here. Not available from inside a hosted panel."
     },
     {
@@ -18964,7 +18964,7 @@
     "/panel/api/hosted/status": {
       "get": {
         "tags": [
-          "Hosted Panel"
+          "Reseller Panel"
         ],
         "summary": "This panel's limits and usage. enabled is false on an ordinary panel. blocked is expired, traffic or no-limits while Xray is held stopped, otherwise empty. Zero limits mean unlimited.",
         "operationId": "get_panel_api_hosted_status",
@@ -19015,7 +19015,7 @@
     "/panel/api/hostedPanels/list": {
       "get": {
         "tags": [
-          "Hosted Panels"
+          "Reseller Panels"
         ],
         "summary": "Every hosted panel with its last reported usage (status) and its process state. status.updatedAt is 0 until the panel has reported once.",
         "operationId": "get_panel_api_hostedPanels_list",
@@ -19088,7 +19088,7 @@
     "/panel/api/hostedPanels/add": {
       "post": {
         "tags": [
-          "Hosted Panels"
+          "Reseller Panels"
         ],
         "summary": "Create a hosted panel and start it when enable is true. The password must be at least 8 characters. webPort, subPort and the portMin-portMax inbound range must not collide with this panel, its inbounds or another hosted panel. Zero limits mean unlimited; expiresAt is unix ms.",
         "operationId": "post_panel_api_hostedPanels_add",
@@ -19159,7 +19159,7 @@
     "/panel/api/hostedPanels/update/{id}": {
       "post": {
         "tags": [
-          "Hosted Panels"
+          "Reseller Panels"
         ],
         "summary": "Replace the settings of a hosted panel. An empty password keeps the current login; a new one also turns off its 2FA. Changing the address restarts the panel; limits apply live.",
         "operationId": "post_panel_api_hostedPanels_update_id",
@@ -19241,7 +19241,7 @@
     "/panel/api/hostedPanels/del/{id}": {
       "post": {
         "tags": [
-          "Hosted Panels"
+          "Reseller Panels"
         ],
         "summary": "Stop a hosted panel and delete it together with its database and files.",
         "operationId": "post_panel_api_hostedPanels_del_id",
@@ -19282,7 +19282,7 @@
     "/panel/api/hostedPanels/resetUsage/{id}": {
       "post": {
         "tags": [
-          "Hosted Panels"
+          "Reseller Panels"
         ],
         "summary": "Start a new usage period: the hosted panel zeroes its traffic meter and resumes if traffic was what stopped it.",
         "operationId": "post_panel_api_hostedPanels_resetUsage_id",

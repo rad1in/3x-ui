@@ -154,8 +154,7 @@
     "openMenu": "Abrir menú",
     "pinSidebar": "Fijar barra lateral",
     "unpinSidebar": "Desfijar barra lateral",
-    "subFormats": "Sub Formats",
-    "panels": "Paneles"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "Atajos de teclado",
@@ -3197,7 +3196,7 @@
       "saved": "Panel guardado",
       "deleted": "Panel eliminado",
       "usageReset": "Consumo reiniciado",
-      "title": "Paneles alojados",
+      "title": "Revendedores",
       "hint": "Crea paneles independientes en este servidor y entrégalos a otras personas. Cada uno tiene su propio acceso, dirección, base de datos y rango de puertos, y no puede superar los límites que fijes aquí.",
       "add": "Nuevo panel",
       "edit": "Editar panel",
@@ -3232,7 +3231,7 @@
       "resetUsageConfirm": "¿Iniciar un nuevo periodo de consumo para este panel?",
       "deleteConfirm": "¿Eliminar este panel?",
       "deleteWarning": "Su base de datos, entradas y clientes se borran definitivamente.",
-      "empty": "Aún no hay paneles alojados",
+      "empty": "Aún no hay paneles de revendedor",
       "emptyHint": "Crea un panel para dar a alguien su propio acceso con la cuota, entradas y clientes que elijas.",
       "errName": "Introduce un nombre de hasta 64 caracteres",
       "errUsername": "Introduce un usuario sin espacios",

@@ -154,8 +154,7 @@
     "openMenu": "Mở menu",
     "pinSidebar": "Ghim thanh bên",
     "unpinSidebar": "Bỏ ghim thanh bên",
-    "subFormats": "Sub Formats",
-    "panels": "Bảng điều khiển"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "Phím tắt",
@@ -3197,7 +3196,7 @@
       "saved": "Đã lưu bảng điều khiển",
       "deleted": "Đã xóa bảng điều khiển",
       "usageReset": "Đã đặt lại mức dùng",
-      "title": "Bảng điều khiển lưu trữ",
+      "title": "Đại lý",
       "hint": "Tạo các bảng điều khiển riêng trên máy chủ này và giao cho người khác. Mỗi bảng có đăng nhập, địa chỉ, cơ sở dữ liệu và dải cổng riêng, và không thể vượt giới hạn bạn đặt ở đây.",
       "add": "Bảng mới",
       "edit": "Sửa bảng",
@@ -3232,7 +3231,7 @@
       "resetUsageConfirm": "Bắt đầu kỳ sử dụng mới cho bảng này?",
       "deleteConfirm": "Xóa bảng này?",
       "deleteWarning": "Cơ sở dữ liệu, inbound và khách hàng của nó sẽ bị xóa vĩnh viễn.",
-      "empty": "Chưa có bảng lưu trữ nào",
+      "empty": "Chưa có bảng đại lý nào",
       "emptyHint": "Tạo một bảng để cấp cho ai đó đăng nhập riêng với hạn mức, inbound và khách hàng do bạn chọn.",
       "errName": "Nhập tên tối đa 64 ký tự",
       "errUsername": "Nhập tên người dùng không có khoảng trắng",
