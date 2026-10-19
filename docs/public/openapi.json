@@ -3553,6 +3553,44 @@
         ],
         "type": "object"
       },
+      "DashboardLayout": {
+        "description": "DashboardLayout is an admin's overview arrangement. Widgets absent from the\nlist keep their default place, so a new widget never disappears.",
+        "properties": {
+          "widgets": {
+            "items": {
+              "$ref": "#/components/schemas/DashboardWidget"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "widgets"
+        ],
+        "type": "object"
+      },
+      "DashboardWidget": {
+        "description": "DashboardWidget is one overview widget: its slot in the order, whether it is\nhidden and how many of the 12 grid columns it spans.",
+        "properties": {
+          "hidden": {
+            "example": false,
+            "type": "boolean"
+          },
+          "id": {
+            "example": "clientGeo",
+            "type": "string"
+          },
+          "span": {
+            "example": 6,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "hidden",
+          "id",
+          "span"
+        ],
+        "type": "object"
+      },
       "DiscountCode": {
         "description": "DiscountCode is a coupon. A code is stored upper-case; PlanIds empty means\nevery plan; MaxUses 0 means unlimited. Uses is filled in when listing.",
         "properties": {
@@ -6218,6 +6256,65 @@
         ],
         "type": "object"
       },
+      "Passkey": {
+        "description": "Passkey is one WebAuthn credential an admin registered. The public key is the\nCOSE_Key as the authenticator sent it; CredentialId is unpadded base64url.",
+        "properties": {
+          "createdAt": {
+            "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "lastUsedAt": {
+            "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "name": {
+            "example": "YubiKey",
+            "type": "string"
+          },
+          "userId": {
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "lastUsedAt",
+          "name",
+          "userId"
+        ],
+        "type": "object"
+      },
+      "PayPalConfig": {
+        "description": "PayPalConfig is the PayPal REST app. ClientSecret is a secret; the client id\nis public by design.",
+        "properties": {
+          "clientId": {
+            "type": "string"
+          },
+          "clientSecret": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "sandbox": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "clientId",
+          "clientSecret",
+          "enabled",
+          "sandbox"
+        ],
+        "type": "object"
+      },
       "PeerActivity": {
         "description": "PeerActivity is one peer's live embedded-Device-reported state, the\ncounterpart of an Xray access-log entry: a tunnel logs no requests, only\nhandshakes and bytes.",
         "properties": {
@@ -6277,6 +6374,76 @@
           "online",
           "tag",
           "up"
+        ],
+        "type": "object"
+      },
+      "PendingAction": {
+        "description": "PendingAction is a sensitive admin action parked until a second admin\napproves it. Payload is the JSON the executor needs; Status moves once,\nfrom pending to approved, rejected, cancelled or expired (failed when the\napproved action returned an error).",
+        "properties": {
+          "action": {
+            "example": "inbound.delete",
+            "type": "string"
+          },
+          "decidedAt": {
+            "example": 1760684500000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "decidedBy": {
+            "example": 2,
+            "type": "integer"
+          },
+          "decidedByName": {
+            "example": "bob",
+            "type": "string"
+          },
+          "expiresAt": {
+            "example": 1760770800000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 7,
+            "type": "integer"
+          },
+          "requestedAt": {
+            "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "requestedBy": {
+            "example": 1,
+            "type": "integer"
+          },
+          "requestedByName": {
+            "example": "alice",
+            "type": "string"
+          },
+          "result": {
+            "type": "string"
+          },
+          "status": {
+            "example": "pending",
+            "type": "string"
+          },
+          "target": {
+            "example": "inbound #3",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "decidedAt",
+          "decidedBy",
+          "decidedByName",
+          "expiresAt",
+          "id",
+          "requestedAt",
+          "requestedBy",
+          "requestedByName",
+          "result",
+          "status",
+          "target"
         ],
         "type": "object"
       },
@@ -6669,6 +6836,9 @@
           "idpay": {
             "$ref": "#/components/schemas/IDPayConfig"
           },
+          "paypal": {
+            "$ref": "#/components/schemas/PayPalConfig"
+          },
           "publicBaseUrl": {
             "example": "https://shop.example.com",
             "type": "string"
@@ -6678,6 +6848,13 @@
           },
           "referral": {
             "$ref": "#/components/schemas/ReferralConfig"
+          },
+          "stripe": {
+            "$ref": "#/components/schemas/StripeConfig"
+          },
+          "telegramShop": {
+            "description": "TelegramShop opens the shop to customers inside the Telegram bot.",
+            "type": "boolean"
           },
           "walletEnabled": {
             "type": "boolean"
@@ -6690,9 +6867,12 @@
           "card",
           "crypto",
           "idpay",
+          "paypal",
           "publicBaseUrl",
           "publicEnabled",
           "referral",
+          "stripe",
+          "telegramShop",
           "walletEnabled",
           "zarinpal"
         ],
@@ -6722,11 +6902,23 @@
           "hasIdpayApiKey": {
             "type": "boolean"
           },
+          "hasPaypalClientSecret": {
+            "type": "boolean"
+          },
+          "hasStripeSecretKey": {
+            "type": "boolean"
+          },
+          "hasStripeWebhookSecret": {
+            "type": "boolean"
+          },
           "hasZarinpalMerchantId": {
             "type": "boolean"
           },
           "idpay": {
             "$ref": "#/components/schemas/IDPayConfig"
+          },
+          "paypal": {
+            "$ref": "#/components/schemas/PayPalConfig"
           },
           "publicBaseUrl": {
             "example": "https://shop.example.com",
@@ -6737,6 +6929,13 @@
           },
           "referral": {
             "$ref": "#/components/schemas/ReferralConfig"
+          },
+          "stripe": {
+            "$ref": "#/components/schemas/StripeConfig"
+          },
+          "telegramShop": {
+            "description": "TelegramShop opens the shop to customers inside the Telegram bot.",
+            "type": "boolean"
           },
           "walletEnabled": {
             "type": "boolean"
@@ -6751,11 +6950,17 @@
           "hasCryptoApiKey",
           "hasCryptoIpnSecret",
           "hasIdpayApiKey",
+          "hasPaypalClientSecret",
+          "hasStripeSecretKey",
+          "hasStripeWebhookSecret",
           "hasZarinpalMerchantId",
           "idpay",
+          "paypal",
           "publicBaseUrl",
           "publicEnabled",
           "referral",
+          "stripe",
+          "telegramShop",
           "walletEnabled",
           "zarinpal"
         ],
@@ -6764,6 +6969,13 @@
       "SecurityConfig": {
         "description": "SecurityConfig groups the login and data protections that do not depend on\ntwo-factor codes. It is one JSON setting that only owners may change.\nBackupPassphrase is a secret: stored encrypted, served blank, and kept when a\nsave leaves it blank (ClearBackupPassphrase empties it on purpose).",
         "properties": {
+          "approvalActions": {
+            "description": "PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;\nPasskeySecondFactor asks admins who have passkeys for one after the password.\nApprovalActions lists the sensitive actions that need a second admin's\napproval (see ApprovalActions); empty turns the gate off.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "backupPassphrase": {
             "type": "string"
           },
@@ -6774,6 +6986,12 @@
             "type": "boolean"
           },
           "newLocationAlert": {
+            "type": "boolean"
+          },
+          "passkeyLoginEnable": {
+            "type": "boolean"
+          },
+          "passkeySecondFactor": {
             "type": "boolean"
           },
           "rotateSubSigningKey": {
@@ -6791,9 +7009,12 @@
           }
         },
         "required": [
+          "approvalActions",
           "backupPassphrase",
           "captchaEnable",
           "newLocationAlert",
+          "passkeyLoginEnable",
+          "passkeySecondFactor",
           "subSigningEnable",
           "subSigningKey",
           "tgLoginEnable"
@@ -6803,6 +7024,13 @@
       "SecurityConfigView": {
         "description": "SecurityConfigView is the configuration as the admin API serves it: secrets\nare blank and the Has flags say which are set.",
         "properties": {
+          "approvalActions": {
+            "description": "PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;\nPasskeySecondFactor asks admins who have passkeys for one after the password.\nApprovalActions lists the sensitive actions that need a second admin's\napproval (see ApprovalActions); empty turns the gate off.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "backupPassphrase": {
             "type": "string"
           },
@@ -6818,6 +7046,12 @@
           "newLocationAlert": {
             "type": "boolean"
           },
+          "passkeyLoginEnable": {
+            "type": "boolean"
+          },
+          "passkeySecondFactor": {
+            "type": "boolean"
+          },
           "rotateSubSigningKey": {
             "type": "boolean"
           },
@@ -6833,10 +7067,13 @@
           }
         },
         "required": [
+          "approvalActions",
           "backupPassphrase",
           "captchaEnable",
           "hasBackupPassphrase",
           "newLocationAlert",
+          "passkeyLoginEnable",
+          "passkeySecondFactor",
           "subSigningEnable",
           "subSigningKey",
           "tgLoginEnable"
@@ -7385,6 +7622,26 @@
         ],
         "type": "object"
       },
+      "StripeConfig": {
+        "description": "StripeConfig is the Stripe account. SecretKey and WebhookSecret are secrets;\na sk_test_ key is Stripe's test mode.",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "secretKey": {
+            "type": "string"
+          },
+          "webhookSecret": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "enabled",
+          "secretKey",
+          "webhookSecret"
+        ],
+        "type": "object"
+      },
       "SubBalancer": {
         "description": "SubBalancer is one extra JSON-subscription config document whose members are\nthe selected inbounds' proxy outbounds. SortOrder shares SubSortIndex semantics.",
         "properties": {
@@ -7512,6 +7769,116 @@
         "required": [
           "token",
           "url"
+        ],
+        "type": "object"
+      },
+      "Ticket": {
+        "description": "Ticket is a support thread opened by a customer, who is the client with\nClientEmail. Subject and every message body are plain text.",
+        "properties": {
+          "clientEmail": {
+            "example": "alice",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "status": {
+            "example": "open",
+            "type": "string"
+          },
+          "subject": {
+            "example": "Connection drops every hour",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "clientEmail",
+          "createdAt",
+          "id",
+          "status",
+          "subject",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "TicketDetail": {
+        "description": "TicketDetail is a ticket with its whole conversation, oldest message first.",
+        "properties": {
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/TicketMessage"
+            },
+            "type": "array"
+          },
+          "ticket": {
+            "$ref": "#/components/schemas/Ticket"
+          }
+        },
+        "required": [
+          "messages",
+          "ticket"
+        ],
+        "type": "object"
+      },
+      "TicketMessage": {
+        "description": "TicketMessage is one line of a ticket's conversation.",
+        "properties": {
+          "author": {
+            "example": "customer",
+            "type": "string"
+          },
+          "body": {
+            "example": "It disconnects about once an hour.",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "ticketId": {
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "author",
+          "body",
+          "createdAt",
+          "id",
+          "ticketId"
+        ],
+        "type": "object"
+      },
+      "TicketPage": {
+        "description": "TicketPage is one page of tickets, most recently active first, with the\nunpaged total.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Ticket"
+            },
+            "type": "array"
+          },
+          "total": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total"
         ],
         "type": "object"
       },
@@ -7881,7 +8248,7 @@
     },
     {
       "name": "Public Shop",
-      "description": "The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed, bad_signature, amount_mismatch, discount_invalid, discount_used, referral_invalid, wallet_insufficient, proof_invalid); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address."
+      "description": "The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed, bad_signature, amount_mismatch, discount_invalid, discount_used, referral_invalid, wallet_insufficient, proof_invalid, ticket_invalid, ticket_not_found, ticket_limit, ticket_closed, rate_limited); rate_limited also arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address."
     },
     {
       "name": "Admins",
@@ -7894,6 +8261,14 @@
     {
       "name": "Sessions",
       "description": "Browsers signed in to the panel. Every role may list and end its own sessions; owners may also act on other admins. API tokens are not sessions. All endpoints under /panel/api/sessions."
+    },
+    {
+      "name": "Passkeys",
+      "description": "WebAuthn passkeys of the signed-in admin; every role manages only its own. Registration asks for the account password again. The browser-side payloads are the standard WebAuthn JSON with base64url binary fields. All endpoints under /panel/api/passkeys."
+    },
+    {
+      "name": "Approvals",
+      "description": "Two-person approval. When the owner gates an action in Settings → Security → Extra protection, a request for it is parked here instead of running, and a different owner or admin must approve it. Gateable actions: inbound.delete (single and bulk inbound delete), clients.bulkDelete, node.delete. The gate is off while no second owner or admin exists. Requests expire after 24 hours; every request and decision is written to the activity log. A master panel's node-sync pushes are never parked. All endpoints under /panel/api/approvals."
     },
     {
       "name": "Activity Log",
@@ -8127,6 +8502,130 @@
         }
       }
     },
+    "/passkey/login/status": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Returns whether passwordless passkey sign-in is enabled — used by the login page to decide whether to show the passkey button.",
+        "operationId": "post_passkey_login_status",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/passkey/login/begin": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Start a passwordless sign-in. Needs the passkey login option enabled in Settings → Security. Returns navigator.credentials.get() options (user verification required) and a single-use challengeId.",
+        "operationId": "post_passkey_login_begin",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "options": {},
+                    "challengeId": "..."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/passkey/login/finish": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Complete a passwordless sign-in with the assertion. The owner account still needs its twoFactorCode when panel 2FA is on. Failures count toward the login lockout.",
+        "operationId": "post_passkey_login_finish",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{ \"challengeId\": \"...\", \"credential\": { \"id\": \"...\", \"response\": { \"clientDataJSON\": \"...\", \"authenticatorData\": \"...\", \"signature\": \"...\", \"userHandle\": \"...\" } }, \"twoFactorCode\": \"\" }"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "msg": "Logged in successfully"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/getTwoFactorEnable": {
       "post": {
         "tags": [
@@ -8242,6 +8741,48 @@
                       "up": 0
                     }
                   ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/inbounds/report": {
+      "get": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "Download a traffic summary of the inbounds you can see (up, down, quota, expiry, client count) as an Excel workbook, PDF table or CSV. Cells starting with = + - or @ are quoted so spreadsheets do not run them.",
+        "operationId": "get_panel_api_inbounds_report",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "xlsx, pdf or csv.",
+            "schema": {
+              "type": "string",
+              "default": "xlsx"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
                 }
               }
             }
@@ -13831,7 +14372,7 @@
         "tags": [
           "Clients"
         ],
-        "summary": "Usage report of every client you can see. format=csv (default) downloads a spreadsheet-ready file with byte counts; format=html returns a printable page that can be saved as PDF from the browser. Period columns sum the per-day usage of the last days days; cells starting with = + - or @ are quoted so spreadsheets do not run them.",
+        "summary": "Usage report of every client you can see. format=csv (default) downloads a spreadsheet-ready file with byte counts; format=xlsx downloads an Excel workbook; format=pdf downloads a PDF table; format=html returns a printable page. Period columns sum the per-day usage of the last days days; cells starting with = + - or @ are quoted so spreadsheets do not run them.",
         "operationId": "get_panel_api_clients_report",
         "parameters": [
           {
@@ -13848,7 +14389,7 @@
             "name": "format",
             "in": "query",
             "required": false,
-            "description": "csv or html.",
+            "description": "csv, xlsx, pdf or html.",
             "schema": {
               "type": "string",
               "default": "csv"
@@ -19155,6 +19696,57 @@
         }
       }
     },
+    "/panel/api/sales/orders/export": {
+      "get": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Download the orders (newest first, at most 50000) as an Excel workbook, PDF table or CSV. The order token and pay link are left out; cells starting with = + - or @ are quoted so spreadsheets do not run them.",
+        "operationId": "get_panel_api_sales_orders_export",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "xlsx, pdf or csv.",
+            "schema": {
+              "type": "string",
+              "default": "xlsx"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Only orders of this status; empty exports every status.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/panel/api/sales/orders/approve/{id}": {
       "post": {
         "tags": [
@@ -19312,6 +19904,347 @@
                     "status": "pending",
                     "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f",
                     "totalGB": 53687091200,
+                    "updatedAt": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/tickets": {
+      "get": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Support tickets, most recently active first, with the total for the filter. status is open (the customer spoke last), answered or closed; empty lists all.",
+        "operationId": "get_panel_api_sales_tickets",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Only tickets in this status.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "open",
+                "answered",
+                "closed"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Page size, 1 to 200.",
+            "schema": {
+              "type": "integer",
+              "default": 200
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Rows to skip.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/TicketPage"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "items": [
+                      {
+                        "clientEmail": "alice",
+                        "createdAt": 0,
+                        "id": 1,
+                        "status": "open",
+                        "subject": "Connection drops every hour",
+                        "updatedAt": 0
+                      }
+                    ],
+                    "total": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/tickets/{id}": {
+      "get": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "One ticket with its whole conversation, oldest message first. Message bodies are plain text.",
+        "operationId": "get_panel_api_sales_tickets_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Ticket id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/TicketDetail"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "messages": [
+                      {
+                        "author": "customer",
+                        "body": "It disconnects about once an hour.",
+                        "createdAt": 0,
+                        "id": 1,
+                        "ticketId": 1
+                      }
+                    ],
+                    "ticket": {
+                      "clientEmail": "alice",
+                      "createdAt": 0,
+                      "id": 1,
+                      "status": "open",
+                      "subject": "Connection drops every hour",
+                      "updatedAt": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/tickets/reply/{id}": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Answer a ticket as an admin and mark it answered. Plain text, 1 to 2000 characters. Fails with ticket_closed on a closed ticket and ticket_invalid on an empty or oversized text.",
+        "operationId": "post_panel_api_sales_tickets_reply_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Ticket id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "description": "The reply."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/TicketDetail"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "messages": [
+                      {
+                        "author": "customer",
+                        "body": "It disconnects about once an hour.",
+                        "createdAt": 0,
+                        "id": 1,
+                        "ticketId": 1
+                      }
+                    ],
+                    "ticket": {
+                      "clientEmail": "alice",
+                      "createdAt": 0,
+                      "id": 1,
+                      "status": "open",
+                      "subject": "Connection drops every hour",
+                      "updatedAt": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/tickets/close/{id}": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Close a ticket; the customer can no longer reply to it.",
+        "operationId": "post_panel_api_sales_tickets_close_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Ticket id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/Ticket"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "clientEmail": "alice",
+                    "createdAt": 0,
+                    "id": 1,
+                    "status": "open",
+                    "subject": "Connection drops every hour",
+                    "updatedAt": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/tickets/reopen/{id}": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Take a closed ticket back to open.",
+        "operationId": "post_panel_api_sales_tickets_reopen_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Ticket id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/Ticket"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "clientEmail": "alice",
+                    "createdAt": 0,
+                    "id": 1,
+                    "status": "open",
+                    "subject": "Connection drops every hour",
                     "updatedAt": 0
                   }
                 }
@@ -19642,7 +20575,7 @@
         "tags": [
           "Sales"
         ],
-        "summary": "Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto). Secrets (the Zarinpal merchant id, the IDPay API key and the NOWPayments API key and IPN secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.",
+        "summary": "Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto, Stripe, PayPal). Secrets (the Zarinpal merchant id, the IDPay API key, the NOWPayments API key and IPN secret the Stripe secret key and webhook signing secret and the PayPal client secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.",
         "operationId": "get_panel_api_sales_config",
         "responses": {
           "200": {
@@ -19685,9 +20618,18 @@
                     "hasCryptoApiKey": false,
                     "hasCryptoIpnSecret": false,
                     "hasIdpayApiKey": false,
+                    "hasPaypalClientSecret": false,
+                    "hasStripeSecretKey": false,
+                    "hasStripeWebhookSecret": false,
                     "hasZarinpalMerchantId": false,
                     "idpay": {
                       "apiKey": "",
+                      "enabled": false,
+                      "sandbox": false
+                    },
+                    "paypal": {
+                      "clientId": "",
+                      "clientSecret": "",
                       "enabled": false,
                       "sandbox": false
                     },
@@ -19697,6 +20639,12 @@
                       "bonusPercent": 10,
                       "enabled": false
                     },
+                    "stripe": {
+                      "enabled": false,
+                      "secretKey": "",
+                      "webhookSecret": ""
+                    },
+                    "telegramShop": false,
                     "walletEnabled": false,
                     "zarinpal": {
                       "enabled": false,
@@ -19716,7 +20664,7 @@
         "tags": [
           "Sales"
         ],
-        "summary": "Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay or crypto section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.",
+        "summary": "Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay, crypto, Stripe or PayPal section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret, stripe.secretKey, stripe.webhookSecret, paypal.clientSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.",
         "operationId": "post_panel_api_sales_config_save",
         "requestBody": {
           "required": true,
@@ -19989,7 +20937,7 @@
                   },
                   "gateway": {
                     "type": "string",
-                    "description": "Payment method: card, zarinpal, idpay, crypto or wallet. A wallet payment is for renewals only, needs proof and is delivered at once."
+                    "description": "Payment method: card, zarinpal, idpay, crypto, stripe, paypal or wallet. A wallet payment is for renewals only, needs proof and is delivered at once."
                   },
                   "discountCode": {
                     "type": "string",
@@ -20215,12 +21163,365 @@
         }
       }
     },
+    "/shop/api/tickets": {
+      "get": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "The support tickets of an account, most recently active first, for whoever proves the account: the client subscription id (email and proof) or one of its order tokens (order). A wrong proof answers proof_invalid.",
+        "operationId": "get_shop_api_tickets",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "description": "Client username; with proof.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "proof",
+            "in": "query",
+            "required": false,
+            "description": "The client subscription id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "An order token of the client, instead of email and proof.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Ticket"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "clientEmail": "alice",
+                      "createdAt": 0,
+                      "id": 1,
+                      "status": "open",
+                      "subject": "Connection drops every hour",
+                      "updatedAt": 0
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "Open a ticket. subject is up to 120 characters and body up to 2000, both plain text (control and direction-override characters are dropped, markup is kept as literal text). Limits: 5 unclosed tickets and 20 customer messages per hour per account (ticket_limit, rate_limited). Admins are notified through the ticket.opened event.",
+        "operationId": "post_shop_api_tickets",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Client username; with proof."
+                  },
+                  "proof": {
+                    "type": "string",
+                    "description": "The client subscription id."
+                  },
+                  "order": {
+                    "type": "string",
+                    "description": "An order token of the client, instead of email and proof."
+                  },
+                  "subject": {
+                    "type": "string",
+                    "description": ""
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": ""
+                  }
+                },
+                "required": [
+                  "subject",
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/TicketDetail"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "messages": [
+                      {
+                        "author": "customer",
+                        "body": "It disconnects about once an hour.",
+                        "createdAt": 0,
+                        "id": 1,
+                        "ticketId": 1
+                      }
+                    ],
+                    "ticket": {
+                      "clientEmail": "alice",
+                      "createdAt": 0,
+                      "id": 1,
+                      "status": "open",
+                      "subject": "Connection drops every hour",
+                      "updatedAt": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/api/tickets/{id}": {
+      "get": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "One ticket of the account with its conversation. Another account ticket answers ticket_not_found.",
+        "operationId": "get_shop_api_tickets_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Ticket id.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "description": "Client username; with proof.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "proof",
+            "in": "query",
+            "required": false,
+            "description": "The client subscription id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "An order token of the client, instead of email and proof.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/TicketDetail"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "messages": [
+                      {
+                        "author": "customer",
+                        "body": "It disconnects about once an hour.",
+                        "createdAt": 0,
+                        "id": 1,
+                        "ticketId": 1
+                      }
+                    ],
+                    "ticket": {
+                      "clientEmail": "alice",
+                      "createdAt": 0,
+                      "id": 1,
+                      "status": "open",
+                      "subject": "Connection drops every hour",
+                      "updatedAt": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/api/tickets/{id}/reply": {
+      "post": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "Add a message to a ticket and leave it open for the admins (ticket.replied event). A closed ticket answers ticket_closed.",
+        "operationId": "post_shop_api_tickets_id_reply",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Ticket id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Client username; with proof."
+                  },
+                  "proof": {
+                    "type": "string",
+                    "description": "The client subscription id."
+                  },
+                  "order": {
+                    "type": "string",
+                    "description": "An order token of the client, instead of email and proof."
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": ""
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/TicketDetail"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "messages": [
+                      {
+                        "author": "customer",
+                        "body": "It disconnects about once an hour.",
+                        "createdAt": 0,
+                        "id": 1,
+                        "ticketId": 1
+                      }
+                    ],
+                    "ticket": {
+                      "clientEmail": "alice",
+                      "createdAt": 0,
+                      "id": 1,
+                      "status": "open",
+                      "subject": "Connection drops every hour",
+                      "updatedAt": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/shop/api/callback/{gateway}": {
       "get": {
         "tags": [
           "Public Shop"
         ],
-        "summary": "Where Zarinpal (Status and Authority in the query) and IDPay (a form POST, see the POST entry) send the customer back. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.",
+        "summary": "Where Zarinpal (Status and Authority in the query), IDPay (a form POST, see the POST entry), Stripe Checkout and PayPal (success URL, or cancel=1 when the customer backs out) send the customer back. For PayPal the shop also captures the approved order here, after checking it is the order it created for the exact price. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.",
         "operationId": "get_shop_api_callback_gateway",
         "parameters": [
           {
@@ -20232,7 +21533,9 @@
               "type": "string",
               "enum": [
                 "zarinpal",
-                "idpay"
+                "idpay",
+                "stripe",
+                "paypal"
               ]
             }
           },
@@ -20362,6 +21665,47 @@
         }
       }
     },
+    "/shop/api/webhook/stripe": {
+      "post": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "Stripe webhook (add it as an endpoint for checkout.session.completed and checkout.session.async_payment_succeeded). The Stripe-Signature header must carry an HMAC-SHA256 of timestamp.body keyed with the webhook signing secret and a timestamp within 5 minutes; anything else answers 401 and changes nothing. The event only names the order: the shop reads the Checkout Session back from Stripe and delivers only when it is paid for the order amount and currency. A paid session for another amount is parked in review; a payment arriving after the customer backed out is parked in review instead of being lost. A replayed event delivers nothing twice. Events the shop does not use answer 200, a Stripe outage or internal failure 500 so Stripe retries. Stripe plans must be priced in USD or EUR.",
+        "operationId": "post_shop_api_webhook_stripe",
+        "parameters": [
+          {
+            "name": "Stripe-Signature",
+            "in": "header",
+            "required": true,
+            "description": "Stripe signature header (t=timestamp,v1=signature).",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/panel/api/admins/me": {
       "get": {
         "tags": [
@@ -20402,6 +21746,97 @@
                     "role": "operator",
                     "tgChatId": 123456789,
                     "username": "support"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/admins/me/dashboardLayout": {
+      "get": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "The signed-in admin's overview layout: widget order, hidden widgets and column spans. Empty widgets means the default layout.",
+        "operationId": "get_panel_api_admins_me_dashboardLayout",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/DashboardLayout"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "widgets": [
+                      {
+                        "hidden": false,
+                        "id": "clientGeo",
+                        "span": 6
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admins"
+        ],
+        "summary": "Replace the signed-in admin's overview layout. Spans are 1 to 12 grid columns, ids must be unique, at most 40 widgets.",
+        "operationId": "post_panel_api_admins_me_dashboardLayout",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "widgets": [
+                  {
+                    "id": "clientGeo",
+                    "hidden": false,
+                    "span": 6
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
                   }
                 }
               }
@@ -20678,11 +22113,16 @@
                 "example": {
                   "success": true,
                   "obj": {
+                    "approvalActions": [
+                      ""
+                    ],
                     "backupPassphrase": "",
                     "captchaEnable": false,
                     "clearBackupPassphrase": false,
                     "hasBackupPassphrase": false,
                     "newLocationAlert": false,
+                    "passkeyLoginEnable": false,
+                    "passkeySecondFactor": false,
                     "rotateSubSigningKey": false,
                     "subSigningEnable": false,
                     "subSigningKey": "",
@@ -20700,7 +22140,7 @@
         "tags": [
           "Extra security"
         ],
-        "summary": "Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.",
+        "summary": "Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); passkeyLoginEnable allows passwordless sign-in with a user-verifying passkey and passkeySecondFactor asks admins who have passkeys for one after the password; approvalActions lists the actions that need approval by a second admin; subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.",
         "operationId": "post_panel_api_security_config_save",
         "requestBody": {
           "required": true,
@@ -20887,6 +22327,438 @@
                       "type": "string"
                     },
                     "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/passkeys/list": {
+      "get": {
+        "tags": [
+          "Passkeys"
+        ],
+        "summary": "The caller's registered passkeys (name, creation and last-use time).",
+        "operationId": "get_panel_api_passkeys_list",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Passkey"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "createdAt": 1760684400000,
+                      "id": 1,
+                      "lastUsedAt": 1760684400000,
+                      "name": "YubiKey",
+                      "userId": 1
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/passkeys/register/begin": {
+      "post": {
+        "tags": [
+          "Passkeys"
+        ],
+        "summary": "Start a registration ceremony. Returns the navigator.credentials.create() options and a single-use challengeId valid for five minutes.",
+        "operationId": "post_panel_api_passkeys_register_begin",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{ \"password\": \"current account password\" }"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/passkeys/register/finish": {
+      "post": {
+        "tags": [
+          "Passkeys"
+        ],
+        "summary": "Finish the registration: the origin, RP ID, challenge and presence flag are verified, then the public key is stored.",
+        "operationId": "post_panel_api_passkeys_register_finish",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{ \"challengeId\": \"...\", \"name\": \"YubiKey\", \"credential\": { \"id\": \"...\", \"response\": { \"clientDataJSON\": \"...\", \"attestationObject\": \"...\" } } }"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/Passkey"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "createdAt": 1760684400000,
+                    "id": 1,
+                    "lastUsedAt": 1760684400000,
+                    "name": "YubiKey",
+                    "userId": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/passkeys/del/{id}": {
+      "post": {
+        "tags": [
+          "Passkeys"
+        ],
+        "summary": "Remove one of the caller's own passkeys.",
+        "operationId": "post_panel_api_passkeys_del_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Passkey id from the list.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/approvals/list": {
+      "get": {
+        "tags": [
+          "Approvals"
+        ],
+        "summary": "Open requests first, then the most recent decided ones. Owners, admins and viewers may read it.",
+        "operationId": "get_panel_api_approvals_list",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PendingAction"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "action": "inbound.delete",
+                      "decidedAt": 1760684500000,
+                      "decidedBy": 2,
+                      "decidedByName": "bob",
+                      "expiresAt": 1760770800000,
+                      "id": 7,
+                      "requestedAt": 1760684400000,
+                      "requestedBy": 1,
+                      "requestedByName": "alice",
+                      "result": "",
+                      "status": "pending",
+                      "target": "inbound #3"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/approvals/approve/{id}": {
+      "post": {
+        "tags": [
+          "Approvals"
+        ],
+        "summary": "Approve and run the request. Refused for the admin who made the request. A failing action is recorded with status failed and its error.",
+        "operationId": "post_panel_api_approvals_approve_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Request id from the list.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/PendingAction"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "action": "inbound.delete",
+                    "decidedAt": 1760684500000,
+                    "decidedBy": 2,
+                    "decidedByName": "bob",
+                    "expiresAt": 1760770800000,
+                    "id": 7,
+                    "requestedAt": 1760684400000,
+                    "requestedBy": 1,
+                    "requestedByName": "alice",
+                    "result": "",
+                    "status": "pending",
+                    "target": "inbound #3"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/approvals/reject/{id}": {
+      "post": {
+        "tags": [
+          "Approvals"
+        ],
+        "summary": "Reject the request without running it. Refused for the admin who made it.",
+        "operationId": "post_panel_api_approvals_reject_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Request id from the list.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/PendingAction"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "action": "inbound.delete",
+                    "decidedAt": 1760684500000,
+                    "decidedBy": 2,
+                    "decidedByName": "bob",
+                    "expiresAt": 1760770800000,
+                    "id": 7,
+                    "requestedAt": 1760684400000,
+                    "requestedBy": 1,
+                    "requestedByName": "alice",
+                    "result": "",
+                    "status": "pending",
+                    "target": "inbound #3"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/approvals/cancel/{id}": {
+      "post": {
+        "tags": [
+          "Approvals"
+        ],
+        "summary": "Withdraw your own pending request.",
+        "operationId": "post_panel_api_approvals_cancel_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Request id from the list.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/PendingAction"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "action": "inbound.delete",
+                    "decidedAt": 1760684500000,
+                    "decidedBy": 2,
+                    "decidedByName": "bob",
+                    "expiresAt": 1760770800000,
+                    "id": 7,
+                    "requestedAt": 1760684400000,
+                    "requestedBy": 1,
+                    "requestedByName": "alice",
+                    "result": "",
+                    "status": "pending",
+                    "target": "inbound #3"
                   }
                 }
               }

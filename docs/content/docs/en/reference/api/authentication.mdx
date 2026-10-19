@@ -30,6 +30,20 @@ _openapi:
         and panel sponsor slots. Read-only: no panel can edit sponsors."
       url: '#public-active-sponsor-placements-from-the-project-owners-sponsorsjson-fetched-from-github-cached-for-1h-entries-outside-their-fromuntil-window-are-dropped-and-a-missing-feed-means-an-empty-list-logos-are-proxied-by-the-panel-at-sponsorslogoname-used-by-the-login-page-and-panel-sponsor-slots-read-only-no-panel-can-edit-sponsors'
     - depth: 2
+      title: Returns whether passwordless passkey sign-in is enabled — used by the
+        login page to decide whether to show the passkey button.
+      url: '#returns-whether-passwordless-passkey-sign-in-is-enabled--used-by-the-login-page-to-decide-whether-to-show-the-passkey-button'
+    - depth: 2
+      title: Start a passwordless sign-in. Needs the passkey login option enabled in
+        Settings → Security. Returns navigator.credentials.get() options (user
+        verification required) and a single-use challengeId.
+      url: '#start-a-passwordless-sign-in-needs-the-passkey-login-option-enabled-in-settings--security-returns-navigatorcredentialsget-options-user-verification-required-and-a-single-use-challengeid'
+    - depth: 2
+      title: Complete a passwordless sign-in with the assertion. The owner account
+        still needs its twoFactorCode when panel 2FA is on. Failures count
+        toward the login lockout.
+      url: '#complete-a-passwordless-sign-in-with-the-assertion-the-owner-account-still-needs-its-twofactorcode-when-panel-2fa-is-on-failures-count-toward-the-login-lockout'
+    - depth: 2
       title: Returns whether 2FA is enabled on the panel — used by the login page to
         decide whether to show the OTP field.
       url: '#returns-whether-2fa-is-enabled-on-the-panel--used-by-the-login-page-to-decide-whether-to-show-the-otp-field'
@@ -53,6 +67,17 @@ _openapi:
           the login page and panel sponsor slots. Read-only: no panel can edit
           sponsors."
         id: public-active-sponsor-placements-from-the-project-owners-sponsorsjson-fetched-from-github-cached-for-1h-entries-outside-their-fromuntil-window-are-dropped-and-a-missing-feed-means-an-empty-list-logos-are-proxied-by-the-panel-at-sponsorslogoname-used-by-the-login-page-and-panel-sponsor-slots-read-only-no-panel-can-edit-sponsors
+      - content: Returns whether passwordless passkey sign-in is enabled — used by the
+          login page to decide whether to show the passkey button.
+        id: returns-whether-passwordless-passkey-sign-in-is-enabled--used-by-the-login-page-to-decide-whether-to-show-the-passkey-button
+      - content: Start a passwordless sign-in. Needs the passkey login option enabled in
+          Settings → Security. Returns navigator.credentials.get() options (user
+          verification required) and a single-use challengeId.
+        id: start-a-passwordless-sign-in-needs-the-passkey-login-option-enabled-in-settings--security-returns-navigatorcredentialsget-options-user-verification-required-and-a-single-use-challengeid
+      - content: Complete a passwordless sign-in with the assertion. The owner account
+          still needs its twoFactorCode when panel 2FA is on. Failures count
+          toward the login lockout.
+        id: complete-a-passwordless-sign-in-with-the-assertion-the-owner-account-still-needs-its-twofactorcode-when-panel-2fa-is-on-failures-count-toward-the-login-lockout
       - content: Returns whether 2FA is enabled on the panel — used by the login page to
           decide whether to show the OTP field.
         id: returns-whether-2fa-is-enabled-on-the-panel--used-by-the-login-page-to-decide-whether-to-show-the-otp-field
@@ -68,7 +93,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/login","method":"post"},{"path":"/logout","method":"post"},{"path":"/csrf-token","method":"get"},{"path":"/sponsors","method":"get"},{"path":"/getTwoFactorEnable","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/login","method":"post"},{"path":"/logout","method":"post"},{"path":"/csrf-token","method":"get"},{"path":"/sponsors","method":"get"},{"path":"/passkey/login/status","method":"post"},{"path":"/passkey/login/begin","method":"post"},{"path":"/passkey/login/finish","method":"post"},{"path":"/getTwoFactorEnable","method":"post"}]} showTitle />
     </>
   );
 }

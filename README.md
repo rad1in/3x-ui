@@ -38,7 +38,7 @@ The first rows are shared with 3x-ui; the rest exist only in Eternal. The compar
 | SSTP (Windows built-in VPN) and OpenConnect/AnyConnect | ✅ | ❌ |
 | SSH tunnel accounts with metered traffic | ✅ | ❌ |
 | Built-in shop: plans, orders, public purchase page | ✅ | ❌ |
-| Card-to-card, Zarinpal, IDPay and crypto (NOWPayments) payments | ✅ | ❌ |
+| Card-to-card, Zarinpal, IDPay, crypto (NOWPayments), Stripe and PayPal payments | ✅ | ❌ |
 | Customer wallet, discount codes, referral bonus | ✅ | ❌ |
 | Reseller panels: separate isolated panels with their own login, address and quotas | ✅ | ❌ |
 | Roles and per-admin scoping (RBAC), admin sessions | ✅ | ❌ |
@@ -73,7 +73,7 @@ On top of everything 3x-ui provides (VLESS, VMess, Trojan, Shadowsocks, REALITY,
 
 **Selling and billing**
 - Plans, orders and a public purchase page that needs no panel login
-- Card-to-card payments with admin approval, Zarinpal, IDPay and NOWPayments (crypto)
+- Card-to-card payments with admin approval, Zarinpal, IDPay, NOWPayments (crypto), Stripe and PayPal
 - Customer wallet, discount codes and referral bonuses
 - Reseller panels: separate isolated panels with their own login, address and quotas
 - Client transfer between admins

@@ -220,11 +220,12 @@ _openapi:
       url: '#import-the-users-of-another-panel-from-its-user-export-and-attach-them-to-the-given-inbounds-source-is-marzban-get-apiusers-marzneshin-get-apiusers-or-hiddify-admin-users-list-data-is-the-export-text-uuids-passwords-quotas-expiry-including-on-hold-and-start-on-first-use-as-a-delayed-start-reset-cycle-notes-and-used-traffic-are-carried-over-existing-emails-are-skipped-subscription-links-of-the-old-panel-do-not-carry-over-users-that-could-only-be-approximated-are-listed-under-warnings'
     - depth: 2
       title: Usage report of every client you can see. format=csv (default) downloads
-        a spreadsheet-ready file with byte counts; format=html returns a
-        printable page that can be saved as PDF from the browser. Period columns
-        sum the per-day usage of the last days days; cells starting with = + -
-        or @ are quoted so spreadsheets do not run them.
-      url: '#usage-report-of-every-client-you-can-see-formatcsv-default-downloads-a-spreadsheet-ready-file-with-byte-counts-formathtml-returns-a-printable-page-that-can-be-saved-as-pdf-from-the-browser-period-columns-sum-the-per-day-usage-of-the-last-days-days-cells-starting-with-----or--are-quoted-so-spreadsheets-do-not-run-them'
+        a spreadsheet-ready file with byte counts; format=xlsx downloads an
+        Excel workbook; format=pdf downloads a PDF table; format=html returns a
+        printable page. Period columns sum the per-day usage of the last days
+        days; cells starting with = + - or @ are quoted so spreadsheets do not
+        run them.
+      url: '#usage-report-of-every-client-you-can-see-formatcsv-default-downloads-a-spreadsheet-ready-file-with-byte-counts-formatxlsx-downloads-an-excel-workbook-formatpdf-downloads-a-pdf-table-formathtml-returns-a-printable-page-period-columns-sum-the-per-day-usage-of-the-last-days-days-cells-starting-with-----or--are-quoted-so-spreadsheets-do-not-run-them'
     - depth: 2
       title: Countries the currently connected clients come from, looked up in the
         geoip.dat of the Xray folder. An address counts as connected when it was
@@ -588,11 +589,12 @@ _openapi:
           approximated are listed under warnings.
         id: import-the-users-of-another-panel-from-its-user-export-and-attach-them-to-the-given-inbounds-source-is-marzban-get-apiusers-marzneshin-get-apiusers-or-hiddify-admin-users-list-data-is-the-export-text-uuids-passwords-quotas-expiry-including-on-hold-and-start-on-first-use-as-a-delayed-start-reset-cycle-notes-and-used-traffic-are-carried-over-existing-emails-are-skipped-subscription-links-of-the-old-panel-do-not-carry-over-users-that-could-only-be-approximated-are-listed-under-warnings
       - content: Usage report of every client you can see. format=csv (default)
-          downloads a spreadsheet-ready file with byte counts; format=html
-          returns a printable page that can be saved as PDF from the browser.
-          Period columns sum the per-day usage of the last days days; cells
-          starting with = + - or @ are quoted so spreadsheets do not run them.
-        id: usage-report-of-every-client-you-can-see-formatcsv-default-downloads-a-spreadsheet-ready-file-with-byte-counts-formathtml-returns-a-printable-page-that-can-be-saved-as-pdf-from-the-browser-period-columns-sum-the-per-day-usage-of-the-last-days-days-cells-starting-with-----or--are-quoted-so-spreadsheets-do-not-run-them
+          downloads a spreadsheet-ready file with byte counts; format=xlsx
+          downloads an Excel workbook; format=pdf downloads a PDF table;
+          format=html returns a printable page. Period columns sum the per-day
+          usage of the last days days; cells starting with = + - or @ are quoted
+          so spreadsheets do not run them.
+        id: usage-report-of-every-client-you-can-see-formatcsv-default-downloads-a-spreadsheet-ready-file-with-byte-counts-formatxlsx-downloads-an-excel-workbook-formatpdf-downloads-a-pdf-table-formathtml-returns-a-printable-page-period-columns-sum-the-per-day-usage-of-the-last-days-days-cells-starting-with-----or--are-quoted-so-spreadsheets-do-not-run-them
       - content: Countries the currently connected clients come from, looked up in the
           geoip.dat of the Xray folder. An address counts as connected when it
           was seen in the last two minutes. available is false when no geoip

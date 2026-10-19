@@ -19,8 +19,10 @@ func (s *OrderService) deliver(inboundSvc *InboundService, order *model.Order) (
 	}
 	sold := *tpl
 	sold.TotalGB, sold.ExpiryDays, sold.LimitIP = order.TotalGB, order.DurationDays, order.LimitIP
+	client := templateClient(&sold, order.ClientEmail, time.Now().UnixMilli())
+	client.TgID = order.TgId
 	return s.clients.Create(inboundSvc, &ClientCreatePayload{
-		Client:     templateClient(&sold, order.ClientEmail, time.Now().UnixMilli()),
+		Client:     client,
 		InboundIds: append([]int(nil), tpl.InboundIds...),
 	})
 }

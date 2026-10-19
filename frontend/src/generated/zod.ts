@@ -868,6 +868,18 @@ export const CryptoConfigSchema = z.object({
 });
 export type CryptoConfig = z.infer<typeof CryptoConfigSchema>;
 
+export const DashboardLayoutSchema = z.object({
+  widgets: z.array(z.lazy(() => DashboardWidgetSchema)),
+});
+export type DashboardLayout = z.infer<typeof DashboardLayoutSchema>;
+
+export const DashboardWidgetSchema = z.object({
+  hidden: z.boolean(),
+  id: z.string(),
+  span: z.number().int(),
+});
+export type DashboardWidget = z.infer<typeof DashboardWidgetSchema>;
+
 export const DiscountCodeSchema = z.object({
   code: z.string(),
   createdAt: z.number().int(),
@@ -1486,6 +1498,23 @@ export const PanelUpdateStatusSchema = z.object({
 });
 export type PanelUpdateStatus = z.infer<typeof PanelUpdateStatusSchema>;
 
+export const PasskeySchema = z.object({
+  createdAt: z.number().int(),
+  id: z.number().int(),
+  lastUsedAt: z.number().int(),
+  name: z.string(),
+  userId: z.number().int(),
+});
+export type Passkey = z.infer<typeof PasskeySchema>;
+
+export const PayPalConfigSchema = z.object({
+  clientId: z.string(),
+  clientSecret: z.string(),
+  enabled: z.boolean(),
+  sandbox: z.boolean(),
+});
+export type PayPalConfig = z.infer<typeof PayPalConfigSchema>;
+
 export const PeerActivitySchema = z.object({
   allowedIPs: z.string(),
   down: z.number().int(),
@@ -1499,6 +1528,22 @@ export const PeerActivitySchema = z.object({
   up: z.number().int(),
 });
 export type PeerActivity = z.infer<typeof PeerActivitySchema>;
+
+export const PendingActionSchema = z.object({
+  action: z.string(),
+  decidedAt: z.number().int(),
+  decidedBy: z.number().int(),
+  decidedByName: z.string(),
+  expiresAt: z.number().int(),
+  id: z.number().int(),
+  requestedAt: z.number().int(),
+  requestedBy: z.number().int(),
+  requestedByName: z.string(),
+  result: z.string(),
+  status: z.string(),
+  target: z.string(),
+});
+export type PendingAction = z.infer<typeof PendingActionSchema>;
 
 export const PlanSchema = z.object({
   createdAt: z.number().int(),
@@ -1595,9 +1640,12 @@ export const SalesConfigSchema = z.object({
   clearSecrets: z.array(z.string()).optional(),
   crypto: z.lazy(() => CryptoConfigSchema),
   idpay: z.lazy(() => IDPayConfigSchema),
+  paypal: z.lazy(() => PayPalConfigSchema),
   publicBaseUrl: z.string(),
   publicEnabled: z.boolean(),
   referral: z.lazy(() => ReferralConfigSchema),
+  stripe: z.lazy(() => StripeConfigSchema),
+  telegramShop: z.boolean(),
   walletEnabled: z.boolean(),
   zarinpal: z.lazy(() => ZarinpalConfigSchema),
 });
@@ -1610,21 +1658,30 @@ export const SalesConfigViewSchema = z.object({
   hasCryptoApiKey: z.boolean(),
   hasCryptoIpnSecret: z.boolean(),
   hasIdpayApiKey: z.boolean(),
+  hasPaypalClientSecret: z.boolean(),
+  hasStripeSecretKey: z.boolean(),
+  hasStripeWebhookSecret: z.boolean(),
   hasZarinpalMerchantId: z.boolean(),
   idpay: z.lazy(() => IDPayConfigSchema),
+  paypal: z.lazy(() => PayPalConfigSchema),
   publicBaseUrl: z.string(),
   publicEnabled: z.boolean(),
   referral: z.lazy(() => ReferralConfigSchema),
+  stripe: z.lazy(() => StripeConfigSchema),
+  telegramShop: z.boolean(),
   walletEnabled: z.boolean(),
   zarinpal: z.lazy(() => ZarinpalConfigSchema),
 });
 export type SalesConfigView = z.infer<typeof SalesConfigViewSchema>;
 
 export const SecurityConfigSchema = z.object({
+  approvalActions: z.array(z.string()),
   backupPassphrase: z.string(),
   captchaEnable: z.boolean(),
   clearBackupPassphrase: z.boolean().optional(),
   newLocationAlert: z.boolean(),
+  passkeyLoginEnable: z.boolean(),
+  passkeySecondFactor: z.boolean(),
   rotateSubSigningKey: z.boolean().optional(),
   subSigningEnable: z.boolean(),
   subSigningKey: z.string(),
@@ -1633,11 +1690,14 @@ export const SecurityConfigSchema = z.object({
 export type SecurityConfig = z.infer<typeof SecurityConfigSchema>;
 
 export const SecurityConfigViewSchema = z.object({
+  approvalActions: z.array(z.string()),
   backupPassphrase: z.string(),
   captchaEnable: z.boolean(),
   clearBackupPassphrase: z.boolean().optional(),
   hasBackupPassphrase: z.boolean(),
   newLocationAlert: z.boolean(),
+  passkeyLoginEnable: z.boolean(),
+  passkeySecondFactor: z.boolean(),
   rotateSubSigningKey: z.boolean().optional(),
   subSigningEnable: z.boolean(),
   subSigningKey: z.string(),
@@ -1786,6 +1846,13 @@ export const SponsorListSchema = z.object({
 });
 export type SponsorList = z.infer<typeof SponsorListSchema>;
 
+export const StripeConfigSchema = z.object({
+  enabled: z.boolean(),
+  secretKey: z.string(),
+  webhookSecret: z.string(),
+});
+export type StripeConfig = z.infer<typeof StripeConfigSchema>;
+
 export const SubBalancerSchema = z.object({
   createdAt: z.number().int(),
   enabled: z.boolean(),
@@ -1814,6 +1881,37 @@ export const SubShortLinkViewSchema = z.object({
   url: z.string(),
 });
 export type SubShortLinkView = z.infer<typeof SubShortLinkViewSchema>;
+
+export const TicketSchema = z.object({
+  clientEmail: z.string(),
+  createdAt: z.number().int(),
+  id: z.number().int(),
+  status: z.string(),
+  subject: z.string(),
+  updatedAt: z.number().int(),
+});
+export type Ticket = z.infer<typeof TicketSchema>;
+
+export const TicketDetailSchema = z.object({
+  messages: z.array(z.lazy(() => TicketMessageSchema)),
+  ticket: z.lazy(() => TicketSchema),
+});
+export type TicketDetail = z.infer<typeof TicketDetailSchema>;
+
+export const TicketMessageSchema = z.object({
+  author: z.string(),
+  body: z.string(),
+  createdAt: z.number().int(),
+  id: z.number().int(),
+  ticketId: z.number().int(),
+});
+export type TicketMessage = z.infer<typeof TicketMessageSchema>;
+
+export const TicketPageSchema = z.object({
+  items: z.array(z.lazy(() => TicketSchema)),
+  total: z.number().int(),
+});
+export type TicketPage = z.infer<typeof TicketPageSchema>;
 
 export const TrafficSchema = z.object({
   Down: z.number().int(),

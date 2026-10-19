@@ -18,6 +18,8 @@ import {
 import {
   ApiOutlined,
   EyeInvisibleOutlined,
+  AuditOutlined,
+  KeyOutlined,
   LockOutlined,
   SafetyOutlined,
   UserOutlined,
@@ -28,6 +30,8 @@ import { SettingListItem } from '@/components/ui';
 import { onNumber } from '@/utils/onNumber';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { catTabLabel } from './catTabLabel';
+import ApprovalsPanel from './ApprovalsPanel';
+import PasskeysPanel from './PasskeysPanel';
 import SecurityExtraPanel from './SecurityExtraPanel';
 import TwoFactorModal from './TwoFactorModal';
 import './SecurityTab.css';
@@ -538,6 +542,20 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
               isMobile,
             ),
             children: <SecurityExtraPanel />,
+          },
+          {
+            key: '7',
+            label: catTabLabel(
+              <KeyOutlined />,
+              t('pages.settings.security.passkeys.title'),
+              isMobile,
+            ),
+            children: <PasskeysPanel />,
+          },
+          {
+            key: '8',
+            label: catTabLabel(<AuditOutlined />, t('pages.approvals.title'), isMobile),
+            children: <ApprovalsPanel />,
           },
         ]}
       />

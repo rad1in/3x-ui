@@ -147,6 +147,9 @@ func (s *UserService) DeleteAdmin(actorId, id int) error {
 		if err := tx.Where("user_id = ?", id).Delete(&model.AdminSession{}).Error; err != nil {
 			return err
 		}
+		if err := tx.Where("user_id = ?", id).Delete(&model.Passkey{}).Error; err != nil {
+			return err
+		}
 		return tx.Delete(&model.User{}, id).Error
 	})
 }

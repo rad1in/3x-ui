@@ -8,6 +8,7 @@ import { useTheme } from '@/hooks/useTheme';
 import CheckoutForm from './CheckoutForm';
 import OrderStatus from './OrderStatus';
 import PlanList from './PlanList';
+import SupportTickets from './SupportTickets';
 import './ShopPage.css';
 
 const POLL_MS = 5000;
@@ -96,6 +97,7 @@ export default function ShopPage() {
               )}
             </>
           )}
+          {!booting && <SupportTickets orderToken={order?.token ?? ''} />}
         </Layout.Content>
       </Layout>
     </ConfigProvider>

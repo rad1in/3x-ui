@@ -4,6 +4,8 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/crypto/nodetoken"
@@ -23,10 +25,17 @@ type SecurityConfig struct {
 	// voids every link issued so far.
 	// TgLoginEnable asks admins with a linked Telegram chat for a one-time code
 	// after the password, while the Telegram bot is running.
-	TgLoginEnable       bool   `json:"tgLoginEnable"`
-	SubSigningEnable    bool   `json:"subSigningEnable"`
-	SubSigningKey       string `json:"subSigningKey"`
-	RotateSubSigningKey bool   `json:"rotateSubSigningKey,omitempty"`
+	TgLoginEnable bool `json:"tgLoginEnable"`
+	// PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;
+	// PasskeySecondFactor asks admins who have passkeys for one after the password.
+	// ApprovalActions lists the sensitive actions that need a second admin's
+	// approval (see ApprovalActions); empty turns the gate off.
+	ApprovalActions     []string `json:"approvalActions"`
+	PasskeyLoginEnable  bool     `json:"passkeyLoginEnable"`
+	PasskeySecondFactor bool     `json:"passkeySecondFactor"`
+	SubSigningEnable    bool     `json:"subSigningEnable"`
+	SubSigningKey       string   `json:"subSigningKey"`
+	RotateSubSigningKey bool     `json:"rotateSubSigningKey,omitempty"`
 }
 
 // SecurityConfigView is the configuration as the admin API serves it: secrets
@@ -77,6 +86,11 @@ func (s *SecurityConfigService) GetView() (*SecurityConfigView, error) {
 }
 
 func (s *SecurityConfigService) Save(cfg *SecurityConfig) error {
+	for _, a := range cfg.ApprovalActions {
+		if !slices.Contains(ApprovalActions, a) {
+			return fmt.Errorf("unknown approval action %q", a)
+		}
+	}
 	existing, err := s.Get()
 	if err != nil {
 		return err

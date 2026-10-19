@@ -46,11 +46,17 @@ var ownerOnlyRoutes = map[string]bool{
 
 // selfServiceRoutes act only on the caller's own account, so every role may use them.
 var selfServiceRoutes = map[string]bool{
-	"GET /admins/me":            true,
-	"GET /sessions/list":        true,
-	"POST /sessions/revoke/:id": true,
-	"POST /sessions/revokeAll":  true,
-	"POST /setting/updateUser":  true,
+	"GET /admins/me":                  true,
+	"GET /admins/me/dashboardLayout":  true,
+	"POST /admins/me/dashboardLayout": true,
+	"GET /sessions/list":              true,
+	"POST /sessions/revoke/:id":       true,
+	"POST /sessions/revokeAll":        true,
+	"GET /passkeys/list":              true,
+	"POST /passkeys/register/begin":   true,
+	"POST /passkeys/register/finish":  true,
+	"POST /passkeys/del/:id":          true,
+	"POST /setting/updateUser":        true,
 }
 
 // operatorRule decides one operator request; body is the raw JSON request body.

@@ -28,6 +28,8 @@ export const EVENT_GROUPS: NotificationGroupConfig[] = [
       { key: 'report.weekly', label: 'eventWeeklyReport', settingKey: '' },
       { key: 'login.new_location', label: 'eventLoginNewLocation', settingKey: '' },
       { key: 'client.shared_account', label: 'eventClientSharedAccount', settingKey: '' },
+      { key: 'ticket.opened', label: 'eventTicketOpened', settingKey: '' },
+      { key: 'ticket.replied', label: 'eventTicketReplied', settingKey: '' },
     ],
   },
   {

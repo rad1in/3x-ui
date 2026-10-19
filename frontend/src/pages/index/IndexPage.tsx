@@ -1,8 +1,12 @@
 import { lazy, useCallback, useEffect, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Alert, Button, ConfigProvider, Layout, Modal, Result, Spin, message } from 'antd';
 import {
+  CheckOutlined,
   CopyOutlined,
+  LayoutOutlined,
+  UndoOutlined,
   CloudDownloadOutlined,
   DashboardOutlined,
   DatabaseOutlined,
@@ -29,6 +33,9 @@ import OverviewActionBar from './OverviewActionBar';
 import VitalTile from './VitalTile';
 import ThroughputCard from './ThroughputCard';
 import ConnectionsCard from './ConnectionsCard';
+import DashboardGrid from './DashboardGrid';
+import { useDashboardLayout } from './useDashboardLayout';
+import type { WidgetId } from './dashboardLayout';
 import ClientsInsightCard from './ClientsInsightCard';
 import HealthCard from './HealthCard';
 import ClientGeoCard from './ClientGeoCard';
@@ -82,6 +89,9 @@ export default function IndexPage() {
   const [configText, setConfigText] = useState('');
   const [loading, setLoading] = useState(false);
   const [loadingTip, setLoadingTip] = useState(t('loading'));
+
+  const { widgets, update: updateLayout, reset: resetLayout } = useDashboardLayout();
+  const [editing, setEditing] = useState(false);
 
   const history = useOverviewHistory(status, fetched && !fetchError);
 
@@ -175,6 +185,88 @@ export default function IndexPage() {
     return null;
   }, [status, t]);
 
+  const widgetContent: Partial<Record<WidgetId, ReactNode>> = {
+    vitals: isHosted ? undefined : (
+      <div className="ov-vitals">
+        <VitalTile
+          icon={<DashboardOutlined />}
+          label={t('pages.index.cpu')}
+          percent={status.cpu.percent}
+          statusColor={status.cpu.color}
+          detail={`${CPUFormatter.cpuCoreFormat(status.cpuCores)} / ${status.logicalPro}T · ${CPUFormatter.cpuSpeedFormat(status.cpuSpeedMhz)}`}
+          footLeft={`${t('pages.index.avg')} ${mean(history.series.cpu).toFixed(0)}%`}
+          footRight={`${t('pages.index.peak')} ${peak(history.series.cpu).toFixed(0)}%`}
+          data={history.series.cpu}
+          isMobile={isMobile}
+        />
+        <VitalTile
+          icon={<DatabaseOutlined />}
+          label={t('pages.index.memory')}
+          percent={status.mem.percent}
+          statusColor={status.mem.color}
+          detail={`${SizeFormatter.sizeFormat(status.mem.current)} / ${SizeFormatter.sizeFormat(status.mem.total)}`}
+          footLeft={`${t('pages.index.avg')} ${mean(history.series.mem).toFixed(0)}%`}
+          footRight={`${t('pages.index.peak')} ${peak(history.series.mem).toFixed(0)}%`}
+          data={history.series.mem}
+          isMobile={isMobile}
+        />
+        <VitalTile
+          icon={<SwapOutlined />}
+          label={t('pages.index.swap')}
+          percent={status.swap.percent}
+          statusColor={status.swap.color}
+          detail={`${SizeFormatter.sizeFormat(status.swap.current)} / ${SizeFormatter.sizeFormat(status.swap.total)}`}
+          footLeft={`${t('pages.index.avg')} ${mean(history.series.swap).toFixed(1)}%`}
+          footRight={`${t('pages.index.peak')} ${peak(history.series.swap).toFixed(0)}%`}
+          data={history.series.swap}
+          isMobile={isMobile}
+        />
+        <VitalTile
+          icon={<HddOutlined />}
+          label={t('pages.index.storage')}
+          percent={status.disk.percent}
+          statusColor={status.disk.color}
+          detail={`${SizeFormatter.sizeFormat(status.disk.current)} / ${SizeFormatter.sizeFormat(totalDisk)}`}
+          footLeft={`${t('pages.index.free')} ${SizeFormatter.sizeFormat(freeDisk)}`}
+          footRight={`${t('pages.index.avg')} ${mean(history.series.diskUsage).toFixed(1)}%`}
+          data={history.series.diskUsage}
+          isMobile={isMobile}
+        />
+      </div>
+    ),
+    traffic: isHosted ? undefined : (
+      <div className="ov-mid">
+        <ThroughputCard
+          status={status}
+          up={history.series.netUp}
+          down={history.series.netDown}
+          labels={history.labels}
+          isMobile={isMobile}
+        />
+        <ConnectionsCard
+          status={status}
+          tcp={history.series.tcpCount}
+          udp={history.series.udpCount}
+          labels={history.labels}
+          isMobile={isMobile}
+        />
+      </div>
+    ),
+    clients: <ClientsInsightCard />,
+    geo: <ClientGeoCard />,
+    protocols: <ProtocolTrafficCard />,
+    health: <HealthCard />,
+    sharedAccounts: <SharedAccountsCard />,
+    system: (
+      <SystemStrip
+        status={status}
+        showHostUptime={!isHosted}
+        showIp={showIp}
+        onToggleIp={() => setShowIp((v) => !v)}
+      />
+    ),
+  };
+
   return (
     <ConfigProvider theme={antdThemeConfig}>
       {messageContextHolder}
@@ -226,6 +318,23 @@ export default function IndexPage() {
 
                   <SponsorSlot slot="dashboard" />
 
+                  <div className="ov-customize">
+                    <Button
+                      size="small"
+                      type={editing ? 'primary' : 'default'}
+                      icon={editing ? <CheckOutlined /> : <LayoutOutlined />}
+                      aria-pressed={editing}
+                      onClick={() => setEditing((v) => !v)}
+                    >
+                      {editing ? t('pages.index.customizeDone') : t('pages.index.customize')}
+                    </Button>
+                    {editing && (
+                      <Button size="small" icon={<UndoOutlined />} onClick={resetLayout}>
+                        {t('pages.index.resetLayout')}
+                      </Button>
+                    )}
+                  </div>
+
                   {status.xray.state !== 'running' && (
                     <Alert
                       className="ov-xray-alert"
@@ -252,89 +361,11 @@ export default function IndexPage() {
 
                   <hr className="ov-rule" />
 
-                  {!isHosted && (
-                    <>
-                      <div className="ov-vitals">
-                        <VitalTile
-                          icon={<DashboardOutlined />}
-                          label={t('pages.index.cpu')}
-                          percent={status.cpu.percent}
-                          statusColor={status.cpu.color}
-                          detail={`${CPUFormatter.cpuCoreFormat(status.cpuCores)} / ${status.logicalPro}T · ${CPUFormatter.cpuSpeedFormat(status.cpuSpeedMhz)}`}
-                          footLeft={`${t('pages.index.avg')} ${mean(history.series.cpu).toFixed(0)}%`}
-                          footRight={`${t('pages.index.peak')} ${peak(history.series.cpu).toFixed(0)}%`}
-                          data={history.series.cpu}
-                          isMobile={isMobile}
-                        />
-                        <VitalTile
-                          icon={<DatabaseOutlined />}
-                          label={t('pages.index.memory')}
-                          percent={status.mem.percent}
-                          statusColor={status.mem.color}
-                          detail={`${SizeFormatter.sizeFormat(status.mem.current)} / ${SizeFormatter.sizeFormat(status.mem.total)}`}
-                          footLeft={`${t('pages.index.avg')} ${mean(history.series.mem).toFixed(0)}%`}
-                          footRight={`${t('pages.index.peak')} ${peak(history.series.mem).toFixed(0)}%`}
-                          data={history.series.mem}
-                          isMobile={isMobile}
-                        />
-                        <VitalTile
-                          icon={<SwapOutlined />}
-                          label={t('pages.index.swap')}
-                          percent={status.swap.percent}
-                          statusColor={status.swap.color}
-                          detail={`${SizeFormatter.sizeFormat(status.swap.current)} / ${SizeFormatter.sizeFormat(status.swap.total)}`}
-                          footLeft={`${t('pages.index.avg')} ${mean(history.series.swap).toFixed(1)}%`}
-                          footRight={`${t('pages.index.peak')} ${peak(history.series.swap).toFixed(0)}%`}
-                          data={history.series.swap}
-                          isMobile={isMobile}
-                        />
-                        <VitalTile
-                          icon={<HddOutlined />}
-                          label={t('pages.index.storage')}
-                          percent={status.disk.percent}
-                          statusColor={status.disk.color}
-                          detail={`${SizeFormatter.sizeFormat(status.disk.current)} / ${SizeFormatter.sizeFormat(totalDisk)}`}
-                          footLeft={`${t('pages.index.free')} ${SizeFormatter.sizeFormat(freeDisk)}`}
-                          footRight={`${t('pages.index.avg')} ${mean(history.series.diskUsage).toFixed(1)}%`}
-                          data={history.series.diskUsage}
-                          isMobile={isMobile}
-                        />
-                      </div>
-
-                      <div className="ov-mid">
-                        <ThroughputCard
-                          status={status}
-                          up={history.series.netUp}
-                          down={history.series.netDown}
-                          labels={history.labels}
-                          isMobile={isMobile}
-                        />
-                        <ConnectionsCard
-                          status={status}
-                          tcp={history.series.tcpCount}
-                          udp={history.series.udpCount}
-                          labels={history.labels}
-                          isMobile={isMobile}
-                        />
-                      </div>
-                    </>
-                  )}
-
-                  <ClientsInsightCard />
-
-                  <ClientGeoCard />
-
-                  <ProtocolTrafficCard />
-
-                  <HealthCard />
-
-                  <SharedAccountsCard />
-
-                  <SystemStrip
-                    status={status}
-                    showHostUptime={!isHosted}
-                    showIp={showIp}
-                    onToggleIp={() => setShowIp((v) => !v)}
+                  <DashboardGrid
+                    widgets={widgets}
+                    editing={editing}
+                    onChange={updateLayout}
+                    content={widgetContent}
                   />
                 </div>
               )}

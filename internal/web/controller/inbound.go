@@ -2,13 +2,14 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
-	"github.com/mhsanaei/3x-ui/v3/internal/util/wirecodec"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/middleware"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/session"
@@ -66,10 +67,9 @@ func (a *InboundController) broadcastInboundsUpdate(userId int) {
 // node-sync push, so the node stores the row instead of re-judging it.
 func (a *InboundController) inboundServiceFor(c *gin.Context) *service.InboundService {
 	svc := a.inboundService
-	scope, _ := c.Get("api_token_scope")
 	// A master enrolled with an admin token (the -getApiToken default) has no
 	// node-sync scope, so it marks every request it sends instead.
-	svc.FromNodeSync = scope == model.ApiScopeNodeSync || c.GetHeader(wirecodec.MasterPushHeader) != ""
+	svc.FromNodeSync = isNodeSyncRequest(c)
 	return &svc
 }
 
@@ -77,6 +77,7 @@ func (a *InboundController) inboundServiceFor(c *gin.Context) *service.InboundSe
 func (a *InboundController) initRouter(g *gin.RouterGroup) {
 	g.GET("/list", a.getInbounds)
 	g.GET("/list/slim", a.getInboundsSlim)
+	g.GET("/report", a.trafficReport)
 	g.GET("/options", a.getInboundOptions)
 	g.GET("/allLinks", a.getAllInboundLinks)
 	g.GET("/get/:id", a.getInbound)
@@ -112,6 +113,21 @@ func (a *InboundController) getInbounds(c *gin.Context) {
 		return
 	}
 	jsonObj(c, inbounds, nil)
+}
+
+func (a *InboundController) trafficReport(c *gin.Context) {
+	format := c.DefaultQuery("format", "xlsx")
+	if !isTableFormat(format) {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), nil)
+		return
+	}
+	inbounds, err := a.inboundService.GetInbounds(requestScope(c))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
+		return
+	}
+	now := time.Now()
+	serveTable(c, format, "inbound-traffic-"+now.Format("2006-01-02"), service.InboundTrafficTable(inbounds, now))
 }
 
 // getInboundsSlim is the list-page variant that strips full client
@@ -269,6 +285,9 @@ func (a *InboundController) delInbound(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.inboundDeleteSuccess"), err)
 		return
 	}
+	if parkForApproval(c, service.ApprovalInboundDelete, fmt.Sprintf("inbound #%d", id), service.InboundDeleteApproval{Ids: []int{id}}) {
+		return
+	}
 	needRestart, err := a.inboundService.DelInbound(id)
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
@@ -293,6 +312,9 @@ func (a *InboundController) bulkDelInbounds(c *gin.Context) {
 	var req bulkDelInboundsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	if len(req.Ids) > 0 && parkForApproval(c, service.ApprovalInboundDelete, fmt.Sprintf("%d inbounds", len(req.Ids)), service.InboundDeleteApproval{Ids: req.Ids}) {
 		return
 	}
 	result, needRestart, err := a.inboundService.DelInbounds(req.Ids)

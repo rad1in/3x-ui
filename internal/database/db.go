@@ -121,6 +121,10 @@ func allModels() []any {
 		&model.SharedAccountFlag{},
 		&model.CleanIPResult{},
 		&model.InboundRotation{},
+		&model.Ticket{},
+		&model.TicketMessage{},
+		&model.Passkey{},
+		&model.PendingAction{},
 	}
 }
 

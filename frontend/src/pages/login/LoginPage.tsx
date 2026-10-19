@@ -14,6 +14,7 @@ import {
 } from 'antd';
 import {
   KeyOutlined,
+  SafetyCertificateOutlined,
   LockOutlined,
   MoonFilled,
   MoonOutlined,
@@ -36,6 +37,7 @@ import {
   type LoginFormValues,
 } from '@/schemas/login';
 import { BrandGlyph, BrandMark } from '@/components/ui';
+import { getPasskey, passkeysSupported, type RequestOptionsJSON } from '@/lib/passkey';
 import { DEFAULT_BRAND_NAME, panelBrand } from '@/lib/brand/brand';
 import './LoginPage.css';
 
@@ -44,6 +46,13 @@ const HEADLINE_INTERVAL_MS = 2000;
 type LoginForm = LoginFormValues;
 
 const basePath = window.X_UI_BASE_PATH || '';
+const JSON_HEADERS = { headers: { 'Content-Type': 'application/json' } } as const;
+
+interface PasskeyPrompt {
+  passkeyRequired?: boolean;
+  passkeyOptions?: RequestOptionsJSON;
+  passkeyChallengeId?: string;
+}
 
 export default function LoginPage() {
   const { name: customName, logo } = panelBrand();
@@ -60,6 +69,7 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
   const [twoFactorEnable, setTwoFactorEnable] = useState(false);
   const [tgCodeRequired, setTgCodeRequired] = useState(false);
+  const [passkeyLoginEnabled, setPasskeyLoginEnabled] = useState(false);
   const [captcha, setCaptcha] = useState<{ id: string; image: string } | null>(null);
   const [headlineIndex, setHeadlineIndex] = useState(0);
   const methods = useForm<LoginForm>({
@@ -95,6 +105,10 @@ export default function LoginPage() {
       const msg = await HttpUtil.post('/getTwoFactorEnable');
       if (cancelled) return;
       if (msg.success) setTwoFactorEnable(!!msg.obj);
+      if (passkeysSupported()) {
+        const status = await HttpUtil.post('/passkey/login/status', undefined, { silent: true });
+        if (!cancelled && status?.success) setPasskeyLoginEnabled(!!status.obj);
+      }
       setFetched(true);
     })();
     return () => {
@@ -106,7 +120,23 @@ export default function LoginPage() {
     async (values: LoginForm) => {
       setSubmitting(true);
       try {
-        const msg = await HttpUtil.post('/login', { ...values, captchaId: captcha?.id ?? '' });
+        const base = { ...values, captchaId: captcha?.id ?? '' };
+        let msg = await HttpUtil.post('/login', base);
+        const prompt = msg.obj as PasskeyPrompt | null;
+        if (!msg.success && prompt?.passkeyRequired && prompt.passkeyOptions) {
+          try {
+            const credential = await getPasskey(prompt.passkeyOptions);
+            msg = await HttpUtil.post('/login', {
+              ...base,
+              passkeyChallengeId: prompt.passkeyChallengeId ?? '',
+              passkeyCredential: JSON.stringify(credential),
+            });
+          } catch {
+            messageApi.error(t('pages.login.toasts.passkeyFailed'));
+            if (captcha) await loadCaptcha();
+            return;
+          }
+        }
         if (msg.success) window.location.href = basePath + 'panel/';
         else if ((msg.obj as { tgCodeRequired?: boolean } | null)?.tgCodeRequired) {
           setTgCodeRequired(true);
@@ -119,8 +149,33 @@ export default function LoginPage() {
         setSubmitting(false);
       }
     },
-    [captcha, loadCaptcha, methods],
+    [captcha, loadCaptcha, methods, messageApi, t],
   );
+
+  const onPasskeyLogin = useCallback(async () => {
+    const twoFactorCode = methods.getValues('twoFactorCode') ?? '';
+    setSubmitting(true);
+    try {
+      const begin = await HttpUtil.post('/passkey/login/begin');
+      const obj = begin?.obj as { options?: RequestOptionsJSON; challengeId?: string } | null;
+      if (!begin?.success || !obj?.options) return;
+      let credential;
+      try {
+        credential = await getPasskey(obj.options);
+      } catch {
+        messageApi.error(t('pages.login.toasts.passkeyFailed'));
+        return;
+      }
+      const msg = await HttpUtil.post(
+        '/passkey/login/finish',
+        { challengeId: obj.challengeId, credential, twoFactorCode },
+        JSON_HEADERS,
+      );
+      if (msg.success) window.location.href = basePath + 'panel/';
+    } finally {
+      setSubmitting(false);
+    }
+  }, [methods, messageApi, t]);
 
   const onLangChange = useCallback((next: string) => {
     setLang(next);
@@ -336,6 +391,19 @@ export default function LoginPage() {
                           {t('login')}
                         </Button>
                       </Form.Item>
+                      {passkeyLoginEnabled && (
+                        <Form.Item className="submit-row">
+                          <Button
+                            block
+                            size="large"
+                            icon={<SafetyCertificateOutlined />}
+                            loading={submitting}
+                            onClick={() => void onPasskeyLogin()}
+                          >
+                            {t('pages.login.passkeyButton')}
+                          </Button>
+                        </Form.Item>
+                      )}
                     </Form>
                   </FormProvider>
                   <SponsorSlot slot="login" variant="compact" className="login-sponsor" />

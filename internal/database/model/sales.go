@@ -55,6 +55,7 @@ type Order struct {
 	Kind          string `json:"kind" gorm:"not null" example:"new"`
 	ClientEmail   string `json:"clientEmail" gorm:"column:client_email;index" example:"alice"`
 	Contact       string `json:"contact" gorm:"default:''" example:"@alice"`
+	TgId          int64  `json:"-" gorm:"column:tg_id;index;default:0"`
 	Amount        int64  `json:"amount" gorm:"not null" example:"250000"`
 	ListAmount    int64  `json:"listAmount" gorm:"column:list_amount;default:0" example:"250000"`
 	DiscountCode  string `json:"discountCode" gorm:"column:discount_code;index;default:''" example:"WELCOME10"`

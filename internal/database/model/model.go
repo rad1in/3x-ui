@@ -72,8 +72,10 @@ type User struct {
 	ScopeInboundIds string `json:"-" gorm:"column:scope_inbound_ids;not null;default:'[]'"`
 	ScopeGroups     string `json:"-" gorm:"column:scope_groups;not null;default:'[]'"`
 	// The Telegram chat that receives this admin's login codes; 0 means none.
-	TgChatId  int64 `json:"-" gorm:"column:tg_chat_id;not null;default:0"`
-	CreatedAt int64 `json:"createdAt" gorm:"not null;default:0"`
+	TgChatId int64 `json:"-" gorm:"column:tg_chat_id;not null;default:0"`
+	// The overview widget order, sizes and hidden set as JSON; empty means the default layout.
+	DashboardLayout string `json:"-" gorm:"column:dashboard_layout;not null;default:''"`
+	CreatedAt       int64  `json:"createdAt" gorm:"not null;default:0"`
 }
 
 // AdminSession is one signed-in browser. The cookie carries only Id; deleting

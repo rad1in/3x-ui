@@ -1,3 +1,4 @@
+import { downloadReport, reportUrl, type ReportFormat } from '@/lib/report-download';
 import { lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation, useSearchParams } from 'react-router';
@@ -920,10 +921,12 @@ export default function ClientsPage() {
     });
   }
 
-  function openUsageReport(format: 'csv' | 'html') {
-    const url = `${window.X_UI_BASE_PATH || ''}panel/api/clients/report?format=${format}`;
-    if (format === 'csv') window.location.href = url;
-    else window.open(url, '_blank', 'noopener');
+  function openUsageReport(format: ReportFormat | 'html') {
+    if (format === 'html') {
+      window.open(reportUrl('panel/api/clients/report', { format }), '_blank', 'noopener');
+    } else {
+      downloadReport('panel/api/clients/report', { format });
+    }
   }
 
   async function onExportClients() {
@@ -1546,6 +1549,18 @@ export default function ClientsPage() {
                                         icon: <DownloadOutlined />,
                                         label: t('pages.clients.usageReportCsv'),
                                         onClick: () => openUsageReport('csv'),
+                                      },
+                                      {
+                                        key: 'reportXlsx',
+                                        icon: <DownloadOutlined />,
+                                        label: t('pages.clients.usageReportXlsx'),
+                                        onClick: () => openUsageReport('xlsx'),
+                                      },
+                                      {
+                                        key: 'reportPdf',
+                                        icon: <DownloadOutlined />,
+                                        label: t('pages.clients.usageReportPdf'),
+                                        onClick: () => openUsageReport('pdf'),
                                       },
                                       {
                                         key: 'reportPrint',

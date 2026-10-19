@@ -1,3 +1,4 @@
+import { downloadReport } from '@/lib/report-download';
 import { useCallback, useMemo, useState, type Key } from 'react';
 import { useLocation, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +20,7 @@ import {
   PlusOutlined,
   MenuOutlined,
   MoreOutlined,
+  DownloadOutlined,
   ExportOutlined,
   ImportOutlined,
   ReloadOutlined,
@@ -244,12 +246,26 @@ export default function InboundList({
           ]
         : []),
       {
+        key: 'reportXlsx',
+        icon: <DownloadOutlined />,
+        label: t('pages.inbounds.trafficReportXlsx'),
+      },
+      { key: 'reportPdf', icon: <DownloadOutlined />, label: t('pages.inbounds.trafficReportPdf') },
+      {
         key: 'resetInbounds',
         icon: <ReloadOutlined />,
         label: t('pages.inbounds.resetAllTraffic'),
       },
     ],
-    onClick: ({ key }) => onGeneralAction(key as GeneralAction),
+    onClick: ({ key }) => {
+      if (key === 'reportXlsx' || key === 'reportPdf') {
+        downloadReport('panel/api/inbounds/report', {
+          format: key === 'reportXlsx' ? 'xlsx' : 'pdf',
+        });
+        return;
+      }
+      onGeneralAction(key as GeneralAction);
+    },
   };
 
   return (

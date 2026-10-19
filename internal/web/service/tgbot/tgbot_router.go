@@ -119,6 +119,9 @@ func (t *Tgbot) OnReceive() {
 			userStateMgr.maybePrune(time.Hour)
 			actor := messageActor(message)
 			if userState, exists := userStateMgr.get(actor); exists {
+				if t.handleShopInput(&message, actor, userState) {
+					return nil
+				}
 				if userState == broadcastAwaitingText {
 					t.handleBroadcastInput(&message, actor)
 					return nil
@@ -251,6 +254,9 @@ func (t *Tgbot) answerCommand(message *telego.Message, chatId int64, isAdmin boo
 	case "trial":
 		t.handleTrial(chatId, message.From)
 		return
+	case "shop":
+		t.handleShop(chatId, message.From)
+		return
 	case "status":
 		onlyMessage = true
 		msg += t.I18nBot("tgbot.commands.status")
@@ -347,6 +353,11 @@ func isCommandForBot(text string, username string) bool {
 func (t *Tgbot) answerCallback(callbackQuery *telego.CallbackQuery, isAdmin bool) {
 	chatId := callbackQuery.Message.GetChat().ID
 	actor := callbackActor(callbackQuery)
+
+	if isShopCallback(callbackQuery.Data) {
+		t.answerShopCallback(callbackQuery)
+		return
+	}
 
 	// Only an admin's wizard callbacks touch a draft, so only they take its lock:
 	// a report tap must not wait on a slot, a rejected chat must not be stored.

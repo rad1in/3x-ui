@@ -821,6 +821,16 @@ export interface CryptoConfig {
   sandbox: boolean;
 }
 
+export interface DashboardLayout {
+  widgets: DashboardWidget[];
+}
+
+export interface DashboardWidget {
+  hidden: boolean;
+  id: string;
+  span: number;
+}
+
 export interface DiscountCode {
   code: string;
   createdAt: number;
@@ -1397,6 +1407,21 @@ export interface PanelUpdateStatus {
   state: string;
 }
 
+export interface Passkey {
+  createdAt: number;
+  id: number;
+  lastUsedAt: number;
+  name: string;
+  userId: number;
+}
+
+export interface PayPalConfig {
+  clientId: string;
+  clientSecret: string;
+  enabled: boolean;
+  sandbox: boolean;
+}
+
 export interface PeerActivity {
   allowedIPs: string;
   down: number;
@@ -1408,6 +1433,21 @@ export interface PeerActivity {
   online: boolean;
   tag: string;
   up: number;
+}
+
+export interface PendingAction {
+  action: string;
+  decidedAt: number;
+  decidedBy: number;
+  decidedByName: string;
+  expiresAt: number;
+  id: number;
+  requestedAt: number;
+  requestedBy: number;
+  requestedByName: string;
+  result: string;
+  status: string;
+  target: string;
 }
 
 export interface Plan {
@@ -1498,9 +1538,12 @@ export interface SalesConfig {
   clearSecrets?: string[];
   crypto: CryptoConfig;
   idpay: IDPayConfig;
+  paypal: PayPalConfig;
   publicBaseUrl: string;
   publicEnabled: boolean;
   referral: ReferralConfig;
+  stripe: StripeConfig;
+  telegramShop: boolean;
   walletEnabled: boolean;
   zarinpal: ZarinpalConfig;
 }
@@ -1512,20 +1555,29 @@ export interface SalesConfigView {
   hasCryptoApiKey: boolean;
   hasCryptoIpnSecret: boolean;
   hasIdpayApiKey: boolean;
+  hasPaypalClientSecret: boolean;
+  hasStripeSecretKey: boolean;
+  hasStripeWebhookSecret: boolean;
   hasZarinpalMerchantId: boolean;
   idpay: IDPayConfig;
+  paypal: PayPalConfig;
   publicBaseUrl: string;
   publicEnabled: boolean;
   referral: ReferralConfig;
+  stripe: StripeConfig;
+  telegramShop: boolean;
   walletEnabled: boolean;
   zarinpal: ZarinpalConfig;
 }
 
 export interface SecurityConfig {
+  approvalActions: string[];
   backupPassphrase: string;
   captchaEnable: boolean;
   clearBackupPassphrase?: boolean;
   newLocationAlert: boolean;
+  passkeyLoginEnable: boolean;
+  passkeySecondFactor: boolean;
   rotateSubSigningKey?: boolean;
   subSigningEnable: boolean;
   subSigningKey: string;
@@ -1533,11 +1585,14 @@ export interface SecurityConfig {
 }
 
 export interface SecurityConfigView {
+  approvalActions: string[];
   backupPassphrase: string;
   captchaEnable: boolean;
   clearBackupPassphrase?: boolean;
   hasBackupPassphrase: boolean;
   newLocationAlert: boolean;
+  passkeyLoginEnable: boolean;
+  passkeySecondFactor: boolean;
   rotateSubSigningKey?: boolean;
   subSigningEnable: boolean;
   subSigningKey: string;
@@ -1674,6 +1729,12 @@ export interface SponsorList {
   sponsors: Sponsor[];
 }
 
+export interface StripeConfig {
+  enabled: boolean;
+  secretKey: string;
+  webhookSecret: string;
+}
+
 export interface SubBalancer {
   createdAt: number;
   enabled: boolean;
@@ -1698,6 +1759,33 @@ export interface SubFetchInfo {
 export interface SubShortLinkView {
   token: string;
   url: string;
+}
+
+export interface Ticket {
+  clientEmail: string;
+  createdAt: number;
+  id: number;
+  status: string;
+  subject: string;
+  updatedAt: number;
+}
+
+export interface TicketDetail {
+  messages: TicketMessage[];
+  ticket: Ticket;
+}
+
+export interface TicketMessage {
+  author: string;
+  body: string;
+  createdAt: number;
+  id: number;
+  ticketId: number;
+}
+
+export interface TicketPage {
+  items: Ticket[];
+  total: number;
 }
 
 export interface Traffic {

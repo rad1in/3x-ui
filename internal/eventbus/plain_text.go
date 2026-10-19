@@ -5,6 +5,8 @@ package eventbus
 var plainTitles = map[EventType]string{
 	EventLoginNewLocation:    "New login location",
 	EventClientSharedAccount: "Shared account suspected",
+	EventTicketOpened:        "New support ticket",
+	EventTicketReplied:       "Customer replied to a ticket",
 }
 
 // PlainText renders an event as a title and text lines; ok is false for events

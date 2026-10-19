@@ -1,0 +1,7 @@
+apiVersion: v2
+name: eternal
+description: Eternal (3x-ui fork) proxy panel managing Xray-core and VPN inbounds
+type: application
+version: 0.1.0
+appVersion: "main"
+home: https://github.com/rad1in/eternal

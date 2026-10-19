@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/fs"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -31,6 +32,7 @@ const (
 // order token a customer was given. Errors travel as stable codes in msg.
 type ShopController struct {
 	orderService   *service.OrderService
+	ticketService  service.TicketService
 	configService  service.SalesConfigService
 	inboundService service.InboundService
 	xrayService    service.XrayService
@@ -55,7 +57,12 @@ func newShopController(g *gin.RouterGroup, notFound gin.HandlerFunc, orders *ser
 	api.POST("/orders/:token/receipt", a.rateLimited, a.submitReceipt)
 	api.POST("/quote", a.rateLimited, a.quote)
 	api.GET("/wallet", a.rateLimited, a.wallet)
+	api.GET("/tickets", a.rateLimited, a.listTickets)
+	api.POST("/tickets", a.rateLimited, a.openTicket)
+	api.GET("/tickets/:id", a.rateLimited, a.getTicket)
+	api.POST("/tickets/:id/reply", a.rateLimited, a.replyTicket)
 	api.POST("/ipn/nowpayments", a.ipn)
+	api.POST("/webhook/stripe", a.stripeWebhook)
 	api.GET("/callback/:gateway", a.rateLimited, a.callback)
 	api.POST("/callback/:gateway", a.rateLimited, a.callback)
 	return a
@@ -177,6 +184,8 @@ func (a *ShopController) callback(c *gin.Context) {
 		claimsPaid = payment.ZarinpalCallbackPaid(c.Request.URL.Query())
 	case service.GatewayIDPay:
 		claimsPaid = payment.IDPayCallbackPaid(c.Request.Form)
+	case service.GatewayStripe, service.GatewayPayPal:
+		claimsPaid = payment.CheckoutReturnPaid(c.Request.URL.Query())
 	default:
 		a.deny(c)
 		return
@@ -238,6 +247,39 @@ func (a *ShopController) ipn(c *gin.Context) {
 	}
 }
 
+// stripeWebhook receives Stripe Checkout events. A forged one is refused; an
+// event that needs no action is answered 200, while a failure on our side or
+// at Stripe answers 500 so Stripe delivers it again.
+func (a *ShopController) stripeWebhook(c *gin.Context) {
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, shopIPNBodyLimit)
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, entity.Msg{Msg: "bad_request"})
+		return
+	}
+	order, needRestart, err := a.orderService.HandleStripeWebhook(&a.inboundService, body, c.GetHeader("Stripe-Signature"))
+	if needRestart {
+		a.xrayService.SetToNeedRestart()
+	}
+	if order != nil && order.FulfilledAt > 0 {
+		notifyClientsChanged()
+	}
+	var salesErr *service.SalesError
+	switch {
+	case err == nil:
+		c.JSON(http.StatusOK, entity.Msg{Success: true})
+	case errors.As(err, &salesErr) && salesErr.Code == service.ErrBadSignature:
+		c.JSON(http.StatusUnauthorized, entity.Msg{Msg: salesErr.Code})
+	case errors.As(err, &salesErr) && salesErr.Code == service.ErrGatewayUnavailable:
+		a.deny(c)
+	case errors.As(err, &salesErr):
+		c.JSON(http.StatusOK, entity.Msg{Msg: salesErr.Code})
+	default:
+		logger.Warningf("shop stripe webhook: %v", err)
+		c.JSON(http.StatusInternalServerError, entity.Msg{Msg: shopInternalError})
+	}
+}
+
 func (a *ShopController) quote(c *gin.Context) {
 	var in service.QuoteInput
 	if !a.bind(c, &in) {
@@ -250,6 +292,58 @@ func (a *ShopController) quote(c *gin.Context) {
 func (a *ShopController) wallet(c *gin.Context) {
 	view, err := a.orderService.CustomerWallet(c.Query("email"), c.Query("proof"))
 	a.reply(c, view, err)
+}
+
+// ticketAuth reads the proof a customer sends with every ticket call: the
+// client's username and subscription id, or one of its order tokens.
+func ticketAuth(email, proof, orderToken string) service.TicketAuth {
+	return service.TicketAuth{Email: email, Proof: proof, OrderToken: orderToken}
+}
+
+func (a *ShopController) listTickets(c *gin.Context) {
+	list, err := a.ticketService.CustomerList(ticketAuth(c.Query("email"), c.Query("proof"), c.Query("order")))
+	a.reply(c, list, err)
+}
+
+func (a *ShopController) getTicket(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		a.reply(c, nil, &service.SalesError{Code: service.ErrTicketNotFound})
+		return
+	}
+	detail, err := a.ticketService.CustomerGet(ticketAuth(c.Query("email"), c.Query("proof"), c.Query("order")), id)
+	a.reply(c, detail, err)
+}
+
+type shopTicketBody struct {
+	Email      string `json:"email"`
+	Proof      string `json:"proof"`
+	OrderToken string `json:"order"`
+	Subject    string `json:"subject"`
+	Body       string `json:"body"`
+}
+
+func (a *ShopController) openTicket(c *gin.Context) {
+	var in shopTicketBody
+	if !a.bind(c, &in) {
+		return
+	}
+	detail, err := a.ticketService.Open(ticketAuth(in.Email, in.Proof, in.OrderToken), in.Subject, in.Body)
+	a.reply(c, detail, err)
+}
+
+func (a *ShopController) replyTicket(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		a.reply(c, nil, &service.SalesError{Code: service.ErrTicketNotFound})
+		return
+	}
+	var in shopTicketBody
+	if !a.bind(c, &in) {
+		return
+	}
+	detail, err := a.ticketService.CustomerReply(ticketAuth(in.Email, in.Proof, in.OrderToken), id, in.Body)
+	a.reply(c, detail, err)
 }
 
 type shopReceiptBody struct {

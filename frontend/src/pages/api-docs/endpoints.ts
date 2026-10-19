@@ -245,6 +245,35 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/passkey/login/status',
+        summary:
+          'Returns whether passwordless passkey sign-in is enabled — used by the login page to decide whether to show the passkey button.',
+        response: '{\n  "success": true,\n  "obj": false\n}',
+      },
+      {
+        method: 'POST',
+        path: '/passkey/login/begin',
+        summary:
+          'Start a passwordless sign-in. Needs the passkey login option enabled in Settings → Security. Returns navigator.credentials.get() options (user verification required) and a single-use challengeId.',
+        response: '{\n  "success": true,\n  "obj": { "options": {}, "challengeId": "..." }\n}',
+      },
+      {
+        method: 'POST',
+        path: '/passkey/login/finish',
+        summary:
+          'Complete a passwordless sign-in with the assertion. The owner account still needs its twoFactorCode when panel 2FA is on. Failures count toward the login lockout.',
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{ "challengeId": "...", "credential": { "id": "...", "response": { "clientDataJSON": "...", "authenticatorData": "...", "signature": "...", "userHandle": "..." } }, "twoFactorCode": "" }',
+          },
+        ],
+        response: '{\n  "success": true,\n  "msg": "Logged in successfully"\n}',
+      },
+      {
+        method: 'POST',
         path: '/getTwoFactorEnable',
         summary:
           'Returns whether 2FA is enabled on the panel — used by the login page to decide whether to show the OTP field.',
@@ -266,6 +295,22 @@ export const sections: readonly Section[] = [
           'List every inbound owned by the authenticated user, including each inbound’s clientStats traffic counters. settings, streamSettings, and sniffing are returned as nested JSON objects (no escaped strings); legacy callers that send them back as JSON-encoded strings are still accepted on write.',
         responseSchema: 'Inbound',
         responseSchemaArray: true,
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/inbounds/report',
+        summary:
+          'Download a traffic summary of the inbounds you can see (up, down, quota, expiry, client count) as an Excel workbook, PDF table or CSV. Cells starting with = + - or @ are quoted so spreadsheets do not run them.',
+        params: [
+          {
+            name: 'format',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            defaultValue: 'xlsx',
+            desc: 'xlsx, pdf or csv.',
+          },
+        ],
       },
       {
         method: 'GET',
@@ -1633,7 +1678,7 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/panel/api/clients/report',
         summary:
-          'Usage report of every client you can see. format=csv (default) downloads a spreadsheet-ready file with byte counts; format=html returns a printable page that can be saved as PDF from the browser. Period columns sum the per-day usage of the last days days; cells starting with = + - or @ are quoted so spreadsheets do not run them.',
+          'Usage report of every client you can see. format=csv (default) downloads a spreadsheet-ready file with byte counts; format=xlsx downloads an Excel workbook; format=pdf downloads a PDF table; format=html returns a printable page. Period columns sum the per-day usage of the last days days; cells starting with = + - or @ are quoted so spreadsheets do not run them.',
         params: [
           {
             name: 'days',
@@ -1649,7 +1694,7 @@ export const sections: readonly Section[] = [
             type: 'string',
             optional: true,
             defaultValue: 'csv',
-            desc: 'csv or html.',
+            desc: 'csv, xlsx, pdf or html.',
           },
         ],
         response:
@@ -2607,6 +2652,29 @@ export const sections: readonly Section[] = [
         responseSchema: 'OrderPage',
       },
       {
+        method: 'GET',
+        path: '/panel/api/sales/orders/export',
+        summary:
+          'Download the orders (newest first, at most 50000) as an Excel workbook, PDF table or CSV. The order token and pay link are left out; cells starting with = + - or @ are quoted so spreadsheets do not run them.',
+        params: [
+          {
+            name: 'format',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            defaultValue: 'xlsx',
+            desc: 'xlsx, pdf or csv.',
+          },
+          {
+            name: 'status',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'Only orders of this status; empty exports every status.',
+          },
+        ],
+      },
+      {
         method: 'POST',
         path: '/panel/api/sales/orders/approve/:id',
         summary:
@@ -2630,6 +2698,72 @@ export const sections: readonly Section[] = [
           },
         ],
         responseSchema: 'Order',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/tickets',
+        summary:
+          'Support tickets, most recently active first, with the total for the filter. status is open (the customer spoke last), answered or closed; empty lists all.',
+        params: [
+          {
+            name: 'status',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            enum: ['open', 'answered', 'closed'],
+            desc: 'Only tickets in this status.',
+          },
+          {
+            name: 'limit',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 200,
+            desc: 'Page size, 1 to 200.',
+          },
+          {
+            name: 'offset',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 0,
+            desc: 'Rows to skip.',
+          },
+        ],
+        responseSchema: 'TicketPage',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/tickets/:id',
+        summary:
+          'One ticket with its whole conversation, oldest message first. Message bodies are plain text.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Ticket id.' }],
+        responseSchema: 'TicketDetail',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/tickets/reply/:id',
+        summary:
+          'Answer a ticket as an admin and mark it answered. Plain text, 1 to 2000 characters. Fails with ticket_closed on a closed ticket and ticket_invalid on an empty or oversized text.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Ticket id.' },
+          { name: 'body', in: 'body (json)', type: 'string', desc: 'The reply.' },
+        ],
+        responseSchema: 'TicketDetail',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/tickets/close/:id',
+        summary: 'Close a ticket; the customer can no longer reply to it.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Ticket id.' }],
+        responseSchema: 'Ticket',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/tickets/reopen/:id',
+        summary: 'Take a closed ticket back to open.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Ticket id.' }],
+        responseSchema: 'Ticket',
       },
       {
         method: 'GET',
@@ -2683,14 +2817,14 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/panel/api/sales/config',
         summary:
-          'Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto). Secrets (the Zarinpal merchant id, the IDPay API key and the NOWPayments API key and IPN secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.',
+          'Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto, Stripe, PayPal). Secrets (the Zarinpal merchant id, the IDPay API key, the NOWPayments API key and IPN secret the Stripe secret key and webhook signing secret and the PayPal client secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.',
         responseSchema: 'SalesConfigView',
       },
       {
         method: 'POST',
         path: '/panel/api/sales/config/save',
         summary:
-          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay or crypto section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.',
+          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay, crypto, Stripe or PayPal section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret, stripe.secretKey, stripe.webhookSecret, paypal.clientSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.',
         params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SalesConfig.' }],
       },
     ],
@@ -2700,7 +2834,7 @@ export const sections: readonly Section[] = [
     id: 'shop',
     title: 'Public Shop',
     description:
-      'The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed, bad_signature, amount_mismatch, discount_invalid, discount_used, referral_invalid, wallet_insufficient, proof_invalid); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address.',
+      'The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed, bad_signature, amount_mismatch, discount_invalid, discount_used, referral_invalid, wallet_insufficient, proof_invalid, ticket_invalid, ticket_not_found, ticket_limit, ticket_closed, rate_limited); rate_limited also arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address.',
     endpoints: [
       {
         method: 'GET',
@@ -2750,7 +2884,7 @@ export const sections: readonly Section[] = [
             name: 'gateway',
             in: 'body (json)',
             type: 'string',
-            desc: 'Payment method: card, zarinpal, idpay, crypto or wallet. A wallet payment is for renewals only, needs proof and is delivered at once.',
+            desc: 'Payment method: card, zarinpal, idpay, crypto, stripe, paypal or wallet. A wallet payment is for renewals only, needs proof and is delivered at once.',
           },
           {
             name: 'discountCode',
@@ -2805,11 +2939,142 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/shop/api/tickets',
+        summary:
+          'The support tickets of an account, most recently active first, for whoever proves the account: the client subscription id (email and proof) or one of its order tokens (order). A wrong proof answers proof_invalid.',
+        params: [
+          {
+            name: 'email',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'Client username; with proof.',
+          },
+          {
+            name: 'proof',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'The client subscription id.',
+          },
+          {
+            name: 'order',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'An order token of the client, instead of email and proof.',
+          },
+        ],
+        responseSchema: 'Ticket',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/tickets',
+        summary:
+          'Open a ticket. subject is up to 120 characters and body up to 2000, both plain text (control and direction-override characters are dropped, markup is kept as literal text). Limits: 5 unclosed tickets and 20 customer messages per hour per account (ticket_limit, rate_limited). Admins are notified through the ticket.opened event.',
+        params: [
+          {
+            name: 'email',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Client username; with proof.',
+          },
+          {
+            name: 'proof',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'The client subscription id.',
+          },
+          {
+            name: 'order',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'An order token of the client, instead of email and proof.',
+          },
+          { name: 'subject', in: 'body (json)', type: 'string' },
+          { name: 'body', in: 'body (json)', type: 'string' },
+        ],
+        responseSchema: 'TicketDetail',
+      },
+      {
+        method: 'GET',
+        path: '/shop/api/tickets/:id',
+        summary:
+          'One ticket of the account with its conversation. Another account ticket answers ticket_not_found.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Ticket id.' },
+          {
+            name: 'email',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'Client username; with proof.',
+          },
+          {
+            name: 'proof',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'The client subscription id.',
+          },
+          {
+            name: 'order',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'An order token of the client, instead of email and proof.',
+          },
+        ],
+        responseSchema: 'TicketDetail',
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/tickets/:id/reply',
+        summary:
+          'Add a message to a ticket and leave it open for the admins (ticket.replied event). A closed ticket answers ticket_closed.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Ticket id.' },
+          {
+            name: 'email',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Client username; with proof.',
+          },
+          {
+            name: 'proof',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'The client subscription id.',
+          },
+          {
+            name: 'order',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'An order token of the client, instead of email and proof.',
+          },
+          { name: 'body', in: 'body (json)', type: 'string' },
+        ],
+        responseSchema: 'TicketDetail',
+      },
+      {
+        method: 'GET',
         path: '/shop/api/callback/:gateway',
         summary:
-          'Where Zarinpal (Status and Authority in the query) and IDPay (a form POST, see the POST entry) send the customer back. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.',
+          'Where Zarinpal (Status and Authority in the query), IDPay (a form POST, see the POST entry), Stripe Checkout and PayPal (success URL, or cancel=1 when the customer backs out) send the customer back. For PayPal the shop also captures the approved order here, after checking it is the order it created for the exact price. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.',
         params: [
-          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay'] },
+          {
+            name: 'gateway',
+            in: 'path',
+            type: 'string',
+            enum: ['zarinpal', 'idpay', 'stripe', 'paypal'],
+          },
           { name: 'order', in: 'query', type: 'string', desc: 'Order token.' },
         ],
       },
@@ -2824,6 +3089,20 @@ export const sections: readonly Section[] = [
             in: 'header',
             type: 'string',
             desc: 'HMAC-SHA512 signature of the body.',
+          },
+        ],
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/webhook/stripe',
+        summary:
+          'Stripe webhook (add it as an endpoint for checkout.session.completed and checkout.session.async_payment_succeeded). The Stripe-Signature header must carry an HMAC-SHA256 of timestamp.body keyed with the webhook signing secret and a timestamp within 5 minutes; anything else answers 401 and changes nothing. The event only names the order: the shop reads the Checkout Session back from Stripe and delivers only when it is paid for the order amount and currency. A paid session for another amount is parked in review; a payment arriving after the customer backed out is parked in review instead of being lost. A replayed event delivers nothing twice. Events the shop does not use answer 200, a Stripe outage or internal failure 500 so Stripe retries. Stripe plans must be priced in USD or EUR.',
+        params: [
+          {
+            name: 'Stripe-Signature',
+            in: 'header',
+            type: 'string',
+            desc: 'Stripe signature header (t=timestamp,v1=signature).',
           },
         ],
       },
@@ -2852,6 +3131,20 @@ export const sections: readonly Section[] = [
         summary:
           'The signed-in admin with its role and, for an operator, its scope. An API token answers as the oldest owner.',
         responseSchema: 'AdminView',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/admins/me/dashboardLayout',
+        summary:
+          "The signed-in admin's overview layout: widget order, hidden widgets and column spans. Empty widgets means the default layout.",
+        responseSchema: 'DashboardLayout',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/admins/me/dashboardLayout',
+        summary:
+          "Replace the signed-in admin's overview layout. Spans are 1 to 12 grid columns, ids must be unique, at most 40 widgets.",
+        body: '{"widgets":[{"id":"clientGeo","hidden":false,"span":6}]}',
       },
       {
         method: 'GET',
@@ -2905,7 +3198,7 @@ export const sections: readonly Section[] = [
         method: 'POST',
         path: '/panel/api/security/config/save',
         summary:
-          'Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.',
+          'Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); passkeyLoginEnable allows passwordless sign-in with a user-verifying passkey and passkeySecondFactor asks admins who have passkeys for one after the password; approvalActions lists the actions that need approval by a second admin; subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.',
         params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SecurityConfig.' }],
       },
     ],
@@ -2954,6 +3247,96 @@ export const sections: readonly Section[] = [
             desc: '{ "userId": 0, "keepCurrent": true }',
           },
         ],
+      },
+    ],
+  },
+
+  {
+    id: 'passkeys',
+    title: 'Passkeys',
+    description:
+      'WebAuthn passkeys of the signed-in admin; every role manages only its own. Registration asks for the account password again. The browser-side payloads are the standard WebAuthn JSON with base64url binary fields. All endpoints under /panel/api/passkeys.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/passkeys/list',
+        summary: "The caller's registered passkeys (name, creation and last-use time).",
+        responseSchema: 'Passkey',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/passkeys/register/begin',
+        summary:
+          'Start a registration ceremony. Returns the navigator.credentials.create() options and a single-use challengeId valid for five minutes.',
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{ "password": "current account password" }',
+          },
+        ],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/passkeys/register/finish',
+        summary:
+          'Finish the registration: the origin, RP ID, challenge and presence flag are verified, then the public key is stored.',
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{ "challengeId": "...", "name": "YubiKey", "credential": { "id": "...", "response": { "clientDataJSON": "...", "attestationObject": "..." } } }',
+          },
+        ],
+        responseSchema: 'Passkey',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/passkeys/del/:id',
+        summary: "Remove one of the caller's own passkeys.",
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Passkey id from the list.' }],
+      },
+    ],
+  },
+
+  {
+    id: 'approvals',
+    title: 'Approvals',
+    description:
+      "Two-person approval. When the owner gates an action in Settings → Security → Extra protection, a request for it is parked here instead of running, and a different owner or admin must approve it. Gateable actions: inbound.delete (single and bulk inbound delete), clients.bulkDelete, node.delete. The gate is off while no second owner or admin exists. Requests expire after 24 hours; every request and decision is written to the activity log. A master panel's node-sync pushes are never parked. All endpoints under /panel/api/approvals.",
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/approvals/list',
+        summary:
+          'Open requests first, then the most recent decided ones. Owners, admins and viewers may read it.',
+        responseSchema: 'PendingAction',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/approvals/approve/:id',
+        summary:
+          'Approve and run the request. Refused for the admin who made the request. A failing action is recorded with status failed and its error.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Request id from the list.' }],
+        responseSchema: 'PendingAction',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/approvals/reject/:id',
+        summary: 'Reject the request without running it. Refused for the admin who made it.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Request id from the list.' }],
+        responseSchema: 'PendingAction',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/approvals/cancel/:id',
+        summary: 'Withdraw your own pending request.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Request id from the list.' }],
+        responseSchema: 'PendingAction',
       },
     ],
   },

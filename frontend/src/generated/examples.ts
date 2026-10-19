@@ -883,6 +883,20 @@ export const EXAMPLES: Record<string, unknown> = {
     "ipnSecret": "",
     "sandbox": false
   },
+  "DashboardLayout": {
+    "widgets": [
+      {
+        "hidden": false,
+        "id": "clientGeo",
+        "span": 6
+      }
+    ]
+  },
+  "DashboardWidget": {
+    "hidden": false,
+    "id": "clientGeo",
+    "span": 6
+  },
   "DiscountCode": {
     "code": "WELCOME10",
     "createdAt": 0,
@@ -1545,6 +1559,19 @@ export const EXAMPLES: Record<string, unknown> = {
     "runId": "1735689600123456789",
     "state": "success"
   },
+  "Passkey": {
+    "createdAt": 1760684400000,
+    "id": 1,
+    "lastUsedAt": 1760684400000,
+    "name": "YubiKey",
+    "userId": 1
+  },
+  "PayPalConfig": {
+    "clientId": "",
+    "clientSecret": "",
+    "enabled": false,
+    "sandbox": false
+  },
   "PeerActivity": {
     "allowedIPs": "10.8.1.2/32",
     "down": 4194304,
@@ -1556,6 +1583,20 @@ export const EXAMPLES: Record<string, unknown> = {
     "online": true,
     "tag": "inbound-51820",
     "up": 1048576
+  },
+  "PendingAction": {
+    "action": "inbound.delete",
+    "decidedAt": 1760684500000,
+    "decidedBy": 2,
+    "decidedByName": "bob",
+    "expiresAt": 1760770800000,
+    "id": 7,
+    "requestedAt": 1760684400000,
+    "requestedBy": 1,
+    "requestedByName": "alice",
+    "result": "",
+    "status": "pending",
+    "target": "inbound #3"
   },
   "Plan": {
     "createdAt": 0,
@@ -1657,12 +1698,24 @@ export const EXAMPLES: Record<string, unknown> = {
       "enabled": false,
       "sandbox": false
     },
+    "paypal": {
+      "clientId": "",
+      "clientSecret": "",
+      "enabled": false,
+      "sandbox": false
+    },
     "publicBaseUrl": "https://shop.example.com",
     "publicEnabled": false,
     "referral": {
       "bonusPercent": 10,
       "enabled": false
     },
+    "stripe": {
+      "enabled": false,
+      "secretKey": "",
+      "webhookSecret": ""
+    },
+    "telegramShop": false,
     "walletEnabled": false,
     "zarinpal": {
       "enabled": false,
@@ -1690,9 +1743,18 @@ export const EXAMPLES: Record<string, unknown> = {
     "hasCryptoApiKey": false,
     "hasCryptoIpnSecret": false,
     "hasIdpayApiKey": false,
+    "hasPaypalClientSecret": false,
+    "hasStripeSecretKey": false,
+    "hasStripeWebhookSecret": false,
     "hasZarinpalMerchantId": false,
     "idpay": {
       "apiKey": "",
+      "enabled": false,
+      "sandbox": false
+    },
+    "paypal": {
+      "clientId": "",
+      "clientSecret": "",
       "enabled": false,
       "sandbox": false
     },
@@ -1702,6 +1764,12 @@ export const EXAMPLES: Record<string, unknown> = {
       "bonusPercent": 10,
       "enabled": false
     },
+    "stripe": {
+      "enabled": false,
+      "secretKey": "",
+      "webhookSecret": ""
+    },
+    "telegramShop": false,
     "walletEnabled": false,
     "zarinpal": {
       "enabled": false,
@@ -1710,21 +1778,31 @@ export const EXAMPLES: Record<string, unknown> = {
     }
   },
   "SecurityConfig": {
+    "approvalActions": [
+      ""
+    ],
     "backupPassphrase": "",
     "captchaEnable": false,
     "clearBackupPassphrase": false,
     "newLocationAlert": false,
+    "passkeyLoginEnable": false,
+    "passkeySecondFactor": false,
     "rotateSubSigningKey": false,
     "subSigningEnable": false,
     "subSigningKey": "",
     "tgLoginEnable": false
   },
   "SecurityConfigView": {
+    "approvalActions": [
+      ""
+    ],
     "backupPassphrase": "",
     "captchaEnable": false,
     "clearBackupPassphrase": false,
     "hasBackupPassphrase": false,
     "newLocationAlert": false,
+    "passkeyLoginEnable": false,
+    "passkeySecondFactor": false,
     "rotateSubSigningKey": false,
     "subSigningEnable": false,
     "subSigningKey": "",
@@ -1895,6 +1973,11 @@ export const EXAMPLES: Record<string, unknown> = {
       }
     ]
   },
+  "StripeConfig": {
+    "enabled": false,
+    "secretKey": "",
+    "webhookSecret": ""
+  },
   "SubBalancer": {
     "createdAt": 1710000000000,
     "enabled": true,
@@ -1920,6 +2003,53 @@ export const EXAMPLES: Record<string, unknown> = {
   "SubShortLinkView": {
     "token": "Ab3dE5gH9k",
     "url": "https://sub.example.com:2096/s/Ab3dE5gH9k"
+  },
+  "Ticket": {
+    "clientEmail": "alice",
+    "createdAt": 0,
+    "id": 1,
+    "status": "open",
+    "subject": "Connection drops every hour",
+    "updatedAt": 0
+  },
+  "TicketDetail": {
+    "messages": [
+      {
+        "author": "customer",
+        "body": "It disconnects about once an hour.",
+        "createdAt": 0,
+        "id": 1,
+        "ticketId": 1
+      }
+    ],
+    "ticket": {
+      "clientEmail": "alice",
+      "createdAt": 0,
+      "id": 1,
+      "status": "open",
+      "subject": "Connection drops every hour",
+      "updatedAt": 0
+    }
+  },
+  "TicketMessage": {
+    "author": "customer",
+    "body": "It disconnects about once an hour.",
+    "createdAt": 0,
+    "id": 1,
+    "ticketId": 1
+  },
+  "TicketPage": {
+    "items": [
+      {
+        "clientEmail": "alice",
+        "createdAt": 0,
+        "id": 1,
+        "status": "open",
+        "subject": "Connection drops every hour",
+        "updatedAt": 0
+      }
+    ],
+    "total": 0
   },
   "Traffic": {
     "Down": 2097152,

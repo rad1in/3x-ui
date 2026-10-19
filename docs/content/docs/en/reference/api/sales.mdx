@@ -26,6 +26,11 @@ _openapi:
         pending, review, paid, rejected, failed or canceled; empty lists all.
       url: '#orders-newest-first-with-the-total-for-the-filter-status-is-one-of-pending-review-paid-rejected-failed-or-canceled-empty-lists-all'
     - depth: 2
+      title: Download the orders (newest first, at most 50000) as an Excel workbook,
+        PDF table or CSV. The order token and pay link are left out; cells
+        starting with = + - or @ are quoted so spreadsheets do not run them.
+      url: '#download-the-orders-newest-first-at-most-50000-as-an-excel-workbook-pdf-table-or-csv-the-order-token-and-pay-link-are-left-out-cells-starting-with-----or--are-quoted-so-spreadsheets-do-not-run-them'
+    - depth: 2
       title: 'Accept the payment of a pending or in-review order and deliver it: a new
         purchase creates the client from the plan terms the order was bought
         under, a renewal zeroes the usage, applies the plan quota and IP limit
@@ -38,6 +43,26 @@ _openapi:
       title: Reject a pending or in-review order, with an optional reason the customer
         sees. A rejected order cannot be approved afterwards.
       url: '#reject-a-pending-or-in-review-order-with-an-optional-reason-the-customer-sees-a-rejected-order-cannot-be-approved-afterwards'
+    - depth: 2
+      title: Support tickets, most recently active first, with the total for the
+        filter. status is open (the customer spoke last), answered or closed;
+        empty lists all.
+      url: '#support-tickets-most-recently-active-first-with-the-total-for-the-filter-status-is-open-the-customer-spoke-last-answered-or-closed-empty-lists-all'
+    - depth: 2
+      title: One ticket with its whole conversation, oldest message first. Message
+        bodies are plain text.
+      url: '#one-ticket-with-its-whole-conversation-oldest-message-first-message-bodies-are-plain-text'
+    - depth: 2
+      title: Answer a ticket as an admin and mark it answered. Plain text, 1 to 2000
+        characters. Fails with ticket_closed on a closed ticket and
+        ticket_invalid on an empty or oversized text.
+      url: '#answer-a-ticket-as-an-admin-and-mark-it-answered-plain-text-1-to-2000-characters-fails-with-ticket_closed-on-a-closed-ticket-and-ticket_invalid-on-an-empty-or-oversized-text'
+    - depth: 2
+      title: Close a ticket; the customer can no longer reply to it.
+      url: '#close-a-ticket-the-customer-can-no-longer-reply-to-it'
+    - depth: 2
+      title: Take a closed ticket back to open.
+      url: '#take-a-closed-ticket-back-to-open'
     - depth: 2
       title: 'Every discount code, newest first, with uses: how many orders currently
         hold a use of it (orders failed, canceled or rejected give theirs
@@ -71,20 +96,24 @@ _openapi:
     - depth: 2
       title: 'Selling configuration: whether the public shop is on, its public base
         URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments
-        crypto). Secrets (the Zarinpal merchant id, the IDPay API key and the
-        NOWPayments API key and IPN secret) are never returned: they come back
-        blank and the has... flags say whether they are set. Owner only.'
-      url: '#selling-configuration-whether-the-public-shop-is-on-its-public-base-url-and-the-payment-methods-card-to-card-zarinpal-idpay-nowpayments-crypto-secrets-the-zarinpal-merchant-id-the-idpay-api-key-and-the-nowpayments-api-key-and-ipn-secret-are-never-returned-they-come-back-blank-and-the-has-flags-say-whether-they-are-set-owner-only'
+        crypto, Stripe, PayPal). Secrets (the Zarinpal merchant id, the IDPay
+        API key, the NOWPayments API key and IPN secret the Stripe secret key
+        and webhook signing secret and the PayPal client secret) are never
+        returned: they come back blank and the has... flags say whether they are
+        set. Owner only.'
+      url: '#selling-configuration-whether-the-public-shop-is-on-its-public-base-url-and-the-payment-methods-card-to-card-zarinpal-idpay-nowpayments-crypto-stripe-paypal-secrets-the-zarinpal-merchant-id-the-idpay-api-key-the-nowpayments-api-key-and-ipn-secret-the-stripe-secret-key-and-webhook-signing-secret-and-the-paypal-client-secret-are-never-returned-they-come-back-blank-and-the-has-flags-say-whether-they-are-set-owner-only'
     - depth: 2
       title: Replace the selling configuration. An enabled card section needs a 16
         figure card number (Persian numerals are accepted); an enabled Zarinpal,
-        IDPay or crypto section needs its secrets and the public base URL (http
-        or https), because the gateway sends the customer or its webhook back to
-        it. A blank secret keeps the stored one; list a secret in clearSecrets
-        (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret) to
-        empty it. Secrets are encrypted at rest when node token encryption is
-        on. A disabled section is stored as is. Owner only.
-      url: '#replace-the-selling-configuration-an-enabled-card-section-needs-a-16-figure-card-number-persian-numerals-are-accepted-an-enabled-zarinpal-idpay-or-crypto-section-needs-its-secrets-and-the-public-base-url-http-or-https-because-the-gateway-sends-the-customer-or-its-webhook-back-to-it-a-blank-secret-keeps-the-stored-one-list-a-secret-in-clearsecrets-zarinpalmerchantid-idpayapikey-cryptoapikey-cryptoipnsecret-to-empty-it-secrets-are-encrypted-at-rest-when-node-token-encryption-is-on-a-disabled-section-is-stored-as-is-owner-only'
+        IDPay, crypto, Stripe or PayPal section needs its secrets and the public
+        base URL (http or https), because the gateway sends the customer or its
+        webhook back to it. A blank secret keeps the stored one; list a secret
+        in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey,
+        crypto.ipnSecret, stripe.secretKey, stripe.webhookSecret,
+        paypal.clientSecret) to empty it. Secrets are encrypted at rest when
+        node token encryption is on. A disabled section is stored as is. Owner
+        only.
+      url: '#replace-the-selling-configuration-an-enabled-card-section-needs-a-16-figure-card-number-persian-numerals-are-accepted-an-enabled-zarinpal-idpay-crypto-stripe-or-paypal-section-needs-its-secrets-and-the-public-base-url-http-or-https-because-the-gateway-sends-the-customer-or-its-webhook-back-to-it-a-blank-secret-keeps-the-stored-one-list-a-secret-in-clearsecrets-zarinpalmerchantid-idpayapikey-cryptoapikey-cryptoipnsecret-stripesecretkey-stripewebhooksecret-paypalclientsecret-to-empty-it-secrets-are-encrypted-at-rest-when-node-token-encryption-is-on-a-disabled-section-is-stored-as-is-owner-only'
   structuredData:
     headings:
       - content: Every plan, enabled or not, by sortOrder. Each plan points at a client
@@ -100,6 +129,10 @@ _openapi:
       - content: Orders newest first, with the total for the filter. status is one of
           pending, review, paid, rejected, failed or canceled; empty lists all.
         id: orders-newest-first-with-the-total-for-the-filter-status-is-one-of-pending-review-paid-rejected-failed-or-canceled-empty-lists-all
+      - content: Download the orders (newest first, at most 50000) as an Excel workbook,
+          PDF table or CSV. The order token and pay link are left out; cells
+          starting with = + - or @ are quoted so spreadsheets do not run them.
+        id: download-the-orders-newest-first-at-most-50000-as-an-excel-workbook-pdf-table-or-csv-the-order-token-and-pay-link-are-left-out-cells-starting-with-----or--are-quoted-so-spreadsheets-do-not-run-them
       - content: 'Accept the payment of a pending or in-review order and deliver it: a
           new purchase creates the client from the plan terms the order was
           bought under, a renewal zeroes the usage, applies the plan quota and
@@ -112,6 +145,21 @@ _openapi:
       - content: Reject a pending or in-review order, with an optional reason the
           customer sees. A rejected order cannot be approved afterwards.
         id: reject-a-pending-or-in-review-order-with-an-optional-reason-the-customer-sees-a-rejected-order-cannot-be-approved-afterwards
+      - content: Support tickets, most recently active first, with the total for the
+          filter. status is open (the customer spoke last), answered or closed;
+          empty lists all.
+        id: support-tickets-most-recently-active-first-with-the-total-for-the-filter-status-is-open-the-customer-spoke-last-answered-or-closed-empty-lists-all
+      - content: One ticket with its whole conversation, oldest message first. Message
+          bodies are plain text.
+        id: one-ticket-with-its-whole-conversation-oldest-message-first-message-bodies-are-plain-text
+      - content: Answer a ticket as an admin and mark it answered. Plain text, 1 to 2000
+          characters. Fails with ticket_closed on a closed ticket and
+          ticket_invalid on an empty or oversized text.
+        id: answer-a-ticket-as-an-admin-and-mark-it-answered-plain-text-1-to-2000-characters-fails-with-ticket_closed-on-a-closed-ticket-and-ticket_invalid-on-an-empty-or-oversized-text
+      - content: Close a ticket; the customer can no longer reply to it.
+        id: close-a-ticket-the-customer-can-no-longer-reply-to-it
+      - content: Take a closed ticket back to open.
+        id: take-a-closed-ticket-back-to-open
       - content: 'Every discount code, newest first, with uses: how many orders
           currently hold a use of it (orders failed, canceled or rejected give
           theirs back).'
@@ -139,21 +187,23 @@ _openapi:
         id: credit-positive-amount-or-debit-negative-a-customer-wallet-in-minor-units-of-a-currency-the-client-must-exist-and-a-debit-cannot-take-the-balance-below-zero-wallet-entries-also-come-from-referral-bonuses-wallet-payments-and-refunds-of-rejected-wallet-orders
       - content: 'Selling configuration: whether the public shop is on, its public base
           URL and the payment methods (card-to-card, Zarinpal, IDPay,
-          NOWPayments crypto). Secrets (the Zarinpal merchant id, the IDPay API
-          key and the NOWPayments API key and IPN secret) are never returned:
-          they come back blank and the has... flags say whether they are set.
-          Owner only.'
-        id: selling-configuration-whether-the-public-shop-is-on-its-public-base-url-and-the-payment-methods-card-to-card-zarinpal-idpay-nowpayments-crypto-secrets-the-zarinpal-merchant-id-the-idpay-api-key-and-the-nowpayments-api-key-and-ipn-secret-are-never-returned-they-come-back-blank-and-the-has-flags-say-whether-they-are-set-owner-only
+          NOWPayments crypto, Stripe, PayPal). Secrets (the Zarinpal merchant
+          id, the IDPay API key, the NOWPayments API key and IPN secret the
+          Stripe secret key and webhook signing secret and the PayPal client
+          secret) are never returned: they come back blank and the has... flags
+          say whether they are set. Owner only.'
+        id: selling-configuration-whether-the-public-shop-is-on-its-public-base-url-and-the-payment-methods-card-to-card-zarinpal-idpay-nowpayments-crypto-stripe-paypal-secrets-the-zarinpal-merchant-id-the-idpay-api-key-the-nowpayments-api-key-and-ipn-secret-the-stripe-secret-key-and-webhook-signing-secret-and-the-paypal-client-secret-are-never-returned-they-come-back-blank-and-the-has-flags-say-whether-they-are-set-owner-only
       - content: Replace the selling configuration. An enabled card section needs a 16
           figure card number (Persian numerals are accepted); an enabled
-          Zarinpal, IDPay or crypto section needs its secrets and the public
-          base URL (http or https), because the gateway sends the customer or
-          its webhook back to it. A blank secret keeps the stored one; list a
-          secret in clearSecrets (zarinpal.merchantId, idpay.apiKey,
-          crypto.apiKey, crypto.ipnSecret) to empty it. Secrets are encrypted at
-          rest when node token encryption is on. A disabled section is stored as
-          is. Owner only.
-        id: replace-the-selling-configuration-an-enabled-card-section-needs-a-16-figure-card-number-persian-numerals-are-accepted-an-enabled-zarinpal-idpay-or-crypto-section-needs-its-secrets-and-the-public-base-url-http-or-https-because-the-gateway-sends-the-customer-or-its-webhook-back-to-it-a-blank-secret-keeps-the-stored-one-list-a-secret-in-clearsecrets-zarinpalmerchantid-idpayapikey-cryptoapikey-cryptoipnsecret-to-empty-it-secrets-are-encrypted-at-rest-when-node-token-encryption-is-on-a-disabled-section-is-stored-as-is-owner-only
+          Zarinpal, IDPay, crypto, Stripe or PayPal section needs its secrets
+          and the public base URL (http or https), because the gateway sends the
+          customer or its webhook back to it. A blank secret keeps the stored
+          one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey,
+          crypto.apiKey, crypto.ipnSecret, stripe.secretKey,
+          stripe.webhookSecret, paypal.clientSecret) to empty it. Secrets are
+          encrypted at rest when node token encryption is on. A disabled section
+          is stored as is. Owner only.
+        id: replace-the-selling-configuration-an-enabled-card-section-needs-a-16-figure-card-number-persian-numerals-are-accepted-an-enabled-zarinpal-idpay-crypto-stripe-or-paypal-section-needs-its-secrets-and-the-public-base-url-http-or-https-because-the-gateway-sends-the-customer-or-its-webhook-back-to-it-a-blank-secret-keeps-the-stored-one-list-a-secret-in-clearsecrets-zarinpalmerchantid-idpayapikey-cryptoapikey-cryptoipnsecret-stripesecretkey-stripewebhooksecret-paypalclientsecret-to-empty-it-secrets-are-encrypted-at-rest-when-node-token-encryption-is-on-a-disabled-section-is-stored-as-is-owner-only
     contents: []
 ---
 
@@ -166,7 +216,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/sales/plans","method":"get"},{"path":"/panel/api/sales/plans/save","method":"post"},{"path":"/panel/api/sales/plans/del/{id}","method":"post"},{"path":"/panel/api/sales/orders","method":"get"},{"path":"/panel/api/sales/orders/approve/{id}","method":"post"},{"path":"/panel/api/sales/orders/reject/{id}","method":"post"},{"path":"/panel/api/sales/discounts","method":"get"},{"path":"/panel/api/sales/discounts/save","method":"post"},{"path":"/panel/api/sales/discounts/del/{id}","method":"post"},{"path":"/panel/api/sales/wallet","method":"get"},{"path":"/panel/api/sales/wallet/adjust","method":"post"},{"path":"/panel/api/sales/config","method":"get"},{"path":"/panel/api/sales/config/save","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/sales/plans","method":"get"},{"path":"/panel/api/sales/plans/save","method":"post"},{"path":"/panel/api/sales/plans/del/{id}","method":"post"},{"path":"/panel/api/sales/orders","method":"get"},{"path":"/panel/api/sales/orders/export","method":"get"},{"path":"/panel/api/sales/orders/approve/{id}","method":"post"},{"path":"/panel/api/sales/orders/reject/{id}","method":"post"},{"path":"/panel/api/sales/tickets","method":"get"},{"path":"/panel/api/sales/tickets/{id}","method":"get"},{"path":"/panel/api/sales/tickets/reply/{id}","method":"post"},{"path":"/panel/api/sales/tickets/close/{id}","method":"post"},{"path":"/panel/api/sales/tickets/reopen/{id}","method":"post"},{"path":"/panel/api/sales/discounts","method":"get"},{"path":"/panel/api/sales/discounts/save","method":"post"},{"path":"/panel/api/sales/discounts/del/{id}","method":"post"},{"path":"/panel/api/sales/wallet","method":"get"},{"path":"/panel/api/sales/wallet/adjust","method":"post"},{"path":"/panel/api/sales/config","method":"get"},{"path":"/panel/api/sales/config/save","method":"post"}]} showTitle />
     </>
   );
 }

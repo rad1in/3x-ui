@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -18,6 +19,8 @@ import (
 const (
 	Zarinpal = "zarinpal"
 	IDPay    = "idpay"
+	Stripe   = "stripe"
+	PayPal   = "paypal"
 )
 
 const (
@@ -39,6 +42,8 @@ type StartRequest struct {
 	CallbackURL string
 	// ReturnURL is where a hosted payment page sends the customer afterwards.
 	ReturnURL string
+	// CancelURL is where a card or PayPal checkout sends a customer who backed out.
+	CancelURL string
 }
 
 // StartResult is where to send the customer and the id to verify later.
@@ -47,17 +52,25 @@ type StartResult struct {
 	PayURL string
 }
 
-// VerifyRequest asks whether Ref was paid; Amount is in rials.
+// VerifyRequest asks whether Ref was paid. Amount is in rials for the Iranian
+// gateways; when Currency is set it is the minor units of that currency.
 type VerifyRequest struct {
 	Ref        string
 	OrderToken string
 	Amount     int64
+	Currency   string
 }
 
 // VerifyResult is the gateway's final word. Paid false with a nil error means
 // the customer did not pay (or the amount did not match).
+//
+// Pending means the gateway has not decided yet (the customer is still paying
+// or the money is in flight): the order stays as it is. Mismatch means money
+// arrived but not the order's amount or reference: a human must look at it.
 type VerifyResult struct {
 	Paid        bool
+	Pending     bool
+	Mismatch    bool
 	TrackingRef string
 }
 
@@ -72,6 +85,11 @@ type Gateway interface {
 	Starter
 	Verify(ctx context.Context, req VerifyRequest) (*VerifyResult, error)
 }
+
+// CheckoutReturnPaid reports whether the customer came back from a hosted
+// Stripe or PayPal checkout through its success URL; the cancel URL carries cancel=1. It is only
+// a hint: Verify decides.
+func CheckoutReturnPaid(query url.Values) bool { return query.Get("cancel") == "" }
 
 // RialAmount converts a plan price to rials; only IRT and IRR are payable.
 func RialAmount(minor int64, currency string) (int64, bool) {
@@ -92,13 +110,20 @@ func postJSON(ctx context.Context, client *http.Client, url string, headers map[
 	if err != nil {
 		return 0, err
 	}
+	return doJSON(ctx, client, http.MethodPost, url, "application/json", headers, raw, out)
+}
+
+// doJSON performs one request with an optional body and decodes the JSON reply.
+func doJSON(ctx context.Context, client *http.Client, method, url, contentType string, headers map[string]string, body []byte, out any) (int, error) {
 	ctx, cancel := context.WithTimeout(ctx, requestTimeout)
 	defer cancel()
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(raw))
+	req, err := http.NewRequestWithContext(ctx, method, url, bytes.NewReader(body))
 	if err != nil {
 		return 0, err
 	}
-	req.Header.Set("Content-Type", "application/json")
+	if contentType != "" {
+		req.Header.Set("Content-Type", contentType)
+	}
 	req.Header.Set("Accept", "application/json")
 	for k, v := range headers {
 		req.Header.Set(k, v)

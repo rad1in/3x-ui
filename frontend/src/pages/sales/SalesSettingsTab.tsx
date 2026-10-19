@@ -14,7 +14,10 @@ const EMPTY: SalesConfigValues = {
   zarinpal: { enabled: false, merchantId: '', sandbox: false },
   idpay: { enabled: false, apiKey: '', sandbox: false },
   crypto: { enabled: false, apiKey: '', ipnSecret: '', sandbox: false },
+  stripe: { enabled: false, secretKey: '', webhookSecret: '' },
+  paypal: { enabled: false, clientId: '', clientSecret: '', sandbox: false },
   walletEnabled: false,
+  telegramShop: false,
   referral: { enabled: false, bonusPercent: 10 },
   clearSecrets: [],
 };
@@ -28,6 +31,9 @@ const SECRET_MERCHANT = 'zarinpal.merchantId';
 const SECRET_IDPAY = 'idpay.apiKey';
 const SECRET_CRYPTO_KEY = 'crypto.apiKey';
 const SECRET_CRYPTO_IPN = 'crypto.ipnSecret';
+const SECRET_STRIPE_KEY = 'stripe.secretKey';
+const SECRET_STRIPE_WEBHOOK = 'stripe.webhookSecret';
+const SECRET_PAYPAL = 'paypal.clientSecret';
 
 export default function SalesSettingsTab() {
   const { t } = useTranslation();
@@ -83,6 +89,14 @@ export default function SalesSettingsTab() {
           extra={t('pages.sales.config.publicBaseUrlHint')}
         >
           <Input placeholder="https://shop.example.com" dir="ltr" />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.telegramShop')}
+          name="telegramShop"
+          valueProp="checked"
+          extra={t('pages.sales.config.telegramShopHint')}
+        >
+          <Switch />
         </FormField>
 
         <h4>{t('pages.sales.config.walletTitle')}</h4>
@@ -213,6 +227,69 @@ export default function SalesSettingsTab() {
         <FormField
           label={t('pages.sales.config.sandbox')}
           name="crypto.sandbox"
+          valueProp="checked"
+        >
+          <Switch />
+        </FormField>
+
+        <h4>{t('pages.sales.config.stripeTitle')}</h4>
+        <FormField
+          label={t('pages.sales.config.gatewayEnabled')}
+          name="stripe.enabled"
+          valueProp="checked"
+          extra={t('pages.sales.config.stripeHint')}
+        >
+          <Switch />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.secretKey')}
+          name="stripe.secretKey"
+          extra={secretField(SECRET_STRIPE_KEY, config?.hasStripeSecretKey)}
+        >
+          <Input.Password
+            dir="ltr"
+            autoComplete="off"
+            placeholder={config?.hasStripeSecretKey ? t('pages.sales.config.secretKept') : ''}
+          />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.webhookSecret')}
+          name="stripe.webhookSecret"
+          extra={secretField(SECRET_STRIPE_WEBHOOK, config?.hasStripeWebhookSecret)}
+        >
+          <Input.Password
+            dir="ltr"
+            autoComplete="off"
+            placeholder={config?.hasStripeWebhookSecret ? t('pages.sales.config.secretKept') : ''}
+          />
+        </FormField>
+
+        <h4>{t('pages.sales.config.paypalTitle')}</h4>
+        <FormField
+          label={t('pages.sales.config.gatewayEnabled')}
+          name="paypal.enabled"
+          valueProp="checked"
+          extra={t('pages.sales.config.paypalHint')}
+        >
+          <Switch />
+        </FormField>
+        <FormField label={t('pages.sales.config.clientId')} name="paypal.clientId">
+          <Input dir="ltr" autoComplete="off" />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.clientSecret')}
+          name="paypal.clientSecret"
+          extra={secretField(SECRET_PAYPAL, config?.hasPaypalClientSecret)}
+        >
+          <Input.Password
+            dir="ltr"
+            autoComplete="off"
+            placeholder={config?.hasPaypalClientSecret ? t('pages.sales.config.secretKept') : ''}
+          />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.sandbox')}
+          name="paypal.sandbox"
           valueProp="checked"
         >
           <Switch />

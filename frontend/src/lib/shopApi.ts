@@ -5,10 +5,14 @@ import {
   ShopCatalogSchema,
   ShopOrderViewSchema,
   ShopWalletSchema,
+  TicketDetailSchema,
+  TicketSchema,
   type Quote,
   type ShopCatalog,
   type ShopOrderView,
   type ShopWallet,
+  type Ticket,
+  type TicketDetail,
 } from '@/generated/zod';
 
 export type ShopResult<T> = { ok: true; data: T } | { ok: false; code: string };
@@ -55,6 +59,14 @@ export interface OrderInput {
   proof?: string;
 }
 
+// Who a ticket call speaks for: the account's subscription id, or an order token.
+export type TicketAuth = { email: string; proof: string } | { order: string };
+
+function authQuery(auth: TicketAuth): string {
+  const params = new URLSearchParams(auth as Record<string, string>);
+  return params.toString();
+}
+
 export const shopApi = {
   catalog: (): Promise<ShopResult<ShopCatalog>> => call('GET', '/plans', ShopCatalogSchema),
   quote: (body: {
@@ -71,6 +83,18 @@ export const shopApi = {
       ref,
       note,
     }),
+  tickets: (auth: TicketAuth): Promise<ShopResult<Ticket[]>> =>
+    call('GET', `/tickets?${authQuery(auth)}`, z.array(TicketSchema)),
+  ticket: (auth: TicketAuth, id: number): Promise<ShopResult<TicketDetail>> =>
+    call('GET', `/tickets/${id}?${authQuery(auth)}`, TicketDetailSchema),
+  openTicket: (
+    auth: TicketAuth,
+    subject: string,
+    body: string,
+  ): Promise<ShopResult<TicketDetail>> =>
+    call('POST', '/tickets', TicketDetailSchema, { ...auth, subject, body }),
+  replyTicket: (auth: TicketAuth, id: number, body: string): Promise<ShopResult<TicketDetail>> =>
+    call('POST', `/tickets/${id}/reply`, TicketDetailSchema, { ...auth, body }),
   wallet: (email: string, proof: string): Promise<ShopResult<ShopWallet>> =>
     call(
       'GET',
@@ -96,6 +120,10 @@ export const SHOP_ERROR_CODES = [
   'referral_invalid',
   'wallet_insufficient',
   'proof_invalid',
+  'ticket_invalid',
+  'ticket_not_found',
+  'ticket_limit',
+  'ticket_closed',
   'rate_limited',
   'network',
 ] as const;

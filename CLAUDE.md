@@ -70,7 +70,7 @@ file locations when it can answer in one hop.
 - `internal/sub/` — subscription server (raw / JSON / Clash).
 - `internal/eventbus/` — in-process pub/sub (outbound/node health, xray.crash,
   cpu.high, memory.high, login.attempt, client.* lifecycle).
-- `internal/logger/`, `internal/util/` (link, crypto, sys, ldap, …),
+- `internal/logger/`, `internal/util/` (link, crypto, sys, ldap, webauthn, …),
   `internal/tunnelmonitor/` — shared infrastructure.
 - `internal/web/` — Gin server (embeds `dist/` + `translation/`).
   - `controller/` — panel + REST API handlers; OpenAPI at /panel/api/openapi.json.

@@ -3527,6 +3527,44 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "DashboardLayout": {
+    "description": "DashboardLayout is an admin's overview arrangement. Widgets absent from the\nlist keep their default place, so a new widget never disappears.",
+    "properties": {
+      "widgets": {
+        "items": {
+          "$ref": "#/components/schemas/DashboardWidget"
+        },
+        "type": "array"
+      }
+    },
+    "required": [
+      "widgets"
+    ],
+    "type": "object"
+  },
+  "DashboardWidget": {
+    "description": "DashboardWidget is one overview widget: its slot in the order, whether it is\nhidden and how many of the 12 grid columns it spans.",
+    "properties": {
+      "hidden": {
+        "example": false,
+        "type": "boolean"
+      },
+      "id": {
+        "example": "clientGeo",
+        "type": "string"
+      },
+      "span": {
+        "example": 6,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "hidden",
+      "id",
+      "span"
+    ],
+    "type": "object"
+  },
   "DiscountCode": {
     "description": "DiscountCode is a coupon. A code is stored upper-case; PlanIds empty means\nevery plan; MaxUses 0 means unlimited. Uses is filled in when listing.",
     "properties": {
@@ -6192,6 +6230,65 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "Passkey": {
+    "description": "Passkey is one WebAuthn credential an admin registered. The public key is the\nCOSE_Key as the authenticator sent it; CredentialId is unpadded base64url.",
+    "properties": {
+      "createdAt": {
+        "example": 1760684400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "lastUsedAt": {
+        "example": 1760684400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "name": {
+        "example": "YubiKey",
+        "type": "string"
+      },
+      "userId": {
+        "example": 1,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "createdAt",
+      "id",
+      "lastUsedAt",
+      "name",
+      "userId"
+    ],
+    "type": "object"
+  },
+  "PayPalConfig": {
+    "description": "PayPalConfig is the PayPal REST app. ClientSecret is a secret; the client id\nis public by design.",
+    "properties": {
+      "clientId": {
+        "type": "string"
+      },
+      "clientSecret": {
+        "type": "string"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "sandbox": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "clientId",
+      "clientSecret",
+      "enabled",
+      "sandbox"
+    ],
+    "type": "object"
+  },
   "PeerActivity": {
     "description": "PeerActivity is one peer's live embedded-Device-reported state, the\ncounterpart of an Xray access-log entry: a tunnel logs no requests, only\nhandshakes and bytes.",
     "properties": {
@@ -6251,6 +6348,76 @@ export const SCHEMAS: Record<string, unknown> = {
       "online",
       "tag",
       "up"
+    ],
+    "type": "object"
+  },
+  "PendingAction": {
+    "description": "PendingAction is a sensitive admin action parked until a second admin\napproves it. Payload is the JSON the executor needs; Status moves once,\nfrom pending to approved, rejected, cancelled or expired (failed when the\napproved action returned an error).",
+    "properties": {
+      "action": {
+        "example": "inbound.delete",
+        "type": "string"
+      },
+      "decidedAt": {
+        "example": 1760684500000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "decidedBy": {
+        "example": 2,
+        "type": "integer"
+      },
+      "decidedByName": {
+        "example": "bob",
+        "type": "string"
+      },
+      "expiresAt": {
+        "example": 1760770800000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 7,
+        "type": "integer"
+      },
+      "requestedAt": {
+        "example": 1760684400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "requestedBy": {
+        "example": 1,
+        "type": "integer"
+      },
+      "requestedByName": {
+        "example": "alice",
+        "type": "string"
+      },
+      "result": {
+        "type": "string"
+      },
+      "status": {
+        "example": "pending",
+        "type": "string"
+      },
+      "target": {
+        "example": "inbound #3",
+        "type": "string"
+      }
+    },
+    "required": [
+      "action",
+      "decidedAt",
+      "decidedBy",
+      "decidedByName",
+      "expiresAt",
+      "id",
+      "requestedAt",
+      "requestedBy",
+      "requestedByName",
+      "result",
+      "status",
+      "target"
     ],
     "type": "object"
   },
@@ -6643,6 +6810,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "idpay": {
         "$ref": "#/components/schemas/IDPayConfig"
       },
+      "paypal": {
+        "$ref": "#/components/schemas/PayPalConfig"
+      },
       "publicBaseUrl": {
         "example": "https://shop.example.com",
         "type": "string"
@@ -6652,6 +6822,13 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "referral": {
         "$ref": "#/components/schemas/ReferralConfig"
+      },
+      "stripe": {
+        "$ref": "#/components/schemas/StripeConfig"
+      },
+      "telegramShop": {
+        "description": "TelegramShop opens the shop to customers inside the Telegram bot.",
+        "type": "boolean"
       },
       "walletEnabled": {
         "type": "boolean"
@@ -6664,9 +6841,12 @@ export const SCHEMAS: Record<string, unknown> = {
       "card",
       "crypto",
       "idpay",
+      "paypal",
       "publicBaseUrl",
       "publicEnabled",
       "referral",
+      "stripe",
+      "telegramShop",
       "walletEnabled",
       "zarinpal"
     ],
@@ -6696,11 +6876,23 @@ export const SCHEMAS: Record<string, unknown> = {
       "hasIdpayApiKey": {
         "type": "boolean"
       },
+      "hasPaypalClientSecret": {
+        "type": "boolean"
+      },
+      "hasStripeSecretKey": {
+        "type": "boolean"
+      },
+      "hasStripeWebhookSecret": {
+        "type": "boolean"
+      },
       "hasZarinpalMerchantId": {
         "type": "boolean"
       },
       "idpay": {
         "$ref": "#/components/schemas/IDPayConfig"
+      },
+      "paypal": {
+        "$ref": "#/components/schemas/PayPalConfig"
       },
       "publicBaseUrl": {
         "example": "https://shop.example.com",
@@ -6711,6 +6903,13 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "referral": {
         "$ref": "#/components/schemas/ReferralConfig"
+      },
+      "stripe": {
+        "$ref": "#/components/schemas/StripeConfig"
+      },
+      "telegramShop": {
+        "description": "TelegramShop opens the shop to customers inside the Telegram bot.",
+        "type": "boolean"
       },
       "walletEnabled": {
         "type": "boolean"
@@ -6725,11 +6924,17 @@ export const SCHEMAS: Record<string, unknown> = {
       "hasCryptoApiKey",
       "hasCryptoIpnSecret",
       "hasIdpayApiKey",
+      "hasPaypalClientSecret",
+      "hasStripeSecretKey",
+      "hasStripeWebhookSecret",
       "hasZarinpalMerchantId",
       "idpay",
+      "paypal",
       "publicBaseUrl",
       "publicEnabled",
       "referral",
+      "stripe",
+      "telegramShop",
       "walletEnabled",
       "zarinpal"
     ],
@@ -6738,6 +6943,13 @@ export const SCHEMAS: Record<string, unknown> = {
   "SecurityConfig": {
     "description": "SecurityConfig groups the login and data protections that do not depend on\ntwo-factor codes. It is one JSON setting that only owners may change.\nBackupPassphrase is a secret: stored encrypted, served blank, and kept when a\nsave leaves it blank (ClearBackupPassphrase empties it on purpose).",
     "properties": {
+      "approvalActions": {
+        "description": "PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;\nPasskeySecondFactor asks admins who have passkeys for one after the password.\nApprovalActions lists the sensitive actions that need a second admin's\napproval (see ApprovalActions); empty turns the gate off.",
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
       "backupPassphrase": {
         "type": "string"
       },
@@ -6748,6 +6960,12 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "boolean"
       },
       "newLocationAlert": {
+        "type": "boolean"
+      },
+      "passkeyLoginEnable": {
+        "type": "boolean"
+      },
+      "passkeySecondFactor": {
         "type": "boolean"
       },
       "rotateSubSigningKey": {
@@ -6765,9 +6983,12 @@ export const SCHEMAS: Record<string, unknown> = {
       }
     },
     "required": [
+      "approvalActions",
       "backupPassphrase",
       "captchaEnable",
       "newLocationAlert",
+      "passkeyLoginEnable",
+      "passkeySecondFactor",
       "subSigningEnable",
       "subSigningKey",
       "tgLoginEnable"
@@ -6777,6 +6998,13 @@ export const SCHEMAS: Record<string, unknown> = {
   "SecurityConfigView": {
     "description": "SecurityConfigView is the configuration as the admin API serves it: secrets\nare blank and the Has flags say which are set.",
     "properties": {
+      "approvalActions": {
+        "description": "PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;\nPasskeySecondFactor asks admins who have passkeys for one after the password.\nApprovalActions lists the sensitive actions that need a second admin's\napproval (see ApprovalActions); empty turns the gate off.",
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
       "backupPassphrase": {
         "type": "string"
       },
@@ -6792,6 +7020,12 @@ export const SCHEMAS: Record<string, unknown> = {
       "newLocationAlert": {
         "type": "boolean"
       },
+      "passkeyLoginEnable": {
+        "type": "boolean"
+      },
+      "passkeySecondFactor": {
+        "type": "boolean"
+      },
       "rotateSubSigningKey": {
         "type": "boolean"
       },
@@ -6807,10 +7041,13 @@ export const SCHEMAS: Record<string, unknown> = {
       }
     },
     "required": [
+      "approvalActions",
       "backupPassphrase",
       "captchaEnable",
       "hasBackupPassphrase",
       "newLocationAlert",
+      "passkeyLoginEnable",
+      "passkeySecondFactor",
       "subSigningEnable",
       "subSigningKey",
       "tgLoginEnable"
@@ -7359,6 +7596,26 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "StripeConfig": {
+    "description": "StripeConfig is the Stripe account. SecretKey and WebhookSecret are secrets;\na sk_test_ key is Stripe's test mode.",
+    "properties": {
+      "enabled": {
+        "type": "boolean"
+      },
+      "secretKey": {
+        "type": "string"
+      },
+      "webhookSecret": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "enabled",
+      "secretKey",
+      "webhookSecret"
+    ],
+    "type": "object"
+  },
   "SubBalancer": {
     "description": "SubBalancer is one extra JSON-subscription config document whose members are\nthe selected inbounds' proxy outbounds. SortOrder shares SubSortIndex semantics.",
     "properties": {
@@ -7486,6 +7743,116 @@ export const SCHEMAS: Record<string, unknown> = {
     "required": [
       "token",
       "url"
+    ],
+    "type": "object"
+  },
+  "Ticket": {
+    "description": "Ticket is a support thread opened by a customer, who is the client with\nClientEmail. Subject and every message body are plain text.",
+    "properties": {
+      "clientEmail": {
+        "example": "alice",
+        "type": "string"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "status": {
+        "example": "open",
+        "type": "string"
+      },
+      "subject": {
+        "example": "Connection drops every hour",
+        "type": "string"
+      },
+      "updatedAt": {
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "clientEmail",
+      "createdAt",
+      "id",
+      "status",
+      "subject",
+      "updatedAt"
+    ],
+    "type": "object"
+  },
+  "TicketDetail": {
+    "description": "TicketDetail is a ticket with its whole conversation, oldest message first.",
+    "properties": {
+      "messages": {
+        "items": {
+          "$ref": "#/components/schemas/TicketMessage"
+        },
+        "type": "array"
+      },
+      "ticket": {
+        "$ref": "#/components/schemas/Ticket"
+      }
+    },
+    "required": [
+      "messages",
+      "ticket"
+    ],
+    "type": "object"
+  },
+  "TicketMessage": {
+    "description": "TicketMessage is one line of a ticket's conversation.",
+    "properties": {
+      "author": {
+        "example": "customer",
+        "type": "string"
+      },
+      "body": {
+        "example": "It disconnects about once an hour.",
+        "type": "string"
+      },
+      "createdAt": {
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "ticketId": {
+        "example": 1,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "author",
+      "body",
+      "createdAt",
+      "id",
+      "ticketId"
+    ],
+    "type": "object"
+  },
+  "TicketPage": {
+    "description": "TicketPage is one page of tickets, most recently active first, with the\nunpaged total.",
+    "properties": {
+      "items": {
+        "items": {
+          "$ref": "#/components/schemas/Ticket"
+        },
+        "type": "array"
+      },
+      "total": {
+        "format": "int64",
+        "type": "integer"
+      }
+    },
+    "required": [
+      "items",
+      "total"
     ],
     "type": "object"
   },
