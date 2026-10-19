@@ -677,7 +677,7 @@ export const sections: readonly Section[] = [
       {
         method: 'GET',
         path: '/panel/api/server/getPanelUpdateInfo',
-        summary: 'Check whether a newer 3x-ui release is available on GitHub.',
+        summary: 'Check whether a newer panel release is available.',
       },
       {
         method: 'GET',
@@ -1983,7 +1983,7 @@ export const sections: readonly Section[] = [
     id: 'nodes',
     title: 'Nodes',
     description:
-      'Manage remote 3x-ui panels acting as nodes for a central panel. All endpoints under /panel/api/nodes.',
+      'Manage remote panels acting as nodes for a central panel. All endpoints under /panel/api/nodes.',
     endpoints: [
       {
         method: 'GET',
@@ -2063,7 +2063,7 @@ export const sections: readonly Section[] = [
         method: 'POST',
         path: '/panel/api/nodes/joinCommand',
         summary:
-          'Issue a single-use join token (valid one hour, stored hashed) and the shell command that installs 3x-ui on a new server and registers it here. The server calls POST {basePath}/join/node with the token, so the master must be reachable from it.',
+          'Issue a single-use join token (valid one hour, stored hashed) and the shell command that installs the panel on a new server and registers it here. The server calls POST {basePath}/join/node with the token, so the master must be reachable from it.',
         body: '{\n  "name": "de-fra-1",\n  "masterUrl": "https://panel.example.com:2053/abc/"\n}',
         responseSchema: 'NodeJoinCommand',
       },
@@ -2330,7 +2330,7 @@ export const sections: readonly Section[] = [
         method: 'POST',
         path: '/panel/api/setting/restartPanel',
         summary:
-          'Restart the entire 3x-ui process after a 3-second grace period. The connection drops immediately; the panel comes back online ~5-10 seconds later.',
+          'Restart the entire panel process after a 3-second grace period. The connection drops immediately; the panel comes back online ~5-10 seconds later.',
       },
       {
         method: 'POST',

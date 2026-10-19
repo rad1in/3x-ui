@@ -59,9 +59,12 @@
 }
 
 .brand-actions .sidebar-pin,
-.brand-actions .sidebar-docs,
-.brand-actions .sidebar-donate,
 .brand-actions .sidebar-theme-cycle {
+  width: 26px;
+  height: 26px;
+}
+
+.sidebar-theme-cycle {
   width: 26px;
   height: 26px;
 }

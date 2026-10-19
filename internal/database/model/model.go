@@ -60,7 +60,7 @@ func IsKnownAdminRole(role string) bool {
 	return false
 }
 
-// User represents an admin account in the 3x-ui panel.
+// User represents an admin account in the panel.
 type User struct {
 	Id         int    `json:"id" gorm:"primaryKey;autoIncrement"`
 	Username   string `json:"username"`
@@ -911,7 +911,7 @@ type Setting struct {
 	Value string `json:"value" form:"value"`
 }
 
-// Node represents a remote 3x-ui panel registered with the central panel.
+// Node represents a remote panel registered with the central panel.
 // The central panel polls each node's existing /panel/api/server/status
 // endpoint over HTTP using the per-node ApiToken to populate the runtime
 // status fields below.

@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 import { httpRequest } from '@/api/http-init';
 import type { HttpResponse } from '@/api/http-init';
+import { DEFAULT_BRAND_NAME, panelBrand } from '@/lib/brand/brand';
 import { getMessage } from './messageBus';
 
 type RespEnvelope = { success?: unknown; msg?: unknown; obj?: unknown };
@@ -170,7 +171,10 @@ export class HttpUtil {
 export function applyDocumentTitle(): void {
   const host = window.location.hostname;
   if (!host) return;
-  const current = document.title.trim();
+  const brandName = panelBrand().name;
+  const current = (
+    brandName && document.title === DEFAULT_BRAND_NAME ? brandName : document.title
+  ).trim();
   document.title = current ? `${host} - ${current}` : host;
 }
 
