@@ -1,0 +1,23 @@
+{
+  "contact": "https://t.me/example",
+  "sponsors": [
+    {
+      "id": "acme-2026-10",
+      "name": "Acme VPS",
+      "enable": true,
+      "slots": ["dashboard", "page", "login"],
+      "from": "2026-10-01T00:00:00Z",
+      "until": "2026-11-01T00:00:00Z",
+      "logo": "acme.png",
+      "title": {
+        "en": "Acme VPS: 20% off",
+        "fa": "Acme VPS: ۲۰٪ تخفیف"
+      },
+      "text": {
+        "en": "Fast servers for your panel. Use code ETERNAL at checkout.",
+        "fa": "سرورهای سریع برای پنل شما. هنگام خرید از کد ETERNAL استفاده کنید."
+      },
+      "link": "https://acme.example/?utm_source=eternal"
+    }
+  ]
+}

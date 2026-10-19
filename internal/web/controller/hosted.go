@@ -11,13 +11,9 @@ import (
 )
 
 // hostedForbiddenRoutes would let a hosted panel escape its limits: a restored
-// database resets its usage meter, binaries are shared, nesting is unmetered,
-// and the sponsor slots belong to the owner.
+// database resets its usage meter, binaries are shared,
+// and nesting is unmetered (sponsors are read-only for everyone).
 var hostedForbiddenRoutes = map[string]bool{
-	"GET /sponsors/list":                   true,
-	"POST /sponsors/save":                  true,
-	"POST /sponsors/del/:id":               true,
-	"POST /sponsors/config":                true,
 	"POST /hostedPanels/add":               true,
 	"POST /hostedPanels/update/:id":        true,
 	"POST /hostedPanels/del/:id":           true,

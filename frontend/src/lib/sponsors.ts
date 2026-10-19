@@ -8,7 +8,7 @@ export const SPONSOR_DISMISS_MS = 24 * 60 * 60 * 1000;
 export function pickLocale(map: Record<string, string> | undefined, lang: string): string {
   if (!map) return '';
   const short = lang.split('-')[0].toLowerCase();
-  return map[lang] || map[short] || map.en || map['*'] || '';
+  return map[lang] || map[short] || map.en || '';
 }
 
 export function sponsorsForSlot(sponsors: Sponsor[], slot: SponsorSlot): Sponsor[] {

@@ -1,0 +1,67 @@
+---
+title: Sponsors
+description: How the sponsors shown in every Eternal panel come from one sponsors.json file, and its format.
+icon: Crown
+---
+
+Sponsors are one JSON file in a GitHub repository that only the project owner
+can edit; there is no sponsor setting, page or API in any panel. Every panel,
+including the panels of hosted resellers, reads
+
+```
+https://raw.githubusercontent.com/rad1in/sponsors/main/sponsors.json
+```
+
+and the logos from `logos/` next to it. Panels cache the file for an hour
+(10 minutes after a failed fetch, keeping the last good list), re-check each
+entry's `from` and `until` on every request, and show no sponsors, without any
+error, when the file is missing or unreachable.
+
+## Publishing
+
+To add, change or remove a sponsor, edit `sponsors.json` in the sponsors
+repository (and drop the logo into `logos/`), then commit to `main`. Panels pick
+the change up within about an hour.
+
+## Example
+
+```json
+{
+  "contact": "https://t.me/example",
+  "sponsors": [
+    {
+      "id": "acme-2026-10",
+      "name": "Acme VPS",
+      "enable": true,
+      "slots": ["dashboard", "page", "login"],
+      "from": "2026-10-01T00:00:00Z",
+      "until": "2026-11-01T00:00:00Z",
+      "logo": "acme.png",
+      "title": {
+        "en": "Acme VPS: 20% off",
+        "fa": "Acme VPS: ۲۰٪ تخفیف"
+      },
+      "text": {
+        "en": "Fast servers for your panel. Use code ETERNAL at checkout.",
+        "fa": "سرورهای سریع برای پنل شما. هنگام خرید از کد ETERNAL استفاده کنید."
+      },
+      "link": "https://acme.example/?utm_source=eternal"
+    }
+  ]
+}
+```
+
+## Fields
+
+| Field | Required | Meaning |
+| ----- | -------- | ------- |
+| `contact` | no | `https://` link behind every "Become a sponsor" button. Without it the button is hidden. |
+| `sponsors[].id` | yes | Unique, stable id. Dismissals are remembered per id, so a new campaign needs a new id. |
+| `sponsors[].name` | no | Name shown next to the logo. |
+| `sponsors[].enable` | no | `false` hides the entry without deleting it. A missing value counts as on. |
+| `sponsors[].slots` | yes | Where it shows: `dashboard`, `page` (the Sponsors page) and `login`. Unknown names are ignored; an entry with none is dropped. |
+| `sponsors[].from` | no | RFC 3339 start. Before it the entry stays hidden. |
+| `sponsors[].until` | yes | RFC 3339 end. From this instant on the entry is hidden. |
+| `sponsors[].logo` | no | File name inside `logos/` beside `sponsors.json`: `.png`, `.webp` or `.jpg`, at most 256 KB, letters, digits, `.`, `_` and `-` only. A bad name drops only the logo. |
+| `sponsors[].title`, `sponsors[].text` | no | Texts keyed by language (`fa`, `ru`, `zh-TW`, ...). The panel picks the user's language, then `en`. |
+| `sponsors[].link` | yes | `https://` target, opened in a new tab with `rel="sponsored"`. |

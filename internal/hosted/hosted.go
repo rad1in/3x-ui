@@ -3,7 +3,6 @@
 package hosted
 
 import (
-	"bytes"
 	"encoding/json"
 	"os"
 	"path/filepath"
@@ -16,9 +15,8 @@ import (
 const EnvDir = "XUI_HOSTED_DIR"
 
 const (
-	limitsFile   = "limits.json"
-	statusFile   = "status.json"
-	sponsorsFile = "sponsors.json"
+	limitsFile = "limits.json"
+	statusFile = "status.json"
 )
 
 // Blocked reasons a hosted panel stops serving.
@@ -87,20 +85,6 @@ func ReadStatus(dir string) (PanelStatus, error) {
 
 func WriteStatus(dir string, s PanelStatus) error {
 	return writeJSON(dir, statusFile, s)
-}
-
-// ReadSponsors returns the owner's sponsor snapshot the master last wrote.
-func ReadSponsors(dir string) ([]byte, error) {
-	return os.ReadFile(filepath.Join(dir, sponsorsFile))
-}
-
-// WriteSponsors replaces the snapshot only when it changed, so frequent
-// publishes do not churn the disk.
-func WriteSponsors(dir string, data []byte) error {
-	if old, err := ReadSponsors(dir); err == nil && bytes.Equal(old, data) {
-		return nil
-	}
-	return writeFile(dir, sponsorsFile, data)
 }
 
 func readJSON(path string, v any) error {

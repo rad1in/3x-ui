@@ -1,7 +1,6 @@
 export const keys = {
   sponsors: () => ['sponsors'] as const,
   sharedAccounts: () => ['sharedAccounts'] as const,
-  sponsorAdmin: () => ['sponsors', 'admin'] as const,
   hosted: {
     status: () => ['hosted', 'status'] as const,
   },

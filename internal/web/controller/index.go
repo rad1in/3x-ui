@@ -70,8 +70,6 @@ func (a *IndexController) initRouter(g *gin.RouterGroup) {
 	g.GET("/captcha", a.captcha)
 	g.GET("/sponsors", a.sponsors)
 	g.GET("/sponsors/logo/:name", a.sponsorLogo)
-	g.GET("/sponsors/feed/sponsors.json", a.sponsorFeed)
-	g.GET("/sponsors/feed/logos/:name", a.sponsorFeedLogo)
 
 	g.POST("/login", middleware.CSRFMiddleware(), a.login)
 	g.POST("/logout", middleware.CSRFMiddleware(), a.logout)
@@ -93,29 +91,6 @@ func (a *IndexController) sponsorLogo(c *gin.Context) {
 	data, contentType, err := a.panelService.GetSponsorLogo(c.Param("name"))
 	if err != nil {
 		logger.Debug("sponsor logo failed:", err)
-		c.Status(http.StatusNotFound)
-		return
-	}
-	c.Header("Cache-Control", "public, max-age=3600")
-	c.Data(http.StatusOK, contentType, data)
-}
-
-// sponsorFeed publishes this panel's own live sponsors so other panels (for
-// example child panels on the same server) can show them via sponsorFeedUrl.
-func (a *IndexController) sponsorFeed(c *gin.Context) {
-	feed, err := a.panelService.SponsorFeed()
-	if err != nil {
-		logger.Debug("sponsor feed failed:", err)
-		c.Status(http.StatusServiceUnavailable)
-		return
-	}
-	c.Header("Cache-Control", "public, max-age=300")
-	c.JSON(http.StatusOK, feed)
-}
-
-func (a *IndexController) sponsorFeedLogo(c *gin.Context) {
-	data, contentType, err := a.panelService.GetSponsorFeedLogo(c.Param("name"))
-	if err != nil {
 		c.Status(http.StatusNotFound)
 		return
 	}

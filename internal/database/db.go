@@ -105,7 +105,6 @@ func allModels() []any {
 		&model.TuicTrafficReceipt{},
 		&model.AuditLog{},
 		&model.AdminSession{},
-		&model.SponsorRecord{},
 		&model.HostedPanel{},
 		&model.ClientWarning{},
 		&model.ClientDepletion{},

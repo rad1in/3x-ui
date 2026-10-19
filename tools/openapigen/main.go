@@ -41,7 +41,6 @@ func run(root, outDir string) error {
 				"Host",
 				"SubBalancer",
 				"AuditLog",
-				"SponsorRecord",
 				"HostedPanel",
 				"ClientTemplate",
 				"ClientDailyUsage",
