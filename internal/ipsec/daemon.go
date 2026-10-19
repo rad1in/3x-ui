@@ -12,7 +12,6 @@ import (
 	"strconv"
 	"strings"
 	"sync/atomic"
-	"syscall"
 	"time"
 
 	"github.com/strongswan/govici/vici"
@@ -59,7 +58,7 @@ func runningCharon(pidFile string) (int, bool) {
 	if err != nil || pid <= 0 {
 		return 0, false
 	}
-	if syscall.Kill(pid, 0) != nil {
+	if !processAlive(pid) {
 		return 0, false
 	}
 	return pid, true
