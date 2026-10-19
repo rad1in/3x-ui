@@ -60,7 +60,7 @@ The first rows are shared with 3x-ui; the rest exist only in Eternal. The compar
 | Shared-account detection and maintenance mode | ✅ | ❌ |
 | Panel health check, usage report export, keyboard shortcuts | ✅ | ❌ |
 | Decoy site for unknown visitors, audit log, branding settings | ✅ | ❌ |
-| `x-ui client` command line | ✅ | ❌ |
+| `eternal client` command line | ✅ | ❌ |
 
 ## What the fork adds
 
@@ -95,7 +95,7 @@ On top of everything 3x-ui provides (VLESS, VMess, Trojan, Shadowsocks, REALITY,
 - Client templates, daily usage history, import from Marzban, Marzneshin and Hiddify
 - Telegram trial accounts, sing-box / Outline / Surge / Quantumult X / Loon subscription formats
 - Short subscription links, rate limiting and fetch statistics
-- `x-ui client` command line for scripting
+- `eternal client` command line for scripting
 
 **Notifications**
 - Webhooks, ntfy, Gotify, Slack, Bale, editable bot texts, weekly summary, quota and expiry warnings
@@ -109,10 +109,10 @@ On top of everything 3x-ui provides (VLESS, VMess, Trojan, Shadowsocks, REALITY,
 The installer and the update script download release archives from this repository's GitHub releases (built by the release workflow), so publish a release first, or build from source.
 
 ```bash
-bash <(curl -Ls https://raw.githubusercontent.com/rad1in/3x-ui/main/install.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/rad1in/eternal/main/install.sh)
 ```
 
-During installation a random username, password and access path are generated. Run `x-ui` afterwards to open the management menu.
+During installation a random username, password and access path are generated. Run `eternal` afterwards to open the management menu.
 
 ### Build from source
 
@@ -120,7 +120,7 @@ Requirements: Go (see `go.mod`), a C compiler (the SQLite driver needs CGo), Nod
 
 ```bash
 cd frontend && npm ci && npm run build && cd ..
-go build -o x-ui .
+go build -o eternal .
 ```
 
 ### Docker
@@ -133,14 +133,14 @@ Fail2ban inside the image bans with `iptables`; if you use `docker run` instead 
 
 ## Databases
 
-SQLite (default), PostgreSQL and MySQL/MariaDB. Select with environment variables, which the installer writes to `/etc/default/x-ui`:
+SQLite (default), PostgreSQL and MySQL/MariaDB. Select with environment variables, which the installer writes to `/etc/default/eternal`:
 
 ```
 XUI_DB_TYPE=postgres        # sqlite | postgres | mysql
 XUI_DB_DSN=postgres://user:password@127.0.0.1:5432/db?sslmode=disable
 ```
 
-`x-ui migrate-db --dsn "<dsn>"` copies an existing SQLite database into PostgreSQL or MySQL.
+`eternal migrate-db --dsn "<dsn>"` copies an existing SQLite database into PostgreSQL or MySQL.
 
 ## Documentation
 

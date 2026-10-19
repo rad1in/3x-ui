@@ -9,7 +9,7 @@ database. Back it up regularly so you can recover or migrate.
 
 ## What to back up
 
-- **The database** — SQLite at `/etc/x-ui/x-ui.db` by default (or your
+- **The database** — SQLite at `/etc/eternal/eternal.db` by default (or your
   PostgreSQL or MySQL/MariaDB database if you use that backend; on MySQL the
   panel's Back Up downloads a SQLite `.db` snapshot of it).
 - **Certificates** — anything under `/root/cert/` (or wherever you store TLS
@@ -21,7 +21,7 @@ You can download a backup from the panel's overview, or copy the database file
 directly from the server:
 
 ```bash title="copy the SQLite database"
-cp /etc/x-ui/x-ui.db /root/x-ui-backup-$(date +%F).db
+cp /etc/eternal/eternal.db /root/eternal-backup-$(date +%F).db
 ```
 
 To restore, stop the panel, put the database back in place, and start it again.
@@ -38,12 +38,12 @@ If you've configured the [Telegram bot](/docs/operations/telegram-bot) or [Disco
 
 ## SQLite dump / restore
 
-The `x-ui migrate-db` command converts the SQLite database to and from a plain
+The `eternal migrate-db` command converts the SQLite database to and from a plain
 SQL text dump (handy for inspection or transferring between machines):
 
 ```bash
-x-ui migrate-db --dump /root/x-ui.sql       # SQLite -> SQL text
-x-ui migrate-db --restore /root/x-ui.sql     # SQL text -> SQLite
+eternal migrate-db --dump /root/eternal.sql       # SQLite -> SQL text
+eternal migrate-db --restore /root/eternal.sql     # SQL text -> SQLite
 ```
 
 To move to PostgreSQL or MySQL instead, see [Database](/docs/reference/database).

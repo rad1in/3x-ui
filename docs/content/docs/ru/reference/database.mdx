@@ -9,7 +9,7 @@ icon: Database
 
 ## SQLite (по умолчанию)
 
-Один файл по пути `/etc/x-ui/x-ui.db`. Никакой настройки не требуется, идеально
+Один файл по пути `/etc/eternal/eternal.db`. Никакой настройки не требуется, идеально
 подходит для небольших и средних развёртываний. Папку можно изменить с помощью
 [`XUI_DB_FOLDER`](/docs/reference/env-vars#database) (в Windows по умолчанию она
 располагается рядом с бинарным файлом).
@@ -19,9 +19,9 @@ icon: Database
 Рекомендуется при большом количестве клиентов или конфигурациях с несколькими
 узлами. Инсталлятор может установить PostgreSQL локально за вас либо принять DSN
 к уже существующему серверу. Во время выполнения бэкенд выбирается через
-переменные окружения, которые инсталлятор записывает в `/etc/default/x-ui`:
+переменные окружения, которые инсталлятор записывает в `/etc/default/eternal`:
 
-```bash title="/etc/default/x-ui"
+```bash title="/etc/default/eternal"
 XUI_DB_TYPE=postgres
 XUI_DB_DSN=postgres://xui:password@127.0.0.1:5432/xui?sslmode=disable
 ```
@@ -44,13 +44,13 @@ docker compose --profile postgres up -d
 Перенесите существующую установку SQLite на PostgreSQL встроенной командой:
 
 ```bash
-x-ui migrate-db --dsn "postgres://xui:password@127.0.0.1:5432/xui?sslmode=disable"
+eternal migrate-db --dsn "postgres://xui:password@127.0.0.1:5432/xui?sslmode=disable"
 ```
 
-Затем задайте `XUI_DB_TYPE` и `XUI_DB_DSN` в `/etc/default/x-ui` и перезапустите:
+Затем задайте `XUI_DB_TYPE` и `XUI_DB_DSN` в `/etc/default/eternal` и перезапустите:
 
 ```bash
-systemctl restart x-ui
+systemctl restart eternal
 ```
 
 <Callout type="info">

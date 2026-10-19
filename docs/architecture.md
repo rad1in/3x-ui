@@ -289,8 +289,8 @@ node heartbeat every 5s, periodic traffic resets (hourly/daily/weekly/monthly). 
 ├── media/                    # README images
 │
 ├── Dockerfile / docker-compose.yml / DockerEntrypoint.sh / DockerInit.sh   # Container build/run
-├── install.sh / update.sh / x-ui.sh                        # VPS install + management CLI
-├── x-ui.service.*  / x-ui.rc                               # systemd units (debian/rhel/arch) + rc script
+├── install.sh / update.sh / eternal.sh                        # VPS install + management CLI
+├── eternal.service.*  / eternal.rc                               # systemd units (debian/rhel/arch) + rc script
 ├── windows_files/                                          # Windows service support
 └── .github/workflows/        # CI: ci.yml, codeql.yml, docker.yml, release.yml,
                               #     mutation.yml, cleanup_caches.yml, claude-pr-review.yml,
@@ -626,7 +626,7 @@ them with a comment starting `@claude review` on a PR or `@claude analyze` on an
 ## 10. Gotchas & conventions
 
 - **Module path is `.../v3`.** Internal imports use `github.com/mhsanaei/3x-ui/v3/internal/...`.
-- **SQLite vs Postgres vs MySQL.** Default is SQLite at `{XUI_DB_FOLDER}/x-ui.db`. Postgres via
+- **SQLite vs Postgres vs MySQL.** Default is SQLite at `{XUI_DB_FOLDER}/eternal.db`. Postgres via
   `XUI_DB_TYPE=postgres` + `XUI_DB_DSN`; MySQL/MariaDB via `XUI_DB_TYPE=mysql` (`database/mysql.go`:
   utf8mb4_bin tables, `ANSI_QUOTES` + `NO_BACKSLASH_ESCAPES` sessions, indexed strings as VARCHAR(255)).
   Some SQL paths are dialect-aware (`database/dialect.go`); test all three when touching raw queries

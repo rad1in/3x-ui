@@ -9,7 +9,7 @@ the backend at install time.
 
 ## SQLite (default)
 
-A single file at `/etc/x-ui/x-ui.db`. Zero setup, ideal for small and medium
+A single file at `/etc/eternal/eternal.db`. Zero setup, ideal for small and medium
 deployments. The folder is configurable with
 [`XUI_DB_FOLDER`](/docs/reference/env-vars#database) (on Windows it defaults next
 to the binary).
@@ -19,9 +19,9 @@ to the binary).
 Recommended for high client counts or multi-node setups. The installer can
 install PostgreSQL locally for you, or accept a DSN to an existing server. At
 runtime the backend is selected via environment variables, which the installer
-writes to `/etc/default/x-ui`:
+writes to `/etc/default/eternal`:
 
-```bash title="/etc/default/x-ui"
+```bash title="/etc/default/eternal"
 XUI_DB_TYPE=postgres
 XUI_DB_DSN=postgres://xui:password@127.0.0.1:5432/xui?sslmode=disable
 ```
@@ -45,7 +45,7 @@ Supported on MySQL 8.0.21+ and MariaDB 10.6+ (tested on MySQL 8.4 and MariaDB
 10.11). Point the panel at an **existing, empty database** — it creates its
 tables on first start:
 
-```bash title="/etc/default/x-ui"
+```bash title="/etc/default/eternal"
 XUI_DB_TYPE=mysql
 XUI_DB_DSN=mysql://xui:password@127.0.0.1:3306/xui
 ```
@@ -76,14 +76,14 @@ Move an existing SQLite install with the built-in command; the destination
 type follows from the DSN:
 
 ```bash
-x-ui migrate-db --dsn "postgres://xui:password@127.0.0.1:5432/xui?sslmode=disable"
-x-ui migrate-db --dsn "mysql://xui:password@127.0.0.1:3306/xui"
+eternal migrate-db --dsn "postgres://xui:password@127.0.0.1:5432/xui?sslmode=disable"
+eternal migrate-db --dsn "mysql://xui:password@127.0.0.1:3306/xui"
 ```
 
-Then set `XUI_DB_TYPE` and `XUI_DB_DSN` in `/etc/default/x-ui` and restart:
+Then set `XUI_DB_TYPE` and `XUI_DB_DSN` in `/etc/default/eternal` and restart:
 
 ```bash
-systemctl restart x-ui
+systemctl restart eternal
 ```
 
 <Callout type="info">

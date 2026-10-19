@@ -58,7 +58,7 @@
 | تشخیص اکانت اشتراکی و حالت تعمیرات | ✅ | ❌ |
 | بررسی سلامت پنل، خروجی گزارش مصرف و میانبرهای کیبورد | ✅ | ❌ |
 | سایت فریب برای بازدیدکننده‌ی ناشناس، لاگ فعالیت و تنظیمات برندینگ | ✅ | ❌ |
-| دستور خط فرمان `x-ui client` | ✅ | ❌ |
+| دستور خط فرمان `eternal client` | ✅ | ❌ |
 
 ## این فورک چه چیزی اضافه می‌کند
 
@@ -93,7 +93,7 @@
 - قالب ساخت کاربر، نمودار مصرف روزانه، انتقال کاربر از Marzban و Marzneshin و Hiddify
 - اکانت تست در ربات تلگرام و خروجی اشتراک برای sing-box و Outline و Surge و Quantumult X و Loon
 - لینک اشتراک کوتاه، محدودیت نرخ درخواست و آمار دریافت اشتراک
-- دستور `x-ui client` برای اسکریپت‌نویسی
+- دستور `eternal client` برای اسکریپت‌نویسی
 
 **اعلان‌ها**
 - وبهوک، ntfy، Gotify، Slack، بله، متن‌های قابل ویرایش ربات، خلاصه‌ی هفتگی و هشدار حجم و انقضا
@@ -109,12 +109,12 @@
 </div>
 
 ```bash
-bash <(curl -Ls https://raw.githubusercontent.com/rad1in/3x-ui/main/install.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/rad1in/eternal/main/install.sh)
 ```
 
 <div dir="rtl">
 
-هنگام نصب نام کاربری، رمز و مسیر دسترسی تصادفی ساخته می‌شود. بعد از نصب دستور `x-ui` را بزنید تا منوی مدیریت باز شود.
+هنگام نصب نام کاربری، رمز و مسیر دسترسی تصادفی ساخته می‌شود. بعد از نصب دستور `eternal` را بزنید تا منوی مدیریت باز شود.
 
 ### ساخت از روی سورس
 
@@ -124,7 +124,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/rad1in/3x-ui/main/install.sh)
 
 ```bash
 cd frontend && npm ci && npm run build && cd ..
-go build -o x-ui .
+go build -o eternal .
 ```
 
 <div dir="rtl">
@@ -141,7 +141,7 @@ docker compose up -d
 
 ## پایگاه داده
 
-SQLite (پیش‌فرض)، PostgreSQL و MySQL/MariaDB. انتخاب با متغیرهای محیطی انجام می‌شود که نصب‌کننده در `/etc/default/x-ui` می‌نویسد:
+SQLite (پیش‌فرض)، PostgreSQL و MySQL/MariaDB. انتخاب با متغیرهای محیطی انجام می‌شود که نصب‌کننده در `/etc/default/eternal` می‌نویسد:
 
 </div>
 
@@ -152,7 +152,7 @@ XUI_DB_DSN=postgres://user:password@127.0.0.1:5432/db?sslmode=disable
 
 <div dir="rtl">
 
-دستور `x-ui migrate-db --dsn "<dsn>"` پایگاه SQLite موجود را به PostgreSQL یا MySQL منتقل می‌کند.
+دستور `eternal migrate-db --dsn "<dsn>"` پایگاه SQLite موجود را به PostgreSQL یا MySQL منتقل می‌کند.
 
 ## مستندات
 

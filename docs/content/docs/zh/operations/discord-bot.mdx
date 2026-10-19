@@ -56,7 +56,7 @@ icon: Bot
    - 选择偏好的 **Discord 机器人语言**。
 3. 在**通知**区域：
    - 设置**通知时间**（如 `@daily`、`@weekly` 或自定义 Cron 表达式）。
-   - 如需自动备份，可开启**数据库备份**，定时报告中将自动附带 `x-ui.db` 备份文件。
+   - 如需自动备份，可开启**数据库备份**，定时报告中将自动附带 `eternal.db` 备份文件。
    - 勾选需要触发告警的事件类型，并配置 CPU / 内存阈值。
 4. 点击**发送测试通知**以验证连通性。你的 Discord 频道应立刻收到一条测试 Embed 消息。
 5. 点击**保存**应用配置。
@@ -72,7 +72,7 @@ icon: Bot
 | ---- | ---- |
 | `!status` | 查看系统负载、内存占用、CPU 使用率、核心状态、TCP/UDP 连接数及当前在线用户。 |
 | `!report` | 立即生成并发送完整的服务器与代理状态报告 Embed。 |
-| `!backup` | 立即导出并发送当前数据库备份文件（`x-ui.db`）与 `config.json`。 |
+| `!backup` | 立即导出并发送当前数据库备份文件（`eternal.db`）与 `config.json`。 |
 | `!usage <email>` | 查询指定客户端的流量用量（上传/下载）、配额上限及到期时间。 |
 | `!inbounds` | 列出所有活动的入站连接、监听端口、协议、已用流量及客户端数量。 |
 | `!restart` | 安全重启 Xray 核心，无需重启整个 Web 面板。 |
@@ -107,7 +107,7 @@ icon: Bot
 | `discordAdminIds` | _(无)_ | 允许执行命令的 Discord 用户数字 ID（逗号分隔）。留空则禁用命令交互。 |
 | `discordLang` | `en-US` | Discord 机器人消息与报告使用的语言。 |
 | `discordRunTime` | `@daily` | 发送周期性状态报告的 Cron 表达式或预设计划。 |
-| `discordBotBackup` | `false` | 是否在周期性报告中自动附带数据库备份文件（`x-ui.db`）。 |
+| `discordBotBackup` | `false` | 是否在周期性报告中自动附带数据库备份文件（`eternal.db`）。 |
 | `discordEnabledEvents` | `login.attempt,cpu.high` | 触发通知的事件类型列表（逗号分隔）。 |
 | `discordCpu` | `80` | 触发 CPU 告警的利用率百分比阈值（0–100）。 |
 | `discordMemory` | `80` | 触发内存告警的利用率百分比阈值（0–100）。 |
