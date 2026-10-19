@@ -15,7 +15,7 @@ import (
 func joinRouter(t *testing.T) *gin.Engine {
 	t.Helper()
 	gin.SetMode(gin.TestMode)
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	r := gin.New()
 	NewNodeJoinController(r.Group("/base"))
 	return r

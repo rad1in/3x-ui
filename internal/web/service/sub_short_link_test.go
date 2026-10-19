@@ -12,7 +12,7 @@ import (
 )
 
 func TestSubShortLinkLifecycle(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	var svc SubShortLinkService
 	for _, sub := range []string{"sub-a", "sub-b"} {
 		if err := database.GetDB().Create(&model.ClientRecord{Email: sub + "@e", SubID: sub}).Error; err != nil {

@@ -19,7 +19,7 @@ import (
 func TestGetSubs_DuplicateSettingsClients_Deduped(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	const subId = "sub-dup"
 	const email = "dup@example.com"
@@ -74,7 +74,7 @@ func TestGetSubs_DuplicateSettingsClients_Deduped(t *testing.T) {
 func TestMatchingClients_DedupsCaseInsensitiveEmail(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	const subId = "s1"
 	const uuid = "11111111-2222-4333-8444-555555555555"

@@ -37,7 +37,7 @@ const gib = int64(1) << 30
 
 func seedCapNode(t *testing.T, capGB float64, action string) (*model.Node, *model.Inbound) {
 	t.Helper()
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	db := database.GetDB()
 	node := &model.Node{
 		Name: "metered", Address: "n1", Port: 2053, Enable: true, Status: "offline",

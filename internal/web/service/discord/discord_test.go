@@ -17,7 +17,7 @@ import (
 
 func setupTestDB(t *testing.T) service.SettingService {
 	t.Helper()
-	dbPath := filepath.Join(t.TempDir(), "x-ui.db")
+	dbPath := filepath.Join(t.TempDir(), "eternal.db")
 	dbtest.InitDB(t, dbPath)
 	return service.SettingService{}
 }
@@ -329,7 +329,7 @@ func TestSendMessageWithFiles_Success(t *testing.T) {
 		Embeds:  []Embed{{Title: "Report Embed"}},
 	}
 	files := []FileAttachment{
-		{Filename: "x-ui.db", Data: []byte("sqlite-db-binary")},
+		{Filename: "eternal.db", Data: []byte("sqlite-db-binary")},
 		{Filename: "config.json", Data: []byte(`{"log":{}}`)},
 	}
 
@@ -343,8 +343,8 @@ func TestSendMessageWithFiles_Success(t *testing.T) {
 	if receivedPayload.Content != "Report message" || len(receivedPayload.Embeds) != 1 {
 		t.Errorf("payload mismatch: %+v", receivedPayload)
 	}
-	if string(receivedFiles["x-ui.db"]) != "sqlite-db-binary" {
-		t.Errorf("x-ui.db mismatch: %s", string(receivedFiles["x-ui.db"]))
+	if string(receivedFiles["eternal.db"]) != "sqlite-db-binary" {
+		t.Errorf("eternal.db mismatch: %s", string(receivedFiles["eternal.db"]))
 	}
 	if string(receivedFiles["config.json"]) != `{"log":{}}` {
 		t.Errorf("config.json mismatch: %s", string(receivedFiles["config.json"]))

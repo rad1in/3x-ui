@@ -1232,7 +1232,7 @@ func (s *ServerService) GetLogs(count string, level string, syslog string) []str
 		// Use hardcoded command with validated parameters
 		ctx, cancel := context.WithTimeout(context.Background(), syslogTimeout)
 		defer cancel()
-		cmd := exec.CommandContext(ctx, "journalctl", "-u", "x-ui", "--no-pager", "-n", strconv.Itoa(countInt), "-p", level)
+		cmd := exec.CommandContext(ctx, "journalctl", "-u", "eternal", "--no-pager", "-n", strconv.Itoa(countInt), "-p", level)
 		var out bytes.Buffer
 		cmd.Stdout = &out
 		err = cmd.Run()
@@ -1240,7 +1240,7 @@ func (s *ServerService) GetLogs(count string, level string, syslog string) []str
 			return []string{"journalctl did not answer in time. Try a smaller line count or a less strict level."}
 		}
 		if err != nil {
-			return []string{"Failed to run journalctl command! Make sure systemd is available and x-ui service is registered."}
+			return []string{"Failed to run journalctl command! Make sure systemd is available and eternal service is registered."}
 		}
 		lines = strings.Split(out.String(), "\n")
 	} else {
@@ -1576,7 +1576,7 @@ func (s *ServerService) GetDb() ([]byte, error) {
 }
 
 func (s *ServerService) backupSQLite() (string, func(), error) {
-	backupDir, err := os.MkdirTemp(filepath.Dir(config.GetDBPath()), ".x-ui-backup-")
+	backupDir, err := os.MkdirTemp(filepath.Dir(config.GetDBPath()), ".eternal-backup-")
 	if err != nil {
 		return "", nil, err
 	}
@@ -1598,7 +1598,7 @@ func (s *ServerService) backupSQLite() (string, func(), error) {
 // is named after whatever address the user reached the panel with, no Listen
 // Domain needed. The Telegram bot has no request and passes "", falling back to
 // the configured Listen Domain (webDomain) and then the public IP. The extension
-// is .dump on PostgreSQL and .db on SQLite; the base falls back to "x-ui" when
+// is .dump on PostgreSQL and .db on SQLite; the base falls back to "eternal" when
 // no address is known.
 func (s *ServerService) BackupFilename(requestHost string) string {
 	ext := ".db" // MySQL backs up as a SQLite snapshot too
@@ -1620,7 +1620,7 @@ func backupDateSuffix(now time.Time) string {
 // (webDomain) and then the resolved public IP (IPv4 before IPv6), reduced to safe
 // filename characters. The public IP is resolved directly rather than read from
 // LastStatus so callers whose ServerService never runs the status ticker —
-// notably the Telegram bot — still get a real address instead of the "x-ui"
+// notably the Telegram bot — still get a real address instead of the "eternal"
 // fallback.
 func (s *ServerService) backupHost(requestHost string) string {
 	host := extractHostname(strings.TrimSpace(requestHost))
@@ -1644,7 +1644,7 @@ func (s *ServerService) backupHost(requestHost string) string {
 // sanitizeBackupHost reduces a host to characters safe in a download filename
 // (the getDb handler enforces ^[a-zA-Z0-9_\-.]+$). IPv6 brackets are stripped
 // and any other character — such as the colons in an IPv6 address — becomes a
-// hyphen. Returns "x-ui" when nothing usable remains.
+// hyphen. Returns "eternal" when nothing usable remains.
 func sanitizeBackupHost(host string) string {
 	host = strings.Trim(host, "[]")
 	var b strings.Builder
@@ -1658,7 +1658,7 @@ func sanitizeBackupHost(host string) string {
 	}
 	out := strings.Trim(b.String(), ".-")
 	if out == "" {
-		return "x-ui"
+		return "eternal"
 	}
 	return out
 }
@@ -1670,7 +1670,7 @@ func sanitizeBackupHost(host string) string {
 // exportServerDBAsSQLite copies the live PostgreSQL/MySQL data into a
 // temporary SQLite file and returns its bytes.
 func exportServerDBAsSQLite() ([]byte, error) {
-	tmp, err := os.CreateTemp("", "x-ui-migration-*.db")
+	tmp, err := os.CreateTemp("", "eternal-migration-*.db")
 	if err != nil {
 		return nil, err
 	}
@@ -1690,7 +1690,7 @@ func (s *ServerService) GetMigration() ([]byte, string, error) {
 		if err != nil {
 			return nil, "", err
 		}
-		return data, "x-ui.db", nil
+		return data, "eternal.db", nil
 	}
 
 	backupPath, cleanup, err := s.backupSQLite()
@@ -1702,7 +1702,7 @@ func (s *ServerService) GetMigration() ([]byte, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
-	return data, "x-ui.dump", nil
+	return data, "eternal.dump", nil
 }
 
 // hostBoundSettingKeys are the settings that describe *this* machine rather
@@ -2010,7 +2010,7 @@ func pgRestoreReadFailureError(probeOutput, localVersion string) error {
 		localVersion = "unknown"
 	}
 	if major, known := pgArchiveVersionIntroducedIn[m[1]]; known {
-		return common.NewErrorf("This backup was created by pg_dump from PostgreSQL %d or newer, but the server's pg_restore is version %s and cannot read it; run 'x-ui pgclient %d' on the server (or upgrade the postgresql-client package to version %d or newer), then retry the import", major, localVersion, major, major)
+		return common.NewErrorf("This backup was created by pg_dump from PostgreSQL %d or newer, but the server's pg_restore is version %s and cannot read it; run 'eternal pgclient %d' on the server (or upgrade the postgresql-client package to version %d or newer), then retry the import", major, localVersion, major, major)
 	}
 	return common.NewErrorf("This backup was created by a newer pg_dump than the server's pg_restore (version %s) can read; upgrade the postgresql-client package and retry the import", localVersion)
 }
@@ -2108,7 +2108,7 @@ func (s *ServerService) restorePostgresDump(file multipart.File, keepHostSetting
 		return common.NewErrorf("invalid PostgreSQL DSN: %v", err)
 	}
 
-	tempFile, err := os.CreateTemp("", "x-ui-pg-restore-*.dump")
+	tempFile, err := os.CreateTemp("", "eternal-pg-restore-*.dump")
 	if err != nil {
 		return common.NewErrorf("Error creating temporary dump file: %v", err)
 	}
@@ -2175,7 +2175,7 @@ func (s *ServerService) restorePostgresDump(file multipart.File, keepHostSetting
 }
 
 func (s *ServerService) migrateSQLiteIntoServerDB(file multipart.File, isSQLDump, keepHostSettings bool) error {
-	tempDir, err := os.MkdirTemp("", "x-ui-pg-migrate-*")
+	tempDir, err := os.MkdirTemp("", "eternal-pg-migrate-*")
 	if err != nil {
 		return common.NewErrorf("Error creating temporary folder: %v", err)
 	}

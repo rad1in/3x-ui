@@ -13,7 +13,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/util/crypto"
 )
 
-// `x-ui client` drives the production router with a bearer token end to end.
+// `eternal client` drives the production router with a bearer token end to end.
 func TestCLIClientCommandsAgainstThePanel(t *testing.T) {
 	n := startContractNode(t)
 	if err := database.GetDB().Create(&model.ApiToken{

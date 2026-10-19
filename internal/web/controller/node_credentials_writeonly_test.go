@@ -26,7 +26,7 @@ func newNodeCredentialTestEngine(t *testing.T) *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	engine := gin.New()
 	engine.Use(func(c *gin.Context) {

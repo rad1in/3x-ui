@@ -14,7 +14,7 @@ import (
 // back as an owner with the same password hash, or the admin is locked out.
 func TestInitDBMigratesLegacyAdminToOwner(t *testing.T) {
 	t.Setenv("XUI_DB_JOURNAL_MODE", "")
-	dbPath := filepath.Join(t.TempDir(), "x-ui.db")
+	dbPath := filepath.Join(t.TempDir(), "eternal.db")
 	raw, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		t.Fatalf("open legacy db: %v", err)

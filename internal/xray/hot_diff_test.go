@@ -418,7 +418,7 @@ func TestComputeHotDiff_RealityClientOnlyChangeStaysHot(t *testing.T) {
 // nowhere until the next full restart -- confirmed directly on a real box
 // (iptables TPROXY counters incrementing, but `ss` showing nothing listening
 // on the bridge port; the listener only appeared after `systemctl restart
-// x-ui`). This must force a restart instead of a hot add.
+// eternal`). This must force a restart instead of a hot add.
 func TestComputeHotDiff_NewTproxyInboundNeedsRestart(t *testing.T) {
 	oldCfg := makeHotConfig()
 	newCfg := makeHotConfig()

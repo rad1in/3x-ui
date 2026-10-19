@@ -18,7 +18,7 @@ func TestClientWeeklyRenewMigration(t *testing.T) {
 			name = "nullable columns and configured weekday"
 		}
 		t.Run(name, func(t *testing.T) {
-			path := filepath.Join(t.TempDir(), "x-ui.db")
+			path := filepath.Join(t.TempDir(), "eternal.db")
 			legacy, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
 			if err != nil {
 				t.Fatal(err)

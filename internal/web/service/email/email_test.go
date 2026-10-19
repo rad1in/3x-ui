@@ -132,7 +132,7 @@ func startFakeSMTPServer(t *testing.T) (string, func() []string) {
 }
 
 func TestSendUsesBareAddressFromNameAddrSmtpFrom(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 
 	addr, recordedLines := startFakeSMTPServer(t)
 	host, portStr, err := net.SplitHostPort(addr)
@@ -179,7 +179,7 @@ func TestSendUsesBareAddressFromNameAddrSmtpFrom(t *testing.T) {
 }
 
 func TestConnectionReportsMissingFrom(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 
 	settingService := service.SettingService{}
 	mustSet := func(name string, err error) {

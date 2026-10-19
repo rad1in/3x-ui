@@ -28,7 +28,7 @@ func initHwidSubRouter(t *testing.T, limit int) (*gin.Engine, string) {
 	}
 
 	t.Setenv("XUI_DB_FOLDER", tmp)
-	dbtest.InitDB(t, filepath.Join(tmp, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(tmp, "eternal.db"))
 
 	const subID = "sub-hwid-route"
 	const email = "route@example.com"

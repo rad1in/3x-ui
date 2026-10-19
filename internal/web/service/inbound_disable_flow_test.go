@@ -96,7 +96,7 @@ func initFlowTestDB(t *testing.T) *gorm.DB {
 	t.Helper()
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 	return database.GetDB()
 }
 

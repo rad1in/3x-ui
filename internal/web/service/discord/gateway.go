@@ -543,7 +543,7 @@ func (g *GatewayClient) sendBackup(ctx context.Context) {
 
 	filename := g.serverService.BackupFilename("")
 	if filename == "" {
-		filename = "x-ui.db"
+		filename = "eternal.db"
 	}
 
 	filename, dbData, err = service.ProtectBackup(filename, dbData)

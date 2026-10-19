@@ -14,7 +14,7 @@ import (
 )
 
 func TestMetricsRenderExposesTrafficAndNodeHealth(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	db := database.GetDB()
 	if err := db.Create(&model.Inbound{Tag: "in-443", Remark: `a "quoted"\name`, Protocol: model.VLESS, Port: 443, Enable: true, Up: 11, Down: 22, Settings: `{"clients":[]}`}).Error; err != nil {
 		t.Fatalf("seed inbound: %v", err)
@@ -51,7 +51,7 @@ func TestMetricsRenderExposesTrafficAndNodeHealth(t *testing.T) {
 // The shipped dashboard queries metric names by hand; a renamed or dropped
 // family would leave its panels silently empty.
 func TestGrafanaDashboardQueriesOnlyExportedMetrics(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	raw, err := os.ReadFile(filepath.Join("..", "..", "..", "monitoring", "grafana-dashboard.json"))
 	if err != nil {
 		t.Fatalf("read dashboard: %v", err)

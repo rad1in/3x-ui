@@ -12,7 +12,7 @@ import (
 func TestSyncInbound_PreservesCredentialsAcrossProtocols(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	db := database.GetDB()
 
@@ -72,7 +72,7 @@ func TestSyncInbound_PreservesCredentialsAcrossProtocols(t *testing.T) {
 func TestSyncInbound_AllowsClearingFlow(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	db := database.GetDB()
 

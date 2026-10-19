@@ -30,7 +30,7 @@ func withWarpMasqueAPIBase(t *testing.T, base string) {
 // Enrolling an ECDSA key replaces a device's WireGuard key, so MASQUE gets a device of
 // its own; the returned warp block must pair the enrolled key and load in xray-core.
 func TestRegWarpMasqueEnrollsASeparateP256Device(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	seedWarp(t, "")
 
 	endpointKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)

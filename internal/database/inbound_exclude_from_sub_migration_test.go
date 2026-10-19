@@ -14,7 +14,7 @@ import (
 const legacyInboundNoExcludeFromSubDDL = "CREATE TABLE `inbounds` (`id` integer PRIMARY KEY AUTOINCREMENT,`user_id` integer,`up` integer,`down` integer,`total` integer,`remark` text,`enable` numeric,`expiry_time` integer,`listen` text,`port` integer,`protocol` text,`settings` text,`stream_settings` text,`tag` text UNIQUE,`sniffing` text)"
 
 func TestMigrateInboundExcludeFromSubColumn(t *testing.T) {
-	dbPath := filepath.Join(t.TempDir(), "x-ui.db")
+	dbPath := filepath.Join(t.TempDir(), "eternal.db")
 	legacy, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 	if err != nil {
 		t.Fatalf("open legacy db: %v", err)

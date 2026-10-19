@@ -31,7 +31,7 @@ func readAll(t *testing.T, f io.Reader) string {
 
 func TestTheManualBackupDownloadIsEncryptedWhenAPassphraseIsSet(t *testing.T) {
 	t.Setenv("XUI_DB_FOLDER", t.TempDir())
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	if err := (&service.SecurityConfigService{}).Save(&service.SecurityConfig{BackupPassphrase: "dl-pass"}); err != nil {
 		t.Fatal(err)
 	}
@@ -71,7 +71,7 @@ func TestAnEncryptedUploadIsOpenedWithTheSuppliedPassphrase(t *testing.T) {
 }
 
 func TestAnEncryptedUploadFallsBackToTheConfiguredPassphraseAndUngzips(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	if err := (&service.SecurityConfigService{}).Save(&service.SecurityConfig{BackupPassphrase: "configured"}); err != nil {
 		t.Fatal(err)
 	}

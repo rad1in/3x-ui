@@ -31,7 +31,7 @@ func initHappTestDB(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dbDir, "config.json"), []byte(`{"log":{}}`), 0o600); err != nil {
 		t.Fatalf("write Xray config: %v", err)
 	}
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 }
 
 func seedHappClient(t *testing.T, subID string) *model.ClientRecord {

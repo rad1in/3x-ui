@@ -70,7 +70,7 @@ const testIPNSecret = "controller-ipn-secret"
 
 func newGatewayHarness(t *testing.T) *gatewayHarness {
 	t.Helper()
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	gin.SetMode(gin.TestMode)
 
 	ib := &model.Inbound{Tag: "shop-gw", Enable: true, Port: 26002, Protocol: model.VLESS, Settings: `{"clients":[]}`}

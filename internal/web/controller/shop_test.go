@@ -25,7 +25,7 @@ type shopHarness struct {
 
 func newShopHarness(t *testing.T, publicEnabled bool) *shopHarness {
 	t.Helper()
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	gin.SetMode(gin.TestMode)
 
 	ib := &model.Inbound{Tag: "shop-in", Enable: true, Port: 26001, Protocol: model.VLESS, Settings: `{"clients":[]}`}

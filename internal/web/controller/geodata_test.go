@@ -162,7 +162,7 @@ func TestGeodataRejectsBadRequests(t *testing.T) {
 		{name: "missing code", path: "/panel/api/xray/geodata/entries?file=geosite.dat"},
 		{name: "unknown category", path: "/panel/api/xray/geodata/entries?file=geosite.dat&code=nope"},
 		{name: "path traversal", path: "/panel/api/xray/geodata/categories?file=../../etc/passwd.dat"},
-		{name: "non dat file", path: "/panel/api/xray/geodata/categories?file=x-ui.db"},
+		{name: "non dat file", path: "/panel/api/xray/geodata/categories?file=eternal.db"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

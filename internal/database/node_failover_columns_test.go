@@ -13,7 +13,7 @@ import (
 // An upgraded panel keeps its nodes and gets the failover columns switched off,
 // with the default delay ready for when an admin turns it on.
 func TestNodeFailoverColumnsAreAddedWithDefaultsToLegacyNodes(t *testing.T) {
-	dbPath := filepath.Join(t.TempDir(), "x-ui.db")
+	dbPath := filepath.Join(t.TempDir(), "eternal.db")
 	legacy, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 	if err != nil {
 		t.Fatalf("open legacy db: %v", err)

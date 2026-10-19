@@ -15,7 +15,7 @@ import (
 
 func TestNodeCapJobPublishesTheCapReachedEventOnce(t *testing.T) {
 	xuilogger.InitLogger(logging.ERROR)
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	db := database.GetDB()
 	node := &model.Node{Name: "metered-1", Address: "n1", Port: 2053, Enable: true, Status: "offline", MonthlyCapGB: 1, CapAction: "alert", BillingDay: 1}
 	if err := db.Create(node).Error; err != nil {

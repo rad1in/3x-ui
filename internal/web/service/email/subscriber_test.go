@@ -24,7 +24,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestResellerCreditAlertMailEscapesTheUsername(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	sub := NewSubscriber(service.SettingService{}, nil)
 	subject, body := sub.formatMessage(eventbus.Event{
 		Type:   eventbus.EventResellerCreditLow,
@@ -41,7 +41,7 @@ func TestResellerCreditAlertMailEscapesTheUsername(t *testing.T) {
 
 // Client emails are admin-typed text going into an HTML body.
 func TestClientWarningMailEscapesTheEmail(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	sub := NewSubscriber(service.SettingService{}, nil)
 	subject, body := sub.formatMessage(eventbus.Event{
 		Type:   eventbus.EventClientQuotaWarning,
