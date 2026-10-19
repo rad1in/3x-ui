@@ -24,7 +24,7 @@ import (
 func TestPanelAnswersStrangersWithTheDecoy(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 	for k, v := range map[string]string{"webBasePath": "/s3cret/", "webDomain": "panel.example.com", "decoyMode": "nginx"} {
 		if err := database.GetDB().Create(&model.Setting{Key: k, Value: v}).Error; err != nil {
 			t.Fatal(err)

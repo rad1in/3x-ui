@@ -35,11 +35,18 @@ func parseInboundIdsQuery(raw string) []int {
 }
 
 type ClientController struct {
-	clientService  service.ClientService
-	inboundService service.InboundService
-	xrayService    service.XrayService
-	settingService service.SettingService
-	happGenerator  service.HappLinkGenerator
+	clientService        service.ClientService
+	inboundService       service.InboundService
+	xrayService          service.XrayService
+	settingService       service.SettingService
+	happGenerator        service.HappLinkGenerator
+	shortLinks           service.SubShortLinkService
+	subFetches           service.SubFetchService
+	reseller             service.ResellerService
+	transferService      service.ClientTransferService
+	subSigning           service.SubSigningService
+	sharedAccountService service.SharedAccountService
+	clientGeo            service.ClientGeoService
 }
 
 func NewClientController(g *gin.RouterGroup) *ClientController {
@@ -50,6 +57,13 @@ func NewClientController(g *gin.RouterGroup) *ClientController {
 }
 
 func (a *ClientController) initRouter(g *gin.RouterGroup) {
+	a.initTemplateRouter(g)
+	a.initUsageRouter(g)
+	a.initSharedRouter(g)
+	a.initReportRouter(g)
+	a.initGeoRouter(g)
+	a.initDisconnectRouter(g)
+	a.initForeignImportRouter(g)
 	g.GET("/list", a.list)
 	g.GET("/list/paged", a.listPaged)
 	g.GET("/get/:email", a.get)
@@ -58,6 +72,11 @@ func (a *ClientController) initRouter(g *gin.RouterGroup) {
 	g.GET("/subLinks/:subId", a.getSubLinks)
 	g.GET("/links/:email", a.getClientLinks)
 	g.POST("/happLink/:id", a.generateHappLink)
+	g.GET("/subFetches/:subId", a.getSubFetches)
+	g.POST("/signedSubLink/:subId", a.signedSubLink)
+	g.GET("/subShortLink/:subId", a.getSubShortLink)
+	g.POST("/subShortLink/:subId", a.createSubShortLink)
+	g.POST("/subShortLink/:subId/revoke", a.revokeSubShortLink)
 
 	g.POST("/add", a.create)
 	g.POST("/renewalPreview", a.renewalPreview)
@@ -72,6 +91,7 @@ func (a *ClientController) initRouter(g *gin.RouterGroup) {
 	g.POST("/resetAllTraffics", a.resetAllTraffics)
 	g.POST("/delDepleted", a.delDepleted)
 	g.POST("/bulkAdjust", a.bulkAdjust)
+	g.POST("/transfer", a.transfer)
 	g.POST("/bulkEnable", a.bulkEnable)
 	g.POST("/bulkDisable", a.bulkDisable)
 	g.POST("/bulkDel", a.bulkDelete)
@@ -94,7 +114,7 @@ func (a *ClientController) initRouter(g *gin.RouterGroup) {
 }
 
 func (a *ClientController) list(c *gin.Context) {
-	rows, err := a.clientService.List()
+	rows, err := a.clientService.List(requestScope(c))
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return
@@ -118,6 +138,7 @@ func (a *ClientController) listPaged(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return
 	}
+	params.Scope = requestScope(c)
 	resp, err := a.clientService.ListPaged(&a.inboundService, &a.settingService, params)
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
@@ -202,7 +223,14 @@ func (a *ClientController) create(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return
 	}
+	credit, ok := a.reserveCredit(c, func() ([]service.TermsChange, error) {
+		return createChanges([]service.ClientCreatePayload{payload}), nil
+	})
+	if !ok {
+		return
+	}
 	needRestart, err := a.clientService.Create(&a.inboundService, &payload)
+	settleCredit(credit)
 	// Flagged before the error check: a partly-applied create leaves clients
 	// committed on the inbounds that succeeded, and those still need the restart.
 	if needRestart {
@@ -231,7 +259,14 @@ func (a *ClientController) update(c *gin.Context) {
 		return
 	}
 	inboundFilter := parseInboundIdsQuery(c.Query("inboundIds"))
+	credit, ok := a.reserveCredit(c, func() ([]service.TermsChange, error) {
+		return []service.TermsChange{{Email: email, After: termsOf(req.Client)}}, nil
+	})
+	if !ok {
+		return
+	}
 	needRestart, err := a.clientService.UpdateByEmail(&a.inboundService, email, req.Client, req.LimitHwid, inboundFilter...)
+	settleCredit(credit)
 	// Flagged before the error check: a partly-applied edit leaves the change
 	// committed on the inbounds that succeeded, and those still need the restart.
 	if needRestart {
@@ -344,7 +379,14 @@ func (a *ClientController) bulkAdjust(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return
 	}
+	credit, ok := a.reserveCredit(c, func() ([]service.TermsChange, error) {
+		return a.reseller.PlanAdjust(trimAll(req.Emails), req.AddDays, req.AddBytes)
+	})
+	if !ok {
+		return
+	}
 	result, needRestart, err := a.clientService.BulkAdjust(&a.inboundService, req.Emails, req.AddDays, req.AddBytes, req.Flow, req.LimitHwid, req.AdTag)
+	settleCredit(credit)
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return
@@ -461,7 +503,12 @@ func (a *ClientController) bulkCreate(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return
 	}
+	credit, ok := a.reserveCredit(c, func() ([]service.TermsChange, error) { return createChanges(payloads), nil })
+	if !ok {
+		return
+	}
 	result, needRestart, err := a.clientService.BulkCreate(&a.inboundService, payloads)
+	settleCredit(credit)
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
 		return
@@ -623,7 +670,8 @@ func (a *ClientController) deleteHwid(c *gin.Context) {
 }
 
 func (a *ClientController) onlines(c *gin.Context) {
-	jsonObj(c, a.inboundService.GetOnlineClients(), nil)
+	online, err := requestScope(c).VisibleEmails(a.inboundService.GetOnlineClients())
+	jsonObj(c, online, err)
 }
 
 func (a *ClientController) onlinesByGuid(c *gin.Context) {
@@ -636,6 +684,9 @@ func (a *ClientController) activeInbounds(c *gin.Context) {
 
 func (a *ClientController) lastOnline(c *gin.Context) {
 	data, err := a.inboundService.GetClientsLastOnline()
+	if err == nil {
+		data, err = requestScope(c).KeepLastOnline(data)
+	}
 	jsonObj(c, data, err)
 }
 
@@ -685,6 +736,43 @@ func (a *ClientController) generateHappLink(c *gin.Context) {
 		return
 	}
 	jsonObj(c, result, nil)
+}
+
+func (a *ClientController) getSubFetches(c *gin.Context) {
+	fetches, err := a.subFetches.List(c.Param("subId"))
+	jsonObj(c, fetches, err)
+}
+
+// getSubShortLink answers obj null when the subscription has no short link yet.
+func (a *ClientController) getSubShortLink(c *gin.Context) {
+	link, err := a.shortLinks.Get(c.Param("subId"))
+	if errors.Is(err, service.ErrSubShortLinkNotFound) {
+		jsonObj(c, nil, nil)
+		return
+	}
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
+		return
+	}
+	view := a.shortLinks.View(link, resolveHost(c))
+	jsonObj(c, &view, nil)
+}
+
+func (a *ClientController) createSubShortLink(c *gin.Context) {
+	if enabled, _ := a.settingService.GetSubShortLinkEnable(); !enabled {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), service.ErrSubShortLinksDisabled)
+		return
+	}
+	link, err := a.shortLinks.Ensure(c.Param("subId"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	jsonObj(c, a.shortLinks.View(link, resolveHost(c)), nil)
+}
+
+func (a *ClientController) revokeSubShortLink(c *gin.Context) {
+	jsonMsg(c, I18nWeb(c, "pages.clients.shortLinkRevoked"), a.shortLinks.Revoke(c.Param("subId")))
 }
 
 func (a *ClientController) detach(c *gin.Context) {

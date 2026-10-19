@@ -412,7 +412,7 @@ func (s *ClientService) fillProtocolDefaults(c *model.Client, ib *model.Inbound)
 		if c.ID == "" {
 			c.ID = uuid.NewString()
 		}
-	case model.Trojan, model.MASQUE, model.OpenVPN, model.IKEv2, model.L2TP:
+	case model.Trojan, model.MASQUE, model.OpenVPN, model.IKEv2, model.L2TP, model.SSH, model.SSTP, model.OCServ:
 		if c.Password == "" {
 			c.Password = strings.ReplaceAll(uuid.NewString(), "-", "")
 		}

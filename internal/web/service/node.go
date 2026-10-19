@@ -444,6 +444,27 @@ func (s *NodeService) normalize(n *model.Node) error {
 		}
 	}
 	n.BasePath = normalizeBasePath(n.BasePath)
+	if err := normalizeNodeFailover(n); err != nil {
+		return err
+	}
+	return normalizeNodeCap(n)
+}
+
+// normalizeNodeCap validates the metered-VPS fields and fills their defaults.
+func normalizeNodeCap(n *model.Node) error {
+	if n.MonthlyCapGB < 0 || n.MonthlyCost < 0 {
+		return common.NewError("monthly cap and cost cannot be negative")
+	}
+	if n.CapAction != capActionStop {
+		n.CapAction = capActionAlert
+	}
+	if n.BillingDay < 1 || n.BillingDay > maxBillingDay {
+		n.BillingDay = 1
+	}
+	n.CostCurrency = strings.ToUpper(strings.TrimSpace(n.CostCurrency))
+	if len(n.CostCurrency) > 8 {
+		return common.NewError("cost currency is too long")
+	}
 	return nil
 }
 
@@ -507,6 +528,7 @@ func nodeSelectionGrew(existing, in *model.Node) bool {
 }
 
 func (s *NodeService) Update(id int, in *model.Node) error {
+	in.Id = id
 	if err := s.normalize(in); err != nil {
 		return err
 	}
@@ -543,6 +565,13 @@ func (s *NodeService) Update(id int, in *model.Node) error {
 		"inbound_sync_mode":     in.InboundSyncMode,
 		"inbound_tags":          string(inboundTagsJSON),
 		"outbound_tag":          in.OutboundTag,
+		"monthly_cap_gb":        in.MonthlyCapGB,
+		"cap_action":            in.CapAction,
+		"billing_day":           in.BillingDay,
+		"monthly_cost":          in.MonthlyCost,
+		"cost_currency":         in.CostCurrency,
+		"failover_node_id":      in.FailoverNodeId,
+		"failover_after_sec":    in.FailoverAfterSec,
 	}
 	if nodeSelectionGrew(existing, in) {
 		updates["inbounds_adopted_at"] = 0
@@ -566,6 +595,7 @@ func (s *NodeService) UpdateFromRequest(id int, req *NodeMutationRequest) error 
 		return err
 	}
 	in := req.toNode()
+	in.Id = id
 	if err := s.normalize(in); err != nil {
 		return err
 	}
@@ -606,6 +636,13 @@ func (s *NodeService) UpdateFromRequest(id int, req *NodeMutationRequest) error 
 		"inbound_sync_mode":     in.InboundSyncMode,
 		"inbound_tags":          string(inboundTagsJSON),
 		"outbound_tag":          in.OutboundTag,
+		"monthly_cap_gb":        in.MonthlyCapGB,
+		"cap_action":            in.CapAction,
+		"billing_day":           in.BillingDay,
+		"monthly_cost":          in.MonthlyCost,
+		"cost_currency":         in.CostCurrency,
+		"failover_node_id":      in.FailoverNodeId,
+		"failover_after_sec":    in.FailoverAfterSec,
 	}
 	if nodeSelectionGrew(existing, in) {
 		updates["inbounds_adopted_at"] = 0
@@ -1266,46 +1303,50 @@ func (b *outboundBridge) removeInbound() {
 // broken node from dictating the master's allocation on every heartbeat.
 const maxProbeBodyBytes = 1 << 20 // 1 MiB
 
-func (s *NodeService) probe(ctx context.Context, n *model.Node, proxyURL string) (HeartbeatPatch, error) {
-	patch := HeartbeatPatch{LastHeartbeat: time.Now().Unix()}
-
+// nodeRequest builds an authenticated request to path (relative to the node's
+// base path) together with the HTTP client that honours the node's TLS mode.
+func (s *NodeService) nodeRequest(ctx context.Context, n *model.Node, proxyURL, method, path string, body io.Reader) (*http.Request, *http.Client, error) {
 	addr, err := netsafe.NormalizeHost(n.Address)
 	if err != nil {
-		patch.LastError = err.Error()
-		return patch, err
+		return nil, nil, err
 	}
 	scheme := n.Scheme
 	if scheme != "http" && scheme != "https" {
 		scheme = "https"
 	}
 	if n.Port <= 0 || n.Port > 65535 {
-		patch.LastError = "node port must be 1-65535"
-		return patch, errors.New(patch.LastError)
+		return nil, nil, errors.New("node port must be 1-65535")
 	}
-	probeURL := &url.URL{
+	target := &url.URL{
 		Scheme: scheme,
 		Host:   net.JoinHostPort(addr, strconv.Itoa(n.Port)),
-		Path:   normalizeBasePath(n.BasePath) + "panel/api/server/status",
+		Path:   normalizeBasePath(n.BasePath) + path,
 	}
-
 	req, err := http.NewRequestWithContext(
 		netsafe.ContextWithAllowPrivate(ctx, n.AllowPrivateAddress),
-		http.MethodGet, probeURL.String(), nil)
+		method, target.String(), body)
 	if err != nil {
-		patch.LastError = err.Error()
-		return patch, err
+		return nil, nil, err
 	}
 	if n.ApiToken != "" {
 		token, derr := nodetoken.Decrypt(n.Id, n.ApiToken)
 		if derr != nil {
-			patch.LastError = derr.Error()
-			return patch, derr
+			return nil, nil, derr
 		}
 		req.Header.Set("Authorization", "Bearer "+token)
 	}
 	req.Header.Set("Accept", "application/json")
-
 	client, err := runtime.HTTPClientForNode(n, proxyURL)
+	if err != nil {
+		return nil, nil, err
+	}
+	return req, client, nil
+}
+
+func (s *NodeService) probe(ctx context.Context, n *model.Node, proxyURL string) (HeartbeatPatch, error) {
+	patch := HeartbeatPatch{LastHeartbeat: time.Now().Unix()}
+
+	req, client, err := s.nodeRequest(ctx, n, proxyURL, http.MethodGet, "panel/api/server/status", nil)
 	if err != nil {
 		patch.LastError = err.Error()
 		return patch, err

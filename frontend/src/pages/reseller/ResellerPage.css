@@ -1,0 +1,26 @@
+.reseller-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.reseller-card {
+  margin-bottom: 16px;
+}
+
+.reseller-hint {
+  margin: 4px 0 12px;
+  max-width: 760px;
+  font-size: 12.5px;
+  color: var(--ant-color-text-tertiary);
+}
+
+.reseller-stats {
+  margin-bottom: 12px;
+}
+
+.reseller-sub {
+  font-size: 12px;
+  color: var(--ant-color-text-tertiary);
+}

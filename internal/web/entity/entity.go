@@ -80,6 +80,9 @@ type AllSetting struct {
 	TrustedProxyCIDRs     string `json:"trustedProxyCIDRs" form:"trustedProxyCIDRs"`
 	RealityScanCandidates string `json:"realityScanCandidates" form:"realityScanCandidates"`
 	IpLimitAllowlist      string `json:"ipLimitAllowlist" form:"ipLimitAllowlist"`
+	PanelAllowedCidrs     string `json:"panelAllowedCidrs" form:"panelAllowedCidrs"`
+	LoginMaxFailures      int    `json:"loginMaxFailures" form:"loginMaxFailures" validate:"gte=1,lte=100"`
+	LoginLockoutMinutes   int    `json:"loginLockoutMinutes" form:"loginLockoutMinutes" validate:"gte=1,lte=10080"`
 	PanelOutbound         string `json:"panelOutbound" form:"panelOutbound"`
 	PanelBrandName        string `json:"panelBrandName" form:"panelBrandName"`
 	PanelBrandColor       string `json:"panelBrandColor" form:"panelBrandColor"`
@@ -90,6 +93,11 @@ type AllSetting struct {
 	TrafficDiff                int    `json:"trafficDiff" form:"trafficDiff" validate:"gte=0,lte=100"`
 	QuotaWarnPercent           int    `json:"quotaWarnPercent" form:"quotaWarnPercent" validate:"gte=0,lte=99"`
 	AutoDeleteDepletedDays     int    `json:"autoDeleteDepletedDays" form:"autoDeleteDepletedDays" validate:"gte=0"`
+	MaintenanceMode            bool   `json:"maintenanceMode" form:"maintenanceMode"`
+	MaintenanceMessage         string `json:"maintenanceMessage" form:"maintenanceMessage" validate:"max=500"`
+	SharedAccountWindowHours   int    `json:"sharedAccountWindowHours" form:"sharedAccountWindowHours" validate:"gte=1,lte=168"`
+	SharedAccountMinIPs        int    `json:"sharedAccountMinIPs" form:"sharedAccountMinIPs" validate:"gte=0,lte=1000"`
+	SharedAccountMinCountries  int    `json:"sharedAccountMinCountries" form:"sharedAccountMinCountries" validate:"gte=0,lte=250"`
 	DecoyMode                  string `json:"decoyMode" form:"decoyMode"`
 	DecoyTarget                string `json:"decoyTarget" form:"decoyTarget"`
 	DecoyHtml                  string `json:"decoyHtml" form:"decoyHtml"`
@@ -102,6 +110,8 @@ type AllSetting struct {
 	BackupS3AccessKey          string `json:"backupS3AccessKey" form:"backupS3AccessKey"`
 	BackupS3SecretKey          string `json:"backupS3SecretKey" form:"backupS3SecretKey"`
 	BackupS3Prefix             string `json:"backupS3Prefix" form:"backupS3Prefix"`
+	MetricsEnable              bool   `json:"metricsEnable" form:"metricsEnable"`
+	MetricsToken               string `json:"metricsToken" form:"metricsToken"`
 	RemarkTemplate             string `json:"remarkTemplate" form:"remarkTemplate"`
 	SubShowIdentityOnAllLinks  bool   `json:"subShowIdentityOnAllLinks" form:"subShowIdentityOnAllLinks"`
 	SubInfoNodeEnable          bool   `json:"subInfoNodeEnable" form:"subInfoNodeEnable"`
@@ -110,17 +120,21 @@ type AllSetting struct {
 	SubTrafficDepletedTemplate string `json:"subTrafficDepletedTemplate" form:"subTrafficDepletedTemplate"`
 	Datepicker                 string `json:"datepicker" form:"datepicker"`
 
-	TgBotEnable     bool   `json:"tgBotEnable" form:"tgBotEnable"`
-	TgBotToken      string `json:"tgBotToken" form:"tgBotToken"`
-	TgBotProxy      string `json:"tgBotProxy" form:"tgBotProxy"`
-	TgBotAPIServer  string `json:"tgBotAPIServer" form:"tgBotAPIServer"`
-	TgBotChatId     string `json:"tgBotChatId" form:"tgBotChatId"`
-	TgRunTime       string `json:"tgRunTime" form:"tgRunTime"`
-	TgBotBackup     bool   `json:"tgBotBackup" form:"tgBotBackup"`
-	TgCpu           int    `json:"tgCpu" form:"tgCpu" validate:"gte=0,lte=100"`
-	TgMemory        int    `json:"tgMemory" form:"tgMemory" validate:"gte=0,lte=100"`
-	TgLang          string `json:"tgLang" form:"tgLang"`
-	TgEnabledEvents string `json:"tgEnabledEvents" form:"tgEnabledEvents"`
+	TgBotEnable       bool   `json:"tgBotEnable" form:"tgBotEnable"`
+	TgBotToken        string `json:"tgBotToken" form:"tgBotToken"`
+	TgBotProxy        string `json:"tgBotProxy" form:"tgBotProxy"`
+	TgBotAPIServer    string `json:"tgBotAPIServer" form:"tgBotAPIServer"`
+	TgBotChatId       string `json:"tgBotChatId" form:"tgBotChatId"`
+	TgRunTime         string `json:"tgRunTime" form:"tgRunTime"`
+	TgBotBackup       bool   `json:"tgBotBackup" form:"tgBotBackup"`
+	TgTrialEnable     bool   `json:"tgTrialEnable" form:"tgTrialEnable"`
+	TgTrialTemplateId int    `json:"tgTrialTemplateId" form:"tgTrialTemplateId" validate:"gte=0"`
+	TgCpu             int    `json:"tgCpu" form:"tgCpu" validate:"gte=0,lte=100"`
+	TgMemory          int    `json:"tgMemory" form:"tgMemory" validate:"gte=0,lte=100"`
+	TgLang            string `json:"tgLang" form:"tgLang"`
+	// TgBotMessageOverrides is {language: {message key: text}} JSON replacing selected bot texts.
+	TgBotMessageOverrides string `json:"tgBotMessageOverrides" form:"tgBotMessageOverrides"`
+	TgEnabledEvents       string `json:"tgEnabledEvents" form:"tgEnabledEvents"`
 
 	SmtpEnable         bool   `json:"smtpEnable" form:"smtpEnable"`
 	SmtpHost           string `json:"smtpHost" form:"smtpHost"`
@@ -152,6 +166,33 @@ type AllSetting struct {
 	WebhookSecret string `json:"webhookSecret" form:"webhookSecret"`
 	WebhookEvents string `json:"webhookEvents" form:"webhookEvents"`
 
+	// Weekly summary: published as report.weekly on that weekday (0 = Sunday) and hour, panel time.
+	WeeklyReportEnable bool `json:"weeklyReportEnable" form:"weeklyReportEnable"`
+	WeeklyReportDay    int  `json:"weeklyReportDay" form:"weeklyReportDay" validate:"gte=0,lte=6"`
+	WeeklyReportHour   int  `json:"weeklyReportHour" form:"weeklyReportHour" validate:"gte=0,lte=23"`
+
+	// Port probe: checks every public TCP inbound port from outside and publishes port.blocked / port.restored.
+	// With a URL the check is that URL ({host} and {port} filled in) answering 2xx and containing Expect; without one it is a TCP dial.
+	PortProbeEnable   bool   `json:"portProbeEnable" form:"portProbeEnable"`
+	PortProbeHost     string `json:"portProbeHost" form:"portProbeHost"`
+	PortProbeUrl      string `json:"portProbeUrl" form:"portProbeUrl"`
+	PortProbeExpect   string `json:"portProbeExpect" form:"portProbeExpect"`
+	PortProbeFailures int    `json:"portProbeFailures" form:"portProbeFailures" validate:"gte=1,lte=20"`
+
+	// Push channels: each posts the events it has ticked to ntfy, Gotify or a Slack incoming webhook.
+	NtfyEnable      bool   `json:"ntfyEnable" form:"ntfyEnable"`
+	NtfyServer      string `json:"ntfyServer" form:"ntfyServer"`
+	NtfyTopic       string `json:"ntfyTopic" form:"ntfyTopic"`
+	NtfyToken       string `json:"ntfyToken" form:"ntfyToken"`
+	NtfyEvents      string `json:"ntfyEvents" form:"ntfyEvents"`
+	GotifyEnable    bool   `json:"gotifyEnable" form:"gotifyEnable"`
+	GotifyUrl       string `json:"gotifyUrl" form:"gotifyUrl"`
+	GotifyToken     string `json:"gotifyToken" form:"gotifyToken"`
+	GotifyEvents    string `json:"gotifyEvents" form:"gotifyEvents"`
+	SlackEnable     bool   `json:"slackEnable" form:"slackEnable"`
+	SlackWebhookUrl string `json:"slackWebhookUrl" form:"slackWebhookUrl"`
+	SlackEvents     string `json:"slackEvents" form:"slackEvents"`
+
 	OutboundDownThreshold int `json:"outboundDownThreshold" form:"outboundDownThreshold" validate:"gte=1,lte=100"`
 
 	TimeLocation    string `json:"timeLocation" form:"timeLocation"`
@@ -164,6 +205,10 @@ type AllSetting struct {
 	SubJsonAutoDetect           bool   `json:"subJsonAutoDetect" form:"subJsonAutoDetect"`
 	SubJsonAlwaysArray          bool   `json:"subJsonAlwaysArray" form:"subJsonAlwaysArray"`
 	SubJsonUserAgentRegex       string `json:"subJsonUserAgentRegex" form:"subJsonUserAgentRegex"`
+	SubJsonApps                 string `json:"subJsonApps" form:"subJsonApps"`
+	SubShortLinkEnable          bool   `json:"subShortLinkEnable" form:"subShortLinkEnable"`
+	SubRateLimitPerIP           int    `json:"subRateLimitPerIP" form:"subRateLimitPerIP"`
+	SubRateLimitPerSub          int    `json:"subRateLimitPerSub" form:"subRateLimitPerSub"`
 	SubClashAutoDetect          bool   `json:"subClashAutoDetect" form:"subClashAutoDetect"`
 	SubClashUserAgentRegex      string `json:"subClashUserAgentRegex" form:"subClashUserAgentRegex"`
 	SubTitle                    string `json:"subTitle" form:"subTitle"`
@@ -299,6 +344,9 @@ type AllSettingView struct {
 	HasDiscordBotToken bool `json:"hasDiscordBotToken"`
 	HasWebhookSecret   bool `json:"hasWebhookSecret"`
 	HasBackupS3Secret  bool `json:"hasBackupS3Secret"`
+	HasNtfyToken       bool `json:"hasNtfyToken"`
+	HasGotifyToken     bool `json:"hasGotifyToken"`
+	HasSlackWebhookUrl bool `json:"hasSlackWebhookUrl"`
 }
 
 func pathHasForbiddenChar(s string) bool {
@@ -449,6 +497,10 @@ func (s *AllSetting) CheckValid() error {
 	// Rejected here rather than skipped at scan time: a typo in an allowlist
 	// entry silently leaves the address unprotected until a trusted network gets banned.
 	if err := CheckNetipAddrOrPrefixList(s.IpLimitAllowlist, "IP limit allowlist entry is not valid:"); err != nil {
+		return err
+	}
+
+	if err := CheckNetipAddrOrPrefixList(s.PanelAllowedCidrs, "panel IP allowlist entry is not valid:"); err != nil {
 		return err
 	}
 

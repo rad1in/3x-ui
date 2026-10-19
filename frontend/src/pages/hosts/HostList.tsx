@@ -9,6 +9,7 @@ import {
   EditOutlined,
   GlobalOutlined,
   PlusOutlined,
+  ThunderboltOutlined,
 } from '@ant-design/icons';
 
 import type { HostRecord } from '@/api/queries/useHostsQuery';
@@ -23,6 +24,7 @@ interface HostListProps {
   selectedGroupIds: string[];
   onSelectionChange: (groupIds: string[]) => void;
   onAdd: () => void;
+  onScan: () => void;
   onEdit: (host: HostRecord) => void;
   onDelete: (host: HostRecord) => void;
   onToggleEnable: (host: HostRecord, next: boolean) => void;
@@ -66,6 +68,7 @@ export default function HostList(props: HostListProps) {
     selectedGroupIds,
     onSelectionChange,
     onAdd,
+    onScan,
     onEdit,
     onDelete,
     onToggleEnable,
@@ -276,9 +279,14 @@ export default function HostList(props: HostListProps) {
   const toolbar = (
     <div className="card-toolbar">
       {selectedGroupIds.length === 0 ? (
-        <Button type="primary" icon={<PlusOutlined />} onClick={onAdd}>
-          {!isMobile && t('pages.hosts.addHost')}
-        </Button>
+        <>
+          <Button type="primary" icon={<PlusOutlined />} onClick={onAdd}>
+            {!isMobile && t('pages.hosts.addHost')}
+          </Button>
+          <Button icon={<ThunderboltOutlined />} onClick={onScan}>
+            {!isMobile && t('pages.hosts.cleanIp.open')}
+          </Button>
+        </>
       ) : (
         <>
           <Tag

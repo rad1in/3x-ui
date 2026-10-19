@@ -40,7 +40,7 @@ func (a *APIController) checkAPIAuth(c *gin.Context) {
 	// the caller, equivalent to a valid bearer token. api_authed must be set so
 	// the CSRF middleware lets cert-authed mutations through.
 	if c.Request.TLS != nil && len(c.Request.TLS.VerifiedChains) > 0 {
-		if u, err := a.userService.GetFirstUser(); err == nil {
+		if u, err := a.userService.GetPrimaryOwner(); err == nil {
 			session.SetAPIAuthUser(c, u)
 		}
 		c.Set("api_authed", true)
@@ -51,8 +51,10 @@ func (a *APIController) checkAPIAuth(c *gin.Context) {
 	auth := c.GetHeader("Authorization")
 	if after, ok := strings.CutPrefix(auth, "Bearer "); ok {
 		tok := after
-		if row, ok := a.apiTokenService.MatchToken(tok); ok {
-			if u, err := a.userService.GetFirstUser(); err == nil {
+		// A token used from an unlisted address is treated as no token at all,
+		// so the caller sees the same 401 as for a wrong one.
+		if row, ok := a.apiTokenService.MatchToken(tok); ok && middleware.IPAllowlistContains(row.AllowedCidrs, getRemoteIp(c)) {
+			if u, err := a.userService.GetPrimaryOwner(); err == nil {
 				session.SetAPIAuthUser(c, u)
 			}
 			c.Set("api_authed", true)
@@ -110,6 +112,7 @@ var nodeSyncScopeAllow = map[string]map[string]struct{}{
 	"/server/descendants":          {http.MethodGet: {}},
 	"/clients/resetTraffic/:email": {http.MethodPost: {}},
 	"/clients/bulkResetTraffic":    {http.MethodPost: {}},
+	"/clients/disconnect/:email":   {http.MethodPost: {}},
 	"/inbounds/resetAllTraffics":   {http.MethodPost: {}},
 	"/inbounds/:id/resetTraffic":   {http.MethodPost: {}},
 	"/clients/onlinesByGuid":       {http.MethodPost: {}},
@@ -182,6 +185,7 @@ func (a *APIController) initRouter(g *gin.RouterGroup) {
 	api.Use(middleware.ConfigEnvelopeMiddleware())
 	api.Use(middleware.CSRFMiddleware())
 	api.Use(hostedGuard)
+	api.Use(enforceAdminRole)
 	api.Use(auditMiddleware(&service.AuditService{}))
 
 	api.GET("/openapi.json", ServeOpenAPISpec)
@@ -216,7 +220,12 @@ func (a *APIController) initRouter(g *gin.RouterGroup) {
 	NewSubBalancerController(api)
 
 	NewAuditController(api.Group("/audit"))
+	NewAdminController(api.Group("/admins"))
+	NewSessionController(api.Group("/sessions"))
 	NewSponsorAdminController(api.Group("/sponsors"))
+	NewSalesController(api.Group("/sales"))
+	NewResellerController(api.Group("/reseller"))
+	NewSecurityController(api.Group("/security"))
 	NewHostedController(api.Group("/hosted"))
 	NewHostedPanelController(api.Group("/hostedPanels"))
 

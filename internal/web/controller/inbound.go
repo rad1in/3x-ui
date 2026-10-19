@@ -24,6 +24,7 @@ type InboundController struct {
 	clientService   service.ClientService
 	xrayService     service.XrayService
 	fallbackService service.FallbackService
+	rotationService service.InboundRotationService
 }
 
 // NewInboundController creates a new InboundController and sets up its routes.
@@ -46,7 +47,7 @@ func (a *InboundController) broadcastInboundsUpdate(userId int) {
 	if !websocket.HasClients() {
 		return
 	}
-	inbounds, err := a.inboundService.GetInbounds(userId)
+	inbounds, err := a.inboundService.GetInbounds(nil)
 	if err != nil {
 		return
 	}
@@ -82,6 +83,9 @@ func (a *InboundController) initRouter(g *gin.RouterGroup) {
 	g.GET("/:id/fallbacks", a.getFallbacks)
 	g.GET("/:id/openvpnProfile", a.openvpnProfile)
 	g.GET("/:id/ikev2Profile", a.ikev2Profile)
+	g.GET("/:id/sstpCa", a.sstpCa)
+	g.GET("/:id/ocservCa", a.ocservCa)
+	g.GET("/:id/rotation", a.getRotation)
 	g.GET("/vpnStatus", a.vpnStatus)
 
 	g.POST("/add", a.addInbound)
@@ -95,13 +99,14 @@ func (a *InboundController) initRouter(g *gin.RouterGroup) {
 	g.POST("/resetAllTraffics", a.resetAllTraffics)
 	g.POST("/import", a.importInbound)
 	g.POST("/:id/fallbacks", a.setFallbacks)
+	g.POST("/:id/rotation", a.saveRotation)
+	g.POST("/:id/rotate", a.rotateInbound)
 	g.POST("/pushClientTraffics", a.pushClientTraffics)
 }
 
 // getInbounds retrieves the list of inbounds for the logged-in user.
 func (a *InboundController) getInbounds(c *gin.Context) {
-	user := session.GetLoginUser(c)
-	inbounds, err := a.inboundService.GetInbounds(user.Id)
+	inbounds, err := a.inboundService.GetInbounds(requestScope(c))
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return
@@ -112,8 +117,7 @@ func (a *InboundController) getInbounds(c *gin.Context) {
 // getInboundsSlim is the list-page variant that strips full client
 // payloads from settings.clients[]. Detail-view flows still use /get/:id.
 func (a *InboundController) getInboundsSlim(c *gin.Context) {
-	user := session.GetLoginUser(c)
-	inbounds, err := a.inboundService.GetInboundsSlim(user.Id)
+	inbounds, err := a.inboundService.GetInboundsSlim(requestScope(c))
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return
@@ -125,8 +129,7 @@ func (a *InboundController) getInboundsSlim(c *gin.Context) {
 // rendered through the same subscription engine the client pages use so the
 // remark template (name-only display part) is applied consistently.
 func (a *InboundController) getAllInboundLinks(c *gin.Context) {
-	user := session.GetLoginUser(c)
-	links, err := a.inboundService.GetAllInboundLinks(resolveHost(c), user.Id)
+	links, err := a.inboundService.GetAllInboundLinks(resolveHost(c), requestScope(c))
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return
@@ -138,8 +141,7 @@ func (a *InboundController) getAllInboundLinks(c *gin.Context) {
 // (id, remark, protocol, port, tlsFlowCapable) for pickers in the clients UI.
 // Avoids shipping per-client settings and traffic stats just to fill a dropdown.
 func (a *InboundController) getInboundOptions(c *gin.Context) {
-	user := session.GetLoginUser(c)
-	options, err := a.inboundService.GetInboundOptions(user.Id)
+	options, err := a.inboundService.GetInboundOptions(requestScope(c))
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
 		return
@@ -188,6 +190,36 @@ func (a *InboundController) ikev2Profile(c *gin.Context) {
 		return
 	}
 	name, mime, body, err := a.inboundService.IKEv2Profile(id, c.Query("email"), c.DefaultQuery("format", service.IKEv2ProfileApple))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "get"), err)
+		return
+	}
+	c.Header("Content-Disposition", `attachment; filename="`+name+`"`)
+	c.Data(http.StatusOK, mime, body)
+}
+
+func (a *InboundController) sstpCa(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "get"), err)
+		return
+	}
+	name, mime, body, err := a.inboundService.SSTPCA(id)
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "get"), err)
+		return
+	}
+	c.Header("Content-Disposition", `attachment; filename="`+name+`"`)
+	c.Data(http.StatusOK, mime, body)
+}
+
+func (a *InboundController) ocservCa(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "get"), err)
+		return
+	}
+	name, mime, body, err := a.inboundService.OCServCA(id)
 	if err != nil {
 		jsonMsg(c, I18nWeb(c, "get"), err)
 		return

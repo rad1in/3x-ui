@@ -289,8 +289,8 @@ node heartbeat every 5s, periodic traffic resets (hourly/daily/weekly/monthly). 
 ├── media/                    # README images
 │
 ├── Dockerfile / docker-compose.yml / DockerEntrypoint.sh / DockerInit.sh   # Container build/run
-├── install.sh / update.sh / x-ui.sh                        # VPS install + management CLI
-├── x-ui.service.*  / x-ui.rc                               # systemd units (debian/rhel/arch) + rc script
+├── install.sh / update.sh / eternal.sh                        # VPS install + management CLI
+├── eternal.service.*  / eternal.rc                               # systemd units (debian/rhel/arch) + rc script
 ├── windows_files/                                          # Windows service support
 └── .github/workflows/        # CI: ci.yml, codeql.yml, docker.yml, release.yml,
                               #     mutation.yml, cleanup_caches.yml, claude-pr-review.yml,
@@ -382,10 +382,16 @@ All registered in `web.go` → `startTask()`. Each is a struct with a `Run()` me
 | `@every 5s`         | `xray_traffic_job`                                                                               | Pull traffic stats from Xray (5s start delay)                                         |
 | `@every 5s`         | `node_heartbeat_job`                                                                             | Probe child nodes (online/offline)                                                    |
 | `@every 5s`         | `node_traffic_sync_job`                                                                          | Pull + merge node traffic; push reconciliation                                        |
+| `@every 1m`         | `node_cap_job`                                                                                   | Meter each node's monthly traffic; alert or stop its inbounds at the cap              |
+| `@every 1m`         | `port_probe_job`                                                                                 | Only if `portProbeEnable`; probes each public TCP inbound port from outside, publishes `port.blocked` / `port.restored` |
+| `@every 5m`         | `inbound_rotation_job`                                                                           | Rotates the port/REALITY SNI of inbounds whose rotation schedule is due (`inbound_rotations.next_rotation_at`) |
 | `@every 10s`        | `check_client_ip_job`                                                                            | Enforce per-client IP limits                                                          |
 | `@every 10s`        | `mtproto_job`                                                                                    | Reconcile `mtg` sidecars against enabled MTProto inbounds                             |
 | `@every 10s`        | `openvpn_job`                                                                                    | Reconcile `openvpn` servers against enabled OpenVPN inbounds; meter per-user traffic   |
 | `@every 10s`        | `ikev2_job`                                                                                      | Reconcile charon against enabled IKEv2 inbounds; drop revoked logins; meter per-SA bytes|
+| `@every 10s`        | `ssh_job`                                                                                        | Reconcile SSH tunnel servers against enabled SSH inbounds; drop revoked logins; meter forwarded bytes |
+| `@every 10s`        | `sstp_job`                                                                                       | Reconcile SSTP listeners against enabled SSTP inbounds; drop revoked logins; meter PPP bytes |
+| `@every 10s`        | `ocserv_job`                                                                                     | Reconcile `ocserv` servers against enabled ocserv inbounds; end revoked sessions; meter via occtl |
 | `@every 10s`        | `l2tp_job`                                                                                       | Reconcile xl2tpd + chap-secrets against the L2TP inbound; end revoked links; meter PPP |
 | `@every 10s`        | `amneziawg_job`                                                                                  | Reconcile embedded AmneziaWG interfaces against enabled local inbounds                |
 | `@every 5m`         | `outbound_subscription_job`                                                                      | Refresh outbound provider configs                                                     |
@@ -393,10 +399,14 @@ All registered in `web.go` → `startTask()`. Each is a struct with a `Run()` me
 | `@hourly`           | `warp_ip_job`, `periodic_traffic_reset_job("hourly")`                                            | WARP IP rotation; traffic resets                                                      |
 | `@daily`            | `clear_logs_job`, `periodic_traffic_reset_job("daily")`, `periodic_traffic_reset_job("monthly")` | IP-limit and Xray access/error log cleanup; daily resets and due monthly resets       |
 | `@daily`            | `audit_prune_job`                                                                                | Drop activity-log rows older than 90 days (`service.AuditRetention`)                  |
+| `@daily`            | `client_usage_prune_job`                                                                         | Drop per-client daily usage rows older than 90 days (`service.ClientUsageRetention`)  |
 | `@every 15s`        | `hosted_status_job`                                                                              | Hosted panels only (`XUI_HOSTED_DIR`): report usage, stop/start Xray against owner limits |
 | `@every 1m`         | `hosted_sponsors_job`                                                                            | Masters only (not hosted): copy the owner's live sponsors into each hosted panel |
 | `@every 1m`         | `client_warning_job`                                                                             | Publishes `client.quota_warning` / `client.expiry_warning` once per crossing |
+| `@every 1m`         | `shared_account_job`                                                                             | Folds client IPs into a rolling window; flags clients over `sharedAccountMinIPs`/`MinCountries`, publishes `client.shared_account` |
+| `@every 2m`         | `shop_reconcile_job`                                                                             | Verifies pending Zarinpal/IDPay orders whose customer never returned; delivers paid ones, cancels unpaid after 48h |
 | `@hourly`           | `client_cleanup_job`                                                                             | Deletes clients out of quota/time for `autoDeleteDepletedDays` (0 = off) |
+| `@hourly`           | `weekly_summary_job`                                                                               | Publishes `report.weekly` in the weekday and hour set by `weeklyReportDay`/`weeklyReportHour`, if enabled |
 | `backupSchedule`    | `scheduled_backup_job`                                                                             | Only if `backupSchedule` is set; gzipped DB to a local folder and/or S3, keeps `backupKeep` |
 | `@weekly`           | `periodic_traffic_reset_job("weekly")`                                                           | Weekly traffic resets                                                                 |
 | default `@every 1m` | `ldap_sync_job`                                                                                  | Only if LDAP enabled; schedule configurable                                           |
@@ -443,7 +453,7 @@ also has protocol schemas under `frontend/src/schemas/protocols/` and `frontend/
 
 `internal/eventbus/` is a minimal buffered-channel pub/sub. Producers call a non-blocking
 `Publish(Event)`; all subscribers receive every event. Event types: `outbound.down|up`,
-`xray.crash`, `node.down|up`, `cpu.high`, `memory.high`, `login.attempt`, and the client
+`xray.crash`, `node.down|up`, `port.blocked|restored`, `cpu.high`, `memory.high`, `login.attempt`, and the client
 lifecycle `client.*` (created, deleted, enabled, disabled, depleted, expired, renewed,
 traffic_reset), with structured payloads (OutboundHealthData, NodeHealthData,
 LoginEventData, SystemMetricData, ClientEventData). Producers include the CPU/memory jobs,
@@ -470,7 +480,7 @@ for AutoMigrate in `internal/database/db.go`.
 
 | Model                           | Table role                                | Notable fields                                                                                                                                                     |
 | ------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `User`                          | Admin login                               | bcrypt password, `LoginEpoch` (invalidates sessions)                                                                                                               |
+| `User`                          | Admin login                               | bcrypt password, `LoginEpoch` (invalidates sessions), `Role` (owner/admin/operator/viewer), operator scope                                                                                                             |
 | `Inbound`                       | An Xray inbound                           | `Tag` (unique), `Port`, `Protocol`, `Settings`/`StreamSettings`/`Sniffing` (JSON), `Enable`, `TrafficReset`, `NodeID`, **`OriginNodeGuid`**, `ClientStats` (assoc) |
 | `Client`                        | In-memory client view                     | UUID/email/flow/limits (parsed from inbound JSON; not persisted)                                                                                                   |
 | `ClientRecord`                  | Persisted client (`clients`)              | `Email` (unique), `SubID`, `UUID`, `TotalGB`, `ExpiryTime`, `LimitIP`, `Group`, `Reset`                                                                            |
@@ -514,6 +524,7 @@ for AutoMigrate in `internal/database/db.go`.
 | Subscription **host overrides** not applied                                       | `service/host.go`, `sub/host_sub.go`                                         | model `Host`, `frontend/src/pages/hosts/`                                                           |
 | **External subscription** import/aggregation                                      | `sub/external_subscription.go`, `sub/external_config.go`                     | `sub/clash_external.go`                                                                             |
 | **Settings** not saving / defaults                                                | `service/setting.go`, `controller/setting.go`                                | model `Setting`                                                                                     |
+| **Admin roles (RBAC)** | `controller/admin_access.go` (route tables), `service/admin_scope.go` | `service/panel/admin.go`, `websocket/hub.go` |
 | **Login / 2FA / sessions / CSRF**                                                 | `controller/index.go`, `service/panel/user.go`, `middleware/`                | `session/`                                                                                          |
 | **API tokens**                                                                    | `service/panel/api_token.go`, `controller/setting.go`                        | model `ApiToken`                                                                                    |
 | **Port conflict** on inbound add                                                  | `service/port_conflict.go`                                                   | `controller/inbound.go`                                                                             |
@@ -530,6 +541,9 @@ for AutoMigrate in `internal/database/db.go`.
 | **MTProto** proxy issues                                                          | `internal/mtproto/manager.go`, `mtproto/process*.go`                         | `job/mtproto_job.go`                                                                                |
 | **OpenVPN** login/traffic issues                                                  | `internal/openvpn/manager.go`, `openvpn/mgmt.go`                             | `job/openvpn_job.go`, `service/inbound_openvpn.go`                                                  |
 | **IKEv2** login/traffic issues                                                    | `internal/ipsec/manager.go`, `ipsec/accounting.go`                           | `job/ikev2_job.go`, `service/inbound_ikev2.go`                                                    |
+| **SSH tunnel** login/traffic issues                                               | `internal/sshtunnel/server.go`, `sshtunnel/manager.go`                      | `job/ssh_job.go`, `service/inbound_ssh.go`                                                        |
+| **SSTP** login/traffic issues                                                     | `internal/sstp/server.go`, `sstp/pppd.go`                                   | `job/sstp_job.go`, `service/inbound_sstp.go`, `internal/pppsecrets/`                              |
+| **ocserv** login/traffic issues                                                   | `internal/ocserv/manager.go`, `ocserv/usage.go`                             | `job/ocserv_job.go`, `service/inbound_ocserv.go`                                                  |
 | **L2TP** login/traffic issues                                                     | `internal/l2tp/manager.go`, `l2tp/sessions.go`                              | `job/l2tp_job.go`, `service/inbound_l2tp.go`                                                      |
 | **DB migration** / new column                                                     | `internal/database/db.go` (AutoMigrate list), `migrate_data.go`              | `model/model.go`                                                                                    |
 | **Cron schedule** changes                                                         | `web.go` → `startTask()`                                                     | the specific `job/*.go`                                                                             |
@@ -612,9 +626,13 @@ them with a comment starting `@claude review` on a PR or `@claude analyze` on an
 ## 10. Gotchas & conventions
 
 - **Module path is `.../v3`.** Internal imports use `github.com/mhsanaei/3x-ui/v3/internal/...`.
-- **SQLite vs Postgres.** Default is SQLite at `{XUI_DB_FOLDER}/x-ui.db`. Postgres via
-  `XUI_DB_TYPE=postgres` + `XUI_DB_DSN`. Some SQL paths are dialect-aware (`database/dialect.go`);
-  test both when touching raw queries (there are `*_scale_postgres_test.go` suites).
+- **SQLite vs Postgres vs MySQL.** Default is SQLite at `{XUI_DB_FOLDER}/eternal.db`. Postgres via
+  `XUI_DB_TYPE=postgres` + `XUI_DB_DSN`; MySQL/MariaDB via `XUI_DB_TYPE=mysql` (`database/mysql.go`:
+  utf8mb4_bin tables, `ANSI_QUOTES` + `NO_BACKSLASH_ESCAPES` sessions, indexed strings as VARCHAR(255)).
+  Some SQL paths are dialect-aware (`database/dialect.go`); test all three when touching raw queries
+  (`*_scale_postgres_test.go` suites; `XUI_TEST_MYSQL_DSN` gates the MySQL ones). MySQL evaluates
+  `UPDATE ... SET a = .., b = f(a)` left to right on the *updated* `a`, and rejects a subquery on
+  the UPDATE/DELETE target table (error 1093) — use a self-join there.
 - **`Inbound.Settings` / `StreamSettings` / `Sniffing` are raw JSON strings**, not structured
   columns. Parsing/validation happens in services and the `xray` package, not in GORM.
 - **Hot-reload is the default; full restart is the fallback.** Changes that look config-only

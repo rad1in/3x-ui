@@ -55,7 +55,7 @@ cd 3x-ui
 
 cp .env.example .env
 
-mkdir x-ui
+mkdir eternal
 
 go mod download
 
@@ -65,18 +65,18 @@ npm run build
 cd ..
 ```
 
-`.env.example` ships with defaults that keep the database, logs, and xray binary inside the local `x-ui/` folder so nothing escapes the project directory:
+`.env.example` ships with defaults that keep the database, logs, and xray binary inside the local `eternal/` folder so nothing escapes the project directory:
 
 ```
 XUI_DEBUG=true
-XUI_DB_FOLDER=x-ui
-XUI_LOG_FOLDER=x-ui
-XUI_BIN_FOLDER=x-ui
+XUI_DB_FOLDER=eternal
+XUI_LOG_FOLDER=eternal
+XUI_BIN_FOLDER=eternal
 XUI_INIT_WEB_BASE_PATH=/
 # XUI_PORT=8080
 ```
 
-Drop the xray binary (`xray-windows-amd64.exe` on Windows, `xray-linux-amd64` on Linux, etc.) plus the matching `geoip.dat` and `geosite.dat` files into `x-ui/`. The easiest source is a [released Xray-core build](https://github.com/XTLS/Xray-core/releases). On Windows, `wintun.dll` is also required for testing TUN inbounds.
+Drop the xray binary (`xray-windows-amd64.exe` on Windows, `xray-linux-amd64` on Linux, etc.) plus the matching `geoip.dat` and `geosite.dat` files into `eternal/`. The easiest source is a [released Xray-core build](https://github.com/XTLS/Xray-core/releases). On Windows, `wintun.dll` is also required for testing TUN inbounds.
 
 ## Running
 
@@ -104,9 +104,9 @@ The repo checks in two VS Code launch profiles in `.vscode/launch.json`: **Run 3
       "cwd": "${workspaceFolder}",
       "env": {
         "XUI_DEBUG": "true",
-        "XUI_DB_FOLDER": "x-ui",
-        "XUI_LOG_FOLDER": "x-ui",
-        "XUI_BIN_FOLDER": "x-ui"
+        "XUI_DB_FOLDER": "eternal",
+        "XUI_LOG_FOLDER": "eternal",
+        "XUI_BIN_FOLDER": "eternal"
       },
       "console": "integratedTerminal"
     },
@@ -119,8 +119,8 @@ The repo checks in two VS Code launch profiles in `.vscode/launch.json`: **Run 3
       "cwd": "${workspaceFolder}",
       "env": {
         "XUI_DEBUG": "true",
-        "XUI_LOG_FOLDER": "x-ui",
-        "XUI_BIN_FOLDER": "x-ui",
+        "XUI_LOG_FOLDER": "eternal",
+        "XUI_BIN_FOLDER": "eternal",
         "XUI_DB_TYPE": "postgres",
         "XUI_DB_DSN": "postgres://xui:xuipass@127.0.0.1:5432/xui?sslmode=disable",
         "PATH": "C:\\Program Files\\PostgreSQL\\18\\bin;${env:PATH}"
@@ -237,7 +237,7 @@ For deeper notes on the frontend toolchain see [`frontend/README.md`](frontend/R
 | `internal/xray/` | Xray-core process lifecycle and gRPC API client |
 | `internal/sub/` | Subscription endpoints (raw, JSON, Clash) |
 | `internal/config/` | Environment-variable helpers, paths, defaults |
-| `x-ui/` | **Runtime data** — db, logs, xray binary, geo files (gitignored) |
+| `eternal/` | **Runtime data** — db, logs, xray binary, geo files (gitignored) |
 
 ## Testing
 
@@ -253,7 +253,7 @@ Tests live next to the code (`foo.go` ↔ `foo_test.go`); frontend specs and gol
 
 - **Stdlib `testing` only** — no testify. Table-driven with `t.Run` subtests and `t.Helper()` on helpers.
 - **Assert the contract, not internals.** Pin the exact value / typed error / emitted string — not `err != nil` or `len > 0`. A test that still passes when the behavior is broken is worse than no test.
-- **Real dependencies over mocks.** Get a throwaway DB with `dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))` from `internal/database/dbtest`: it copies a once-migrated template (migrating from scratch per test is ~7x slower, worst under `-race`) and closes the DB before `t.TempDir` cleanup (Windows-safe). Keep `database.InitDB` for reopening an existing file or migrating a hand-built legacy DB. Use `httptest` servers for HTTP. The `internal/sub` suite's `initSubDB(t)` is the template.
+- **Real dependencies over mocks.** Get a throwaway DB with `dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))` from `internal/database/dbtest`: it copies a once-migrated template (migrating from scratch per test is ~7x slower, worst under `-race`) and closes the DB before `t.TempDir` cleanup (Windows-safe). Keep `database.InitDB` for reopening an existing file or migrating a hand-built legacy DB. Use `httptest` servers for HTTP. The `internal/sub` suite's `initSubDB(t)` is the template.
 
 ### Running
 
@@ -305,7 +305,7 @@ CI runs this for you nightly (and on demand) via `.github/workflows/mutation.yml
 |----------|---------|---------|
 | `XUI_DEBUG` | `false` | Verbose logs + Gin debug mode + serve `/assets` from disk |
 | `XUI_LOG_LEVEL` | `info` | `debug` / `info` / `notice` / `warning` / `error` |
-| `XUI_DB_FOLDER` | platform default | Where `x-ui.db` lives |
+| `XUI_DB_FOLDER` | platform default | Where `eternal.db` lives |
 | `XUI_LOG_FOLDER` | platform default | Where `3xui.log` lives |
 | `XUI_BIN_FOLDER` | `bin` | Where the xray binary, geo files, and xray `config.json` live |
 | `XUI_INIT_WEB_BASE_PATH` | `/` | The initial URI path for the web panel |
@@ -321,6 +321,6 @@ must match the override, for example `XUI_PORT: "8080"` with `ports: ["8080:8080
 
 ## Issues
 
-- Bug reports and feature requests: [GitHub Issues](https://github.com/MHSanaei/3x-ui/issues)
+- Bug reports and feature requests: [GitHub Issues](https://github.com/rad1in/eternal/issues)
 
-Before filing a bug, include the OS, Go version, panel version (`/panel/api/server/status` or the dashboard footer), and the relevant excerpt from `x-ui/3xui.log`.
+Before filing a bug, include the OS, Go version, panel version (`/panel/api/server/status` or the dashboard footer), and the relevant excerpt from `eternal/3xui.log`.

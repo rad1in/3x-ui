@@ -3,6 +3,7 @@ package discord
 import (
 	"context"
 	"fmt"
+	"net"
 	"os"
 	"strconv"
 	"strings"
@@ -135,7 +136,7 @@ func (s *Subscriber) FormatEmbed(e eventbus.Event) (Embed, bool) {
 	}
 
 	footer := &EmbedFooter{
-		Text: truncateUnits("3x-ui • "+h, 2048),
+		Text: truncateUnits("Eternal • "+h, 2048),
 	}
 	tr := translator(s.settingService)
 
@@ -233,6 +234,41 @@ func (s *Subscriber) FormatEmbed(e eventbus.Event) (Embed, bool) {
 			Footer:    footer,
 		}, true
 
+	case eventbus.EventNodeCapReached:
+		fields := []EmbedField{
+			cleanField(tr("discord.fields.node"), e.Source, true),
+		}
+		if data, ok := e.Data.(*eventbus.NodeCapData); ok {
+			fields = append(fields,
+				cleanField(tr("discord.fields.totalUsed"), common.FormatTraffic(data.UsedBytes), true),
+				cleanField(tr("discord.fields.quota"), common.FormatTraffic(data.CapBytes), true))
+		}
+		return Embed{
+			Title:     tr("discord.alerts.nodeCapReached"),
+			Color:     ColorRed,
+			Timestamp: ts,
+			Fields:    fields,
+			Footer:    footer,
+		}, true
+
+	case eventbus.EventPortBlocked, eventbus.EventPortRestored:
+		data, ok := e.Data.(*eventbus.PortProbeData)
+		if !ok {
+			return Embed{}, false
+		}
+		fields := []EmbedField{
+			cleanField(tr("discord.fields.inbound"), e.Source, true),
+			cleanField(tr("discord.fields.address"), net.JoinHostPort(data.Host, strconv.Itoa(data.Port)), true),
+		}
+		title, color := tr("discord.alerts.portRestored"), ColorGreen
+		if e.Type == eventbus.EventPortBlocked {
+			title, color = tr("discord.alerts.portBlocked"), ColorRed
+			if data.Error != "" {
+				fields = append(fields, cleanField(tr("discord.fields.error"), data.Error, false))
+			}
+		}
+		return Embed{Title: title, Color: color, Timestamp: ts, Fields: fields, Footer: footer}, true
+
 	case eventbus.EventXrayCrash:
 		var fields []EmbedField
 		if e.Data != nil {
@@ -299,6 +335,17 @@ func (s *Subscriber) FormatEmbed(e eventbus.Event) (Embed, bool) {
 			}, true
 		}
 		return Embed{}, false
+
+	case eventbus.EventWeeklyReport:
+		data, _ := e.Data.(*eventbus.WeeklySummaryData)
+		if data == nil {
+			return Embed{}, false
+		}
+		return Embed{
+			Title:       "Weekly summary",
+			Description: truncateUnits(strings.Join(data.Lines(), "\n"), 4000),
+			Color:       ColorBlue, Timestamp: ts, Footer: footer,
+		}, true
 
 	case eventbus.EventClientQuotaWarning, eventbus.EventClientExpiryWarning:
 		data, _ := e.Data.(*eventbus.ClientEventData)
@@ -376,5 +423,8 @@ func (s *Subscriber) FormatEmbed(e eventbus.Event) (Embed, bool) {
 		}, true
 	}
 
+	if title, lines, ok := eventbus.PlainText(e); ok {
+		return Embed{Title: title, Description: truncateUnits(strings.Join(lines, "\n"), 4000), Color: ColorOrange, Timestamp: ts, Footer: footer}, true
+	}
 	return Embed{}, false
 }

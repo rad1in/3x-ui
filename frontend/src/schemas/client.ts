@@ -220,6 +220,13 @@ export const BulkAdjustResultSchema = z.object({
   skipped: z.array(z.object({ email: z.string(), reason: z.string() })).optional(),
 });
 
+export const DisconnectResultSchema = z.object({
+  disconnected: z.number(),
+  unsupported: z.array(z.string()),
+  failed: z.record(z.string(), z.string()),
+});
+export type DisconnectResult = z.infer<typeof DisconnectResultSchema>;
+
 export const BulkDeleteResultSchema = z.object({
   deleted: z.number(),
   skipped: z.array(z.object({ email: z.string(), reason: z.string() })).optional(),

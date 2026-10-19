@@ -36,6 +36,18 @@ func TestAuditRouteClassification(t *testing.T) {
 	}
 }
 
+// A renamed route would silently drop out of the role tables: an owner-only
+// route would open to admins, an operator route would close for operators.
+func TestRBACRoutesExist(t *testing.T) {
+	registered := registeredContractRoutes(t)
+	for _, route := range controller.RBACRoutes() {
+		method, rel, _ := strings.Cut(route, " ")
+		if !registered[method+" /panel/api"+rel] {
+			t.Errorf("role table entry %q matches no registered route", route)
+		}
+	}
+}
+
 // A renamed route would silently drop out of the hosted block list and let a
 // hosted panel escape its limits.
 func TestHostedForbiddenRoutesExist(t *testing.T) {

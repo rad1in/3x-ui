@@ -14,6 +14,9 @@ const (
 	// caller-supplied username, so an unauthenticated attacker rotating
 	// usernames would otherwise grow the map without bound.
 	loginLimitMaxRecords = 10000
+	// An address as a whole may fail this many times more often than one
+	// username on it before it is cut off.
+	loginLimitIPFactor = 4
 )
 
 var defaultLoginLimiter = newLoginLimiter(loginLimitMaxFailures, loginLimitWindow, loginLimitCooldown)
@@ -42,33 +45,66 @@ func newLoginLimiter(maxFailures int, window, cooldown time.Duration) *loginLimi
 	}
 }
 
+// configure applies the operator's settings to the next attempt.
+func (l *loginLimiter) configure(maxFailures int, cooldown time.Duration) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.maxFailures = maxFailures
+	l.cooldown = cooldown
+}
+
+// allow refuses while either the (address, username) pair or the address as a
+// whole is in cooldown.
 func (l *loginLimiter) allow(ip, username string) (time.Time, bool) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
-	key := loginLimitKey(ip, username)
+	var latest time.Time
+	for _, key := range []string{loginLimitKey(ip, username), loginLimitIPKey(ip)} {
+		if until, blocked := l.blockedUntil(key); blocked && until.After(latest) {
+			latest = until
+		}
+	}
+	return latest, latest.IsZero()
+}
+
+func (l *loginLimiter) blockedUntil(key string) (time.Time, bool) {
 	record := l.attempts[key]
 	if record == nil {
-		return time.Time{}, true
+		return time.Time{}, false
 	}
 	now := l.now()
 	if now.Before(record.blockedUntil) {
-		return record.blockedUntil, false
+		return record.blockedUntil, true
 	}
 	record.blockedUntil = time.Time{}
 	record.failures = pruneLoginFailures(record.failures, now.Add(-l.window))
 	if len(record.failures) == 0 {
 		delete(l.attempts, key)
 	}
-	return time.Time{}, true
+	return time.Time{}, false
 }
 
+// registerFailure counts a failed login against the pair and against the
+// address, which tolerates loginLimitIPFactor times as many failures so a
+// shared office address is not shut out by one person's typos.
 func (l *loginLimiter) registerFailure(ip, username string) (time.Time, bool) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
 	now := l.now()
-	key := loginLimitKey(ip, username)
+	pairUntil, pairBlocked := l.count(loginLimitKey(ip, username), l.maxFailures, now)
+	ipUntil, ipBlocked := l.count(loginLimitIPKey(ip), l.maxFailures*loginLimitIPFactor, now)
+	if !pairBlocked && !ipBlocked {
+		return time.Time{}, false
+	}
+	if ipUntil.After(pairUntil) {
+		return ipUntil, true
+	}
+	return pairUntil, true
+}
+
+func (l *loginLimiter) count(key string, limit int, now time.Time) (time.Time, bool) {
 	record := l.attempts[key]
 	if record == nil {
 		l.evictForRoom(now)
@@ -77,7 +113,7 @@ func (l *loginLimiter) registerFailure(ip, username string) (time.Time, bool) {
 	}
 	record.failures = pruneLoginFailures(record.failures, now.Add(-l.window))
 	record.failures = append(record.failures, now)
-	if len(record.failures) >= l.maxFailures {
+	if len(record.failures) >= limit {
 		record.failures = nil
 		record.blockedUntil = now.Add(l.cooldown)
 		return record.blockedUntil, true
@@ -124,6 +160,10 @@ func (l *loginLimiter) evictForRoom(now time.Time) {
 		delete(l.attempts, key)
 		return
 	}
+}
+
+func loginLimitIPKey(ip string) string {
+	return "ip\x00" + strings.TrimSpace(ip)
 }
 
 func loginLimitKey(ip, username string) string {

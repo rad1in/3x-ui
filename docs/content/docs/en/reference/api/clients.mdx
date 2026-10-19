@@ -119,6 +119,22 @@ _openapi:
         count and per-email skip reasons.'
       url: '#shift-expiry-andor-traffic-quota-for-many-clients-in-one-call-adddaysaddbytes-may-be-negative-clients-with-unlimited-expiry-expirytime0-or-unlimited-traffic-totalgb0-are-skipped-for-the-corresponding-field--bulk-extend-never-converts-unlimited-to-limited-a-client-that-was-auto-disabled-solely-because-it-was-depleted-expired-or-over-quota-is-automatically-re-enabled--locally-and-on-its-node--when-the-adjustment-lifts-it-out-of-depletion-a-manually-disabled-or-still-depleted-client-is-left-disabled-the-optional-flow-directive-sets-the-xtls-flow-on-every-client-none-clears-it-xtls-rprx-visionxtls-rprx-vision-udp443-set-it-where-the-inbound-supports-it-omit-or--to-leave-it-unchanged-the-optional-limithwid-sets-maximum-registered-devices-0--unlimited-the-optional-adtag-sets-mtproto-telegram-sponsor-channel-none-clears-returns-the-adjusted-count-and-per-email-skip-reasons'
     - depth: 2
+      title: Hand clients from one operator to another. Without emails every client
+        the source can see moves. A client in the source's group joins the
+        target's group (group names it; optional when the target has one group);
+        a client on the source's inbounds is attached to the target's inbounds
+        and detached from the source's. A client on an inbound both operators
+        share, or without a usable target group or inbound, stays and is
+        reported in skipped. Owners and admins only.
+      url: '#hand-clients-from-one-operator-to-another-without-emails-every-client-the-source-can-see-moves-a-client-in-the-sources-group-joins-the-targets-group-group-names-it-optional-when-the-target-has-one-group-a-client-on-the-sources-inbounds-is-attached-to-the-targets-inbounds-and-detached-from-the-sources-a-client-on-an-inbound-both-operators-share-or-without-a-usable-target-group-or-inbound-stays-and-is-reported-in-skipped-owners-and-admins-only'
+    - depth: 2
+      title: Issue a signed subscription URL (?exp=<unix s>&sig=<HMAC>) for a
+        subscription id. ttlSeconds 0 never expires. Requires signed
+        subscription links to be enabled under /panel/api/security; once they
+        are, the subscription server answers 404 to any raw, JSON, Clash or
+        sing-box link without a valid signature.
+      url: '#issue-a-signed-subscription-url-expunix-ssighmac-for-a-subscription-id-ttlseconds-0-never-expires-requires-signed-subscription-links-to-be-enabled-under-panelapisecurity-once-they-are-the-subscription-server-answers-404-to-any-raw-json-clash-or-sing-box-link-without-a-valid-signature'
+    - depth: 2
       title: Enable many clients in one call. Emails are grouped by inbound and
         applied with a single read-modify-write per inbound; the running Xray
         (local or remote node) is updated to add each user. Note that enabling a
@@ -158,6 +174,70 @@ _openapi:
         cleared from clients.group_name and from each owning inbound's settings
         JSON. Groups become empty if all their members are removed.
       url: '#clear-the-group-label-on-many-clients-in-one-call-inverse-of-groupsbulkadd-clients-themselves-are-kept--only-the-group-label-is-cleared-from-clientsgroup_name-and-from-each-owning-inbounds-settings-json-groups-become-empty-if-all-their-members-are-removed'
+    - depth: 2
+      title: List the saved client templates (presets for quota, duration, IP limit,
+        flow, group and target inbounds), sorted by name. totalGB is in bytes;
+        expiryDays 0 means no expiry.
+      url: '#list-the-saved-client-templates-presets-for-quota-duration-ip-limit-flow-group-and-target-inbounds-sorted-by-name-totalgb-is-in-bytes-expirydays-0-means-no-expiry'
+    - depth: 2
+      title: Create a client template, or replace the one whose id is given. Names are
+        unique and at least one inbound is required. Returns the saved template.
+      url: '#create-a-client-template-or-replace-the-one-whose-id-is-given-names-are-unique-and-at-least-one-inbound-is-required-returns-the-saved-template'
+    - depth: 2
+      title: Delete a client template. Clients already created from it are not
+        touched.
+      url: '#delete-a-client-template-clients-already-created-from-it-are-not-touched'
+    - depth: 2
+      title: Create one client per email from a template. With delayedStart the expiry
+        is stored as a negative duration that starts counting at first use.
+        Emails that cannot be created (for example duplicates) are reported
+        under failed while the rest are still created.
+      url: '#create-one-client-per-email-from-a-template-with-delayedstart-the-expiry-is-stored-as-a-negative-duration-that-starts-counting-at-first-use-emails-that-cannot-be-created-for-example-duplicates-are-reported-under-failed-while-the-rest-are-still-created'
+    - depth: 2
+      title: Per-day traffic history of one client, oldest day first. Only days that
+        had traffic have a row; days is the window including today (default 30,
+        capped at 90 — the retention). Day keys are panel-local dates.
+      url: '#per-day-traffic-history-of-one-client-oldest-day-first-only-days-that-had-traffic-have-a-row-days-is-the-window-including-today-default-30-capped-at-90--the-retention-day-keys-are-panel-local-dates'
+    - depth: 2
+      title: End the live connections of a client without disabling it; the client may
+        reconnect at once. OpenVPN, IKEv2, L2TP, SSH, SSTP and ocserv sessions
+        are terminated through their servers. For Xray (VLESS, VMess, Trojan,
+        Shadowsocks over TCP) the core cannot drop an authenticated session, so
+        the established sockets from the IPs the client was last seen on are
+        destroyed. UDP protocols (Hysteria, WireGuard, TUIC, AmneziaWG) and
+        MTProto cannot be disconnected and are listed under unsupported.
+        Inbounds on a node are handled by the node, asked once per node.
+      url: '#end-the-live-connections-of-a-client-without-disabling-it-the-client-may-reconnect-at-once-openvpn-ikev2-l2tp-ssh-sstp-and-ocserv-sessions-are-terminated-through-their-servers-for-xray-vless-vmess-trojan-shadowsocks-over-tcp-the-core-cannot-drop-an-authenticated-session-so-the-established-sockets-from-the-ips-the-client-was-last-seen-on-are-destroyed-udp-protocols-hysteria-wireguard-tuic-amneziawg-and-mtproto-cannot-be-disconnected-and-are-listed-under-unsupported-inbounds-on-a-node-are-handled-by-the-node-asked-once-per-node'
+    - depth: 2
+      title: Import the users of another panel from its user export and attach them to
+        the given inbounds. source is marzban (GET /api/users), marzneshin (GET
+        /api/users) or hiddify (admin users list); data is the export text.
+        UUIDs, passwords, quotas, expiry (including on-hold and
+        start-on-first-use as a delayed start), reset cycle, notes and used
+        traffic are carried over; existing emails are skipped. Subscription
+        links of the old panel do not carry over. Users that could only be
+        approximated are listed under warnings.
+      url: '#import-the-users-of-another-panel-from-its-user-export-and-attach-them-to-the-given-inbounds-source-is-marzban-get-apiusers-marzneshin-get-apiusers-or-hiddify-admin-users-list-data-is-the-export-text-uuids-passwords-quotas-expiry-including-on-hold-and-start-on-first-use-as-a-delayed-start-reset-cycle-notes-and-used-traffic-are-carried-over-existing-emails-are-skipped-subscription-links-of-the-old-panel-do-not-carry-over-users-that-could-only-be-approximated-are-listed-under-warnings'
+    - depth: 2
+      title: Usage report of every client you can see. format=csv (default) downloads
+        a spreadsheet-ready file with byte counts; format=html returns a
+        printable page that can be saved as PDF from the browser. Period columns
+        sum the per-day usage of the last days days; cells starting with = + -
+        or @ are quoted so spreadsheets do not run them.
+      url: '#usage-report-of-every-client-you-can-see-formatcsv-default-downloads-a-spreadsheet-ready-file-with-byte-counts-formathtml-returns-a-printable-page-that-can-be-saved-as-pdf-from-the-browser-period-columns-sum-the-per-day-usage-of-the-last-days-days-cells-starting-with-----or--are-quoted-so-spreadsheets-do-not-run-them'
+    - depth: 2
+      title: Countries the currently connected clients come from, looked up in the
+        geoip.dat of the Xray folder. An address counts as connected when it was
+        seen in the last two minutes. available is false when no geoip database
+        could be read; unlocated counts addresses outside every country (private
+        ranges included).
+      url: '#countries-the-currently-connected-clients-come-from-looked-up-in-the-geoipdat-of-the-xray-folder-an-address-counts-as-connected-when-it-was-seen-in-the-last-two-minutes-available-is-false-when-no-geoip-database-could-be-read-unlocated-counts-addresses-outside-every-country-private-ranges-included'
+    - depth: 2
+      title: 'Clients currently flagged as shared: seen from at least
+        sharedAccountMinIPs addresses or sharedAccountMinCountries countries
+        inside the sharedAccountWindowHours window. Most addresses first; empty
+        while both thresholds are 0.'
+      url: '#clients-currently-flagged-as-shared-seen-from-at-least-sharedaccountminips-addresses-or-sharedaccountmincountries-countries-inside-the-sharedaccountwindowhours-window-most-addresses-first-empty-while-both-thresholds-are-0'
     - depth: 2
       title: Attach many existing clients to many inbounds in one call. Each client
         keeps its identity (email/UUID/password/subId) and a shared traffic row;
@@ -293,6 +373,27 @@ _openapi:
         generation provider, and the result is not stored or reused.'
       url: '#generate-a-fresh-happ-crypt5-link-locally-from-the-current-client-subscription-url-when-happ-link-generation-is-enabled-the-panel-applies-a-resource-limit-of-8192-utf-8-bytes-to-the-source-url-this-is-not-a-happ-client-maximum-longer-sources-return-success-false-with-msg-happ_source_too_long-and-obj-null-the-source-url-is-not-sent-to-a-generation-provider-and-the-result-is-not-stored-or-reused'
     - depth: 2
+      title: 'List which apps fetched a subscription: one entry per distinct IP,
+        User-Agent and served format (raw, json, clash, singbox, surge, quanx,
+        loon, outline) with the fetch count and first/last time in milliseconds,
+        newest first. The newest 20 entries are kept per subscription.'
+      url: '#list-which-apps-fetched-a-subscription-one-entry-per-distinct-ip-user-agent-and-served-format-raw-json-clash-singbox-surge-quanx-loon-outline-with-the-fetch-count-and-firstlast-time-in-milliseconds-newest-first-the-newest-20-entries-are-kept-per-subscription'
+    - depth: 2
+      title: Return the short subscription link (/s/<token> on the subscription
+        server) of a subscription ID, or obj null when it has none. The URL
+        origin is the configured subURI origin, else the subscription server
+        address.
+      url: '#return-the-short-subscription-link-stoken-on-the-subscription-server-of-a-subscription-id-or-obj-null-when-it-has-none-the-url-origin-is-the-configured-suburi-origin-else-the-subscription-server-address'
+    - depth: 2
+      title: Return the short link of a subscription ID, creating one (10 random
+        base62 characters) when it has none. Fails when short links are turned
+        off (subShortLinkEnable) or no client carries the subscription ID.
+      url: '#return-the-short-link-of-a-subscription-id-creating-one-10-random-base62-characters-when-it-has-none-fails-when-short-links-are-turned-off-subshortlinkenable-or-no-client-carries-the-subscription-id'
+    - depth: 2
+      title: Delete the short link of a subscription ID; the old /s/<token> answers
+        404 at once. Creating a link again issues a new token.
+      url: '#delete-the-short-link-of-a-subscription-id-the-old-stoken-answers-404-at-once-creating-a-link-again-issues-a-new-token'
+    - depth: 2
       title: 'Return every URL for one client across all attached inbounds, one per
         advertised endpoint: the managed hosts of the inbound, else its
         streamSettings.externalProxy entries, else its own address. Supported
@@ -397,6 +498,20 @@ _openapi:
           The optional adTag sets MTProto Telegram sponsor channel ("none"
           clears). Returns the adjusted count and per-email skip reasons.'
         id: shift-expiry-andor-traffic-quota-for-many-clients-in-one-call-adddaysaddbytes-may-be-negative-clients-with-unlimited-expiry-expirytime0-or-unlimited-traffic-totalgb0-are-skipped-for-the-corresponding-field--bulk-extend-never-converts-unlimited-to-limited-a-client-that-was-auto-disabled-solely-because-it-was-depleted-expired-or-over-quota-is-automatically-re-enabled--locally-and-on-its-node--when-the-adjustment-lifts-it-out-of-depletion-a-manually-disabled-or-still-depleted-client-is-left-disabled-the-optional-flow-directive-sets-the-xtls-flow-on-every-client-none-clears-it-xtls-rprx-visionxtls-rprx-vision-udp443-set-it-where-the-inbound-supports-it-omit-or--to-leave-it-unchanged-the-optional-limithwid-sets-maximum-registered-devices-0--unlimited-the-optional-adtag-sets-mtproto-telegram-sponsor-channel-none-clears-returns-the-adjusted-count-and-per-email-skip-reasons
+      - content: Hand clients from one operator to another. Without emails every client
+          the source can see moves. A client in the source's group joins the
+          target's group (group names it; optional when the target has one
+          group); a client on the source's inbounds is attached to the target's
+          inbounds and detached from the source's. A client on an inbound both
+          operators share, or without a usable target group or inbound, stays
+          and is reported in skipped. Owners and admins only.
+        id: hand-clients-from-one-operator-to-another-without-emails-every-client-the-source-can-see-moves-a-client-in-the-sources-group-joins-the-targets-group-group-names-it-optional-when-the-target-has-one-group-a-client-on-the-sources-inbounds-is-attached-to-the-targets-inbounds-and-detached-from-the-sources-a-client-on-an-inbound-both-operators-share-or-without-a-usable-target-group-or-inbound-stays-and-is-reported-in-skipped-owners-and-admins-only
+      - content: Issue a signed subscription URL (?exp=<unix s>&sig=<HMAC>) for a
+          subscription id. ttlSeconds 0 never expires. Requires signed
+          subscription links to be enabled under /panel/api/security; once they
+          are, the subscription server answers 404 to any raw, JSON, Clash or
+          sing-box link without a valid signature.
+        id: issue-a-signed-subscription-url-expunix-ssighmac-for-a-subscription-id-ttlseconds-0-never-expires-requires-signed-subscription-links-to-be-enabled-under-panelapisecurity-once-they-are-the-subscription-server-answers-404-to-any-raw-json-clash-or-sing-box-link-without-a-valid-signature
       - content: Enable many clients in one call. Emails are grouped by inbound and
           applied with a single read-modify-write per inbound; the running Xray
           (local or remote node) is updated to add each user. Note that enabling
@@ -433,6 +548,62 @@ _openapi:
           cleared from clients.group_name and from each owning inbound's
           settings JSON. Groups become empty if all their members are removed.
         id: clear-the-group-label-on-many-clients-in-one-call-inverse-of-groupsbulkadd-clients-themselves-are-kept--only-the-group-label-is-cleared-from-clientsgroup_name-and-from-each-owning-inbounds-settings-json-groups-become-empty-if-all-their-members-are-removed
+      - content: List the saved client templates (presets for quota, duration, IP limit,
+          flow, group and target inbounds), sorted by name. totalGB is in bytes;
+          expiryDays 0 means no expiry.
+        id: list-the-saved-client-templates-presets-for-quota-duration-ip-limit-flow-group-and-target-inbounds-sorted-by-name-totalgb-is-in-bytes-expirydays-0-means-no-expiry
+      - content: Create a client template, or replace the one whose id is given. Names
+          are unique and at least one inbound is required. Returns the saved
+          template.
+        id: create-a-client-template-or-replace-the-one-whose-id-is-given-names-are-unique-and-at-least-one-inbound-is-required-returns-the-saved-template
+      - content: Delete a client template. Clients already created from it are not
+          touched.
+        id: delete-a-client-template-clients-already-created-from-it-are-not-touched
+      - content: Create one client per email from a template. With delayedStart the
+          expiry is stored as a negative duration that starts counting at first
+          use. Emails that cannot be created (for example duplicates) are
+          reported under failed while the rest are still created.
+        id: create-one-client-per-email-from-a-template-with-delayedstart-the-expiry-is-stored-as-a-negative-duration-that-starts-counting-at-first-use-emails-that-cannot-be-created-for-example-duplicates-are-reported-under-failed-while-the-rest-are-still-created
+      - content: Per-day traffic history of one client, oldest day first. Only days that
+          had traffic have a row; days is the window including today (default
+          30, capped at 90 — the retention). Day keys are panel-local dates.
+        id: per-day-traffic-history-of-one-client-oldest-day-first-only-days-that-had-traffic-have-a-row-days-is-the-window-including-today-default-30-capped-at-90--the-retention-day-keys-are-panel-local-dates
+      - content: End the live connections of a client without disabling it; the client
+          may reconnect at once. OpenVPN, IKEv2, L2TP, SSH, SSTP and ocserv
+          sessions are terminated through their servers. For Xray (VLESS, VMess,
+          Trojan, Shadowsocks over TCP) the core cannot drop an authenticated
+          session, so the established sockets from the IPs the client was last
+          seen on are destroyed. UDP protocols (Hysteria, WireGuard, TUIC,
+          AmneziaWG) and MTProto cannot be disconnected and are listed under
+          unsupported. Inbounds on a node are handled by the node, asked once
+          per node.
+        id: end-the-live-connections-of-a-client-without-disabling-it-the-client-may-reconnect-at-once-openvpn-ikev2-l2tp-ssh-sstp-and-ocserv-sessions-are-terminated-through-their-servers-for-xray-vless-vmess-trojan-shadowsocks-over-tcp-the-core-cannot-drop-an-authenticated-session-so-the-established-sockets-from-the-ips-the-client-was-last-seen-on-are-destroyed-udp-protocols-hysteria-wireguard-tuic-amneziawg-and-mtproto-cannot-be-disconnected-and-are-listed-under-unsupported-inbounds-on-a-node-are-handled-by-the-node-asked-once-per-node
+      - content: Import the users of another panel from its user export and attach them
+          to the given inbounds. source is marzban (GET /api/users), marzneshin
+          (GET /api/users) or hiddify (admin users list); data is the export
+          text. UUIDs, passwords, quotas, expiry (including on-hold and
+          start-on-first-use as a delayed start), reset cycle, notes and used
+          traffic are carried over; existing emails are skipped. Subscription
+          links of the old panel do not carry over. Users that could only be
+          approximated are listed under warnings.
+        id: import-the-users-of-another-panel-from-its-user-export-and-attach-them-to-the-given-inbounds-source-is-marzban-get-apiusers-marzneshin-get-apiusers-or-hiddify-admin-users-list-data-is-the-export-text-uuids-passwords-quotas-expiry-including-on-hold-and-start-on-first-use-as-a-delayed-start-reset-cycle-notes-and-used-traffic-are-carried-over-existing-emails-are-skipped-subscription-links-of-the-old-panel-do-not-carry-over-users-that-could-only-be-approximated-are-listed-under-warnings
+      - content: Usage report of every client you can see. format=csv (default)
+          downloads a spreadsheet-ready file with byte counts; format=html
+          returns a printable page that can be saved as PDF from the browser.
+          Period columns sum the per-day usage of the last days days; cells
+          starting with = + - or @ are quoted so spreadsheets do not run them.
+        id: usage-report-of-every-client-you-can-see-formatcsv-default-downloads-a-spreadsheet-ready-file-with-byte-counts-formathtml-returns-a-printable-page-that-can-be-saved-as-pdf-from-the-browser-period-columns-sum-the-per-day-usage-of-the-last-days-days-cells-starting-with-----or--are-quoted-so-spreadsheets-do-not-run-them
+      - content: Countries the currently connected clients come from, looked up in the
+          geoip.dat of the Xray folder. An address counts as connected when it
+          was seen in the last two minutes. available is false when no geoip
+          database could be read; unlocated counts addresses outside every
+          country (private ranges included).
+        id: countries-the-currently-connected-clients-come-from-looked-up-in-the-geoipdat-of-the-xray-folder-an-address-counts-as-connected-when-it-was-seen-in-the-last-two-minutes-available-is-false-when-no-geoip-database-could-be-read-unlocated-counts-addresses-outside-every-country-private-ranges-included
+      - content: 'Clients currently flagged as shared: seen from at least
+          sharedAccountMinIPs addresses or sharedAccountMinCountries countries
+          inside the sharedAccountWindowHours window. Most addresses first;
+          empty while both thresholds are 0.'
+        id: clients-currently-flagged-as-shared-seen-from-at-least-sharedaccountminips-addresses-or-sharedaccountmincountries-countries-inside-the-sharedaccountwindowhours-window-most-addresses-first-empty-while-both-thresholds-are-0
       - content: Attach many existing clients to many inbounds in one call. Each client
           keeps its identity (email/UUID/password/subId) and a shared traffic
           row; all clients are added to a target inbound in a single
@@ -547,6 +718,24 @@ _openapi:
           sent to a generation provider, and the result is not stored or
           reused.'
         id: generate-a-fresh-happ-crypt5-link-locally-from-the-current-client-subscription-url-when-happ-link-generation-is-enabled-the-panel-applies-a-resource-limit-of-8192-utf-8-bytes-to-the-source-url-this-is-not-a-happ-client-maximum-longer-sources-return-success-false-with-msg-happ_source_too_long-and-obj-null-the-source-url-is-not-sent-to-a-generation-provider-and-the-result-is-not-stored-or-reused
+      - content: 'List which apps fetched a subscription: one entry per distinct IP,
+          User-Agent and served format (raw, json, clash, singbox, surge, quanx,
+          loon, outline) with the fetch count and first/last time in
+          milliseconds, newest first. The newest 20 entries are kept per
+          subscription.'
+        id: list-which-apps-fetched-a-subscription-one-entry-per-distinct-ip-user-agent-and-served-format-raw-json-clash-singbox-surge-quanx-loon-outline-with-the-fetch-count-and-firstlast-time-in-milliseconds-newest-first-the-newest-20-entries-are-kept-per-subscription
+      - content: Return the short subscription link (/s/<token> on the subscription
+          server) of a subscription ID, or obj null when it has none. The URL
+          origin is the configured subURI origin, else the subscription server
+          address.
+        id: return-the-short-subscription-link-stoken-on-the-subscription-server-of-a-subscription-id-or-obj-null-when-it-has-none-the-url-origin-is-the-configured-suburi-origin-else-the-subscription-server-address
+      - content: Return the short link of a subscription ID, creating one (10 random
+          base62 characters) when it has none. Fails when short links are turned
+          off (subShortLinkEnable) or no client carries the subscription ID.
+        id: return-the-short-link-of-a-subscription-id-creating-one-10-random-base62-characters-when-it-has-none-fails-when-short-links-are-turned-off-subshortlinkenable-or-no-client-carries-the-subscription-id
+      - content: Delete the short link of a subscription ID; the old /s/<token> answers
+          404 at once. Creating a link again issues a new token.
+        id: delete-the-short-link-of-a-subscription-id-the-old-stoken-answers-404-at-once-creating-a-link-again-issues-a-new-token
       - content: 'Return every URL for one client across all attached inbounds, one per
           advertised endpoint: the managed hosts of the inbound, else its
           streamSettings.externalProxy entries, else its own address. Supported
@@ -565,7 +754,8 @@ _openapi:
 
           - **VLESS / VMess** — `id`, a fresh UUID
 
-          - **Trojan / OpenVPN** — `password`
+          - **Trojan / OpenVPN / IKEv2 / L2TP / SSH / SSTP / ocserv** —
+          `password`
 
           - **Shadowsocks** — `password`. On a `2022-blake3-*` inbound a
           supplied password that does not base64-decode to the key length of the
@@ -669,7 +859,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/clients/list","method":"get"},{"path":"/panel/api/clients/list/paged","method":"get"},{"path":"/panel/api/clients/get/{email}","method":"get"},{"path":"/panel/api/clients/get/tgId/{tgId}","method":"get"},{"path":"/panel/api/clients/add","method":"post"},{"path":"/panel/api/clients/renewalPreview","method":"post"},{"path":"/panel/api/clients/update/{email}","method":"post"},{"path":"/panel/api/clients/del/{email}","method":"post"},{"path":"/panel/api/clients/{email}/attach","method":"post"},{"path":"/panel/api/clients/{email}/detach","method":"post"},{"path":"/panel/api/clients/{email}/externalLinks","method":"post"},{"path":"/panel/api/clients/resetAllTraffics","method":"post"},{"path":"/panel/api/clients/delDepleted","method":"post"},{"path":"/panel/api/clients/delOrphans","method":"post"},{"path":"/panel/api/clients/export","method":"get"},{"path":"/panel/api/clients/import","method":"post"},{"path":"/panel/api/clients/bulkAdjust","method":"post"},{"path":"/panel/api/clients/bulkEnable","method":"post"},{"path":"/panel/api/clients/bulkDisable","method":"post"},{"path":"/panel/api/clients/bulkDel","method":"post"},{"path":"/panel/api/clients/bulkCreate","method":"post"},{"path":"/panel/api/clients/groups/bulkAdd","method":"post"},{"path":"/panel/api/clients/groups/bulkRemove","method":"post"},{"path":"/panel/api/clients/bulkAttach","method":"post"},{"path":"/panel/api/clients/bulkDetach","method":"post"},{"path":"/panel/api/clients/bulkResetTraffic","method":"post"},{"path":"/panel/api/clients/groups","method":"get"},{"path":"/panel/api/clients/groups/{name}/emails","method":"get"},{"path":"/panel/api/clients/groups/create","method":"post"},{"path":"/panel/api/clients/groups/rename","method":"post"},{"path":"/panel/api/clients/groups/delete","method":"post"},{"path":"/panel/api/clients/groups/resetTraffic","method":"post"},{"path":"/panel/api/clients/resetTraffic/{email}","method":"post"},{"path":"/panel/api/clients/updateTraffic/{email}","method":"post"},{"path":"/panel/api/clients/ips/{email}","method":"post"},{"path":"/panel/api/clients/clearIps/{email}","method":"post"},{"path":"/panel/api/clients/hwids/{email}","method":"post"},{"path":"/panel/api/clients/hwids/{email}","method":"delete"},{"path":"/panel/api/clients/hwids/{email}/{id}","method":"delete"},{"path":"/panel/api/clients/onlines","method":"post"},{"path":"/panel/api/clients/onlinesByGuid","method":"post"},{"path":"/panel/api/clients/clientIpsByGuid","method":"post"},{"path":"/panel/api/clients/activeInbounds","method":"post"},{"path":"/panel/api/clients/lastOnline","method":"post"},{"path":"/panel/api/clients/traffic/{email}","method":"get"},{"path":"/panel/api/clients/subLinks/{subId}","method":"get"},{"path":"/panel/api/clients/happLink/{id}","method":"post"},{"path":"/panel/api/clients/links/{email}","method":"get"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/clients/list","method":"get"},{"path":"/panel/api/clients/list/paged","method":"get"},{"path":"/panel/api/clients/get/{email}","method":"get"},{"path":"/panel/api/clients/get/tgId/{tgId}","method":"get"},{"path":"/panel/api/clients/add","method":"post"},{"path":"/panel/api/clients/renewalPreview","method":"post"},{"path":"/panel/api/clients/update/{email}","method":"post"},{"path":"/panel/api/clients/del/{email}","method":"post"},{"path":"/panel/api/clients/{email}/attach","method":"post"},{"path":"/panel/api/clients/{email}/detach","method":"post"},{"path":"/panel/api/clients/{email}/externalLinks","method":"post"},{"path":"/panel/api/clients/resetAllTraffics","method":"post"},{"path":"/panel/api/clients/delDepleted","method":"post"},{"path":"/panel/api/clients/delOrphans","method":"post"},{"path":"/panel/api/clients/export","method":"get"},{"path":"/panel/api/clients/import","method":"post"},{"path":"/panel/api/clients/bulkAdjust","method":"post"},{"path":"/panel/api/clients/transfer","method":"post"},{"path":"/panel/api/clients/signedSubLink/{subId}","method":"post"},{"path":"/panel/api/clients/bulkEnable","method":"post"},{"path":"/panel/api/clients/bulkDisable","method":"post"},{"path":"/panel/api/clients/bulkDel","method":"post"},{"path":"/panel/api/clients/bulkCreate","method":"post"},{"path":"/panel/api/clients/groups/bulkAdd","method":"post"},{"path":"/panel/api/clients/groups/bulkRemove","method":"post"},{"path":"/panel/api/clients/templates","method":"get"},{"path":"/panel/api/clients/templates/save","method":"post"},{"path":"/panel/api/clients/templates/del/{id}","method":"post"},{"path":"/panel/api/clients/templates/apply","method":"post"},{"path":"/panel/api/clients/usage/{email}","method":"get"},{"path":"/panel/api/clients/disconnect/{email}","method":"post"},{"path":"/panel/api/clients/importForeign","method":"post"},{"path":"/panel/api/clients/report","method":"get"},{"path":"/panel/api/clients/countries","method":"get"},{"path":"/panel/api/clients/sharedAccounts","method":"get"},{"path":"/panel/api/clients/bulkAttach","method":"post"},{"path":"/panel/api/clients/bulkDetach","method":"post"},{"path":"/panel/api/clients/bulkResetTraffic","method":"post"},{"path":"/panel/api/clients/groups","method":"get"},{"path":"/panel/api/clients/groups/{name}/emails","method":"get"},{"path":"/panel/api/clients/groups/create","method":"post"},{"path":"/panel/api/clients/groups/rename","method":"post"},{"path":"/panel/api/clients/groups/delete","method":"post"},{"path":"/panel/api/clients/groups/resetTraffic","method":"post"},{"path":"/panel/api/clients/resetTraffic/{email}","method":"post"},{"path":"/panel/api/clients/updateTraffic/{email}","method":"post"},{"path":"/panel/api/clients/ips/{email}","method":"post"},{"path":"/panel/api/clients/clearIps/{email}","method":"post"},{"path":"/panel/api/clients/hwids/{email}","method":"post"},{"path":"/panel/api/clients/hwids/{email}","method":"delete"},{"path":"/panel/api/clients/hwids/{email}/{id}","method":"delete"},{"path":"/panel/api/clients/onlines","method":"post"},{"path":"/panel/api/clients/onlinesByGuid","method":"post"},{"path":"/panel/api/clients/clientIpsByGuid","method":"post"},{"path":"/panel/api/clients/activeInbounds","method":"post"},{"path":"/panel/api/clients/lastOnline","method":"post"},{"path":"/panel/api/clients/traffic/{email}","method":"get"},{"path":"/panel/api/clients/subLinks/{subId}","method":"get"},{"path":"/panel/api/clients/happLink/{id}","method":"post"},{"path":"/panel/api/clients/subFetches/{subId}","method":"get"},{"path":"/panel/api/clients/subShortLink/{subId}","method":"get"},{"path":"/panel/api/clients/subShortLink/{subId}","method":"post"},{"path":"/panel/api/clients/subShortLink/{subId}/revoke","method":"post"},{"path":"/panel/api/clients/links/{email}","method":"get"}]} showTitle />
     </>
   );
 }

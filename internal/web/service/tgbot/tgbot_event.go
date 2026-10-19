@@ -147,6 +147,31 @@ func (t *Tgbot) formatEventMessage(e eventbus.Event) string {
 		}
 		return msg
 
+	case eventbus.EventNodeCapReached:
+		msg := header + "📊 " + t.I18nBot("tgbot.messages.eventNodeCapReached", "Name=="+e.Source)
+		if data, ok := e.Data.(*eventbus.NodeCapData); ok {
+			msg += "\n" + common.FormatTraffic(data.UsedBytes) + " / " + common.FormatTraffic(data.CapBytes)
+			if data.Stopped {
+				msg += "\n" + t.I18nBot("tgbot.messages.eventNodeCapStopped")
+			}
+		}
+		return msg
+
+	case eventbus.EventPortBlocked, eventbus.EventPortRestored:
+		data, ok := e.Data.(*eventbus.PortProbeData)
+		if !ok {
+			return ""
+		}
+		key, icon := "tgbot.messages.eventPortRestored", "🟢 "
+		if e.Type == eventbus.EventPortBlocked {
+			key, icon = "tgbot.messages.eventPortBlocked", "🔴 "
+		}
+		msg := header + icon + t.I18nBot(key, "Name=="+e.Source, "Port=="+strconv.Itoa(data.Port))
+		if data.Error != "" {
+			msg += "\n" + t.I18nBot("tgbot.messages.eventErrorDetail", "Error=="+data.Error)
+		}
+		return msg
+
 	case eventbus.EventCPUHigh:
 		if data, ok := e.Data.(*eventbus.SystemMetricData); ok {
 			tgCpu, err := t.settingService.GetTgCpu()
@@ -168,6 +193,16 @@ func (t *Tgbot) formatEventMessage(e eventbus.Event) string {
 			return header + "🔴 " + t.I18nBot("tgbot.messages.memoryThreshold",
 				"Percent=="+strconv.FormatFloat(data.Percent, 'f', 2, 64),
 				"Threshold=="+strconv.Itoa(tgMemory))
+		}
+		return ""
+
+	case eventbus.EventWeeklyReport:
+		if data, ok := e.Data.(*eventbus.WeeklySummaryData); ok {
+			lines := data.Lines()
+			for i := range lines {
+				lines[i] = html.EscapeString(lines[i])
+			}
+			return header + "<b>Weekly summary</b>\n" + strings.Join(lines, "\n")
 		}
 		return ""
 
@@ -200,5 +235,11 @@ func (t *Tgbot) formatEventMessage(e eventbus.Event) string {
 		return header + t.I18nBot("tgbot.messages.eventLoginFallback", "Source=="+e.Source)
 	}
 
+	if title, lines, ok := eventbus.PlainText(e); ok {
+		for i := range lines {
+			lines[i] = html.EscapeString(lines[i])
+		}
+		return header + "<b>" + html.EscapeString(title) + "</b>\n" + strings.Join(lines, "\n")
+	}
 	return ""
 }

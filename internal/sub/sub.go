@@ -108,6 +108,8 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		subJsonAlwaysArray = false
 	}
 
+	subJsonApps, _ := s.settingService.GetSubJsonApps()
+
 	subJsonUserAgentRegex, err := s.settingService.GetSubJsonUserAgentRegex()
 	if err != nil {
 		subJsonUserAgentRegex = service.DefaultSubJsonUserAgentRegex
@@ -228,6 +230,10 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		SubIncyEnableRouting = false
 	}
 
+	rateLimitPerIP, _ := s.settingService.GetSubRateLimitPerIP()
+	rateLimitPerSub, _ := s.settingService.GetSubRateLimitPerSub()
+	subShortLinks, _ := s.settingService.GetSubShortLinkEnable()
+
 	SubIncyRoutingRules, err := s.settingService.GetSubIncyRoutingRules()
 	if err != nil {
 		SubIncyRoutingRules = ""
@@ -291,6 +297,7 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 
 	// set per-request localizer from headers/cookies
 	engine.Use(locale.LocalizerMiddleware())
+	engine.Use(middleware.MaintenanceMiddleware(s.settingService.GetMaintenance))
 
 	// Mount the Vite-built dist/assets/ so the subscription page's JS/CSS
 	// bundles load from `/assets/...`. Also mount the same FS under the
@@ -352,6 +359,7 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		WithSUBJsonAutoDetect(subJsonAutoDetect),
 		WithSUBJsonUserAgentRegex(subJsonUserAgentRegex),
 		WithSUBJsonAlwaysArray(subJsonAlwaysArray),
+		WithSUBJsonApps(subJsonApps),
 		WithSUBJsonEnabled(subJsonEnable),
 		WithSUBClashEnabled(subClashEnable),
 		WithSUBEncryption(Encrypt),
@@ -377,6 +385,8 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		WithSUBIncyConfig(incyCfg),
 		WithSUBIncyEnableRouting(SubIncyEnableRouting),
 		WithSUBIncyRoutingRules(SubIncyRoutingRules),
+		WithSUBShortLinks(subShortLinks),
+		WithSUBRateLimits(rateLimitPerIP, rateLimitPerSub),
 	)
 
 	return engine, nil

@@ -157,7 +157,7 @@ func TestBackupSettingsAreValidatedOnSave(t *testing.T) {
 	cases := []struct {
 		dir, endpoint, wantErr string
 	}{
-		{"/var/backups/x-ui/", "https://acc.r2.cloudflarestorage.com", ""},
+		{"/var/backups/eternal/", "https://acc.r2.cloudflarestorage.com", ""},
 		{"backups", "", "absolute path"},
 		{"", "ftp://example.org", "S3 endpoint is invalid"},
 	}

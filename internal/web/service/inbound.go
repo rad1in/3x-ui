@@ -189,10 +189,10 @@ func normalizeInboundShareAddressColumns(tx *gorm.DB) error {
 }
 
 // GetInbounds retrieves all inbounds for a specific user with client stats.
-func (s *InboundService) GetInbounds(userId int) ([]*model.Inbound, error) {
+func (s *InboundService) GetInbounds(scope *AdminScope) ([]*model.Inbound, error) {
 	db := database.GetDB()
 	var inbounds []*model.Inbound
-	err := db.Model(model.Inbound{}).Preload("ClientStats").Where("user_id = ?", userId).Order("id ASC").Find(&inbounds).Error
+	err := scope.restrictInbounds(db.Model(model.Inbound{}).Preload("ClientStats"), "id").Order("id ASC").Find(&inbounds).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	}
@@ -232,10 +232,10 @@ func (s *InboundService) annotateLocalOriginGuid(inbounds []*model.Inbound) {
 //
 // Full client data is still available through GET /panel/api/inbounds/get/:id
 // for the edit/info/qr/export/clone flows that need it.
-func (s *InboundService) GetInboundsSlim(userId int) ([]*model.Inbound, error) {
+func (s *InboundService) GetInboundsSlim(scope *AdminScope) ([]*model.Inbound, error) {
 	db := database.GetDB()
 	var inbounds []*model.Inbound
-	err := db.Model(model.Inbound{}).Preload("ClientStats").Where("user_id = ?", userId).Order("id ASC").Find(&inbounds).Error
+	err := scope.restrictInbounds(db.Model(model.Inbound{}).Preload("ClientStats"), "id").Order("id ASC").Find(&inbounds).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	}
@@ -366,7 +366,7 @@ type InboundOption struct {
 	ShareAddrStrategy string `json:"shareAddrStrategy,omitempty"`
 }
 
-func (s *InboundService) GetInboundOptions(userId int) ([]InboundOption, error) {
+func (s *InboundService) GetInboundOptions(scope *AdminScope) ([]InboundOption, error) {
 	db := database.GetDB()
 	var rows []struct {
 		Id                int    `gorm:"column:id"`
@@ -384,10 +384,9 @@ func (s *InboundService) GetInboundOptions(userId int) ([]InboundOption, error) 
 		NodeAddress       string `gorm:"column:node_address"`
 		DisableFlow       bool   `gorm:"column:disable_flow"`
 	}
-	err := db.Table("inbounds").
+	err := scope.restrictInbounds(db.Table("inbounds"), "inbounds.id").
 		Select("inbounds.id, inbounds.remark, inbounds.tag, inbounds.protocol, inbounds.port, inbounds.enable, inbounds.stream_settings, inbounds.settings, inbounds.listen, inbounds.share_addr, inbounds.share_addr_strategy, inbounds.node_id, COALESCE(nodes.address, '') AS node_address, inbounds.disable_flow").
 		Joins("LEFT JOIN nodes ON nodes.id = inbounds.node_id").
-		Where("inbounds.user_id = ?", userId).
 		Order("inbounds.id ASC").
 		Scan(&rows).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -1287,6 +1286,15 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 	if err := s.normalizeL2TPSettings(inbound, ""); err != nil {
 		return inbound, false, err
 	}
+	if err := s.normalizeSSHSettings(inbound, ""); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeSSTPSettings(inbound, ""); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeOCServSettings(inbound, ""); err != nil {
+		return inbound, false, err
+	}
 	if inbound.NodeID != nil {
 		if err := checkNodeCanHostProtocol(database.GetDB(), *inbound.NodeID, inbound.Protocol); err != nil {
 			return inbound, false, err
@@ -1366,7 +1374,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 	// Secure client ID
 	for _, client := range clients {
 		switch inbound.Protocol {
-		case "trojan", "masque", "openvpn", "ikev2", "l2tp":
+		case "trojan", "masque", "openvpn", "ikev2", "l2tp", "ssh", "sstp", "ocserv":
 			if client.Password == "" {
 				return inbound, false, common.NewError("empty client ID")
 			}
@@ -1634,6 +1642,9 @@ func (s *InboundService) delInbound(id int) (bool, func(), error) {
 		if err := tx.Where("inbound_id = ?", id).Delete(&model.Host{}).Error; err != nil {
 			return err
 		}
+		if err := dropInboundRotation(tx, id); err != nil {
+			return err
+		}
 		// Drop the deleted inbound from any sub-balancer that selects it; a
 		// dangling id would emit a member no subscriber can resolve (#5648).
 		var balancers []model.SubBalancer
@@ -1667,7 +1678,7 @@ func (s *InboundService) delInbound(id int) (bool, func(), error) {
 			needRestart = true
 		}
 	}
-	if !database.IsPostgres() {
+	if database.IsSQLite() {
 		var count int64
 		if err := db.Model(&model.Inbound{}).Count(&count).Error; err != nil {
 			return needRestart, nodePush, err
@@ -1895,7 +1906,7 @@ func (s *InboundService) validateUpdatedInboundClients(inbound *model.Inbound) e
 			if client.Auth == "" {
 				return common.NewError("empty client ID")
 			}
-		case model.MASQUE, model.OpenVPN, model.IKEv2, model.L2TP:
+		case model.MASQUE, model.OpenVPN, model.IKEv2, model.L2TP, model.SSH, model.SSTP, model.OCServ:
 			if client.Password == "" {
 				return common.NewError("empty client ID")
 			}
@@ -1961,6 +1972,15 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 		return inbound, false, err
 	}
 	if err := s.normalizeL2TPSettings(inbound, oldInbound.Settings); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeSSHSettings(inbound, oldInbound.Settings); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeSSTPSettings(inbound, oldInbound.Settings); err != nil {
+		return inbound, false, err
+	}
+	if err := s.normalizeOCServSettings(inbound, oldInbound.Settings); err != nil {
 		return inbound, false, err
 	}
 	inbound.SubSortIndex = normalizeSubSortIndex(inbound.SubSortIndex)
@@ -2271,14 +2291,14 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 // reconfigures in place where a Del+Add would drop every live session.
 func servedOutsideXray(protocol model.Protocol) bool {
 	return protocol == model.MTProto || protocol == model.TUIC || protocol == model.AmneziaWG ||
-		protocol == model.OpenVPN || protocol == model.IKEv2 || protocol == model.L2TP
+		protocol == model.OpenVPN || protocol == model.IKEv2 || protocol == model.L2TP || protocol == model.SSH || protocol == model.SSTP || protocol == model.OCServ
 }
 
 // builtForLocalRuntime: these sidecars take an inbound with depleted clients
 // already removed, and a failed start never calls for an Xray restart.
 func builtForLocalRuntime(protocol model.Protocol) bool {
 	return protocol == model.MTProto || protocol == model.TUIC || protocol == model.OpenVPN ||
-		protocol == model.IKEv2 || protocol == model.L2TP
+		protocol == model.IKEv2 || protocol == model.L2TP || protocol == model.SSH || protocol == model.SSTP || protocol == model.OCServ
 }
 
 // applyInboundUserOps reports whether per-user core ops moved running to next, so

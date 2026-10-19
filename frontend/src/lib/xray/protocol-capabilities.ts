@@ -82,7 +82,7 @@ export function canEnableStream(values: { protocol: string }): boolean {
   return STREAM_PROTOCOLS.includes(values.protocol);
 }
 
-// mtproto, amneziawg, tuic, openvpn, ikev2 and l2tp are served outside Xray, so the Xray
+// mtproto, amneziawg, tuic, openvpn, ikev2, l2tp, ssh, sstp and ocserv are served outside Xray, so the Xray
 // sniffing block does not apply to them.
 export function canEnableSniffing(values: { protocol: string }): boolean {
   return (
@@ -91,7 +91,10 @@ export function canEnableSniffing(values: { protocol: string }): boolean {
     values.protocol !== 'tuic' &&
     values.protocol !== 'openvpn' &&
     values.protocol !== 'ikev2' &&
-    values.protocol !== 'l2tp'
+    values.protocol !== 'l2tp' &&
+    values.protocol !== 'ssh' &&
+    values.protocol !== 'sstp' &&
+    values.protocol !== 'ocserv'
   );
 }
 

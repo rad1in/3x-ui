@@ -253,7 +253,7 @@ func TestGroupAndListPostgresScale(t *testing.T) {
 			rmDur := time.Since(start)
 
 			start = time.Now()
-			list, err := svc.List()
+			list, err := svc.List(nil)
 			if err != nil {
 				t.Fatalf("List: %v", err)
 			}

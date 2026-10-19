@@ -20,7 +20,7 @@ func setupSubBalancerDB(t *testing.T) {
 	subBalancerLoggerOnce.Do(func() { xuilogger.InitLogger(logging.ERROR) })
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 }
 
 func TestSubBalancerServiceCRUD(t *testing.T) {

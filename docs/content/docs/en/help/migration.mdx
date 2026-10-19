@@ -1,6 +1,6 @@
 ---
 title: Migration
-description: Migrate to 3x-ui from x-ui, between servers, or between 3x-ui versions.
+description: Migrate to 3x-ui from eternal, between servers, or between 3x-ui versions.
 icon: ArrowRightLeft
 ---
 
@@ -13,7 +13,7 @@ Moving to a new server is a database move:
 <Step>
 ### Back up the old server
 
-Copy the database (default `/etc/x-ui/x-ui.db`) and your certificates. See
+Copy the database (default `/etc/eternal/eternal.db`) and your certificates. See
 [Backup & restore](/docs/operations/backup-restore).
 </Step>
 
@@ -37,12 +37,12 @@ panel. Update any IP/domain-specific settings.
 
 Within the same backend, upgrading is usually just re-running the installer or
 pulling a new image — the panel migrates its own database. Across **major**
-versions, read the [release notes](https://github.com/MHSanaei/3x-ui/releases)
+versions, read the [release notes](https://github.com/rad1in/eternal/releases)
 first and take a backup.
 
-## From x-ui
+## From eternal
 
-Importing an older x-ui panel's database directly into 3x-ui is **not
+Importing an older eternal panel's database directly into 3x-ui is **not
 supported** — the schemas differ. Install 3x-ui fresh and recreate
 inbounds/clients, exporting share links from the old panel as you go.
 

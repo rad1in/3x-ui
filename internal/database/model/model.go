@@ -38,14 +38,56 @@ const (
 	OpenVPN     Protocol = "openvpn"
 	IKEv2       Protocol = "ikev2"
 	L2TP        Protocol = "l2tp"
+	SSH         Protocol = "ssh"
+	SSTP        Protocol = "sstp"
+	OCServ      Protocol = "ocserv"
 )
 
-// User represents a user account in the 3x-ui panel.
+// Admin roles, from most to least privileged. An operator only reaches the
+// inbounds and client groups listed in its scope; a viewer only reads.
+const (
+	AdminRoleOwner    = "owner"
+	AdminRoleAdmin    = "admin"
+	AdminRoleOperator = "operator"
+	AdminRoleViewer   = "viewer"
+)
+
+func IsKnownAdminRole(role string) bool {
+	switch role {
+	case AdminRoleOwner, AdminRoleAdmin, AdminRoleOperator, AdminRoleViewer:
+		return true
+	}
+	return false
+}
+
+// User represents an admin account in the panel.
 type User struct {
 	Id         int    `json:"id" gorm:"primaryKey;autoIncrement"`
 	Username   string `json:"username"`
 	Password   string `json:"password"`
 	LoginEpoch int64  `json:"-" gorm:"default:0"`
+	// The column default makes every account that predates roles an owner.
+	Role string `json:"role" gorm:"not null;default:'owner'"`
+	// JSON arrays; read only for operators.
+	ScopeInboundIds string `json:"-" gorm:"column:scope_inbound_ids;not null;default:'[]'"`
+	ScopeGroups     string `json:"-" gorm:"column:scope_groups;not null;default:'[]'"`
+	// A reseller's own price list in credit units; nil falls back to the panel's list.
+	// The Telegram chat that receives this admin's login codes; 0 means none.
+	TgChatId    int64  `json:"-" gorm:"column:tg_chat_id;not null;default:0"`
+	PricePerGB  *int64 `json:"-" gorm:"column:price_per_gb"`
+	PricePerDay *int64 `json:"-" gorm:"column:price_per_day"`
+	CreatedAt   int64  `json:"createdAt" gorm:"not null;default:0"`
+}
+
+// AdminSession is one signed-in browser. The cookie carries only Id; deleting
+// the row signs that browser out, which a stateless cookie could not do.
+type AdminSession struct {
+	Id        string `json:"id" gorm:"primaryKey;size:64"`
+	UserId    int    `json:"userId" gorm:"index;not null"`
+	Ip        string `json:"ip" gorm:"not null;default:''"`
+	UserAgent string `json:"userAgent" gorm:"not null;default:''"`
+	CreatedAt int64  `json:"createdAt" gorm:"not null"`
+	LastSeen  int64  `json:"lastSeen" gorm:"index;not null"`
 }
 
 // Inbound represents an Xray inbound configuration with traffic statistics and settings.
@@ -68,7 +110,7 @@ type Inbound struct {
 	// Xray configuration fields
 	Listen            string   `json:"listen" form:"listen"`
 	Port              int      `json:"port" form:"port" validate:"gte=0,lte=65535" example:"443"`
-	Protocol          Protocol `json:"protocol" form:"protocol" validate:"required,oneof=vmess vless trojan shadowsocks wireguard hysteria http mixed tunnel tun mtproto amneziawg tuic masque openvpn ikev2 l2tp" example:"vless"`
+	Protocol          Protocol `json:"protocol" form:"protocol" validate:"required,oneof=vmess vless trojan shadowsocks wireguard hysteria http mixed tunnel tun mtproto amneziawg tuic masque openvpn ikev2 l2tp ssh sstp ocserv" example:"vless"`
 	Settings          string   `json:"settings" form:"settings"`
 	StreamSettings    string   `json:"streamSettings" form:"streamSettings"`
 	Tag               string   `json:"tag" form:"tag" gorm:"unique" example:"in-443-tcp"`
@@ -181,6 +223,8 @@ type ApiToken struct {
 	CreatedAt int64  `json:"createdAt" gorm:"autoCreateTime"`
 	Scope     string `json:"scope" gorm:"not null;default:admin"`
 	ExpiresAt int64  `json:"expiresAt" gorm:"not null;default:0"`
+	// Comma-separated IPs/CIDRs the token may be used from; empty means any address.
+	AllowedCidrs string `json:"allowedCidrs" gorm:"column:allowed_cidrs;not null;default:''"`
 }
 
 // AuditLog is one admin action: a state-changing API call or a login attempt.
@@ -867,7 +911,7 @@ type Setting struct {
 	Value string `json:"value" form:"value"`
 }
 
-// Node represents a remote 3x-ui panel registered with the central panel.
+// Node represents a remote panel registered with the central panel.
 // The central panel polls each node's existing /panel/api/server/status
 // endpoint over HTTP using the per-node ApiToken to populate the runtime
 // status fields below.
@@ -918,6 +962,29 @@ type Node struct {
 
 	ConfigDirty   bool  `json:"configDirty" gorm:"default:false"`
 	ConfigDirtyAt int64 `json:"configDirtyAt"`
+
+	// Metered-VPS settings, master-local. The cap counts traffic the panel
+	// accounts on this node's inbounds, not the provider's NIC meter.
+	MonthlyCapGB float64 `json:"monthlyCapGB" form:"monthlyCapGB" gorm:"column:monthly_cap_gb;default:0" validate:"gte=0" example:"1000"`
+	CapAction    string  `json:"capAction" form:"capAction" gorm:"column:cap_action;default:alert" validate:"omitempty,oneof=alert disable" example:"alert"`
+	BillingDay   int     `json:"billingDay" form:"billingDay" gorm:"column:billing_day;default:1" validate:"gte=0,lte=28" example:"1"`
+	MonthlyCost  float64 `json:"monthlyCost" form:"monthlyCost" gorm:"column:monthly_cost;default:0" validate:"gte=0" example:"5"`
+	CostCurrency string  `json:"costCurrency" form:"costCurrency" gorm:"column:cost_currency;default:''" example:"USD"`
+
+	// FailoverNodeId is the node whose address subscriptions advertise for this
+	// node's inbounds once it has been offline FailoverAfterSec. 0 means none.
+	FailoverNodeId   int `json:"failoverNodeId" form:"failoverNodeId" gorm:"column:failover_node_id;default:0" example:"2"`
+	FailoverAfterSec int `json:"failoverAfterSec" form:"failoverAfterSec" gorm:"column:failover_after_sec;default:120" validate:"gte=0,lte=86400" example:"120"`
+
+	// Observed cap state for the current billing period; never user-edited.
+	// CapLastTotal is the inbound-counter sum at the previous tick, so a counter
+	// reset cannot be mistaken for traffic.
+	PeriodStart         int64  `json:"periodStart" gorm:"column:period_start;default:0" example:"1772323200"`
+	PeriodBytes         int64  `json:"periodBytes" gorm:"column:period_bytes;default:0" example:"1073741824"`
+	CapState            string `json:"capState" gorm:"column:cap_state;default:''" example:""`
+	CapLastTotal        int64  `json:"-" gorm:"column:cap_last_total;default:0"`
+	CapPrimed           bool   `json:"-" gorm:"column:cap_primed;default:false"`
+	CapDisabledInbounds []int  `json:"-" gorm:"serializer:json;column:cap_disabled_inbounds"`
 
 	// InboundsAdoptedAt is the clean sync that imported the node's inbounds; a
 	// save that grows the selection zeroes it so reconcile waits before sweeping.
@@ -1063,6 +1130,51 @@ type ClientGroup struct {
 
 func (ClientGroup) TableName() string { return "client_groups" }
 
+// ClientTemplate is a saved preset for creating clients. TotalGB is in bytes
+// like Client.TotalGB; ExpiryDays 0 means no expiry.
+type ClientTemplate struct {
+	Id              int    `json:"id" gorm:"primaryKey;autoIncrement" example:"1"`
+	Name            string `json:"name" gorm:"uniqueIndex;not null" example:"30 days 50 GB"`
+	TotalGB         int64  `json:"totalGB" gorm:"column:total_gb;default:0" example:"53687091200"`
+	ExpiryDays      int    `json:"expiryDays" gorm:"column:expiry_days;default:0" example:"30"`
+	DelayedStart    bool   `json:"delayedStart" gorm:"column:delayed_start;default:false"`
+	LimitIP         int    `json:"limitIp" gorm:"column:limit_ip;default:0" example:"2"`
+	Flow            string `json:"flow" gorm:"default:''" example:"xtls-rprx-vision"`
+	Group           string `json:"group" gorm:"column:group_name;default:''" example:"trial"`
+	Comment         string `json:"comment" gorm:"default:''"`
+	Reset           int    `json:"reset" gorm:"default:0"`
+	TrafficReset    string `json:"trafficReset" gorm:"column:traffic_reset;default:never" example:"never"`
+	TrafficResetDay int    `json:"trafficResetDay" gorm:"column:traffic_reset_day;default:1"`
+	InboundIds      []int  `json:"inboundIds" gorm:"column:inbound_ids;serializer:json" example:"[1,2]"`
+	CreatedAt       int64  `json:"createdAt" gorm:"autoCreateTime:milli"`
+	UpdatedAt       int64  `json:"updatedAt" gorm:"autoUpdateTime:milli"`
+}
+
+func (ClientTemplate) TableName() string { return "client_templates" }
+
+// ClientDailyUsage holds one client's up/down bytes for one calendar day
+// (YYYY-MM-DD, panel local time), summed from every traffic tick.
+type ClientDailyUsage struct {
+	Id    int    `json:"-" gorm:"primaryKey;autoIncrement"`
+	Email string `json:"email" gorm:"not null;uniqueIndex:idx_client_daily_usage_email_day,priority:1"`
+	Day   string `json:"day" gorm:"not null;index;uniqueIndex:idx_client_daily_usage_email_day,priority:2" example:"2026-10-18"`
+	Up    int64  `json:"up" gorm:"default:0" example:"1048576"`
+	Down  int64  `json:"down" gorm:"default:0" example:"5242880"`
+}
+
+func (ClientDailyUsage) TableName() string { return "client_daily_usage" }
+
+// ClientTrial records that a Telegram user already received a free trial, so
+// deleting the trial client does not hand out another one.
+type ClientTrial struct {
+	Id        int    `json:"id" gorm:"primaryKey;autoIncrement"`
+	TgID      int64  `json:"tgId" gorm:"column:tg_id;uniqueIndex;not null"`
+	Email     string `json:"email"`
+	CreatedAt int64  `json:"createdAt" gorm:"autoCreateTime:milli"`
+}
+
+func (ClientTrial) TableName() string { return "client_trials" }
+
 // MarshalJSON emits the reverse column as a nested JSON object rather than an
 // escaped JSON-text string, matching the same convention Inbound uses for its
 // JSON-text columns. Empty storage renders as null.
@@ -1116,6 +1228,30 @@ type ClientHwid struct {
 }
 
 func (ClientHwid) TableName() string { return "client_hwids" }
+
+// SubShortLink is a revocable alias /s/<Token> for a subscription id.
+type SubShortLink struct {
+	Id        int    `json:"id" gorm:"primaryKey;autoIncrement"`
+	SubID     string `json:"subId" gorm:"column:sub_id;not null;uniqueIndex"`
+	Token     string `json:"token" gorm:"column:token;not null;uniqueIndex"`
+	CreatedAt int64  `json:"createdAt" gorm:"column:created_at;not null"`
+}
+
+func (SubShortLink) TableName() string { return "sub_short_links" }
+
+// SubFetch counts the fetches of one subscription by one app from one address.
+type SubFetch struct {
+	Id        int    `json:"id" gorm:"primaryKey;autoIncrement"`
+	SubID     string `json:"subId" gorm:"column:sub_id;not null;uniqueIndex:idx_sub_fetches_key,priority:1"`
+	IP        string `json:"ip" gorm:"column:ip;not null;uniqueIndex:idx_sub_fetches_key,priority:2"`
+	UserAgent string `json:"userAgent" gorm:"column:user_agent;not null;uniqueIndex:idx_sub_fetches_key,priority:3"`
+	Format    string `json:"format" gorm:"column:format;not null;uniqueIndex:idx_sub_fetches_key,priority:4"`
+	Count     int    `json:"count" gorm:"column:count;not null"`
+	FirstSeen int64  `json:"firstSeen" gorm:"column:first_seen;not null"`
+	LastSeen  int64  `json:"lastSeen" gorm:"column:last_seen;not null;index"`
+}
+
+func (SubFetch) TableName() string { return "sub_fetches" }
 
 // ClientExternalLink is a per-client entry surfaced in the client's
 // subscription. Two kinds:

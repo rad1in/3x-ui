@@ -50,10 +50,11 @@ import { InboundList } from './list';
 import { openvpnPanelProfileUrl } from './list/helpers';
 import { useVPNStatus } from '@/api/queries/useVPNStatus';
 
-const VPN_PROTOCOLS = new Set(['openvpn', 'ikev2', 'l2tp']);
+const VPN_PROTOCOLS = new Set(['openvpn', 'ikev2', 'l2tp', 'ssh', 'sstp', 'ocserv']);
 import { LazyMount } from '@/components/utility';
 const InboundFormModal = lazy(() => import('./form/InboundFormModal'));
 const CloneInboundModal = lazy(() => import('./CloneInboundModal'));
+const RotationModal = lazy(() => import('./RotationModal'));
 const InboundInfoModal = lazy(() => import('./info/InboundInfoModal'));
 const AttachClientsModal = lazy(() => import('./clients/AttachClientsModal'));
 const AttachExistingClientsModal = lazy(() => import('./clients/AttachExistingClientsModal'));
@@ -74,6 +75,7 @@ type RowAction =
   | 'detachClients'
   | 'addToGroup'
   | 'openvpnProfile'
+  | 'rotation'
   | 'clone';
 
 type GeneralAction = 'import' | 'export' | 'subs' | 'resetInbounds';
@@ -185,6 +187,7 @@ export default function InboundsPage() {
   const [groupOpen, setGroupOpen] = useState(false);
   const [groupSource, setGroupSource] = useState<DBInbound | null>(null);
 
+  const [rotationTarget, setRotationTarget] = useState<DBInbound | null>(null);
   const [cloneOpen, setCloneOpen] = useState(false);
   const [cloneSource, setCloneSource] = useState<DBInbound | null>(null);
 
@@ -334,6 +337,9 @@ export default function InboundsPage() {
         case 'openvpn':
         case 'ikev2':
         case 'l2tp':
+        case 'ssh':
+        case 'sstp':
+        case 'ocserv':
           return c.password === client.password && c.email === client.email;
         default:
           return c.id === client.id && c.email === client.email;
@@ -705,6 +711,9 @@ export default function InboundsPage() {
         case 'clone':
           confirmClone(target);
           break;
+        case 'rotation':
+          setRotationTarget(target);
+          break;
         default:
           messageApi.info(`Action "${key}" — coming in a later 5f subphase`);
       }
@@ -884,6 +893,13 @@ export default function InboundsPage() {
             onClose={() => setGroupOpen(false)}
             onAdded={refresh}
             source={groupSource}
+          />
+        </LazyMount>
+        <LazyMount when={rotationTarget !== null}>
+          <RotationModal
+            dbInbound={rotationTarget}
+            onClose={() => setRotationTarget(null)}
+            onRotated={refresh}
           />
         </LazyMount>
         <LazyMount when={cloneOpen}>

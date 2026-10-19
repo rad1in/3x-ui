@@ -1,6 +1,6 @@
 // Mirrors entity.PanelBrandLogoMaxBytes on the server.
 export const BRAND_LOGO_MAX_BYTES = 64 * 1024;
-export const DEFAULT_BRAND_NAME = '3X-UI';
+export const DEFAULT_BRAND_NAME = 'Eternal';
 
 const ALLOWED_LOGO_TYPES = new Set(['image/png', 'image/jpeg', 'image/webp']);
 
@@ -34,7 +34,7 @@ export async function readBrandLogo(file: File): Promise<BrandLogoResult> {
 
 export function brandInitials(name: string): string {
   const trimmed = name.trim();
-  if (!trimmed || trimmed === DEFAULT_BRAND_NAME) return '3X';
+  if (!trimmed || trimmed === DEFAULT_BRAND_NAME) return 'E';
   const words = trimmed.split(/[\s\-_.]+/).filter(Boolean);
   const letters =
     words.length >= 2 ? [...words[0]][0] + [...words[1]][0] : [...words[0]].slice(0, 2).join('');

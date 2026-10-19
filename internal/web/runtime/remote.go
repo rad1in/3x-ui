@@ -724,6 +724,24 @@ func (r *Remote) ResetClientTraffic(ctx context.Context, _ *model.Inbound, email
 	return err
 }
 
+// DisconnectClient asks the node to end the client's live connections on all
+// its inbounds; the node uses its own IP records, so ips is not sent.
+func (r *Remote) DisconnectClient(ctx context.Context, _ *model.Inbound, email string, _ []string) (int, error) {
+	env, err := r.do(ctx, http.MethodPost, "panel/api/clients/disconnect/"+url.PathEscape(email), nil)
+	if err != nil {
+		return 0, err
+	}
+	var out struct {
+		Disconnected int `json:"disconnected"`
+	}
+	if len(env.Obj) > 0 {
+		if err := json.Unmarshal(env.Obj, &out); err != nil {
+			return 0, fmt.Errorf("decode disconnect result: %w", err)
+		}
+	}
+	return out.Disconnected, nil
+}
+
 // ResetClientTraffics zeroes many clients on the node in one request.
 func (r *Remote) ResetClientTraffics(ctx context.Context, emails []string) error {
 	_, err := r.do(ctx, http.MethodPost, "panel/api/clients/bulkResetTraffic", map[string]any{"emails": emails})

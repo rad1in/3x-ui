@@ -46,7 +46,7 @@ func TestClientRenewalPreviewHTTP(t *testing.T) {
 		{name: "negative count", zone: "UTC", count: -1, invalid: true, wantError: "renewal preview reset and resetCount must not be negative\n"},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
-			dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+			dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 			db := database.GetDB()
 			if err := db.Create(&model.Setting{Key: "timeLocation", Value: tt.zone}).Error; err != nil {
 				t.Fatal(err)

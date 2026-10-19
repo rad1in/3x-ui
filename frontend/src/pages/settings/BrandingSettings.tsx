@@ -9,8 +9,8 @@ import { BRAND_LOGO_MAX_BYTES, DEFAULT_BRAND_NAME, readBrandLogo } from '@/lib/b
 import { getMessage } from '@/utils/messageBus';
 
 const COLOR_PRESETS = [
-  '#0958d9',
-  '#1677ff',
+  '#4338ca',
+  '#5b4fe0',
   '#2f54eb',
   '#722ed1',
   '#eb2f96',

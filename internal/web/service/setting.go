@@ -30,6 +30,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/util/totp"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/decoy"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/locale"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray"
 	"github.com/mhsanaei/3x-ui/v3/internal/xray/dnsconf"
 )
@@ -80,12 +81,20 @@ var defaultValueMap = map[string]string{
 	"trustedProxyCIDRs":           DefaultTrustedProxyCIDRs,
 	"realityScanCandidates":       DefaultRealityScanCandidatesCSV,
 	"ipLimitAllowlist":            "",
+	"panelAllowedCidrs":           "",
+	"loginMaxFailures":            "5",
+	"loginLockoutMinutes":         "15",
 	"pageSize":                    "25",
 	"expireDiff":                  "0",
 	"trafficDiff":                 "0",
 	"quotaWarnPercent":            "80",
 	"clientWarningsSeeded":        "false",
 	"autoDeleteDepletedDays":      "0",
+	"maintenanceMode":             "false",
+	"maintenanceMessage":          "",
+	"sharedAccountWindowHours":    "24",
+	"sharedAccountMinIPs":         "0",
+	"sharedAccountMinCountries":   "0",
 	"decoyMode":                   "",
 	"decoyTarget":                 "",
 	"decoyHtml":                   "",
@@ -98,6 +107,8 @@ var defaultValueMap = map[string]string{
 	"backupS3AccessKey":           "",
 	"backupS3SecretKey":           "",
 	"backupS3Prefix":              "",
+	"metricsEnable":               "false",
+	"metricsToken":                "",
 	"remarkTemplate":              DefaultRemarkTemplate,
 	"subShowIdentityOnAllLinks":   "false",
 	"subInfoNodeEnable":           "false",
@@ -112,9 +123,12 @@ var defaultValueMap = map[string]string{
 	"tgBotChatId":                 "",
 	"tgRunTime":                   "@daily",
 	"tgBotBackup":                 "false",
+	"tgTrialEnable":               "false",
+	"tgTrialTemplateId":           "0",
 	"tgCpu":                       "80",
 	"tgMemory":                    "80",
 	"tgLang":                      "en-US",
+	"tgBotMessageOverrides":       "",
 	"twoFactorEnable":             "false",
 	"twoFactorToken":              "",
 	"happLinkEnable":              "false",
@@ -123,6 +137,10 @@ var defaultValueMap = map[string]string{
 	"subJsonAutoDetect":           "false",
 	"subJsonAlwaysArray":          "false",
 	"subJsonUserAgentRegex":       "",
+	"subJsonApps":                 "",
+	"subShortLinkEnable":          "false",
+	"subRateLimitPerIP":           "0",
+	"subRateLimitPerSub":          "0",
 	"subClashAutoDetect":          "false",
 	"subClashUserAgentRegex":      "",
 	"subTitle":                    "",
@@ -223,6 +241,9 @@ var defaultValueMap = map[string]string{
 	"warpUpdateInterval":          "0",
 	"nord":                        "",
 	"pia":                         "",
+	"salesConfig":                 "",
+	"resellerConfig":              "",
+	"securityConfig":              "",
 	"externalTrafficInformEnable": "false",
 	"externalTrafficInformURI":    "",
 	"restartXrayOnClientDisable":  "true",
@@ -290,6 +311,37 @@ var defaultValueMap = map[string]string{
 	"webhookUrls":   "",
 	"webhookSecret": "",
 	"webhookEvents": "client.created,client.deleted,client.depleted,client.expired,client.renewed,client.quota_warning,client.expiry_warning",
+
+	// Weekly summary
+	"weeklyReportEnable":   "false",
+	"weeklyReportDay":      "1",
+	"weeklyReportHour":     "9",
+	"weeklyReportBaseline": "",
+	"weeklyReportLastSent": "0",
+
+	// Node join tokens (hashed, single use)
+	"nodeJoinTokens": "[]",
+
+	// Port probe
+	"portProbeEnable":   "false",
+	"portProbeHost":     "",
+	"portProbeUrl":      "",
+	"portProbeExpect":   "",
+	"portProbeFailures": "3",
+
+	// Push channels
+	"ntfyEnable":      "false",
+	"ntfyServer":      "https://ntfy.sh",
+	"ntfyTopic":       "",
+	"ntfyToken":       "",
+	"ntfyEvents":      "client.depleted,client.expired,xray.crash,node.down,outbound.down",
+	"gotifyEnable":    "false",
+	"gotifyUrl":       "",
+	"gotifyToken":     "",
+	"gotifyEvents":    "client.depleted,client.expired,xray.crash,node.down,outbound.down",
+	"slackEnable":     "false",
+	"slackWebhookUrl": "",
+	"slackEvents":     "client.depleted,client.expired,xray.crash,node.down,outbound.down",
 }
 
 // SettingService provides business logic for application settings management.
@@ -299,7 +351,7 @@ type SettingService struct{}
 func (s *SettingService) GetAllSetting() (*entity.AllSetting, error) {
 	db := database.GetDB()
 	settings := make([]*model.Setting, 0)
-	err := db.Model(model.Setting{}).Not("key = ?", "xrayTemplateConfig").Find(&settings).Error
+	err := db.Model(model.Setting{}).Not(`"key" = ?`, "xrayTemplateConfig").Find(&settings).Error
 	if err != nil {
 		return nil, err
 	}
@@ -391,6 +443,9 @@ func (s *SettingService) GetAllSettingView() (*entity.AllSettingView, error) {
 	view.HasDiscordBotToken = secretConfigured(allSetting.DiscordBotToken)
 	view.HasWebhookSecret = secretConfigured(allSetting.WebhookSecret)
 	view.HasBackupS3Secret = secretConfigured(allSetting.BackupS3SecretKey)
+	view.HasNtfyToken = secretConfigured(allSetting.NtfyToken)
+	view.HasGotifyToken = secretConfigured(allSetting.GotifyToken)
+	view.HasSlackWebhookUrl = secretConfigured(allSetting.SlackWebhookUrl)
 	var apiTokenCount int64
 	if err := database.GetDB().Model(model.ApiToken{}).Where("enabled = ?", true).Count(&apiTokenCount).Error; err == nil {
 		view.HasApiToken = apiTokenCount > 0
@@ -402,6 +457,9 @@ func (s *SettingService) GetAllSettingView() (*entity.AllSettingView, error) {
 	view.DiscordBotToken = ""
 	view.WebhookSecret = ""
 	view.BackupS3SecretKey = ""
+	view.NtfyToken = ""
+	view.GotifyToken = ""
+	view.SlackWebhookUrl = ""
 	return view, nil
 }
 
@@ -443,7 +501,7 @@ func (s *SettingService) ResetSettings() error {
 func (s *SettingService) getSetting(key string) (*model.Setting, error) {
 	db := database.GetDB()
 	setting := &model.Setting{}
-	err := db.Model(model.Setting{}).Where("key = ?", key).First(setting).Error
+	err := db.Model(model.Setting{}).Where(`"key" = ?`, key).First(setting).Error
 	if err != nil {
 		return nil, err
 	}
@@ -686,6 +744,14 @@ func (s *SettingService) SetTgbotRuntime(time string) error {
 	return s.setString("tgRunTime", time)
 }
 
+func (s *SettingService) GetTgTrialEnable() (bool, error) {
+	return s.getBool("tgTrialEnable")
+}
+
+func (s *SettingService) GetTgTrialTemplateId() (int, error) {
+	return s.getInt("tgTrialTemplateId")
+}
+
 func (s *SettingService) GetTgBotBackup() (bool, error) {
 	return s.getBool("tgBotBackup")
 }
@@ -704,6 +770,10 @@ func (s *SettingService) SetTgMemory(value int) error {
 
 func (s *SettingService) GetTgLang() (string, error) {
 	return s.getString("tgLang")
+}
+
+func (s *SettingService) GetTgBotMessageOverrides() (string, error) {
+	return s.getString("tgBotMessageOverrides")
 }
 
 func (s *SettingService) GetTwoFactorEnable() (bool, error) {
@@ -790,6 +860,22 @@ func (s *SettingService) GetSessionMaxAge() (int, error) {
 
 // GetIpLimitAllowlist returns the operator's trusted addresses and networks,
 // which the IP limit neither counts nor bans.
+func (s *SettingService) GetLoginMaxFailures() (int, error) {
+	return s.getInt("loginMaxFailures")
+}
+
+func (s *SettingService) GetLoginLockoutMinutes() (int, error) {
+	return s.getInt("loginLockoutMinutes")
+}
+
+func (s *SettingService) GetPanelAllowedCidrs() (string, error) {
+	return s.getString("panelAllowedCidrs")
+}
+
+func (s *SettingService) SetPanelAllowedCidrs(list string) error {
+	return s.setString("panelAllowedCidrs", list)
+}
+
 func (s *SettingService) GetIpLimitAllowlist() (string, error) {
 	return s.getString("ipLimitAllowlist")
 }
@@ -1250,6 +1336,23 @@ func (s *SettingService) GetExternalSubUserAgent() (string, error) {
 		return DefaultExternalSubUserAgent, nil
 	}
 	return value, nil
+}
+
+// GetMaintenance reports whether maintenance mode is on and the notice to show.
+func (s *SettingService) GetMaintenance() (bool, string) {
+	on, err := s.getBool("maintenanceMode")
+	if err != nil || !on {
+		return false, ""
+	}
+	message, _ := s.getString("maintenanceMessage")
+	return true, message
+}
+
+func (s *SettingService) SetMaintenance(on bool, message string) error {
+	if err := s.setBool("maintenanceMode", on); err != nil {
+		return err
+	}
+	return s.setString("maintenanceMessage", message)
 }
 
 func (s *SettingService) GetSubEncrypt() (bool, error) {
@@ -1731,6 +1834,33 @@ func (s *SettingService) WebhookConfig() (enabled bool, urls, secret, events str
 	return enabled, urls, secret, events
 }
 
+// PushConfig is the raw settings of the ntfy, Gotify and Slack channels, read fresh for each event.
+type PushConfig struct {
+	NtfyEnable                                   bool
+	NtfyServer, NtfyTopic, NtfyToken, NtfyEvents string
+	GotifyEnable                                 bool
+	GotifyUrl, GotifyToken, GotifyEvents         string
+	SlackEnable                                  bool
+	SlackWebhookUrl, SlackEvents                 string
+}
+
+func (s *SettingService) PushConfig() PushConfig {
+	var c PushConfig
+	c.NtfyEnable, _ = s.getBool("ntfyEnable")
+	c.NtfyServer, _ = s.getString("ntfyServer")
+	c.NtfyTopic, _ = s.getString("ntfyTopic")
+	c.NtfyToken, _ = s.getString("ntfyToken")
+	c.NtfyEvents, _ = s.getString("ntfyEvents")
+	c.GotifyEnable, _ = s.getBool("gotifyEnable")
+	c.GotifyUrl, _ = s.getString("gotifyUrl")
+	c.GotifyToken, _ = s.getString("gotifyToken")
+	c.GotifyEvents, _ = s.getString("gotifyEvents")
+	c.SlackEnable, _ = s.getBool("slackEnable")
+	c.SlackWebhookUrl, _ = s.getString("slackWebhookUrl")
+	c.SlackEvents, _ = s.getString("slackEvents")
+	return c
+}
+
 // SecretClears marks redacted secrets the user explicitly emptied. Without a
 // flag, a blank submitted secret means "unchanged" (the field is always served
 // blank to the browser) and the stored value is preserved.
@@ -1741,6 +1871,9 @@ type SecretClears struct {
 	DiscordBotToken bool
 	WebhookSecret   bool
 	BackupS3Secret  bool
+	NtfyToken       bool
+	GotifyToken     bool
+	SlackWebhookUrl bool
 }
 
 func (s *SettingService) UpdateAllSetting(allSetting *entity.AllSetting, clears SecretClears) error {
@@ -1770,6 +1903,11 @@ func (s *SettingService) UpdateAllSetting(allSetting *entity.AllSetting, clears 
 	if err := validateSubJsonDnsSetting(allSetting); err != nil {
 		return err
 	}
+	jsonApps, err := normalizeSubJsonApps(allSetting.SubJsonApps)
+	if err != nil {
+		return err
+	}
+	allSetting.SubJsonApps = jsonApps
 	if err := validateFinalMaskJSONSalamander(allSetting.SubJsonFinalMask); err != nil {
 		return err
 	}
@@ -1905,10 +2043,31 @@ func (s *SettingService) preserveRedactedSecrets(allSetting *entity.AllSetting, 
 		}
 		allSetting.BackupS3SecretKey = value
 	}
+	for _, c := range []struct {
+		clear bool
+		field *string
+		key   string
+	}{
+		{clears.NtfyToken, &allSetting.NtfyToken, "ntfyToken"},
+		{clears.GotifyToken, &allSetting.GotifyToken, "gotifyToken"},
+		{clears.SlackWebhookUrl, &allSetting.SlackWebhookUrl, "slackWebhookUrl"},
+	} {
+		if c.clear || strings.TrimSpace(*c.field) != "" {
+			continue
+		}
+		value, err := s.getString(c.key)
+		if err != nil {
+			return err
+		}
+		*c.field = value
+	}
 	return nil
 }
 
 func validateSettingsURLs(allSetting *entity.AllSetting) error {
+	if err := locale.ValidateBotOverrides(allSetting.TgBotMessageOverrides); err != nil {
+		return common.NewError("bot message texts:", err)
+	}
 	var hooks []string
 	for _, raw := range strings.FieldsFunc(allSetting.WebhookUrls, func(r rune) bool { return r == '\n' || r == ',' || r == '\r' }) {
 		if strings.TrimSpace(raw) == "" {
@@ -1921,6 +2080,24 @@ func validateSettingsURLs(allSetting *entity.AllSetting) error {
 		hooks = append(hooks, u)
 	}
 	allSetting.WebhookUrls = strings.Join(hooks, "\n")
+	for _, f := range []struct {
+		name  string
+		value *string
+	}{
+		{"ntfy server", &allSetting.NtfyServer},
+		{"Gotify URL", &allSetting.GotifyUrl},
+		{"Slack webhook URL", &allSetting.SlackWebhookUrl},
+	} {
+		if strings.TrimSpace(*f.value) == "" {
+			*f.value = ""
+			continue
+		}
+		u, err := SanitizeHTTPURL(*f.value)
+		if err != nil {
+			return common.NewError(f.name+" is invalid:", err)
+		}
+		*f.value = u
+	}
 	if dir := strings.TrimSpace(allSetting.BackupLocalDir); dir != "" {
 		if hosted.Enabled() {
 			return common.NewError("a hosted panel cannot write backups to the server's disk; use S3")
@@ -2082,21 +2259,29 @@ func (s *SettingService) BuildSubURIBase(host string) string {
 func (s *SettingService) GetDefaultSettings(host string) (any, error) {
 	type settingFunc func() (any, error)
 	settings := map[string]settingFunc{
-		"expireDiff":       func() (any, error) { return s.GetExpireDiff() },
-		"trafficDiff":      func() (any, error) { return s.GetTrafficDiff() },
-		"pageSize":         func() (any, error) { return s.GetPageSize() },
-		"defaultCert":      func() (any, error) { return s.GetCertFile() },
-		"defaultKey":       func() (any, error) { return s.GetKeyFile() },
-		"tgBotEnable":      func() (any, error) { return s.GetTgbotEnabled() },
-		"subThemeDir":      func() (any, error) { return s.GetSubThemeDir() },
-		"happLinkEnable":   func() (any, error) { return s.GetHappLinkEnable() },
-		"subEnable":        func() (any, error) { return s.GetSubEnable() },
-		"subJsonEnable":    func() (any, error) { return s.GetSubJsonEnable() },
-		"subClashEnable":   func() (any, error) { return s.GetSubClashEnable() },
-		"subTitle":         func() (any, error) { return s.GetSubTitle() },
-		"subURI":           func() (any, error) { return s.GetSubURI() },
-		"subJsonURI":       func() (any, error) { return s.GetSubJsonURI() },
-		"subClashURI":      func() (any, error) { return s.GetSubClashURI() },
+		"expireDiff":         func() (any, error) { return s.GetExpireDiff() },
+		"trafficDiff":        func() (any, error) { return s.GetTrafficDiff() },
+		"pageSize":           func() (any, error) { return s.GetPageSize() },
+		"defaultCert":        func() (any, error) { return s.GetCertFile() },
+		"defaultKey":         func() (any, error) { return s.GetKeyFile() },
+		"tgBotEnable":        func() (any, error) { return s.GetTgbotEnabled() },
+		"subThemeDir":        func() (any, error) { return s.GetSubThemeDir() },
+		"happLinkEnable":     func() (any, error) { return s.GetHappLinkEnable() },
+		"subEnable":          func() (any, error) { return s.GetSubEnable() },
+		"subJsonEnable":      func() (any, error) { return s.GetSubJsonEnable() },
+		"subClashEnable":     func() (any, error) { return s.GetSubClashEnable() },
+		"subTitle":           func() (any, error) { return s.GetSubTitle() },
+		"subURI":             func() (any, error) { return s.GetSubURI() },
+		"subJsonURI":         func() (any, error) { return s.GetSubJsonURI() },
+		"subClashURI":        func() (any, error) { return s.GetSubClashURI() },
+		"subShortLinkEnable": func() (any, error) { return s.GetSubShortLinkEnable() },
+		"subSigningEnable": func() (any, error) {
+			cfg, err := (&SecurityConfigService{}).Get()
+			if err != nil {
+				return false, err
+			}
+			return cfg.SubSigningEnable, nil
+		},
 		"datepicker":       func() (any, error) { return s.GetDatepicker() },
 		"ipLimitEnable":    func() (any, error) { return s.GetIpLimitEnable() },
 		"accessLogEnable":  func() (any, error) { return s.GetAccessLogEnable() },
@@ -2160,6 +2345,9 @@ var factoryDefaultSecretKeys = map[string]bool{
 	"discordBotToken":   true,
 	"webhookSecret":     true,
 	"backupS3SecretKey": true,
+	"ntfyToken":         true,
+	"gotifyToken":       true,
+	"slackWebhookUrl":   true,
 }
 
 /*

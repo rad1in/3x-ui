@@ -27,7 +27,7 @@ func ExternalSubscriptionHwid() string {
 		return ""
 	}
 	var row model.Setting
-	if err := db.Where("key = ?", externalSubHwidKey).First(&row).Error; err == nil {
+	if err := db.Where(`"key" = ?`, externalSubHwidKey).First(&row).Error; err == nil {
 		if strings.TrimSpace(row.Value) != "" {
 			return strings.TrimSpace(row.Value)
 		}

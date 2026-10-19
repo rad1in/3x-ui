@@ -1,0 +1,45 @@
+.shop-page {
+  min-height: 100vh;
+  background: var(--ant-color-bg-layout);
+}
+
+.shop-content {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.shop-title {
+  text-align: center;
+}
+
+.shop-plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.shop-plan.is-selected {
+  border-color: var(--ant-color-primary);
+}
+
+.shop-plan-name {
+  font-weight: 600;
+}
+
+.shop-plan-price {
+  margin: 4px 0;
+  font-size: 18px;
+}
+
+.shop-plan-desc {
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  color: var(--ant-color-text-tertiary);
+}
+
+.shop-sub-url {
+  word-break: break-all;
+}

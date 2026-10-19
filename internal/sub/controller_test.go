@@ -36,6 +36,7 @@ type subscriptionTestRouterConfig struct {
 	jsonAutoDetect      bool
 	jsonUserAgentRegex  string
 	jsonAlwaysArray     bool
+	jsonApps            string
 }
 
 func newSubscriptionTestRouter(config subscriptionTestRouterConfig) *gin.Engine {
@@ -58,6 +59,9 @@ func newSubscriptionTestRouter(config subscriptionTestRouterConfig) *gin.Engine 
 	}
 	if config.jsonAlwaysArray {
 		options = append(options, WithSUBJsonAlwaysArray(true))
+	}
+	if config.jsonApps != "" {
+		options = append(options, WithSUBJsonApps(config.jsonApps))
 	}
 	NewSUBController(router.Group("/"), options...)
 	return router

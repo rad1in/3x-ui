@@ -38,7 +38,7 @@ func serveLoginPage(t *testing.T) string {
 }
 
 func TestServeDistPageInjectsBrandWithoutBreakingOutOfScript(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	for key, value := range map[string]string{
 		"panelBrandName":  `</script><img src=x onerror=alert(1)>`,
 		"panelBrandColor": "#0f6fe0",
@@ -59,7 +59,7 @@ func TestServeDistPageInjectsBrandWithoutBreakingOutOfScript(t *testing.T) {
 }
 
 func TestServeDistPageOmitsBrandWhenUnset(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 
 	if body := serveLoginPage(t); strings.Contains(body, "X_UI_BRAND") {
 		t.Fatalf("unset brand should inject nothing:\n%s", body)

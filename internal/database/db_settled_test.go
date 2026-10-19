@@ -10,7 +10,7 @@ import (
 // Locks the #5665 guard: composite-PK client_inbounds has no id column, so the
 // sequence-reset SQL must never be issued for it.
 func TestTableWithIdColumn_SkipsCompositeKeyModels(t *testing.T) {
-	if err := InitDB(filepath.Join(t.TempDir(), "x-ui.db")); err != nil {
+	if err := InitDB(filepath.Join(t.TempDir(), "eternal.db")); err != nil {
 		t.Fatalf("InitDB: %v", err)
 	}
 	t.Cleanup(func() { _ = CloseDB() })
@@ -30,13 +30,13 @@ func TestTableWithIdColumn_SkipsCompositeKeyModels(t *testing.T) {
 // Exercises the #5665 AutoMigrate skip on SQLite (the check is dialect-agnostic):
 // settled after InitDB, not settled with a missing column or table.
 func TestPostgresModelSettled_TracksSchemaPresence(t *testing.T) {
-	if err := InitDB(filepath.Join(t.TempDir(), "x-ui.db")); err != nil {
+	if err := InitDB(filepath.Join(t.TempDir(), "eternal.db")); err != nil {
 		t.Fatalf("InitDB: %v", err)
 	}
 	t.Cleanup(func() { _ = CloseDB() })
 
 	for _, mdl := range []any{&model.ClientRecord{}, &model.ClientGroup{}, &model.ClientInbound{}} {
-		if !postgresModelSettled(mdl) {
+		if !serverModelSettled(mdl) {
 			t.Errorf("%T not settled right after InitDB", mdl)
 		}
 	}
@@ -44,14 +44,14 @@ func TestPostgresModelSettled_TracksSchemaPresence(t *testing.T) {
 	if err := db.Migrator().DropColumn(&model.ClientGroup{}, "reset_up"); err != nil {
 		t.Fatalf("drop column: %v", err)
 	}
-	if postgresModelSettled(&model.ClientGroup{}) {
+	if serverModelSettled(&model.ClientGroup{}) {
 		t.Error("ClientGroup settled despite missing reset_up column")
 	}
 
 	if err := db.Migrator().DropTable(&model.ClientGroup{}); err != nil {
 		t.Fatalf("drop table: %v", err)
 	}
-	if postgresModelSettled(&model.ClientGroup{}) {
+	if serverModelSettled(&model.ClientGroup{}) {
 		t.Error("ClientGroup settled despite missing table")
 	}
 }

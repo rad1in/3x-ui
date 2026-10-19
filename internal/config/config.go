@@ -177,12 +177,25 @@ func GetDBFolderPath() string {
 	if runtime.GOOS == "windows" {
 		return getBaseDir()
 	}
-	return "/etc/x-ui"
+	return "/etc/eternal"
 }
 
-// GetDBPath returns the full path to the database file.
+// legacyDBName is the database file name used before the eternal rename.
+const legacyDBName = "x-ui"
+
+// GetDBPath returns the full path to the database file. An existing legacy
+// x-ui.db is kept in use while no eternal.db exists beside it.
 func GetDBPath() string {
-	return fmt.Sprintf("%s/%s.db", GetDBFolderPath(), GetName())
+	folder := GetDBFolderPath()
+	path := fmt.Sprintf("%s/%s.db", folder, GetName())
+	if _, err := os.Stat(path); err == nil {
+		return path
+	}
+	legacy := fmt.Sprintf("%s/%s.db", folder, legacyDBName)
+	if _, err := os.Stat(legacy); err == nil {
+		return legacy
+	}
+	return path
 }
 
 // GetUpdateStatusFilePath returns the path to the panel self-update status
@@ -193,18 +206,21 @@ func GetUpdateStatusFilePath() string {
 	return filepath.Join(GetDBFolderPath(), "update-status.json")
 }
 
-// GetDBKind returns the configured database backend: "sqlite" (default) or "postgres".
+// GetDBKind returns the configured database backend: "sqlite" (default),
+// "postgres" or "mysql" (MySQL and MariaDB share one dialect).
 func GetDBKind() string {
 	v := strings.ToLower(strings.TrimSpace(os.Getenv("XUI_DB_TYPE")))
 	switch v {
 	case "postgres", "postgresql", "pg":
 		return "postgres"
+	case "mysql", "mariadb":
+		return "mysql"
 	default:
 		return "sqlite"
 	}
 }
 
-// GetDBDSN returns the PostgreSQL DSN from XUI_DB_DSN. Empty for sqlite.
+// GetDBDSN returns the PostgreSQL or MySQL DSN from XUI_DB_DSN. Empty for sqlite.
 func GetDBDSN() string {
 	return strings.TrimSpace(os.Getenv("XUI_DB_DSN"))
 }
@@ -221,7 +237,7 @@ func GetNodeTokenKeyFile() string {
 	if p := strings.TrimSpace(os.Getenv("XUI_NODE_TOKEN_KEY_FILE")); p != "" {
 		return p
 	}
-	return "/etc/x-ui/node_token_key.json"
+	return "/etc/eternal/node_token_key.json"
 }
 
 // GetNodeTokenKeyEnv returns the name of the env var holding a single base64
@@ -237,9 +253,9 @@ func GetEnvFilePaths() []string {
 		return nil
 	}
 	return []string{
-		"/etc/default/x-ui",
-		"/etc/conf.d/x-ui",
-		"/etc/sysconfig/x-ui",
+		"/etc/default/eternal",
+		"/etc/conf.d/eternal",
+		"/etc/sysconfig/eternal",
 	}
 }
 
@@ -258,7 +274,7 @@ func GetLogFolder() string {
 	if runtime.GOOS == "windows" {
 		return filepath.Join(".", "log")
 	}
-	return "/var/log/x-ui"
+	return "/var/log/eternal"
 }
 
 func copyFile(src, dst string) error {
@@ -290,7 +306,7 @@ func init() {
 		return
 	}
 	oldDBFolder := "/etc/x-ui"
-	oldDBPath := fmt.Sprintf("%s/%s.db", oldDBFolder, GetName())
+	oldDBPath := fmt.Sprintf("%s/%s.db", oldDBFolder, legacyDBName)
 	newDBFolder := GetDBFolderPath()
 	newDBPath := fmt.Sprintf("%s/%s.db", newDBFolder, GetName())
 	_, err := os.Stat(newDBPath)

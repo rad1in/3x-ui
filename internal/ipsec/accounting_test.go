@@ -68,3 +68,15 @@ func TestOverLimitClosesTheNewestSessions(t *testing.T) {
 		t.Fatalf("overLimit = %v, want %v (the first session keeps its place)", got, want)
 	}
 }
+
+func TestUserSessionIDsPicksOnlyThatUsersIKEv2Sessions(t *testing.T) {
+	sas := []ikeSA{
+		{conn: "ikev2-1", id: 1, user: "alice"},
+		{conn: "ikev2-1", id: 2, user: "bob"},
+		{conn: "ikev2-2", id: 3, user: "alice"},
+		{conn: "l2tp-1", id: 4, user: "alice"},
+	}
+	if got, want := userSessionIDs(sas, "alice"), []uint64{1, 3}; !reflect.DeepEqual(got, want) {
+		t.Fatalf("userSessionIDs = %v, want %v (the L2TP IPsec leg is not an IKEv2 login)", got, want)
+	}
+}

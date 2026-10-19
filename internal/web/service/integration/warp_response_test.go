@@ -11,7 +11,7 @@ import (
 )
 
 func TestDoWarpRequestCapsResponseBody(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 
 	oversize := maxResponseSize + 4096
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

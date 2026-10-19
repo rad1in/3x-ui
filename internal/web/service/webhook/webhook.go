@@ -187,7 +187,7 @@ func (s *Sender) Test() error {
 		return errors.New("no webhook URL configured")
 	}
 	id := uuid.NewString()
-	body, err := s.encode(id, eventbus.Event{Type: "webhook.test", Source: "3x-ui"})
+	body, err := s.encode(id, eventbus.Event{Type: "webhook.test", Source: "eternal"})
 	if err != nil {
 		return err
 	}

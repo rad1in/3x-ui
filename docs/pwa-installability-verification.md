@@ -39,19 +39,19 @@ entries.
 
 ## Live rollout checks
 
-Before replacing a server binary, record the current x-ui binary checksum and
-create a timestamped copy of the binary and `/etc/x-ui/x-ui.db`. Restart only
-the `x-ui` service after the candidate is staged. Because x-ui manages Xray as
+Before replacing a server binary, record the current eternal binary checksum and
+create a timestamped copy of the binary and `/etc/eternal/eternal.db`. Restart only
+the `eternal` service after the candidate is staged. Because eternal manages Xray as
 a child process, the restart can briefly interrupt VPN connections.
 
 After the restart, verify:
 
-1. `x-ui` is active and its child Xray process is running.
+1. `eternal` is active and its child Xray process is running.
 2. The existing panel URL serves HTML with the PWA manifest link.
 3. The manifest, registration script, worker, and all six icons return `200`.
 4. Login, authenticated API requests, panel navigation, logout, and the panel
    WebSocket all work.
 5. At least one VPN client can complete a fresh connection cycle.
 
-If any check fails, restore the exact binary backup, restart x-ui once, and
+If any check fails, restore the exact binary backup, restart eternal once, and
 repeat the checks against the original build.

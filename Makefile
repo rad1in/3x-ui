@@ -60,7 +60,7 @@ race: dist-stub ## Go tests with the race detector (needs a C compiler)
 
 .PHONY: node-e2e
 # Two real panel processes (master + node); test-go only runs nodee2e as a skip.
-NODE_E2E_BIN = $(CURDIR)/.cache/node-e2e/x-ui$(shell go env GOEXE)
+NODE_E2E_BIN = $(CURDIR)/.cache/node-e2e/eternal$(shell go env GOEXE)
 node-e2e: dist-stub ## Master+node sync end to end with two real panel processes
 	go build -o $(NODE_E2E_BIN) .
 	XUI_NODE_E2E_BINARY=$(NODE_E2E_BIN) go test -count=1 -timeout 20m -v ./internal/nodee2e/

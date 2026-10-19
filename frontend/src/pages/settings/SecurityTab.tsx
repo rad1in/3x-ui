@@ -5,20 +5,30 @@ import {
   Empty,
   Form,
   Input,
+  InputNumber,
   Modal,
   Select,
   Space,
   Spin,
   Switch,
   Tabs,
+  Tag,
   message,
 } from 'antd';
-import { ApiOutlined, EyeInvisibleOutlined, SafetyOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  ApiOutlined,
+  EyeInvisibleOutlined,
+  LockOutlined,
+  SafetyOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { ClipboardManager, HttpUtil, IntlUtil, RandomUtil } from '@/utils';
 import type { AllSetting } from '@/models/setting';
 import { SettingListItem } from '@/components/ui';
+import { onNumber } from '@/utils/onNumber';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { catTabLabel } from './catTabLabel';
+import SecurityExtraPanel from './SecurityExtraPanel';
 import TwoFactorModal from './TwoFactorModal';
 import './SecurityTab.css';
 
@@ -35,6 +45,7 @@ interface ApiTokenRow {
   createdAt: number;
   scope: 'admin' | 'monitor' | 'node-sync';
   expiresAt: number;
+  allowedCidrs: string;
 }
 
 interface SecurityTabProps {
@@ -90,6 +101,8 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
   const [createName, setCreateName] = useState('');
   const [creating, setCreating] = useState(false);
   const [createdToken, setCreatedToken] = useState<{ name: string; token: string } | null>(null);
+  const [createCidrs, setCreateCidrs] = useState('');
+  const [cidrsEdit, setCidrsEdit] = useState<{ row: ApiTokenRow; value: string } | null>(null);
 
   const openTfa = useCallback((opts: Omit<TfaState, 'open'>) => {
     setTfa({ ...opts, open: true });
@@ -169,6 +182,7 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
 
   function openCreateModal() {
     setCreateName('');
+    setCreateCidrs('');
     setCreateOpen(true);
   }
 
@@ -180,7 +194,10 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
     }
     setCreating(true);
     try {
-      const msg = (await HttpUtil.post('/panel/api/setting/apiTokens/create', { name })) as ApiMsg<{
+      const msg = (await HttpUtil.post('/panel/api/setting/apiTokens/create', {
+        name,
+        allowedCidrs: createCidrs.trim(),
+      })) as ApiMsg<{
         token?: string;
       }>;
       if (msg?.success) {
@@ -192,6 +209,18 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
       }
     } finally {
       setCreating(false);
+    }
+  }
+
+  async function saveTokenCidrs() {
+    if (!cidrsEdit) return;
+    const msg = (await HttpUtil.post(
+      `/panel/api/setting/apiTokens/setAllowedCidrs/${cidrsEdit.row.id}`,
+      { allowedCidrs: cidrsEdit.value.trim() },
+    )) as ApiMsg;
+    if (msg?.success) {
+      setCidrsEdit(null);
+      await loadApiTokens();
     }
   }
 
@@ -363,6 +392,18 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
                           </span>
                         </div>
                         <div className="api-token-actions">
+                          {row.allowedCidrs && (
+                            <Tag className="api-token-cidrs" bordered={false}>
+                              <span dir="ltr">{row.allowedCidrs}</span>
+                            </Tag>
+                          )}
+                          <Button
+                            size="small"
+                            type="text"
+                            onClick={() => setCidrsEdit({ row, value: row.allowedCidrs })}
+                          >
+                            {t('pages.settings.security.apiTokenAllowedIps')}
+                          </Button>
                           <Switch
                             size="small"
                             checked={row.enabled}
@@ -443,6 +484,61 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
               </>
             ),
           },
+          {
+            key: '5',
+            label: catTabLabel(<LockOutlined />, t('pages.settings.security.access'), isMobile),
+            children: (
+              <>
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.panelAllowedCidrs')}
+                  description={t('pages.settings.panelAllowedCidrsDesc')}
+                >
+                  <Input
+                    value={allSetting.panelAllowedCidrs}
+                    placeholder="203.0.113.0/24,2001:db8::/32"
+                    style={{ direction: 'ltr' }}
+                    onChange={(e) => updateSetting({ panelAllowedCidrs: e.target.value })}
+                  />
+                </SettingListItem>
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.loginMaxFailures')}
+                  description={t('pages.settings.loginMaxFailuresDesc')}
+                >
+                  <InputNumber
+                    value={allSetting.loginMaxFailures}
+                    min={1}
+                    max={100}
+                    style={{ width: '100%' }}
+                    onChange={onNumber((v) => updateSetting({ loginMaxFailures: v }))}
+                  />
+                </SettingListItem>
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.loginLockoutMinutes')}
+                  description={t('pages.settings.loginLockoutMinutesDesc')}
+                >
+                  <InputNumber
+                    value={allSetting.loginLockoutMinutes}
+                    min={1}
+                    max={10080}
+                    style={{ width: '100%' }}
+                    onChange={onNumber((v) => updateSetting({ loginLockoutMinutes: v }))}
+                  />
+                </SettingListItem>
+              </>
+            ),
+          },
+          {
+            key: '6',
+            label: catTabLabel(
+              <SafetyOutlined />,
+              t('pages.settings.security.extra.tab'),
+              isMobile,
+            ),
+            children: <SecurityExtraPanel />,
+          },
         ]}
       />
 
@@ -467,7 +563,38 @@ export default function SecurityTab({ allSetting, updateSetting, saveSetting }: 
               onPressEnter={confirmCreateToken}
             />
           </Form.Item>
+          <Form.Item
+            label={t('pages.settings.security.apiTokenAllowedIps')}
+            extra={t('pages.settings.security.apiTokenAllowedIpsDesc')}
+          >
+            <Input
+              value={createCidrs}
+              placeholder="203.0.113.0/24,198.51.100.4"
+              style={{ direction: 'ltr' }}
+              onChange={(e) => setCreateCidrs(e.target.value)}
+            />
+          </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        open={cidrsEdit !== null}
+        title={`${t('pages.settings.security.apiTokenAllowedIps')}: ${cidrsEdit?.row.name ?? ''}`}
+        okText={t('save')}
+        cancelText={t('cancel')}
+        onOk={saveTokenCidrs}
+        onCancel={() => setCidrsEdit(null)}
+      >
+        <p>{t('pages.settings.security.apiTokenAllowedIpsDesc')}</p>
+        <Input
+          value={cidrsEdit?.value ?? ''}
+          placeholder="203.0.113.0/24,198.51.100.4"
+          style={{ direction: 'ltr' }}
+          onChange={(e) =>
+            setCidrsEdit((prev) => (prev ? { ...prev, value: e.target.value } : prev))
+          }
+          onPressEnter={saveTokenCidrs}
+        />
       </Modal>
 
       <Modal

@@ -37,6 +37,8 @@ const announce = subData.announce || '';
 const links: string[] = Array.isArray(subData.links) ? subData.links : [];
 const linkEmails: string[] = Array.isArray(subData.emails) ? subData.emails : [];
 const vpnAccounts = Array.isArray(subData.vpn) ? subData.vpn : [];
+const profileLinks = Array.isArray(subData.profiles) ? subData.profiles : [];
+const outlineKeys = Array.isArray(subData.outline) ? subData.outline : [];
 const totalByte = Number(subData.totalByte || 0);
 const usedByte =
   Number(subData.usedByte || 0) ||
@@ -63,7 +65,7 @@ const heroData = {
 };
 
 const apps = buildSubApps({ subUrl, singboxUrl: subSingboxUrl, sId, subTitle });
-const initialPlatform = detectPlatform(navigator.userAgent);
+const initialPlatform = detectPlatform(navigator.userAgent, navigator.maxTouchPoints);
 const RTL_LANGUAGES = new Set(['fa-IR', 'ar-EG']);
 
 export default function SubPage() {
@@ -106,6 +108,8 @@ export default function SubPage() {
             subJsonUrl={subJsonUrl}
             subClashUrl={subClashUrl}
             subSingboxUrl={subSingboxUrl}
+            outlineKeys={outlineKeys}
+            profileLinks={profileLinks}
             onCopy={copy}
           />
         ),

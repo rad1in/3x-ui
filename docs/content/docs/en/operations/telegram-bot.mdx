@@ -46,6 +46,19 @@ panel:
 
 <TelegramSetupHelper />
 
+## Use Bale instead of Telegram
+
+Bale's Bot API mirrors Telegram's (`https://tapi.bale.ai/bot<token>/<method>`),
+so the same bot runs on it. Create the bot with Bale's BotFather, then in the
+Telegram settings pick **Bale** as the messenger and paste its token and your
+Bale numeric ID as the admin chat ID. Picking Bale sets the API server to
+`https://tapi.bale.ai`.
+
+Bale has no HTML formatting and no command menu, so messages go out as Bale
+markdown (bold and code are kept, other tags dropped) and the command list is not
+registered; commands still work when typed. Eitaa is not supported: it has no
+Telegram-compatible bot API.
+
 ## Commands
 
 These appear in the Telegram command menu: `/start`, `/help`, `/status`, `/id`.
@@ -91,6 +104,7 @@ buttons for their own usage, subscription links, individual links, and QR codes.
   | `xray.crash`    | Xray-core crashes                                       |
   | `outbound.down` / `outbound.up` | An outbound goes down / recovers        |
   | `node.down` / `node.up`         | A node goes offline / comes back        |
+  | `port.blocked` / `port.restored` | An inbound port stops / resumes answering ([port probe](/docs/operations/monitoring#port-probe)) |
 
 The warning lead times come from `expireDiff` (days before expiry) and
 `trafficDiff` (GB of quota remaining); both default to `0` (off).

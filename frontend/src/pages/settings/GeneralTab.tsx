@@ -6,6 +6,7 @@ import {
   BellOutlined,
   BgColorsOutlined,
   ClockCircleOutlined,
+  DashboardOutlined,
   GlobalOutlined,
   SafetyCertificateOutlined,
   SettingOutlined,
@@ -20,6 +21,7 @@ import { catTabLabel } from './catTabLabel';
 import { sanitizePath } from './uriPath';
 import SecretInput from './SecretInput';
 import BrandingSettings from './BrandingSettings';
+import MetricsSettings from './MetricsSettings';
 
 interface ApiMsg<T = unknown> {
   success?: boolean;
@@ -357,6 +359,90 @@ export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProp
                 />
               </SettingListItem>
 
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.sharedAccountMinIPs')}
+                badge={
+                  <DefaultSettingTag
+                    settingKey="sharedAccountMinIPs"
+                    value={allSetting.sharedAccountMinIPs}
+                  />
+                }
+                description={t('pages.settings.sharedAccountMinIPsDesc')}
+              >
+                <InputNumber
+                  value={allSetting.sharedAccountMinIPs}
+                  min={0}
+                  max={1000}
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ sharedAccountMinIPs: v }))}
+                />
+              </SettingListItem>
+
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.sharedAccountMinCountries')}
+                badge={
+                  <DefaultSettingTag
+                    settingKey="sharedAccountMinCountries"
+                    value={allSetting.sharedAccountMinCountries}
+                  />
+                }
+                description={t('pages.settings.sharedAccountMinCountriesDesc')}
+              >
+                <InputNumber
+                  value={allSetting.sharedAccountMinCountries}
+                  min={0}
+                  max={250}
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ sharedAccountMinCountries: v }))}
+                />
+              </SettingListItem>
+
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.sharedAccountWindowHours')}
+                badge={
+                  <DefaultSettingTag
+                    settingKey="sharedAccountWindowHours"
+                    value={allSetting.sharedAccountWindowHours}
+                  />
+                }
+                description={t('pages.settings.sharedAccountWindowHoursDesc')}
+              >
+                <InputNumber
+                  value={allSetting.sharedAccountWindowHours}
+                  min={1}
+                  max={168}
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ sharedAccountWindowHours: v }))}
+                />
+              </SettingListItem>
+
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.maintenanceMode')}
+                description={t('pages.settings.maintenanceModeDesc')}
+              >
+                <Switch
+                  checked={allSetting.maintenanceMode}
+                  onChange={(v) => updateSetting({ maintenanceMode: v })}
+                />
+              </SettingListItem>
+
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.maintenanceMessage')}
+                description={t('pages.settings.maintenanceMessageDesc')}
+              >
+                <Input.TextArea
+                  value={allSetting.maintenanceMessage}
+                  maxLength={500}
+                  autoSize={{ minRows: 2, maxRows: 5 }}
+                  onChange={(e) => updateSetting({ maintenanceMessage: e.target.value })}
+                />
+              </SettingListItem>
+
               <SettingListItem paddings="small" title={t('pages.settings.language')}>
                 <Select
                   value={lang}
@@ -519,6 +605,11 @@ export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProp
           key: 'brand',
           label: catTabLabel(<BgColorsOutlined />, t('pages.settings.brand.tab'), isMobile),
           children: <BrandingSettings allSetting={allSetting} updateSetting={updateSetting} />,
+        },
+        {
+          key: 'metrics',
+          label: catTabLabel(<DashboardOutlined />, t('pages.settings.metrics.tab'), isMobile),
+          children: <MetricsSettings allSetting={allSetting} updateSetting={updateSetting} />,
         },
         {
           key: '6',

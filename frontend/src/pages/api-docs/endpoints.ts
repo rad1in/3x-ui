@@ -382,6 +382,31 @@ export const sections: readonly Section[] = [
         response: '{\n  "success": true,\n  "obj": {\n    "deleted": 12\n  }\n}',
       },
       {
+        method: 'GET',
+        path: '/panel/api/inbounds/:id/rotation',
+        summary:
+          "The inbound's port/SNI rotation setup, or the defaults (port range 20000-40000, nothing selected) when none is saved.",
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'Inbound ID.' }],
+        responseSchema: 'InboundRotation',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/inbounds/:id/rotation',
+        summary:
+          'Save the rotation setup: rotate the port inside a range, the REALITY SNI through a list (host or host:port entries), or both, optionally every intervalHours (0 = manual only). The last-rotation fields are kept by the server.',
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'Inbound ID.' }],
+        body: '{\n  "rotatePort": true,\n  "portMin": 20000,\n  "portMax": 40000,\n  "rotateSni": true,\n  "sniList": "www.microsoft.com\\nwww.apple.com",\n  "intervalHours": 24\n}',
+        responseSchema: 'InboundRotation',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/inbounds/:id/rotate',
+        summary:
+          'Rotate the inbound now with its saved setup. This is an ordinary inbound update, so an inbound on a node is stored and the node sync pushes it to the node. Clients follow through their refreshed subscription.',
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'Inbound ID.' }],
+        responseSchema: 'RotationResult',
+      },
+      {
         method: 'POST',
         path: '/panel/api/inbounds/resetAllTraffics',
         summary:
@@ -435,9 +460,25 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/panel/api/inbounds/vpnStatus',
         summary:
-          'Whether each OpenVPN, IKEv2 and L2TP inbound that should be serving someone is up, and if not, why (a missing binary, a kernel without PPP or IPsec, another strongSwan already running). Inbounds with no live client are left out: nothing runs for them.',
+          'Whether each OpenVPN, IKEv2, L2TP, SSH, SSTP and ocserv inbound that should be serving someone is up, and if not, why (a missing binary, a kernel without PPP or IPsec, another strongSwan already running). Inbounds with no live client are left out: nothing runs for them.',
         response:
           '{\n  "success": true,\n  "obj": [\n    { "id": 4, "running": false, "reason": "this kernel has no PPP support (/dev/ppp is missing), which L2TP needs" }\n  ]\n}',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/inbounds/:id/ocservCa',
+        summary:
+          "Download the CA certificate (DER) of an ocserv (OpenConnect/AnyConnect) inbound. Clients must trust it before they accept the server, whose certificate is issued for the inbound's server address.",
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'ocserv inbound ID.' }],
+        response: 'DER-encoded certificate (application/pkix-cert), saved as ocserv-<id>-ca.cer',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/inbounds/:id/sstpCa',
+        summary:
+          "Download the CA certificate (DER) of an SSTP inbound. Windows must trust it before its built-in SSTP client accepts the server, whose certificate is issued for the inbound's server address.",
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'SSTP inbound ID.' }],
+        response: 'DER-encoded certificate (application/pkix-cert), saved as sstp-<id>-ca.cer',
       },
       {
         method: 'GET',
@@ -509,6 +550,27 @@ export const sections: readonly Section[] = [
           'Real-time machine snapshot: CPU, memory, swap, disk, network IO, load averages, open connections, Xray state. Cached and refreshed every 2 seconds in the background.',
         response:
           '{\n  "success": true,\n  "obj": {\n    "cpu": 12.5,\n    "mem": { "current": 2147483648, "total": 8589934592 },\n    "swap": { "current": 0, "total": 4294967296 },\n    "disk": { "current": 53687091200, "total": 268435456000 },\n    "netIO": { "up": 1073741824, "down": 2147483648 },\n    "xray": { "state": "running", "version": "v25.10.31" },\n    "tcpCount": 42,\n    "load": { "load1": 0.5, "load5": 0.3, "load15": 0.2 }\n  }\n}',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/server/health',
+        summary:
+          'Self-check of the panel: database ping, Xray process, enabled nodes, root disk usage and the panel/subscription certificate expiry. Each check is ok, warn, fail or skip (not configured); status is the worst of them.',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "status": "warn",\n    "checkedAt": 1760000000000,\n    "checks": [\n      { "name": "database", "status": "ok" },\n      { "name": "xray", "status": "ok" },\n      { "name": "nodes", "status": "warn", "detail": "1 of 3 enabled nodes offline" },\n      { "name": "disk", "status": "ok", "detail": "41% used" },\n      { "name": "cert", "status": "skip" }\n    ]\n  }\n}',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/server/speedtestDownload',
+        summary:
+          'Stream the requested number of incompressible bytes (1 to 64 MiB). Called by a master panel while it speed-tests this node.',
+        params: [{ name: 'bytes', in: 'query', type: 'number', desc: 'Payload size in bytes.' }],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/server/speedtestUpload',
+        summary:
+          'Accept and discard an upload body of up to 64 MiB so a master panel can time the upload direction.',
       },
       {
         method: 'GET',
@@ -615,7 +677,7 @@ export const sections: readonly Section[] = [
       {
         method: 'GET',
         path: '/panel/api/server/getPanelUpdateInfo',
-        summary: 'Check whether a newer 3x-ui release is available on GitHub.',
+        summary: 'Check whether a newer panel release is available.',
       },
       {
         method: 'GET',
@@ -861,13 +923,20 @@ export const sections: readonly Section[] = [
         method: 'POST',
         path: '/panel/api/server/importDB',
         summary:
-          'Restore the panel DB from an uploaded backup (multipart form, field name "db"). SQLite panels accept a SQLite database (.db) or a SQLite migration dump (.dump); PostgreSQL panels accept a pg_dump archive (.dump), a SQLite database (.db), or a SQLite migration dump. The panel restarts after restore. Destructive.',
+          'Restore the panel DB from an uploaded backup (multipart form, field name "db"). SQLite panels accept a SQLite database (.db) or a SQLite migration dump (.dump); PostgreSQL panels accept a pg_dump archive (.dump), a SQLite database (.db), or a SQLite migration dump. An encrypted backup (.enc, made when a backup passphrase is set) is decrypted first. The panel restarts after restore. Destructive.',
         params: [
           {
             name: 'db',
             in: 'body (multipart)',
             type: 'file',
             desc: 'Database backup or migration file to upload.',
+          },
+          {
+            name: 'passphrase',
+            in: 'body (multipart)',
+            type: 'string',
+            desc: 'Passphrase of an encrypted backup (.enc). Optional; the configured backup passphrase is used when omitted.',
+            optional: true,
           },
           {
             name: 'keepHostSettings',
@@ -1217,7 +1286,7 @@ export const sections: readonly Section[] = [
         summary:
           'Create a new client and attach it to one or more inbounds in a single call. Body is JSON. Per-protocol secrets are generated server-side when omitted, so callers can send only the universal fields.',
         description:
-          'Fields the server fills in when they are omitted — a valid value sent by the caller is never overwritten. Re-adding an email that already exists, with its stored `subId`, reuses the stored `id`, `password`, `auth` and `secret` instead of minting new ones, so the identity stays in sync across its inbounds.\n\n- **VLESS / VMess** — `id`, a fresh UUID\n- **Trojan / OpenVPN** — `password`\n- **Shadowsocks** — `password`. On a `2022-blake3-*` inbound a supplied password that does not base64-decode to the key length of the cipher (16 or 32 bytes) is replaced by a generated key and the call still succeeds, so read the client back if you did not let the server pick. Legacy ciphers keep any non-empty password\n- **Hysteria** — `auth`\n- **mtproto** — `secret`, a FakeTLS secret derived from the fronting domain of the inbound, or from `www.cloudflare.com` when it has none\n- **WireGuard** — `privateKey` and `publicKey` when both are blank, or `publicKey` alone when only a `privateKey` was sent, plus `allowedIPs`: one free `/32` taken from the /24 the existing peers of that inbound already sit in, or from `10.0.0.0/24` when it has none\n\nAccepted on the same body but never generated: `preSharedKey` and `keepAlive` (WireGuard), `adTag` (mtproto).\n\nWireGuard is the only one of these that can fail. Allocation widens the search to the containing /16 before giving up with `inbound <id>: wireguard: no free address available in <scope>`, and an `allowedIPs` supplied by the caller is validated instead of allocated: `inbound <id>: wireguard: allowedIPs entry <entry> overlaps <address> used by another client` when its range overlaps an address or prefix a different client of that same inbound holds, or `... used by a client on <inbound>` when the holder sits on another WireGuard or AmneziaWG inbound. Ranges are compared, not strings, so `10.0.0.9/24` collides with `10.0.0.5/32`; a `0.0.0.0/0` or `::/0` default route claims no address. Allocation likewise skips every address inside a prefix another client holds. The same validation runs on POST /panel/api/clients/{email}/attach, where a client that already carries an address brings it along.\n\nAn `inboundIds` entry that names no existing inbound rejects the whole call before anything is written. Past that, the inbounds are applied concurrently and independently: one that fails no longer stops the others, so a `success:false` response can still have created the client on the rest. Every error names the inbound it came from (`inbound 7: <message>`), and several failures are reported together, one per line. `limitHwid` is applied only when every inbound succeeded, so re-run the call after fixing the failure.',
+          'Fields the server fills in when they are omitted — a valid value sent by the caller is never overwritten. Re-adding an email that already exists, with its stored `subId`, reuses the stored `id`, `password`, `auth` and `secret` instead of minting new ones, so the identity stays in sync across its inbounds.\n\n- **VLESS / VMess** — `id`, a fresh UUID\n- **Trojan / OpenVPN / IKEv2 / L2TP / SSH / SSTP / ocserv** — `password`\n- **Shadowsocks** — `password`. On a `2022-blake3-*` inbound a supplied password that does not base64-decode to the key length of the cipher (16 or 32 bytes) is replaced by a generated key and the call still succeeds, so read the client back if you did not let the server pick. Legacy ciphers keep any non-empty password\n- **Hysteria** — `auth`\n- **mtproto** — `secret`, a FakeTLS secret derived from the fronting domain of the inbound, or from `www.cloudflare.com` when it has none\n- **WireGuard** — `privateKey` and `publicKey` when both are blank, or `publicKey` alone when only a `privateKey` was sent, plus `allowedIPs`: one free `/32` taken from the /24 the existing peers of that inbound already sit in, or from `10.0.0.0/24` when it has none\n\nAccepted on the same body but never generated: `preSharedKey` and `keepAlive` (WireGuard), `adTag` (mtproto).\n\nWireGuard is the only one of these that can fail. Allocation widens the search to the containing /16 before giving up with `inbound <id>: wireguard: no free address available in <scope>`, and an `allowedIPs` supplied by the caller is validated instead of allocated: `inbound <id>: wireguard: allowedIPs entry <entry> overlaps <address> used by another client` when its range overlaps an address or prefix a different client of that same inbound holds, or `... used by a client on <inbound>` when the holder sits on another WireGuard or AmneziaWG inbound. Ranges are compared, not strings, so `10.0.0.9/24` collides with `10.0.0.5/32`; a `0.0.0.0/0` or `::/0` default route claims no address. Allocation likewise skips every address inside a prefix another client holds. The same validation runs on POST /panel/api/clients/{email}/attach, where a client that already carries an address brings it along.\n\nAn `inboundIds` entry that names no existing inbound rejects the whole call before anything is written. Past that, the inbounds are applied concurrently and independently: one that fails no longer stops the others, so a `success:false` response can still have created the client on the rest. Every error names the inbound it came from (`inbound 7: <message>`), and several failures are reported together, one per line. `limitHwid` is applied only when every inbound succeeded, so re-run the call after fixing the failure.',
         params: [
           {
             name: 'client',
@@ -1419,6 +1488,32 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/panel/api/clients/transfer',
+        summary:
+          "Hand clients from one operator to another. Without emails every client the source can see moves. A client in the source's group joins the target's group (group names it; optional when the target has one group); a client on the source's inbounds is attached to the target's inbounds and detached from the source's. A client on an inbound both operators share, or without a usable target group or inbound, stays and is reported in skipped. Owners and admins only.",
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: 'ClientTransferRequest.',
+          },
+        ],
+        responseSchema: 'ClientTransferResult',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/signedSubLink/:subId',
+        summary:
+          'Issue a signed subscription URL (?exp=<unix s>&sig=<HMAC>) for a subscription id. ttlSeconds 0 never expires. Requires signed subscription links to be enabled under /panel/api/security; once they are, the subscription server answers 404 to any raw, JSON, Clash or sing-box link without a valid signature.',
+        params: [
+          { name: 'subId', in: 'path', type: 'string', desc: 'Subscription id of the client.' },
+          { name: 'body', in: 'body (json)', type: 'object', desc: '{"ttlSeconds": 604800}' },
+        ],
+        responseSchema: 'SignedSubLink',
+      },
+      {
+        method: 'POST',
         path: '/panel/api/clients/bulkEnable',
         summary:
           'Enable many clients in one call. Emails are grouped by inbound and applied with a single read-modify-write per inbound; the running Xray (local or remote node) is updated to add each user. Note that enabling a client whose quota is exhausted or whose expiry has passed only flips the flag — the traffic loop will disable it again on the next tick. Returns the changed count and per-email skip reasons.',
@@ -1468,6 +1563,134 @@ export const sections: readonly Section[] = [
           "Clear the group label on many clients in one call. Inverse of /groups/bulkAdd. Clients themselves are kept — only the group label is cleared from clients.group_name and from each owning inbound's settings JSON. Groups become empty if all their members are removed.",
         body: '{\n  "emails": ["alice", "bob"]\n}',
         response: '{\n  "success": true,\n  "obj": {\n    "affected": 2\n  }\n}',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/clients/templates',
+        summary:
+          'List the saved client templates (presets for quota, duration, IP limit, flow, group and target inbounds), sorted by name. totalGB is in bytes; expiryDays 0 means no expiry.',
+        response:
+          '{\n  "success": true,\n  "obj": [\n    {\n      "id": 1,\n      "name": "30 days 50 GB",\n      "totalGB": 53687091200,\n      "expiryDays": 30,\n      "delayedStart": false,\n      "limitIp": 2,\n      "flow": "",\n      "group": "trial",\n      "inboundIds": [1]\n    }\n  ]\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/templates/save',
+        summary:
+          'Create a client template, or replace the one whose id is given. Names are unique and at least one inbound is required. Returns the saved template.',
+        body: '{\n  "name": "30 days 50 GB",\n  "totalGB": 53687091200,\n  "expiryDays": 30,\n  "delayedStart": false,\n  "limitIp": 2,\n  "group": "trial",\n  "inboundIds": [1]\n}',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "id": 1,\n    "name": "30 days 50 GB",\n    "inboundIds": [1]\n  }\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/templates/del/:id',
+        summary: 'Delete a client template. Clients already created from it are not touched.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Template id.' }],
+        response: '{\n  "success": true,\n  "msg": "Template deleted"\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/templates/apply',
+        summary:
+          'Create one client per email from a template. With delayedStart the expiry is stored as a negative duration that starts counting at first use. Emails that cannot be created (for example duplicates) are reported under failed while the rest are still created.',
+        body: '{\n  "templateId": 1,\n  "emails": ["alice", "bob"]\n}',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "created": ["alice"],\n    "failed": { "bob": "email already in use: bob" },\n    "needRestart": false\n  }\n}',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/clients/usage/:email',
+        summary:
+          'Per-day traffic history of one client, oldest day first. Only days that had traffic have a row; days is the window including today (default 30, capped at 90 — the retention). Day keys are panel-local dates.',
+        params: [
+          { name: 'email', in: 'path', type: 'string', desc: 'Client email.' },
+          {
+            name: 'days',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 30,
+            desc: 'Window length in days, 1 to 90.',
+          },
+        ],
+        response:
+          '{\n  "success": true,\n  "obj": [\n    { "email": "alice", "day": "2026-10-17", "up": 1048576, "down": 5242880 },\n    { "email": "alice", "day": "2026-10-18", "up": 2097152, "down": 8388608 }\n  ]\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/disconnect/:email',
+        summary:
+          'End the live connections of a client without disabling it; the client may reconnect at once. OpenVPN, IKEv2, L2TP, SSH, SSTP and ocserv sessions are terminated through their servers. For Xray (VLESS, VMess, Trojan, Shadowsocks over TCP) the core cannot drop an authenticated session, so the established sockets from the IPs the client was last seen on are destroyed. UDP protocols (Hysteria, WireGuard, TUIC, AmneziaWG) and MTProto cannot be disconnected and are listed under unsupported. Inbounds on a node are handled by the node, asked once per node.',
+        params: [{ name: 'email', in: 'path', type: 'string', desc: 'Client email.' }],
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "disconnected": 2,\n    "unsupported": ["inbound-8443"],\n    "failed": {}\n  }\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/importForeign',
+        summary:
+          'Import the users of another panel from its user export and attach them to the given inbounds. source is marzban (GET /api/users), marzneshin (GET /api/users) or hiddify (admin users list); data is the export text. UUIDs, passwords, quotas, expiry (including on-hold and start-on-first-use as a delayed start), reset cycle, notes and used traffic are carried over; existing emails are skipped. Subscription links of the old panel do not carry over. Users that could only be approximated are listed under warnings.',
+        params: [
+          {
+            name: 'source',
+            in: 'body (json)',
+            type: 'string',
+            enum: ['marzban', 'marzneshin', 'hiddify'],
+            desc: 'Which panel the export comes from.',
+          },
+          { name: 'data', in: 'body (json)', type: 'string', desc: 'The export file contents.' },
+          {
+            name: 'inboundIds',
+            in: 'body (json)',
+            type: 'integer[]',
+            desc: 'Inbounds every imported user is attached to.',
+          },
+        ],
+        body: '{\n  "source": "marzban",\n  "data": "{\\"users\\": [...]}",\n  "inboundIds": [7]\n}',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "created": 4,\n    "skipped": [{ "email": "bob", "reason": "email already in use: bob" }],\n    "warnings": [{ "email": "erin", "message": "reset strategy year has no 3x-ui equivalent; the quota is not reset automatically" }]\n  }\n}',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/clients/report',
+        summary:
+          'Usage report of every client you can see. format=csv (default) downloads a spreadsheet-ready file with byte counts; format=html returns a printable page that can be saved as PDF from the browser. Period columns sum the per-day usage of the last days days; cells starting with = + - or @ are quoted so spreadsheets do not run them.',
+        params: [
+          {
+            name: 'days',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 30,
+            desc: 'Window length in days, 1 to 90.',
+          },
+          {
+            name: 'format',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            defaultValue: 'csv',
+            desc: 'csv or html.',
+          },
+        ],
+        response:
+          'email,group,enabled,period_up_bytes,period_down_bytes,total_up_bytes,total_down_bytes,quota_bytes,expiry\nalice,team-a,true,1048576,5242880,10485760,52428800,107374182400,2026-12-31',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/clients/countries',
+        summary:
+          'Countries the currently connected clients come from, looked up in the geoip.dat of the Xray folder. An address counts as connected when it was seen in the last two minutes. available is false when no geoip database could be read; unlocated counts addresses outside every country (private ranges included).',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "available": true,\n    "countries": [\n      { "country": "DE", "clients": 4, "addresses": 6 },\n      { "country": "BR", "clients": 1, "addresses": 1 }\n    ],\n    "unlocated": 1\n  }\n}',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/clients/sharedAccounts',
+        summary:
+          'Clients currently flagged as shared: seen from at least sharedAccountMinIPs addresses or sharedAccountMinCountries countries inside the sharedAccountWindowHours window. Most addresses first; empty while both thresholds are 0.',
+        response:
+          '{\n  "success": true,\n  "obj": [\n    {\n      "email": "alice",\n      "ipCount": 7,\n      "countryCount": 3,\n      "countries": "BR,DE,US",\n      "firstFlagged": 1760000000000,\n      "lastSeen": 1760003600000\n    }\n  ]\n}',
       },
       {
         method: 'POST',
@@ -1703,6 +1926,47 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/clients/subFetches/:subId',
+        summary:
+          'List which apps fetched a subscription: one entry per distinct IP, User-Agent and served format (raw, json, clash, singbox, surge, quanx, loon, outline) with the fetch count and first/last time in milliseconds, newest first. The newest 20 entries are kept per subscription.',
+        params: [
+          { name: 'subId', in: 'path', type: 'string', desc: "The client's subscription ID." },
+        ],
+        responseSchema: 'SubFetchInfo',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/clients/subShortLink/:subId',
+        summary:
+          'Return the short subscription link (/s/<token> on the subscription server) of a subscription ID, or obj null when it has none. The URL origin is the configured subURI origin, else the subscription server address.',
+        params: [
+          { name: 'subId', in: 'path', type: 'string', desc: "The client's subscription ID." },
+        ],
+        responseSchema: 'SubShortLinkView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/subShortLink/:subId',
+        summary:
+          'Return the short link of a subscription ID, creating one (10 random base62 characters) when it has none. Fails when short links are turned off (subShortLinkEnable) or no client carries the subscription ID.',
+        params: [
+          { name: 'subId', in: 'path', type: 'string', desc: "The client's subscription ID." },
+        ],
+        responseSchema: 'SubShortLinkView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/clients/subShortLink/:subId/revoke',
+        summary:
+          'Delete the short link of a subscription ID; the old /s/<token> answers 404 at once. Creating a link again issues a new token.',
+        params: [
+          { name: 'subId', in: 'path', type: 'string', desc: "The client's subscription ID." },
+        ],
+        response: '{\n  "success": true,\n  "msg": "Short link revoked",\n  "obj": null\n}',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/clients/links/:email',
         summary:
           'Return every URL for one client across all attached inbounds, one per advertised endpoint: the managed hosts of the inbound, else its streamSettings.externalProxy entries, else its own address. Supported protocols: vmess, vless, trojan, shadowsocks, hysteria, mtproto. Protocols without a URL form (socks, http, mixed, wireguard, dokodemo, tunnel) contribute nothing.',
@@ -1719,7 +1983,7 @@ export const sections: readonly Section[] = [
     id: 'nodes',
     title: 'Nodes',
     description:
-      'Manage remote 3x-ui panels acting as nodes for a central panel. All endpoints under /panel/api/nodes.',
+      'Manage remote panels acting as nodes for a central panel. All endpoints under /panel/api/nodes.',
     endpoints: [
       {
         method: 'GET',
@@ -1797,6 +2061,14 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/panel/api/nodes/joinCommand',
+        summary:
+          'Issue a single-use join token (valid one hour, stored hashed) and the shell command that installs the panel on a new server and registers it here. The server calls POST {basePath}/join/node with the token, so the master must be reachable from it.',
+        body: '{\n  "name": "de-fra-1",\n  "masterUrl": "https://panel.example.com:2053/abc/"\n}',
+        responseSchema: 'NodeJoinCommand',
+      },
+      {
+        method: 'POST',
         path: '/panel/api/nodes/test',
         summary:
           'Probe a node without saving it. Uses the body as connection details and returns the same heartbeat snapshot a registered node would have.',
@@ -1825,6 +2097,15 @@ export const sections: readonly Section[] = [
         path: '/panel/api/nodes/probe/:id',
         summary: 'Probe an existing node, updating its cached health state.',
         params: [{ name: 'id', in: 'path', type: 'number', desc: 'Node ID.' }],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/nodes/speedtest/:id',
+        summary:
+          'Measure the master-to-node path on demand: five latency pings (min/avg/max/jitter/loss), then an 8 MiB download and a 4 MiB upload. Nothing is stored. A node without the speed test routes still reports latency, with throughputError set.',
+        params: [{ name: 'id', in: 'path', type: 'number', desc: 'Node ID.' }],
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "nodeId": 1,\n    "samples": 5,\n    "lost": 0,\n    "latencyMinMs": 38.2,\n    "latencyAvgMs": 41.7,\n    "latencyMaxMs": 47.1,\n    "jitterMs": 3.1,\n    "downloadMbps": 412.5,\n    "uploadMbps": 188.9\n  }\n}',
       },
       {
         method: 'POST',
@@ -1945,6 +2226,35 @@ export const sections: readonly Section[] = [
         summary: 'Delete many host groups in one call.',
         body: '{\n  "ids": ["abc-123", "def-456"]\n}',
       },
+      {
+        method: 'POST',
+        path: '/panel/api/hosts/cleanip/scan',
+        summary:
+          'Start a background probe of CDN addresses from the panel host. targets takes IPs, CIDRs and a-b IPv4 ranges; with sni set, each attempt is a verified TLS handshake.',
+        body: '{\n  "targets": "104.16.0.0/24, 172.64.32.1",\n  "port": 443,\n  "sni": "cdn.example.com",\n  "samples": 3,\n  "timeoutMs": 2000\n}',
+        responseSchema: 'CleanIPStatus',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/hosts/cleanip/status',
+        summary: 'Progress of the running or most recent clean-IP scan.',
+        responseSchema: 'CleanIPStatus',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/hosts/cleanip/results',
+        summary:
+          'Results of the last clean-IP scan: reachable addresses first, by packet loss then latency.',
+        responseSchema: 'CleanIPResult',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/hosts/cleanip/apply',
+        summary:
+          'Point a subscription host at a scanned address: replace or add it on a host group, or add a new host to an inbound.',
+        body: '{\n  "ip": "104.16.1.2",\n  "groupId": "abc-123",\n  "mode": "replace"\n}',
+      },
     ],
   },
 
@@ -2020,7 +2330,7 @@ export const sections: readonly Section[] = [
         method: 'POST',
         path: '/panel/api/setting/restartPanel',
         summary:
-          'Restart the entire 3x-ui process after a 3-second grace period. The connection drops immediately; the panel comes back online ~5-10 seconds later.',
+          'Restart the entire panel process after a 3-second grace period. The connection drops immediately; the panel comes back online ~5-10 seconds later.',
       },
       {
         method: 'POST',
@@ -2048,6 +2358,23 @@ export const sections: readonly Section[] = [
         summary:
           'Send a signed test event to every configured webhook URL. Fails with the first URL that did not answer 2xx.',
         response: '{\n  "success": true,\n  "msg": "Test event delivered to every webhook URL"\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/setting/botMessages',
+        summary:
+          'Shipped text of every customisable Telegram bot message in a language, placeholders unrendered. Used by the bot message editor.',
+        body: '{\n  "lang": "en-US"\n}',
+        response:
+          '{\n  "success": true,\n  "obj": {\n    "tgbot.commands.start": "Hello {{ .Firstname }}."\n  }\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/setting/testPush',
+        summary:
+          'Send one test message to a push channel (ntfy, Gotify or Slack) using the saved settings. Works while the channel is switched off.',
+        body: '{\n  "channel": "ntfy"\n}',
+        response: '{\n  "success": true,\n  "msg": "Test notification sent"\n}',
       },
       {
         method: 'POST',
@@ -2106,8 +2433,15 @@ export const sections: readonly Section[] = [
             desc: 'Future Unix milliseconds, or 0 for no expiry.',
             optional: true,
           },
+          {
+            name: 'allowedCidrs',
+            in: 'body',
+            type: 'string',
+            desc: 'Comma-separated IPs or CIDRs the token may be used from. Empty (default) means any address; a call from elsewhere gets 401.',
+            optional: true,
+          },
         ],
-        body: '{\n  "name": "central-panel-a",\n  "scope": "node-sync",\n  "expiresAt": 1798761600000\n}',
+        body: '{\n  "name": "central-panel-a",\n  "scope": "node-sync",\n  "expiresAt": 1798761600000,\n  "allowedCidrs": "203.0.113.0/24"\n}',
         responseSchema: 'ApiTokenView',
         errorResponse:
           '{\n  "success": false,\n  "msg": "a token with that name already exists"\n}',
@@ -2145,6 +2479,23 @@ export const sections: readonly Section[] = [
           },
         ],
         body: '{\n  "enabled": false,\n  "expectedScope": "node-sync"\n}',
+        response: '{\n  "success": true\n}',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/setting/apiTokens/setAllowedCidrs/:id',
+        summary:
+          'Replace the addresses a token may be used from. An empty list lifts the restriction. Rotating a token by name keeps its list.',
+        params: [
+          { name: 'id', in: 'path', type: 'number', desc: 'Token row ID.' },
+          {
+            name: 'allowedCidrs',
+            in: 'body',
+            type: 'string',
+            desc: 'Comma-separated IPs or CIDRs, e.g. "203.0.113.0/24,198.51.100.4".',
+          },
+        ],
+        body: '{\n  "allowedCidrs": "203.0.113.0/24"\n}',
         response: '{\n  "success": true\n}',
       },
     ],
@@ -2258,6 +2609,514 @@ export const sections: readonly Section[] = [
             in: 'body (json)',
             type: 'string',
             desc: 'https:// contact link, or empty.',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'sales',
+    title: 'Sales',
+    description:
+      'Sell plans to customers: the plan catalogue and the order queue. Prices and amounts are integers in the currency minor unit (IRT and IRR have none, USD, EUR and USDT have two decimals); quotas are in bytes.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/sales/plans',
+        summary:
+          'Every plan, enabled or not, by sortOrder. Each plan points at a client template that supplies the inbounds and the rest of the client preset.',
+        responseSchema: 'Plan',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/plans/save',
+        summary:
+          'Create a plan (id 0) or replace the one with the given id. Names are unique, the currency must be IRT, IRR, USD, EUR or USDT and templateId must exist. Returns the saved plan.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'Plan.' }],
+        responseSchema: 'Plan',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/plans/del/:id',
+        summary:
+          'Delete a plan. Refused while an order for it is still pending or in review; clients already sold keep working.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Plan id.' }],
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/orders',
+        summary:
+          'Orders newest first, with the total for the filter. status is one of pending, review, paid, rejected, failed or canceled; empty lists all.',
+        params: [
+          {
+            name: 'status',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'Only orders in this status.',
+          },
+          {
+            name: 'limit',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 200,
+            desc: 'Page size, 1 to 200.',
+          },
+          {
+            name: 'offset',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 0,
+            desc: 'Rows to skip.',
+          },
+        ],
+        responseSchema: 'OrderPage',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/orders/approve/:id',
+        summary:
+          'Accept the payment of a pending or in-review order and deliver it: a new purchase creates the client from the plan terms the order was bought under, a renewal zeroes the usage, applies the plan quota and IP limit and adds the days after the time the client still has. Changes go through the normal client runtime, so remote nodes follow. On a paid order whose delivery failed this retries the delivery. Fails with order_state for an order already delivered, rejected or canceled.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Order id.' }],
+        responseSchema: 'Order',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/orders/reject/:id',
+        summary:
+          'Reject a pending or in-review order, with an optional reason the customer sees. A rejected order cannot be approved afterwards.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Order id.' },
+          {
+            name: 'reason',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Why the payment was not accepted, up to 300 characters.',
+          },
+        ],
+        responseSchema: 'Order',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/discounts',
+        summary:
+          'Every discount code, newest first, with uses: how many orders currently hold a use of it (orders failed, canceled or rejected give theirs back).',
+        responseSchema: 'DiscountCode',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/discounts/save',
+        summary:
+          'Create a code (id 0) or replace the one with the given id. Codes are stored upper-case, 3 to 32 letters, digits, dash or underscore. A percent code takes value percent (1 to 99) off; a fixed code takes value minor units of its currency off and only applies to plans in that currency. planIds limits the code to those plans (empty is all), maxUses 0 is unlimited, oncePerCustomer allows one order per client username, expiresAt is unix ms (0 never). A discount that would make the order free is refused at purchase time.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'DiscountCode.' }],
+        responseSchema: 'DiscountCode',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/discounts/del/:id',
+        summary: 'Delete a discount code. Orders already placed with it keep the price they got.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Discount code id.' }],
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/wallet',
+        summary:
+          'A customer wallet: the balance per currency and the latest ledger lines. The customer is the client with that username; a wallet is a ledger, so a balance is always the sum of its entries.',
+        params: [{ name: 'email', in: 'query', type: 'string', desc: 'Client username.' }],
+        responseSchema: 'WalletView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/wallet/adjust',
+        summary:
+          'Credit (positive amount) or debit (negative) a customer wallet in minor units of a currency. The client must exist and a debit cannot take the balance below zero. Wallet entries also come from referral bonuses, wallet payments and refunds of rejected wallet orders.',
+        params: [
+          { name: 'email', in: 'body (json)', type: 'string', desc: 'Client username.' },
+          {
+            name: 'currency',
+            in: 'body (json)',
+            type: 'string',
+            desc: 'IRT, IRR, USD, EUR or USDT.',
+          },
+          { name: 'amount', in: 'body (json)', type: 'integer', desc: 'Minor units, not zero.' },
+          { name: 'note', in: 'body (json)', type: 'string', optional: true },
+        ],
+        responseSchema: 'WalletEntry',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/config',
+        summary:
+          'Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto). Secrets (the Zarinpal merchant id, the IDPay API key and the NOWPayments API key and IPN secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.',
+        responseSchema: 'SalesConfigView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/config/save',
+        summary:
+          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay or crypto section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SalesConfig.' }],
+      },
+    ],
+  },
+
+  {
+    id: 'shop',
+    title: 'Public Shop',
+    description:
+      'The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed, bad_signature, amount_mismatch, discount_invalid, discount_used, referral_invalid, wallet_insufficient, proof_invalid); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/shop/api/plans',
+        summary: 'Plans on sale, by sort order, and the payment methods that are switched on.',
+        responseSchema: 'ShopCatalog',
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/quote',
+        summary:
+          'Preview the price of a plan with a discount code, without reserving the code. A refused code answers success false with discount_invalid (unknown, disabled, expired, wrong plan or currency, or it would make the order free) or discount_used (use limit reached, or already used by this client).',
+        params: [
+          { name: 'planId', in: 'body (json)', type: 'integer' },
+          { name: 'discountCode', in: 'body (json)', type: 'string', optional: true },
+          {
+            name: 'email',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Lets a once-per-customer code be checked against this client.',
+          },
+        ],
+        responseSchema: 'Quote',
+      },
+      {
+        method: 'GET',
+        path: '/shop/api/wallet',
+        summary:
+          'A client wallet for whoever holds the client subscription id (proof): balances, the latest 20 ledger lines and the client referral code to share. A wrong email or proof answers proof_invalid.',
+        params: [
+          { name: 'email', in: 'query', type: 'string', desc: 'Client username.' },
+          { name: 'proof', in: 'query', type: 'string', desc: 'The client subscription id.' },
+        ],
+        responseSchema: 'ShopWallet',
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/orders',
+        summary:
+          'Start a purchase. kind new needs a free username (3 to 32 of a-z, 0-9, dot, underscore, dash; it is lower-cased) with no open order; renew needs the exact username of an existing client. The reply is the order as the customer sees it, including the card details while a transfer is expected.',
+        params: [
+          { name: 'planId', in: 'body (json)', type: 'integer', desc: 'Plan to buy.' },
+          { name: 'kind', in: 'body (json)', type: 'string', enum: ['new', 'renew'] },
+          { name: 'email', in: 'body (json)', type: 'string', desc: 'Client username.' },
+          {
+            name: 'gateway',
+            in: 'body (json)',
+            type: 'string',
+            desc: 'Payment method: card, zarinpal, idpay, crypto or wallet. A wallet payment is for renewals only, needs proof and is delivered at once.',
+          },
+          {
+            name: 'discountCode',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Coupon; the order carries the discounted amount and the list price.',
+          },
+          {
+            name: 'referralCode',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'A referral code from an existing client, for a first purchase. The referrer is paid a share into their wallet once the order is delivered.',
+          },
+          {
+            name: 'proof',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'The client subscription id; required to pay from a wallet.',
+          },
+          {
+            name: 'contact',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'How to reach the customer, up to 100 characters.',
+          },
+        ],
+        responseSchema: 'ShopOrderView',
+      },
+      {
+        method: 'GET',
+        path: '/shop/api/orders/:token',
+        summary:
+          'Follow an order. Once it is delivered, fulfilled is true and subscriptionUrl carries the client subscription link when the subscription server is on.',
+        params: [{ name: 'token', in: 'path', type: 'string', desc: 'Order token.' }],
+        responseSchema: 'ShopOrderView',
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/orders/:token/receipt',
+        summary:
+          'Tell the shop a card transfer was made: ref is the tracking number or last numbers (up to 64 characters), note is free text (up to 500). Moves the order to review; allowed while it is pending or already in review.',
+        params: [
+          { name: 'token', in: 'path', type: 'string', desc: 'Order token.' },
+          { name: 'ref', in: 'body (json)', type: 'string' },
+          { name: 'note', in: 'body (json)', type: 'string', optional: true },
+        ],
+        responseSchema: 'ShopOrderView',
+      },
+      {
+        method: 'GET',
+        path: '/shop/api/callback/:gateway',
+        summary:
+          'Where Zarinpal (Status and Authority in the query) and IDPay (a form POST, see the POST entry) send the customer back. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.',
+        params: [
+          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay'] },
+          { name: 'order', in: 'query', type: 'string', desc: 'Order token.' },
+        ],
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/ipn/nowpayments',
+        summary:
+          'NOWPayments webhook (set as ipn_callback_url on every crypto invoice). The x-nowpayments-sig header must be the HMAC-SHA512, keyed with the IPN secret, of the body with its keys sorted at every depth; an invalid or missing signature answers 401 and changes nothing. The order is found by order_id and its price_amount and price_currency must equal the order. finished delivers the client; partially_paid parks the order in review for the admin; failed and expired fail it; a finished payment for an order already failed or canceled is parked in review instead of being lost. Orders the shop cannot use are answered 200 so the sender stops retrying, internal failures 500 so it retries. Crypto plans must be priced in USD or EUR; unpaid crypto orders are canceled after 7 days.',
+        params: [
+          {
+            name: 'x-nowpayments-sig',
+            in: 'header',
+            type: 'string',
+            desc: 'HMAC-SHA512 signature of the body.',
+          },
+        ],
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/callback/:gateway',
+        summary:
+          'The same callback for gateways that return the customer with a form POST (IDPay sends status 10 when the customer paid).',
+        params: [
+          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay'] },
+          { name: 'order', in: 'query', type: 'string', desc: 'Order token.' },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'admins',
+    title: 'Admins',
+    description:
+      'Admin accounts and their roles. owner: everything; admin: everything except managing admins, API tokens, the database file and security settings; operator: only the inbounds and client groups in its scope; viewer: read-only. Every endpoint except /me is owner-only. API tokens are not admins and keep their own scopes. All endpoints under /panel/api/admins.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/admins/me',
+        summary:
+          'The signed-in admin with its role and, for an operator, its scope. An API token answers as the oldest owner.',
+        responseSchema: 'AdminView',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/admins/list',
+        summary: 'Every admin account, oldest first. Password hashes are never returned.',
+        responseSchema: 'AdminView',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/admins/create',
+        summary:
+          'Create an admin. username is unique (case-insensitive), password is required, role is owner, admin, operator or viewer. inboundIds and groups are kept only for an operator.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'AdminInput.' }],
+        responseSchema: 'AdminView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/admins/update/:id',
+        summary:
+          "Replace an admin. An empty password keeps the current one; a new one ends that admin's sessions. The panel always keeps one owner, and nobody can change their own role or scope.",
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Admin id.' },
+          { name: 'body', in: 'body (json)', type: 'object', desc: 'AdminInput.' },
+        ],
+        responseSchema: 'AdminView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/admins/del/:id',
+        summary:
+          'Delete an admin and close its live connections. The last owner and yourself cannot be deleted.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Admin id.' }],
+      },
+    ],
+  },
+
+  {
+    id: 'reseller',
+    title: 'Reseller credit',
+    description:
+      'Credit and sales of resellers, the admins with the operator role. A reseller is debited by its price list (credit per GiB and per day) when it creates or renews clients; amounts are credit units. The price list and top-ups are owner-only. All endpoints under /panel/api/reseller.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/reseller/me',
+        summary:
+          "The signed-in reseller's credit, price list and latest ledger lines. Any other role gets an empty account.",
+        responseSchema: 'ResellerAccount',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/reseller/report',
+        summary:
+          'Sales per reseller between from and to: clients created and renewed, credit spent, traffic and days sold, credit added and the balance. A reseller only sees its own row.',
+        params: [
+          {
+            name: 'from',
+            in: 'query',
+            type: 'integer',
+            desc: 'Window start, unix ms. Omit for no start.',
+          },
+          {
+            name: 'to',
+            in: 'query',
+            type: 'integer',
+            desc: 'Window end, unix ms. Omit for no end.',
+          },
+        ],
+        responseSchema: 'ResellerReport',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/reseller/account/:id',
+        summary: "One reseller's credit, price list and latest ledger lines. Owner only.",
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Admin id of an operator.' }],
+        responseSchema: 'ResellerAccount',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/reseller/topup/:id',
+        summary:
+          'Add credit to a reseller, or take it back with a negative amount (the balance never goes below zero). Owner only.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Admin id of an operator.' },
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{"amount": 5000, "note": "paid by card"}',
+          },
+        ],
+        responseSchema: 'ResellerEntry',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/reseller/config',
+        summary:
+          "The panel's wholesale price list, which every reseller without its own price follows, and the credit level that raises the reseller.credit_low alert (0 = off). Owner only.",
+        responseSchema: 'ResellerConfig',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/reseller/config/save',
+        summary: 'Save the wholesale price list and the low-credit alert level. Owner only.',
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{"pricePerGb": 100, "pricePerDay": 10, "lowCredit": 1000}',
+          },
+        ],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/reseller/prices/:id',
+        summary:
+          "Set a reseller's own price list. A null price falls back to the panel's list; 0 makes that dimension free. Owner only.",
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Admin id of an operator.' },
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{"pricePerGb": 100, "pricePerDay": null}',
+          },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'security',
+    title: 'Extra security',
+    description:
+      'Protections that do not depend on two-factor codes: login captcha and more. Owner only. All endpoints under /panel/api/security.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/security/config',
+        summary: 'The extra-security configuration. Secrets are never returned.',
+        responseSchema: 'SecurityConfigView',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/security/config/save',
+        summary:
+          'Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.',
+        params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SecurityConfig.' }],
+      },
+    ],
+  },
+
+  {
+    id: 'sessions',
+    title: 'Sessions',
+    description:
+      'Browsers signed in to the panel. Every role may list and end its own sessions; owners may also act on other admins. API tokens are not sessions. All endpoints under /panel/api/sessions.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/sessions/list',
+        summary:
+          'Active sessions with address, user agent and last-seen time; current marks the browser making the request. Non-owners always get their own; an owner gets everyone unless userId is given.',
+        params: [
+          {
+            name: 'userId',
+            in: 'query',
+            type: 'integer',
+            desc: 'Owner only: limit to this admin.',
+            optional: true,
+          },
+        ],
+        responseSchema: 'SessionView',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sessions/revoke/:id',
+        summary:
+          'End one session. The browser is signed out on its next request. Non-owners can only end their own.',
+        params: [{ name: 'id', in: 'path', type: 'string', desc: 'Session id from the list.' }],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sessions/revokeAll',
+        summary:
+          'Log an admin out everywhere. userId 0 means yourself; only an owner may name someone else. keepCurrent spares the session making the request.',
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{ "userId": 0, "keepCurrent": true }',
           },
         ],
       },

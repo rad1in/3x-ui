@@ -36,10 +36,10 @@ _openapi:
         values on success.
       url: '#change-the-panel-admin-username-and-password-requires-the-current-credentials-for-verification-the-session-is-refreshed-with-the-new-values-on-success'
     - depth: 2
-      title: Restart the entire 3x-ui process after a 3-second grace period. The
+      title: Restart the entire panel process after a 3-second grace period. The
         connection drops immediately; the panel comes back online ~5-10 seconds
         later.
-      url: '#restart-the-entire-3x-ui-process-after-a-3-second-grace-period-the-connection-drops-immediately-the-panel-comes-back-online-5-10-seconds-later'
+      url: '#restart-the-entire-panel-process-after-a-3-second-grace-period-the-connection-drops-immediately-the-panel-comes-back-online-5-10-seconds-later'
     - depth: 2
       title: Test SMTP connection with stage-by-stage reporting (connect, auth, send).
         Returns structured result with stage and message.
@@ -56,6 +56,14 @@ _openapi:
       title: Send a signed test event to every configured webhook URL. Fails with the
         first URL that did not answer 2xx.
       url: '#send-a-signed-test-event-to-every-configured-webhook-url-fails-with-the-first-url-that-did-not-answer-2xx'
+    - depth: 2
+      title: Shipped text of every customisable Telegram bot message in a language,
+        placeholders unrendered. Used by the bot message editor.
+      url: '#shipped-text-of-every-customisable-telegram-bot-message-in-a-language-placeholders-unrendered-used-by-the-bot-message-editor'
+    - depth: 2
+      title: Send one test message to a push channel (ntfy, Gotify or Slack) using the
+        saved settings. Works while the channel is switched off.
+      url: '#send-one-test-message-to-a-push-channel-ntfy-gotify-or-slack-using-the-saved-settings-works-while-the-channel-is-switched-off'
     - depth: 2
       title: 'Run the scheduled backup once with the saved settings: a gzipped
         database backup to the local folder and/or the S3 bucket, pruning beyond
@@ -89,10 +97,10 @@ _openapi:
           credentials for verification. The session is refreshed with the new
           values on success.
         id: change-the-panel-admin-username-and-password-requires-the-current-credentials-for-verification-the-session-is-refreshed-with-the-new-values-on-success
-      - content: Restart the entire 3x-ui process after a 3-second grace period. The
+      - content: Restart the entire panel process after a 3-second grace period. The
           connection drops immediately; the panel comes back online ~5-10
           seconds later.
-        id: restart-the-entire-3x-ui-process-after-a-3-second-grace-period-the-connection-drops-immediately-the-panel-comes-back-online-5-10-seconds-later
+        id: restart-the-entire-panel-process-after-a-3-second-grace-period-the-connection-drops-immediately-the-panel-comes-back-online-5-10-seconds-later
       - content: Test SMTP connection with stage-by-stage reporting (connect, auth,
           send). Returns structured result with stage and message.
         id: test-smtp-connection-with-stage-by-stage-reporting-connect-auth-send-returns-structured-result-with-stage-and-message
@@ -105,6 +113,12 @@ _openapi:
       - content: Send a signed test event to every configured webhook URL. Fails with
           the first URL that did not answer 2xx.
         id: send-a-signed-test-event-to-every-configured-webhook-url-fails-with-the-first-url-that-did-not-answer-2xx
+      - content: Shipped text of every customisable Telegram bot message in a language,
+          placeholders unrendered. Used by the bot message editor.
+        id: shipped-text-of-every-customisable-telegram-bot-message-in-a-language-placeholders-unrendered-used-by-the-bot-message-editor
+      - content: Send one test message to a push channel (ntfy, Gotify or Slack) using
+          the saved settings. Works while the channel is switched off.
+        id: send-one-test-message-to-a-push-channel-ntfy-gotify-or-slack-using-the-saved-settings-works-while-the-channel-is-switched-off
       - content: 'Run the scheduled backup once with the saved settings: a gzipped
           database backup to the local folder and/or the S3 bucket, pruning
           beyond backupKeep. Returns one result per destination.'
@@ -124,7 +138,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/setting/all","method":"post"},{"path":"/panel/api/setting/defaultSettings","method":"post"},{"path":"/panel/api/setting/factoryDefaults","method":"post"},{"path":"/panel/api/setting/update","method":"post"},{"path":"/panel/api/setting/validateRegex","method":"post"},{"path":"/panel/api/setting/updateUser","method":"post"},{"path":"/panel/api/setting/restartPanel","method":"post"},{"path":"/panel/api/setting/testSmtp","method":"post"},{"path":"/panel/api/setting/testTgBot","method":"post"},{"path":"/panel/api/setting/testDiscord","method":"post"},{"path":"/panel/api/setting/testWebhook","method":"post"},{"path":"/panel/api/setting/backupNow","method":"post"},{"path":"/panel/api/setting/getDefaultJsonConfig","method":"get"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/setting/all","method":"post"},{"path":"/panel/api/setting/defaultSettings","method":"post"},{"path":"/panel/api/setting/factoryDefaults","method":"post"},{"path":"/panel/api/setting/update","method":"post"},{"path":"/panel/api/setting/validateRegex","method":"post"},{"path":"/panel/api/setting/updateUser","method":"post"},{"path":"/panel/api/setting/restartPanel","method":"post"},{"path":"/panel/api/setting/testSmtp","method":"post"},{"path":"/panel/api/setting/testTgBot","method":"post"},{"path":"/panel/api/setting/testDiscord","method":"post"},{"path":"/panel/api/setting/testWebhook","method":"post"},{"path":"/panel/api/setting/botMessages","method":"post"},{"path":"/panel/api/setting/testPush","method":"post"},{"path":"/panel/api/setting/backupNow","method":"post"},{"path":"/panel/api/setting/getDefaultJsonConfig","method":"get"}]} showTitle />
     </>
   );
 }

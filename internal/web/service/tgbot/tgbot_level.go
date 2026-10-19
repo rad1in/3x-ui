@@ -35,8 +35,8 @@ func (t *Tgbot) levelOf(tgUserID int64) userLevel {
 // stays out of reach of non-admins until it is deliberately listed here.
 var commandsByLevel = map[userLevel]map[string]bool{
 	// /id stays open because an admin binding by hand still asks for the ChatID.
-	levelStranger: {"start": true, "id": true},
-	levelClient:   {"start": true, "help": true, "status": true, "id": true, "usage": true},
+	levelStranger: {"start": true, "id": true, "trial": true},
+	levelClient:   {"start": true, "help": true, "status": true, "id": true, "usage": true, "trial": true},
 }
 
 func commandAllowed(level userLevel, command string) bool {

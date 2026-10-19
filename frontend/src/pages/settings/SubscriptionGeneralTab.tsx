@@ -139,6 +139,40 @@ export default function SubscriptionGeneralTab({
               </SettingListItem>
               <SettingListItem
                 paddings="small"
+                title={t('pages.settings.subShortLinkEnable')}
+                description={t('pages.settings.subShortLinkEnableDesc')}
+              >
+                <Switch
+                  checked={allSetting.subShortLinkEnable}
+                  onChange={(v) => updateSetting({ subShortLinkEnable: v })}
+                />
+              </SettingListItem>
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.subRateLimitPerIP')}
+                description={t('pages.settings.subRateLimitDesc')}
+              >
+                <InputNumber
+                  value={allSetting.subRateLimitPerIP}
+                  min={0}
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ subRateLimitPerIP: v }))}
+                />
+              </SettingListItem>
+              <SettingListItem
+                paddings="small"
+                title={t('pages.settings.subRateLimitPerSub')}
+                description={t('pages.settings.subRateLimitDesc')}
+              >
+                <InputNumber
+                  value={allSetting.subRateLimitPerSub}
+                  min={0}
+                  style={{ width: '100%' }}
+                  onChange={onNumber((v) => updateSetting({ subRateLimitPerSub: v }))}
+                />
+              </SettingListItem>
+              <SettingListItem
+                paddings="small"
                 title={t('pages.settings.subURI')}
                 description={t('pages.settings.subURIDesc')}
               >
@@ -355,22 +389,11 @@ export default function SubscriptionGeneralTab({
               <SettingListItem
                 paddings="small"
                 title={t('pages.settings.subThemeDir')}
-                description={
-                  <>
-                    {t('pages.settings.subThemeDirDesc')}{' '}
-                    <a
-                      href="https://github.com/MHSanaei/3x-ui/blob/main/docs/custom-subscription-templates.md"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {t('pages.settings.subThemeDirDocs')}
-                    </a>
-                  </>
-                }
+                description={t('pages.settings.subThemeDirDesc')}
               >
                 <Input
                   value={allSetting.subThemeDir}
-                  placeholder="/etc/3x-ui/sub_templates/my-theme/"
+                  placeholder="/etc/x-ui/sub_templates/my-theme/"
                   onChange={(e) => updateSetting({ subThemeDir: e.target.value })}
                 />
               </SettingListItem>

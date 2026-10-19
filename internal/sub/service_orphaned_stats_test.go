@@ -18,7 +18,7 @@ import (
 func TestStatsForClient_OrphanedInboundIdFallback(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	const email = "old-client@example.com"
 	const total = int64(100) * gb

@@ -63,8 +63,8 @@ type ScheduledBackupService struct {
 	server   ServerService
 }
 
-// backupName matches the files this service writes: <host>_<date>_<time>.<db|dump>.gz.
-var backupName = regexp.MustCompile(`^(.+)_\d{4}-\d{2}-\d{2}_\d{6}\.(db|dump)\.gz$`)
+// backupName matches the files this service writes: <host>_<date>_<time>.<db|dump>.gz[.enc].
+var backupName = regexp.MustCompile(`^(.+)_\d{4}-\d{2}-\d{2}_\d{6}\.(db|dump)\.gz(\.enc)?$`)
 
 // staleBackups picks, among names, this host's backups beyond the newest keep;
 // anything else in the folder or bucket is never touched.
@@ -103,14 +103,17 @@ func (s *ScheduledBackupService) Run(ctx context.Context) ([]BackupResult, error
 	if err := zw.Close(); err != nil {
 		return nil, err
 	}
-	name := s.server.BackupFilename("") + ".gz"
+	name, payload, err := ProtectBackup(s.server.BackupFilename("")+".gz", buf.Bytes())
+	if err != nil {
+		return nil, fmt.Errorf("encrypt backup: %w", err)
+	}
 
 	var results []BackupResult
 	if cfg.LocalDir != "" {
-		results = append(results, backupToDir(cfg.LocalDir, name, buf.Bytes(), cfg.Keep))
+		results = append(results, backupToDir(cfg.LocalDir, name, payload, cfg.Keep))
 	}
 	if cfg.s3Configured() {
-		results = append(results, backupToS3(ctx, cfg, name, buf.Bytes()))
+		results = append(results, backupToS3(ctx, cfg, name, payload))
 	}
 	return results, nil
 }

@@ -2,8 +2,37 @@ package config
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 )
+
+func TestGetDBPathLegacyFallback(t *testing.T) {
+	tests := []struct {
+		name  string
+		files []string
+		want  string
+	}{
+		{name: "empty folder uses the new default", want: "eternal.db"},
+		{name: "legacy only keeps the legacy file", files: []string{"x-ui.db"}, want: "x-ui.db"},
+		{name: "new file wins over legacy", files: []string{"x-ui.db", "eternal.db"}, want: "eternal.db"},
+		{name: "new file alone", files: []string{"eternal.db"}, want: "eternal.db"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dir := t.TempDir()
+			t.Setenv("XUI_DB_FOLDER", dir)
+			for _, f := range tt.files {
+				if err := os.WriteFile(filepath.Join(dir, f), nil, 0o600); err != nil {
+					t.Fatal(err)
+				}
+			}
+			want := dir + "/" + tt.want
+			if got := GetDBPath(); got != want {
+				t.Fatalf("GetDBPath = %q, want %q", got, want)
+			}
+		})
+	}
+}
 
 func TestGetPanelVersion(t *testing.T) {
 	orig := buildCommit

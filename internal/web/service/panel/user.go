@@ -21,13 +21,15 @@ type UserService struct {
 	settingService service.SettingService
 }
 
-// GetFirstUser retrieves the first user from the database.
-// This is typically used for initial setup or when there's only one admin user.
-func (s *UserService) GetFirstUser() (*model.User, error) {
+// GetPrimaryOwner returns the oldest owner account: the one API tokens act as
+// and the CLI resets.
+func (s *UserService) GetPrimaryOwner() (*model.User, error) {
 	db := database.GetDB()
 
 	user := &model.User{}
 	err := db.Model(model.User{}).
+		Where("role = ?", model.AdminRoleOwner).
+		Order("id ASC").
 		First(user).
 		Error
 	if err != nil {
@@ -91,7 +93,8 @@ func (s *UserService) CheckUser(username string, password string, twoFactorCode 
 		return nil, err
 	}
 
-	if twoFactorEnable {
+	// The panel has one authenticator secret, set up by and bound to its owners.
+	if twoFactorEnable && user.Role == model.AdminRoleOwner {
 		twoFactorToken, err := s.settingService.GetTwoFactorToken()
 		if err != nil {
 			logger.Warning("check two factor token err:", err)
@@ -108,10 +111,13 @@ func (s *UserService) CheckUser(username string, password string, twoFactorCode 
 
 func (s *UserService) BumpLoginEpoch() error {
 	db := database.GetDB()
-	return db.Model(model.User{}).
+	if err := db.Model(model.User{}).
 		Where("1 = 1").
 		Update("login_epoch", gorm.Expr("login_epoch + 1")).
-		Error
+		Error; err != nil {
+		return err
+	}
+	return db.Where("1 = 1").Delete(&model.AdminSession{}).Error
 }
 
 func (s *UserService) UpdateUser(id int, username string, password string) error {
@@ -125,20 +131,28 @@ func (s *UserService) UpdateUser(id int, username string, password string) error
 	if err != nil {
 		return err
 	}
+	var role string
+	if err := db.Model(model.User{}).Where("id = ?", id).Pluck("role", &role).Error; err != nil {
+		return err
+	}
 
-	if twoFactorEnable {
+	// Only an owner's credentials are bound to the panel authenticator.
+	if twoFactorEnable && role == model.AdminRoleOwner {
 		_ = s.settingService.SetTwoFactorEnable(false)
 		_ = s.settingService.SetTwoFactorToken("")
 	}
 
-	return db.Model(model.User{}).
+	if err := db.Model(model.User{}).
 		Where("id = ?", id).
 		Updates(map[string]any{
 			"username":    username,
 			"password":    hashedPassword,
 			"login_epoch": gorm.Expr("login_epoch + 1"),
 		}).
-		Error
+		Error; err != nil {
+		return err
+	}
+	return db.Where("user_id = ?", id).Delete(&model.AdminSession{}).Error
 }
 
 func (s *UserService) UpdateFirstUser(username string, password string) error {
@@ -154,9 +168,9 @@ func (s *UserService) UpdateFirstUser(username string, password string) error {
 	}
 
 	db := database.GetDB()
-	user := &model.User{}
-	err := db.Model(model.User{}).First(user).Error
+	user, err := s.GetPrimaryOwner()
 	if database.IsNotFound(err) {
+		user = &model.User{Role: model.AdminRoleOwner}
 		user.Username = username
 		user.Password = hashedPassword
 		return db.Model(model.User{}).Create(user).Error

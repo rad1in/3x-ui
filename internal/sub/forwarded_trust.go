@@ -90,3 +90,23 @@ func remoteAddrInCIDRs(remoteAddr, cidrs string) bool {
 	}
 	return false
 }
+
+// VisitorIP is the client address for rate limiting: forwarded headers count
+// only when the peer is inside trustedProxyCIDRs, so a visitor cannot spoof one.
+func (s *SubService) VisitorIP(c *gin.Context) string {
+	remote := c.Request.RemoteAddr
+	if h, _, err := net.SplitHostPort(remote); err == nil {
+		remote = h
+	}
+	cidrs, err := s.settingService.GetTrustedProxyCIDRs()
+	if err != nil || !remoteAddrInCIDRs(remote, cidrs) {
+		return remote
+	}
+	if ip := strings.TrimSpace(c.GetHeader("X-Real-IP")); ip != "" {
+		return ip
+	}
+	if first, _, _ := strings.Cut(c.GetHeader("X-Forwarded-For"), ","); strings.TrimSpace(first) != "" {
+		return strings.TrimSpace(first)
+	}
+	return remote
+}

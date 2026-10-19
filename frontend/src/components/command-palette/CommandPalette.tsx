@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Tag, Tooltip, message } from 'antd';
 import {
   ApiOutlined,
+  BellOutlined,
   BranchesOutlined,
   ApartmentOutlined,
   CheckCircleFilled,
@@ -16,6 +17,7 @@ import {
   CodeOutlined,
   CopyOutlined,
   CrownOutlined,
+  ShoppingCartOutlined,
   DashboardOutlined,
   DatabaseOutlined,
   DiscordOutlined,
@@ -333,7 +335,7 @@ export default function CommandPalette() {
         category: 'inbounds',
         title: ib.remark || ib.tag || `Inbound #${ib.id}`,
         subtitle: `Port ${ib.port || ''}`,
-        icon: <ImportOutlined style={{ color: '#1677ff' }} />,
+        icon: <ImportOutlined style={{ color: '#5b4fe0' }} />,
         tag:
           tags.length > 0 ? (
             <div style={{ display: 'inline-flex', gap: 4, flexWrap: 'wrap' }}>{tags}</div>
@@ -369,6 +371,9 @@ export default function CommandPalette() {
           'openvpn',
           'ikev2',
           'l2tp',
+          'ssh',
+          'sstp',
+          'ocserv',
         ],
         icon: <ImportOutlined />,
       },
@@ -425,6 +430,12 @@ export default function CommandPalette() {
         title: t('menu.apiDocs'),
         keywords: ['api', 'api docs', 'swagger', 'rest api', 'endpoints'],
         icon: <ApiOutlined />,
+      },
+      {
+        path: '/sales',
+        title: t('menu.sales'),
+        keywords: ['sales', 'plans', 'orders', 'payments', 'shop'],
+        icon: <ShoppingCartOutlined />,
       },
       {
         path: '/sponsors',
@@ -492,6 +503,13 @@ export default function CommandPalette() {
         subtitle: t('pages.settings.webhookSettings'),
         keywords: ['webhook', 'n8n', 'zapier', 'http', 'events', 'billing'],
         icon: <BranchesOutlined />,
+      },
+      {
+        path: '/settings#push',
+        title: `${t('menu.settings')} · ${t('pages.settings.pushSettings')}`,
+        subtitle: t('pages.settings.pushSettings'),
+        keywords: ['ntfy', 'gotify', 'slack', 'push', 'notifications', 'alerts'],
+        icon: <BellOutlined />,
       },
       {
         path: '/settings#backups',
@@ -831,7 +849,7 @@ export default function CommandPalette() {
                 {t('close')}
               </span>
             </div>
-            <span>3x-ui Command Palette</span>
+            <span>Eternal Command Palette</span>
           </div>
         </div>
       </div>

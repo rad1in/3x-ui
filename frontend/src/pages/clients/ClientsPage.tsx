@@ -34,6 +34,7 @@ import {
   DeleteOutlined,
   DisconnectOutlined,
   DownloadOutlined,
+  PrinterOutlined,
   EditOutlined,
   FilterOutlined,
   InfoCircleOutlined,
@@ -49,6 +50,7 @@ import {
   TagsOutlined,
   TeamOutlined,
   UploadOutlined,
+  SnippetsOutlined,
   UsergroupAddOutlined,
   UsergroupDeleteOutlined,
 } from '@ant-design/icons';
@@ -84,6 +86,8 @@ const ClientFormModal = lazy(() => import('./ClientFormModal'));
 const ClientInfoModal = lazy(() => import('./ClientInfoModal'));
 const ClientQrModal = lazy(() => import('./ClientQrModal'));
 const ClientBulkAddModal = lazy(() => import('./ClientBulkAddModal'));
+const ClientTemplatesModal = lazy(() => import('./ClientTemplatesModal'));
+const ClientForeignImportModal = lazy(() => import('./ClientForeignImportModal'));
 const ClientBulkAdjustModal = lazy(() => import('./ClientBulkAdjustModal'));
 import ClientsEmptyState from './ClientsEmptyState';
 const FilterDrawer = lazy(() => import('./FilterDrawer'));
@@ -362,6 +366,7 @@ export default function ClientsPage() {
     detach,
     bulkDetach,
     resetTraffic,
+    disconnect,
     resetAllTraffics,
     delDepleted,
     delOrphans,
@@ -410,6 +415,8 @@ export default function ClientsPage() {
     {},
   );
   const [bulkAddOpen, setBulkAddOpen] = useState(false);
+  const [templatesOpen, setTemplatesOpen] = useState(false);
+  const [foreignImportOpen, setForeignImportOpen] = useState(false);
   const [bulkAdjustOpen, setBulkAdjustOpen] = useState(false);
   const [subLinksOpen, setSubLinksOpen] = useState(false);
   const [bulkGroupOpen, setBulkGroupOpen] = useState(false);
@@ -744,6 +751,32 @@ export default function ClientsPage() {
     [modal, t, remove, messageApi],
   );
 
+  const onDisconnect = useCallback(
+    (email: string) => {
+      modal.confirm({
+        title: `${t('pages.clients.disconnect')} — ${email}`,
+        content: t('pages.clients.disconnectConfirm'),
+        okText: t('pages.clients.disconnect'),
+        cancelText: t('cancel'),
+        onOk: async () => {
+          const msg = await disconnect(email);
+          const result = msg?.obj;
+          if (!msg?.success || !result) return;
+          messageApi.success(t('pages.clients.disconnectResult', { count: result.disconnected }));
+          if (result.unsupported.length > 0) {
+            messageApi.warning(
+              t('pages.clients.disconnectUnsupported', { inbounds: result.unsupported.join(', ') }),
+            );
+          }
+          for (const [inbound, reason] of Object.entries(result.failed)) {
+            messageApi.error(`${inbound}: ${reason}`);
+          }
+        },
+      });
+    },
+    [modal, t, disconnect, messageApi],
+  );
+
   const onResetTraffic = useCallback(
     (email: string) => {
       const row = rowsByEmail.current.get(email);
@@ -885,6 +918,12 @@ export default function ClientsPage() {
         }
       },
     });
+  }
+
+  function openUsageReport(format: 'csv' | 'html') {
+    const url = `${window.X_UI_BASE_PATH || ''}panel/api/clients/report?format=${format}`;
+    if (format === 'csv') window.location.href = url;
+    else window.open(url, '_blank', 'noopener');
   }
 
   async function onExportClients() {
@@ -1491,16 +1530,40 @@ export default function ClientsPage() {
                                         onClick: () => setBulkAddOpen(true),
                                       },
                                       {
+                                        key: 'templates',
+                                        icon: <SnippetsOutlined />,
+                                        label: t('pages.clients.templates.menu'),
+                                        onClick: () => setTemplatesOpen(true),
+                                      },
+                                      {
                                         key: 'export',
                                         icon: <DownloadOutlined />,
                                         label: t('pages.clients.exportClients'),
                                         onClick: onExportClients,
                                       },
                                       {
+                                        key: 'reportCsv',
+                                        icon: <DownloadOutlined />,
+                                        label: t('pages.clients.usageReportCsv'),
+                                        onClick: () => openUsageReport('csv'),
+                                      },
+                                      {
+                                        key: 'reportPrint',
+                                        icon: <PrinterOutlined />,
+                                        label: t('pages.clients.usageReportPrint'),
+                                        onClick: () => openUsageReport('html'),
+                                      },
+                                      {
                                         key: 'import',
                                         icon: <UploadOutlined />,
                                         label: t('pages.clients.importClients'),
                                         onClick: onImportClients,
+                                      },
+                                      {
+                                        key: 'importForeign',
+                                        icon: <UploadOutlined />,
+                                        label: t('pages.clients.foreignImport.menu'),
+                                        onClick: () => setForeignImportOpen(true),
                                       },
                                       {
                                         key: 'resetAll',
@@ -1830,6 +1893,16 @@ export default function ClientsPage() {
                                               onClick: () => onResetTraffic(row.email),
                                             },
                                             {
+                                              key: 'disconnect',
+                                              label: (
+                                                <>
+                                                  <DisconnectOutlined />{' '}
+                                                  {t('pages.clients.disconnect')}
+                                                </>
+                                              ),
+                                              onClick: () => onDisconnect(row.email),
+                                            },
+                                            {
                                               key: 'edit',
                                               label: (
                                                 <>
@@ -1939,6 +2012,21 @@ export default function ClientsPage() {
             groups={allGroups}
             onOpenChange={setBulkAddOpen}
             onSaved={() => setBulkAddOpen(false)}
+          />
+        </LazyMount>
+        <LazyMount when={foreignImportOpen}>
+          <ClientForeignImportModal
+            open={foreignImportOpen}
+            inbounds={inbounds}
+            onOpenChange={setForeignImportOpen}
+          />
+        </LazyMount>
+        <LazyMount when={templatesOpen}>
+          <ClientTemplatesModal
+            open={templatesOpen}
+            inbounds={inbounds}
+            groups={allGroups}
+            onOpenChange={setTemplatesOpen}
           />
         </LazyMount>
         <LazyMount when={bulkAdjustOpen}>

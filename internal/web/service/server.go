@@ -1232,7 +1232,7 @@ func (s *ServerService) GetLogs(count string, level string, syslog string) []str
 		// Use hardcoded command with validated parameters
 		ctx, cancel := context.WithTimeout(context.Background(), syslogTimeout)
 		defer cancel()
-		cmd := exec.CommandContext(ctx, "journalctl", "-u", "x-ui", "--no-pager", "-n", strconv.Itoa(countInt), "-p", level)
+		cmd := exec.CommandContext(ctx, "journalctl", "-u", "eternal", "--no-pager", "-n", strconv.Itoa(countInt), "-p", level)
 		var out bytes.Buffer
 		cmd.Stdout = &out
 		err = cmd.Run()
@@ -1240,7 +1240,7 @@ func (s *ServerService) GetLogs(count string, level string, syslog string) []str
 			return []string{"journalctl did not answer in time. Try a smaller line count or a less strict level."}
 		}
 		if err != nil {
-			return []string{"Failed to run journalctl command! Make sure systemd is available and x-ui service is registered."}
+			return []string{"Failed to run journalctl command! Make sure systemd is available and eternal service is registered."}
 		}
 		lines = strings.Split(out.String(), "\n")
 	} else {
@@ -1563,6 +1563,10 @@ func (s *ServerService) GetDb() ([]byte, error) {
 	if database.IsPostgres() {
 		return s.exportPostgresDB()
 	}
+	if database.IsMySQL() {
+		// A SQLite snapshot needs no mysqldump on the host and restores anywhere.
+		return exportServerDBAsSQLite()
+	}
 	backupPath, cleanup, err := s.backupSQLite()
 	if err != nil {
 		return nil, err
@@ -1572,7 +1576,7 @@ func (s *ServerService) GetDb() ([]byte, error) {
 }
 
 func (s *ServerService) backupSQLite() (string, func(), error) {
-	backupDir, err := os.MkdirTemp(filepath.Dir(config.GetDBPath()), ".x-ui-backup-")
+	backupDir, err := os.MkdirTemp(filepath.Dir(config.GetDBPath()), ".eternal-backup-")
 	if err != nil {
 		return "", nil, err
 	}
@@ -1594,10 +1598,10 @@ func (s *ServerService) backupSQLite() (string, func(), error) {
 // is named after whatever address the user reached the panel with, no Listen
 // Domain needed. The Telegram bot has no request and passes "", falling back to
 // the configured Listen Domain (webDomain) and then the public IP. The extension
-// is .dump on PostgreSQL and .db on SQLite; the base falls back to "x-ui" when
+// is .dump on PostgreSQL and .db on SQLite; the base falls back to "eternal" when
 // no address is known.
 func (s *ServerService) BackupFilename(requestHost string) string {
-	ext := ".db"
+	ext := ".db" // MySQL backs up as a SQLite snapshot too
 	if database.IsPostgres() {
 		ext = ".dump"
 	}
@@ -1616,7 +1620,7 @@ func backupDateSuffix(now time.Time) string {
 // (webDomain) and then the resolved public IP (IPv4 before IPv6), reduced to safe
 // filename characters. The public IP is resolved directly rather than read from
 // LastStatus so callers whose ServerService never runs the status ticker —
-// notably the Telegram bot — still get a real address instead of the "x-ui"
+// notably the Telegram bot — still get a real address instead of the "eternal"
 // fallback.
 func (s *ServerService) backupHost(requestHost string) string {
 	host := extractHostname(strings.TrimSpace(requestHost))
@@ -1640,7 +1644,7 @@ func (s *ServerService) backupHost(requestHost string) string {
 // sanitizeBackupHost reduces a host to characters safe in a download filename
 // (the getDb handler enforces ^[a-zA-Z0-9_\-.]+$). IPv6 brackets are stripped
 // and any other character — such as the colons in an IPv6 address — becomes a
-// hyphen. Returns "x-ui" when nothing usable remains.
+// hyphen. Returns "eternal" when nothing usable remains.
 func sanitizeBackupHost(host string) string {
 	host = strings.Trim(host, "[]")
 	var b strings.Builder
@@ -1654,7 +1658,7 @@ func sanitizeBackupHost(host string) string {
 	}
 	out := strings.Trim(b.String(), ".-")
 	if out == "" {
-		return "x-ui"
+		return "eternal"
 	}
 	return out
 }
@@ -1663,24 +1667,30 @@ func sanitizeBackupHost(host string) string {
 // SQLite panel it returns a portable .dump (SQL text), and on a PostgreSQL panel
 // it returns a .db SQLite database built from the live data. Either output can
 // then seed a panel running on the other backend.
-func (s *ServerService) GetMigration() ([]byte, string, error) {
-	if database.IsPostgres() {
-		tmp, err := os.CreateTemp("", "x-ui-migration-*.db")
-		if err != nil {
-			return nil, "", err
-		}
-		tmpPath := tmp.Name()
-		tmp.Close()
-		defer os.Remove(tmpPath)
+// exportServerDBAsSQLite copies the live PostgreSQL/MySQL data into a
+// temporary SQLite file and returns its bytes.
+func exportServerDBAsSQLite() ([]byte, error) {
+	tmp, err := os.CreateTemp("", "eternal-migration-*.db")
+	if err != nil {
+		return nil, err
+	}
+	tmpPath := tmp.Name()
+	tmp.Close()
+	defer os.Remove(tmpPath)
 
-		if err := database.ExportPostgresToSQLite(config.GetDBDSN(), tmpPath); err != nil {
-			return nil, "", err
-		}
-		data, err := os.ReadFile(tmpPath)
+	if err := database.ExportServerDBToSQLite(config.GetDBKind(), config.GetDBDSN(), tmpPath); err != nil {
+		return nil, err
+	}
+	return os.ReadFile(tmpPath)
+}
+
+func (s *ServerService) GetMigration() ([]byte, string, error) {
+	if !database.IsSQLite() {
+		data, err := exportServerDBAsSQLite()
 		if err != nil {
 			return nil, "", err
 		}
-		return data, "x-ui.db", nil
+		return data, "eternal.db", nil
 	}
 
 	backupPath, cleanup, err := s.backupSQLite()
@@ -1692,7 +1702,7 @@ func (s *ServerService) GetMigration() ([]byte, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
-	return data, "x-ui.dump", nil
+	return data, "eternal.dump", nil
 }
 
 // hostBoundSettingKeys are the settings that describe *this* machine rather
@@ -1724,7 +1734,7 @@ func captureHostBoundSettings() hostBoundSnapshot {
 		return hostBoundSnapshot{}
 	}
 	var rows []model.Setting
-	if err := db.Model(&model.Setting{}).Where("key IN ?", hostBoundSettingKeys).Find(&rows).Error; err != nil {
+	if err := db.Model(&model.Setting{}).Where(`"key" IN ?`, hostBoundSettingKeys).Find(&rows).Error; err != nil {
 		logger.Warningf("Import: could not read this machine's settings, they will come from the uploaded file: %v", err)
 		return hostBoundSnapshot{}
 	}
@@ -1756,7 +1766,7 @@ func restoreHostBoundSettings(snap hostBoundSnapshot) {
 			if lazilyMintedSettingKeys[key] {
 				continue
 			}
-			if err := db.Where("key = ?", key).Delete(&model.Setting{}).Error; err != nil {
+			if err := db.Where(`"key" = ?`, key).Delete(&model.Setting{}).Error; err != nil {
 				logger.Warningf("Import: could not drop imported setting %q: %v", key, err)
 			}
 			continue
@@ -1782,6 +1792,9 @@ var lazilyMintedSettingKeys = map[string]bool{
 func (s *ServerService) ImportDB(file multipart.File, keepHostSettings bool) error {
 	if database.IsPostgres() {
 		return s.importPostgresDB(file, keepHostSettings)
+	}
+	if database.IsMySQL() {
+		return s.importMySQLDB(file, keepHostSettings)
 	}
 	kind, err := sniffUploadKind(file)
 	if err != nil {
@@ -1997,7 +2010,7 @@ func pgRestoreReadFailureError(probeOutput, localVersion string) error {
 		localVersion = "unknown"
 	}
 	if major, known := pgArchiveVersionIntroducedIn[m[1]]; known {
-		return common.NewErrorf("This backup was created by pg_dump from PostgreSQL %d or newer, but the server's pg_restore is version %s and cannot read it; run 'x-ui pgclient %d' on the server (or upgrade the postgresql-client package to version %d or newer), then retry the import", major, localVersion, major, major)
+		return common.NewErrorf("This backup was created by pg_dump from PostgreSQL %d or newer, but the server's pg_restore is version %s and cannot read it; run 'eternal pgclient %d' on the server (or upgrade the postgresql-client package to version %d or newer), then retry the import", major, localVersion, major, major)
 	}
 	return common.NewErrorf("This backup was created by a newer pg_dump than the server's pg_restore (version %s) can read; upgrade the postgresql-client package and retry the import", localVersion)
 }
@@ -2058,11 +2071,30 @@ func (s *ServerService) importPostgresDB(file multipart.File, keepHostSettings b
 	case importKindPgDump:
 		return s.restorePostgresDump(file, keepHostSettings)
 	case importKindSQLiteDB:
-		return s.migrateSQLiteIntoPostgres(file, false)
+		return s.migrateSQLiteIntoServerDB(file, false, keepHostSettings)
 	case importKindSQLiteDump:
-		return s.migrateSQLiteIntoPostgres(file, true)
+		return s.migrateSQLiteIntoServerDB(file, true, keepHostSettings)
 	default:
 		return common.NewError("Invalid file: expected a PostgreSQL custom-format dump (.dump) from this panel's Back Up, a SQLite database (.db), or a SQLite migration dump")
+	}
+}
+
+// importMySQLDB restores a MySQL panel from the SQLite .db its Back Up writes,
+// or from a SQLite panel's .db or migration .dump.
+func (s *ServerService) importMySQLDB(file multipart.File, keepHostSettings bool) error {
+	kind, err := sniffUploadKind(file)
+	if err != nil {
+		return common.NewErrorf("Error reading uploaded file: %v", err)
+	}
+	switch kind {
+	case importKindSQLiteDB:
+		return s.migrateSQLiteIntoServerDB(file, false, keepHostSettings)
+	case importKindSQLiteDump:
+		return s.migrateSQLiteIntoServerDB(file, true, keepHostSettings)
+	case importKindPgDump:
+		return common.NewError("This file is a PostgreSQL backup; it can only be restored on a panel running PostgreSQL")
+	default:
+		return common.NewError("Invalid file: expected a SQLite database (.db) from Back Up or a SQLite migration dump (.dump)")
 	}
 }
 
@@ -2076,7 +2108,7 @@ func (s *ServerService) restorePostgresDump(file multipart.File, keepHostSetting
 		return common.NewErrorf("invalid PostgreSQL DSN: %v", err)
 	}
 
-	tempFile, err := os.CreateTemp("", "x-ui-pg-restore-*.dump")
+	tempFile, err := os.CreateTemp("", "eternal-pg-restore-*.dump")
 	if err != nil {
 		return common.NewErrorf("Error creating temporary dump file: %v", err)
 	}
@@ -2142,8 +2174,8 @@ func (s *ServerService) restorePostgresDump(file multipart.File, keepHostSetting
 	return nil
 }
 
-func (s *ServerService) migrateSQLiteIntoPostgres(file multipart.File, isSQLDump bool) error {
-	tempDir, err := os.MkdirTemp("", "x-ui-pg-migrate-*")
+func (s *ServerService) migrateSQLiteIntoServerDB(file multipart.File, isSQLDump, keepHostSettings bool) error {
+	tempDir, err := os.MkdirTemp("", "eternal-pg-migrate-*")
 	if err != nil {
 		return common.NewErrorf("Error creating temporary folder: %v", err)
 	}
@@ -2183,19 +2215,27 @@ func (s *ServerService) migrateSQLiteIntoPostgres(file multipart.File, isSQLDump
 		logger.Warningf("Failed to stop Xray before DB restore: %v", errStop)
 	}
 
+	var keptSettings hostBoundSnapshot
+	if keepHostSettings {
+		keptSettings = captureHostBoundSettings()
+	}
+
 	if errClose := database.CloseDB(); errClose != nil {
 		logger.Warningf("Failed to close existing DB before restore: %v", errClose)
 	}
 
-	migrateErr := database.MigrateData(dbPath, config.GetDBDSN())
+	migrateErr := database.MigrateDataTo(dbPath, config.GetDBKind(), config.GetDBDSN())
 
 	if errInit := database.InitDB(config.GetDBPath()); errInit != nil {
 		return common.NewErrorf("Restore finished but reopening the database failed: %v", errInit)
 	}
+	if migrateErr == nil {
+		restoreHostBoundSettings(keptSettings)
+	}
 	s.inboundService.MigrateDB()
 
 	if migrateErr != nil {
-		return common.NewErrorf("Importing the SQLite data into PostgreSQL failed: %v; the import runs in a single transaction, so the database was left unchanged", migrateErr)
+		return common.NewErrorf("Importing the SQLite data into %s failed: %v; the import runs in a single transaction, so the database was left unchanged", config.GetDBKind(), migrateErr)
 	}
 
 	xrayStopped = false

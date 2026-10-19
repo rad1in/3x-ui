@@ -4,7 +4,13 @@ export const LoginFormSchema = z.object({
   username: z.string().min(1, 'username'),
   password: z.string().min(1, 'password'),
   twoFactorCode: z.string().optional(),
+  captchaAnswer: z.string().optional(),
+  tgCode: z.string().optional(),
 });
+
+export const CaptchaAnswerSchema = z.string().min(1, 'pages.login.captcha');
+
+export const TgCodeSchema = z.string().regex(/^\d{6}$/, 'pages.login.tgCode');
 
 export const TwoFactorCodeSchema = z.string().min(1, 'twoFactorCode');
 

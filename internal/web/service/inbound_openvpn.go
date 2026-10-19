@@ -48,7 +48,7 @@ func (s *InboundService) normalizeOpenVPNSettings(inbound *model.Inbound, oldSet
 	}
 	if !pki.Complete() {
 		var err error
-		if pki, err = openvpn.NewPKI("x-ui openvpn"); err != nil {
+		if pki, err = openvpn.NewPKI("eternal openvpn"); err != nil {
 			return err
 		}
 	}
@@ -177,6 +177,12 @@ func (s *InboundService) applyLocalSidecar(protocol model.Protocol, inboundId in
 		s.applyLocalIKEv2(inboundId)
 	case model.L2TP:
 		s.applyLocalL2TP(inboundId)
+	case model.SSH:
+		s.applyLocalSSH(inboundId)
+	case model.SSTP:
+		s.applyLocalSSTP(inboundId)
+	case model.OCServ:
+		s.applyLocalOCServ(inboundId)
 	default:
 		return false
 	}

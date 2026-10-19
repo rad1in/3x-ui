@@ -1,0 +1,172 @@
+---
+title: Sales
+description: 'Sell plans to customers: the plan catalogue and the order queue.
+  Prices and amounts are integers in the currency minor unit (IRT and IRR have
+  none, USD, EUR and USDT have two decimals); quotas are in bytes.'
+full: true
+_openapi:
+  preload:
+    - ./public/openapi.json
+  toc:
+    - depth: 2
+      title: Every plan, enabled or not, by sortOrder. Each plan points at a client
+        template that supplies the inbounds and the rest of the client preset.
+      url: '#every-plan-enabled-or-not-by-sortorder-each-plan-points-at-a-client-template-that-supplies-the-inbounds-and-the-rest-of-the-client-preset'
+    - depth: 2
+      title: Create a plan (id 0) or replace the one with the given id. Names are
+        unique, the currency must be IRT, IRR, USD, EUR or USDT and templateId
+        must exist. Returns the saved plan.
+      url: '#create-a-plan-id-0-or-replace-the-one-with-the-given-id-names-are-unique-the-currency-must-be-irt-irr-usd-eur-or-usdt-and-templateid-must-exist-returns-the-saved-plan'
+    - depth: 2
+      title: Delete a plan. Refused while an order for it is still pending or in
+        review; clients already sold keep working.
+      url: '#delete-a-plan-refused-while-an-order-for-it-is-still-pending-or-in-review-clients-already-sold-keep-working'
+    - depth: 2
+      title: Orders newest first, with the total for the filter. status is one of
+        pending, review, paid, rejected, failed or canceled; empty lists all.
+      url: '#orders-newest-first-with-the-total-for-the-filter-status-is-one-of-pending-review-paid-rejected-failed-or-canceled-empty-lists-all'
+    - depth: 2
+      title: 'Accept the payment of a pending or in-review order and deliver it: a new
+        purchase creates the client from the plan terms the order was bought
+        under, a renewal zeroes the usage, applies the plan quota and IP limit
+        and adds the days after the time the client still has. Changes go
+        through the normal client runtime, so remote nodes follow. On a paid
+        order whose delivery failed this retries the delivery. Fails with
+        order_state for an order already delivered, rejected or canceled.'
+      url: '#accept-the-payment-of-a-pending-or-in-review-order-and-deliver-it-a-new-purchase-creates-the-client-from-the-plan-terms-the-order-was-bought-under-a-renewal-zeroes-the-usage-applies-the-plan-quota-and-ip-limit-and-adds-the-days-after-the-time-the-client-still-has-changes-go-through-the-normal-client-runtime-so-remote-nodes-follow-on-a-paid-order-whose-delivery-failed-this-retries-the-delivery-fails-with-order_state-for-an-order-already-delivered-rejected-or-canceled'
+    - depth: 2
+      title: Reject a pending or in-review order, with an optional reason the customer
+        sees. A rejected order cannot be approved afterwards.
+      url: '#reject-a-pending-or-in-review-order-with-an-optional-reason-the-customer-sees-a-rejected-order-cannot-be-approved-afterwards'
+    - depth: 2
+      title: 'Every discount code, newest first, with uses: how many orders currently
+        hold a use of it (orders failed, canceled or rejected give theirs
+        back).'
+      url: '#every-discount-code-newest-first-with-uses-how-many-orders-currently-hold-a-use-of-it-orders-failed-canceled-or-rejected-give-theirs-back'
+    - depth: 2
+      title: Create a code (id 0) or replace the one with the given id. Codes are
+        stored upper-case, 3 to 32 letters, digits, dash or underscore. A
+        percent code takes value percent (1 to 99) off; a fixed code takes value
+        minor units of its currency off and only applies to plans in that
+        currency. planIds limits the code to those plans (empty is all), maxUses
+        0 is unlimited, oncePerCustomer allows one order per client username,
+        expiresAt is unix ms (0 never). A discount that would make the order
+        free is refused at purchase time.
+      url: '#create-a-code-id-0-or-replace-the-one-with-the-given-id-codes-are-stored-upper-case-3-to-32-letters-digits-dash-or-underscore-a-percent-code-takes-value-percent-1-to-99-off-a-fixed-code-takes-value-minor-units-of-its-currency-off-and-only-applies-to-plans-in-that-currency-planids-limits-the-code-to-those-plans-empty-is-all-maxuses-0-is-unlimited-oncepercustomer-allows-one-order-per-client-username-expiresat-is-unix-ms-0-never-a-discount-that-would-make-the-order-free-is-refused-at-purchase-time'
+    - depth: 2
+      title: Delete a discount code. Orders already placed with it keep the price they
+        got.
+      url: '#delete-a-discount-code-orders-already-placed-with-it-keep-the-price-they-got'
+    - depth: 2
+      title: 'A customer wallet: the balance per currency and the latest ledger lines.
+        The customer is the client with that username; a wallet is a ledger, so
+        a balance is always the sum of its entries.'
+      url: '#a-customer-wallet-the-balance-per-currency-and-the-latest-ledger-lines-the-customer-is-the-client-with-that-username-a-wallet-is-a-ledger-so-a-balance-is-always-the-sum-of-its-entries'
+    - depth: 2
+      title: Credit (positive amount) or debit (negative) a customer wallet in minor
+        units of a currency. The client must exist and a debit cannot take the
+        balance below zero. Wallet entries also come from referral bonuses,
+        wallet payments and refunds of rejected wallet orders.
+      url: '#credit-positive-amount-or-debit-negative-a-customer-wallet-in-minor-units-of-a-currency-the-client-must-exist-and-a-debit-cannot-take-the-balance-below-zero-wallet-entries-also-come-from-referral-bonuses-wallet-payments-and-refunds-of-rejected-wallet-orders'
+    - depth: 2
+      title: 'Selling configuration: whether the public shop is on, its public base
+        URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments
+        crypto). Secrets (the Zarinpal merchant id, the IDPay API key and the
+        NOWPayments API key and IPN secret) are never returned: they come back
+        blank and the has... flags say whether they are set. Owner only.'
+      url: '#selling-configuration-whether-the-public-shop-is-on-its-public-base-url-and-the-payment-methods-card-to-card-zarinpal-idpay-nowpayments-crypto-secrets-the-zarinpal-merchant-id-the-idpay-api-key-and-the-nowpayments-api-key-and-ipn-secret-are-never-returned-they-come-back-blank-and-the-has-flags-say-whether-they-are-set-owner-only'
+    - depth: 2
+      title: Replace the selling configuration. An enabled card section needs a 16
+        figure card number (Persian numerals are accepted); an enabled Zarinpal,
+        IDPay or crypto section needs its secrets and the public base URL (http
+        or https), because the gateway sends the customer or its webhook back to
+        it. A blank secret keeps the stored one; list a secret in clearSecrets
+        (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret) to
+        empty it. Secrets are encrypted at rest when node token encryption is
+        on. A disabled section is stored as is. Owner only.
+      url: '#replace-the-selling-configuration-an-enabled-card-section-needs-a-16-figure-card-number-persian-numerals-are-accepted-an-enabled-zarinpal-idpay-or-crypto-section-needs-its-secrets-and-the-public-base-url-http-or-https-because-the-gateway-sends-the-customer-or-its-webhook-back-to-it-a-blank-secret-keeps-the-stored-one-list-a-secret-in-clearsecrets-zarinpalmerchantid-idpayapikey-cryptoapikey-cryptoipnsecret-to-empty-it-secrets-are-encrypted-at-rest-when-node-token-encryption-is-on-a-disabled-section-is-stored-as-is-owner-only'
+  structuredData:
+    headings:
+      - content: Every plan, enabled or not, by sortOrder. Each plan points at a client
+          template that supplies the inbounds and the rest of the client preset.
+        id: every-plan-enabled-or-not-by-sortorder-each-plan-points-at-a-client-template-that-supplies-the-inbounds-and-the-rest-of-the-client-preset
+      - content: Create a plan (id 0) or replace the one with the given id. Names are
+          unique, the currency must be IRT, IRR, USD, EUR or USDT and templateId
+          must exist. Returns the saved plan.
+        id: create-a-plan-id-0-or-replace-the-one-with-the-given-id-names-are-unique-the-currency-must-be-irt-irr-usd-eur-or-usdt-and-templateid-must-exist-returns-the-saved-plan
+      - content: Delete a plan. Refused while an order for it is still pending or in
+          review; clients already sold keep working.
+        id: delete-a-plan-refused-while-an-order-for-it-is-still-pending-or-in-review-clients-already-sold-keep-working
+      - content: Orders newest first, with the total for the filter. status is one of
+          pending, review, paid, rejected, failed or canceled; empty lists all.
+        id: orders-newest-first-with-the-total-for-the-filter-status-is-one-of-pending-review-paid-rejected-failed-or-canceled-empty-lists-all
+      - content: 'Accept the payment of a pending or in-review order and deliver it: a
+          new purchase creates the client from the plan terms the order was
+          bought under, a renewal zeroes the usage, applies the plan quota and
+          IP limit and adds the days after the time the client still has.
+          Changes go through the normal client runtime, so remote nodes follow.
+          On a paid order whose delivery failed this retries the delivery. Fails
+          with order_state for an order already delivered, rejected or
+          canceled.'
+        id: accept-the-payment-of-a-pending-or-in-review-order-and-deliver-it-a-new-purchase-creates-the-client-from-the-plan-terms-the-order-was-bought-under-a-renewal-zeroes-the-usage-applies-the-plan-quota-and-ip-limit-and-adds-the-days-after-the-time-the-client-still-has-changes-go-through-the-normal-client-runtime-so-remote-nodes-follow-on-a-paid-order-whose-delivery-failed-this-retries-the-delivery-fails-with-order_state-for-an-order-already-delivered-rejected-or-canceled
+      - content: Reject a pending or in-review order, with an optional reason the
+          customer sees. A rejected order cannot be approved afterwards.
+        id: reject-a-pending-or-in-review-order-with-an-optional-reason-the-customer-sees-a-rejected-order-cannot-be-approved-afterwards
+      - content: 'Every discount code, newest first, with uses: how many orders
+          currently hold a use of it (orders failed, canceled or rejected give
+          theirs back).'
+        id: every-discount-code-newest-first-with-uses-how-many-orders-currently-hold-a-use-of-it-orders-failed-canceled-or-rejected-give-theirs-back
+      - content: Create a code (id 0) or replace the one with the given id. Codes are
+          stored upper-case, 3 to 32 letters, digits, dash or underscore. A
+          percent code takes value percent (1 to 99) off; a fixed code takes
+          value minor units of its currency off and only applies to plans in
+          that currency. planIds limits the code to those plans (empty is all),
+          maxUses 0 is unlimited, oncePerCustomer allows one order per client
+          username, expiresAt is unix ms (0 never). A discount that would make
+          the order free is refused at purchase time.
+        id: create-a-code-id-0-or-replace-the-one-with-the-given-id-codes-are-stored-upper-case-3-to-32-letters-digits-dash-or-underscore-a-percent-code-takes-value-percent-1-to-99-off-a-fixed-code-takes-value-minor-units-of-its-currency-off-and-only-applies-to-plans-in-that-currency-planids-limits-the-code-to-those-plans-empty-is-all-maxuses-0-is-unlimited-oncepercustomer-allows-one-order-per-client-username-expiresat-is-unix-ms-0-never-a-discount-that-would-make-the-order-free-is-refused-at-purchase-time
+      - content: Delete a discount code. Orders already placed with it keep the price
+          they got.
+        id: delete-a-discount-code-orders-already-placed-with-it-keep-the-price-they-got
+      - content: 'A customer wallet: the balance per currency and the latest ledger
+          lines. The customer is the client with that username; a wallet is a
+          ledger, so a balance is always the sum of its entries.'
+        id: a-customer-wallet-the-balance-per-currency-and-the-latest-ledger-lines-the-customer-is-the-client-with-that-username-a-wallet-is-a-ledger-so-a-balance-is-always-the-sum-of-its-entries
+      - content: Credit (positive amount) or debit (negative) a customer wallet in minor
+          units of a currency. The client must exist and a debit cannot take the
+          balance below zero. Wallet entries also come from referral bonuses,
+          wallet payments and refunds of rejected wallet orders.
+        id: credit-positive-amount-or-debit-negative-a-customer-wallet-in-minor-units-of-a-currency-the-client-must-exist-and-a-debit-cannot-take-the-balance-below-zero-wallet-entries-also-come-from-referral-bonuses-wallet-payments-and-refunds-of-rejected-wallet-orders
+      - content: 'Selling configuration: whether the public shop is on, its public base
+          URL and the payment methods (card-to-card, Zarinpal, IDPay,
+          NOWPayments crypto). Secrets (the Zarinpal merchant id, the IDPay API
+          key and the NOWPayments API key and IPN secret) are never returned:
+          they come back blank and the has... flags say whether they are set.
+          Owner only.'
+        id: selling-configuration-whether-the-public-shop-is-on-its-public-base-url-and-the-payment-methods-card-to-card-zarinpal-idpay-nowpayments-crypto-secrets-the-zarinpal-merchant-id-the-idpay-api-key-and-the-nowpayments-api-key-and-ipn-secret-are-never-returned-they-come-back-blank-and-the-has-flags-say-whether-they-are-set-owner-only
+      - content: Replace the selling configuration. An enabled card section needs a 16
+          figure card number (Persian numerals are accepted); an enabled
+          Zarinpal, IDPay or crypto section needs its secrets and the public
+          base URL (http or https), because the gateway sends the customer or
+          its webhook back to it. A blank secret keeps the stored one; list a
+          secret in clearSecrets (zarinpal.merchantId, idpay.apiKey,
+          crypto.apiKey, crypto.ipnSecret) to empty it. Secrets are encrypted at
+          rest when node token encryption is on. A disabled section is stored as
+          is. Owner only.
+        id: replace-the-selling-configuration-an-enabled-card-section-needs-a-16-figure-card-number-persian-numerals-are-accepted-an-enabled-zarinpal-idpay-or-crypto-section-needs-its-secrets-and-the-public-base-url-http-or-https-because-the-gateway-sends-the-customer-or-its-webhook-back-to-it-a-blank-secret-keeps-the-stored-one-list-a-secret-in-clearsecrets-zarinpalmerchantid-idpayapikey-cryptoapikey-cryptoipnsecret-to-empty-it-secrets-are-encrypted-at-rest-when-node-token-encryption-is-on-a-disabled-section-is-stored-as-is-owner-only
+    contents: []
+---
+
+{/* This file was generated by Fumadocs. Do not edit this file directly. Any changes should be made by running the generation command again. */}
+
+export default function Layout(props) {
+  const { APIPage, OpenAPIPage } = props.components ?? {};
+  // "APIPage" is the old name from v10, this allows both for backward compatibility
+  const Comp = OpenAPIPage ?? APIPage;
+  return (
+    <>
+      {props.children}
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/sales/plans","method":"get"},{"path":"/panel/api/sales/plans/save","method":"post"},{"path":"/panel/api/sales/plans/del/{id}","method":"post"},{"path":"/panel/api/sales/orders","method":"get"},{"path":"/panel/api/sales/orders/approve/{id}","method":"post"},{"path":"/panel/api/sales/orders/reject/{id}","method":"post"},{"path":"/panel/api/sales/discounts","method":"get"},{"path":"/panel/api/sales/discounts/save","method":"post"},{"path":"/panel/api/sales/discounts/del/{id}","method":"post"},{"path":"/panel/api/sales/wallet","method":"get"},{"path":"/panel/api/sales/wallet/adjust","method":"post"},{"path":"/panel/api/sales/config","method":"get"},{"path":"/panel/api/sales/config/save","method":"post"}]} showTitle />
+    </>
+  );
+}

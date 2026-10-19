@@ -39,6 +39,16 @@ export const NodeRecordSchema = z
     // Backend serializes a nil []string as null for nodes saved before #5178.
     inboundTags: z.array(z.string()).nullish(),
     outboundTag: z.string().optional(),
+    monthlyCapGB: z.number().optional(),
+    capAction: z.enum(['alert', 'disable']).optional(),
+    billingDay: z.number().optional(),
+    monthlyCost: z.number().optional(),
+    costCurrency: z.string().optional(),
+    failoverNodeId: z.number().optional(),
+    failoverAfterSec: z.number().optional(),
+    periodStart: z.number().optional(),
+    periodBytes: z.number().optional(),
+    capState: z.string().optional(),
     // Multi-hop node tree (#4983): a node's stable GUID, its parent's GUID, and
     // whether it's a read-only transitive sub-node surfaced from a downstream node.
     guid: z.string().optional(),
@@ -58,6 +68,21 @@ export const ProbeResultSchema = z
     // Present on successful probe; used to surface "connected to panel, but xray failed on node".
     xrayState: z.string().optional(),
     xrayError: z.string().optional(),
+  })
+  .loose();
+
+export const NodeSpeedResultSchema = z
+  .object({
+    nodeId: z.number(),
+    samples: z.number(),
+    lost: z.number(),
+    latencyMinMs: z.number(),
+    latencyAvgMs: z.number(),
+    latencyMaxMs: z.number(),
+    jitterMs: z.number(),
+    downloadMbps: z.number(),
+    uploadMbps: z.number(),
+    throughputError: z.string().optional(),
   })
   .loose();
 
@@ -86,6 +111,13 @@ export const NodeFormSchema = z
       .nullish()
       .transform((tags) => tags ?? []),
     outboundTag: z.string().optional(),
+    monthlyCapGB: z.number().min(0).optional().default(0),
+    capAction: z.enum(['alert', 'disable']).optional().default('alert'),
+    billingDay: z.number().int().min(1).max(28).optional().default(1),
+    monthlyCost: z.number().min(0).optional().default(0),
+    costCurrency: z.string().trim().max(8).optional().default(''),
+    failoverNodeId: z.number().int().min(0).optional().default(0),
+    failoverAfterSec: z.number().int().min(30).max(86400).optional().default(120),
   })
   .superRefine((val, ctx) => {
     if (val.tlsVerifyMode !== 'mtls' && val.apiToken.length === 0 && !val.hasStoredToken) {
@@ -98,5 +130,6 @@ export const NodeFormSchema = z
   });
 
 export type NodeRecord = z.infer<typeof NodeRecordSchema>;
+export type NodeSpeedResult = z.infer<typeof NodeSpeedResultSchema>;
 export type ProbeResult = z.infer<typeof ProbeResultSchema>;
 export type NodeFormValues = z.infer<typeof NodeFormSchema>;

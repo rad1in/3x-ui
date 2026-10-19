@@ -1,0 +1,49 @@
+[
+  {
+    "uuid": "7c9e6679-7425-40de-944b-e07fc1f90ae7",
+    "name": "ivan",
+    "usage_limit_GB": 50.0,
+    "package_days": 30,
+    "mode": "monthly",
+    "start_date": "2026-10-01",
+    "current_usage_GB": 12.5,
+    "last_reset_time": "2026-10-01",
+    "comment": "office",
+    "telegram_id": 123456789,
+    "added_by_uuid": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+    "max_ips": 3,
+    "enable": true,
+    "is_active": true,
+    "lang": "fa",
+    "last_online": "2026-10-17 21:05:12"
+  },
+  {
+    "uuid": "a3bb189e-8bf9-3888-9912-ace4e6543002",
+    "name": "judy",
+    "usage_limit_GB": 0,
+    "package_days": 90,
+    "mode": "no_reset",
+    "start_date": null,
+    "current_usage_GB": 0.0,
+    "last_reset_time": null,
+    "comment": null,
+    "telegram_id": null,
+    "max_ips": 1000,
+    "enable": true,
+    "is_active": true,
+    "lang": "en",
+    "last_online": null
+  },
+  {
+    "uuid": "6fa459ea-ee8a-3ca4-894e-db77e160355e",
+    "name": "mallory",
+    "usage_limit_GB": 10,
+    "package_days": 7,
+    "mode": "weekly",
+    "start_date": "2026-01-01",
+    "current_usage_GB": 10,
+    "comment": "expired trial",
+    "enable": false,
+    "is_active": false
+  }
+]

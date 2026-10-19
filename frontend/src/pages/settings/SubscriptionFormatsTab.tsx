@@ -33,6 +33,12 @@ const DEFAULT_MUX = {
   xudpProxyUDP443: 'reject',
 };
 
+const XRAY_JSON_APPS = [
+  { value: 'v2rayng', label: 'v2rayNG' },
+  { value: 'v2rayn', label: 'v2rayN' },
+  { value: 'streisand', label: 'Streisand' },
+];
+
 type SubJsonRule = { type: string; outboundTag: string; domain?: string[]; ip?: string[] };
 
 const DEFAULT_DIRECT_RULES: SubJsonRule[] = [
@@ -226,6 +232,21 @@ export default function SubscriptionFormatsTab({
                       value={allSetting.subJsonUserAgentRegex}
                       placeholder="(?i)^myclient([ /]|$)"
                       onChange={(value) => updateSetting({ subJsonUserAgentRegex: value })}
+                    />
+                  </SettingListItem>
+                  <SettingListItem
+                    paddings="small"
+                    title={t('pages.settings.subJsonApps')}
+                    description={t('pages.settings.subJsonAppsDesc')}
+                  >
+                    <Select
+                      mode="multiple"
+                      allowClear
+                      style={{ width: '100%' }}
+                      aria-label={t('pages.settings.subJsonApps')}
+                      value={allSetting.subJsonApps ? allSetting.subJsonApps.split(',') : []}
+                      options={XRAY_JSON_APPS}
+                      onChange={(ids: string[]) => updateSetting({ subJsonApps: ids.join(',') })}
                     />
                   </SettingListItem>
                   <SettingListItem

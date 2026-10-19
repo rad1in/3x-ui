@@ -25,7 +25,10 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/l2tp"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/mtproto"
+	"github.com/mhsanaei/3x-ui/v3/internal/ocserv"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
+	"github.com/mhsanaei/3x-ui/v3/internal/sshtunnel"
+	"github.com/mhsanaei/3x-ui/v3/internal/sstp"
 	"github.com/mhsanaei/3x-ui/v3/internal/tuic"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/cronspec"
@@ -40,6 +43,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/discord"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/email"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/panel"
+	"github.com/mhsanaei/3x-ui/v3/internal/web/service/push"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/tgbot"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/webhook"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/websocket"
@@ -132,6 +136,7 @@ type Server struct {
 	tgbotService   tgbot.Tgbot
 	discordService *discord.DiscordService
 	webhooks       *webhook.Sender
+	pushChannels   *push.Sender
 	discordGateway *discord.GatewayClient
 
 	wsHub *websocket.Hub
@@ -197,6 +202,21 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 		engine.Use(middleware.DomainValidatorMiddleware(webDomain, s.settingService.DecoySite().Handler()))
 	}
 
+	engine.Use(middleware.IPAllowlistMiddleware(
+		func() string {
+			list, _ := s.settingService.GetPanelAllowedCidrs()
+			return list
+		},
+		controller.RemoteIP,
+		func(c *gin.Context) {
+			if decoy := s.settingService.DecoySite().Handler(); decoy != nil {
+				decoy(c)
+				return
+			}
+			c.Status(http.StatusNotFound)
+		},
+	))
+
 	secret, err := s.settingService.GetSecret()
 	if err != nil {
 		return nil, err
@@ -250,6 +270,13 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 	} else {
 		engine.StaticFS(basePath+"assets", http.FS(&wrapDistFS{FS: distFS}))
 	}
+	// The public shop page loads its bundle from /shop/assets so it never has
+	// to reveal the panel base path.
+	if config.IsDebug() {
+		engine.StaticFS("/shop/assets", http.FS(os.DirFS("internal/web/dist/assets")))
+	} else {
+		engine.StaticFS("/shop/assets", http.FS(&wrapDistFS{FS: distFS}))
+	}
 
 	// Hand the embedded `dist/` filesystem to the controller package
 	// before any HTML-serving controller is constructed. Phase 8
@@ -266,6 +293,11 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 	s.index = controller.NewIndexController(g)
 	s.panel = controller.NewXUIController(g)
 	s.api = controller.NewAPIController(g)
+	controller.NewMetricsController(g)
+	controller.NewNodeJoinController(g)
+
+	decoySite := s.settingService.DecoySite().Handler()
+	controller.NewShopController(engine.Group("/shop"), decoySite)
 
 	// Initialize WebSocket hub
 	s.wsHub = websocket.NewHub()
@@ -284,7 +316,6 @@ func (s *Server) initRouter() (*gin.Engine, error) {
 
 	// Let unknown panel document routes fall back to the SPA shell, while every
 	// non-SPA miss still returns a hard 404.
-	decoySite := s.settingService.DecoySite().Handler()
 	engine.NoRoute(func(c *gin.Context) {
 		if s.panel.HandleNoRoutePanelSPA(c) {
 			return
@@ -315,11 +346,15 @@ const (
 	cadenceClientIPScan  = "@every 10s"
 	cadenceNodeHeartbeat = "@every 5s"
 	cadenceNodeTraffic   = "@every 5s"
+	cadenceNodeCap       = "@every 1m"
+	cadencePortProbe     = "@every 1m"
+	cadenceInboundRotate = "@every 5m"
 	cadenceOutboundSub   = "@every 5m"
 	cadenceReapOrphans   = "@every 5m"
 	cadenceRemoteRouting = "@every 5m"
 	cadenceXrayLogPrune  = "@every 10m"
 	cadenceCheckHash     = "@every 2m"
+	cadenceShopReconcile = "@every 2m"
 	// cpu.Percent samples over a full minute (blocking), so a finer cadence just
 	// stacks overlapping samplers; subscribers rate-limit alerts to 1/min anyway.
 	cadenceCPUAlarm    = "@every 1m"
@@ -366,6 +401,18 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 	_, _ = s.cron.AddJob(cadenceMtproto, l2tpJob)
 	go l2tpJob.Run()
 
+	sshJob := job.NewSSHJob()
+	_, _ = s.cron.AddJob(cadenceMtproto, sshJob)
+	go sshJob.Run()
+
+	sstpJob := job.NewSSTPJob()
+	_, _ = s.cron.AddJob(cadenceMtproto, sstpJob)
+	go sstpJob.Run()
+
+	ocservJob := job.NewOCServJob()
+	_, _ = s.cron.AddJob(cadenceMtproto, ocservJob)
+	go ocservJob.Run()
+
 	// Reconcile embedded AmneziaWG interfaces; traffic rides Xray's own stats
 	awgJob := job.NewAmneziaWGJob()
 	_, _ = s.cron.AddJob(cadenceAmneziaWG, awgJob)
@@ -382,6 +429,12 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 
 	_, _ = s.cron.AddJob(cadenceNodeTraffic, job.NewNodeTrafficSyncJob())
 
+	_, _ = s.cron.AddJob(cadenceNodeCap, job.NewNodeCapJob())
+
+	_, _ = s.cron.AddJob(cadencePortProbe, job.NewPortProbeJob())
+
+	_, _ = s.cron.AddJob(cadenceInboundRotate, job.NewInboundRotationJob())
+
 	// Outbound subscription auto-refresh (respects per-sub updateInterval)
 	_, _ = s.cron.AddJob(cadenceOutboundSub, job.NewOutboundSubscriptionJob())
 
@@ -396,8 +449,12 @@ func (s *Server) startTask(restartXray bool, loc *time.Location) {
 	// check client ips from log file every day
 	_, _ = s.cron.AddJob("@daily", job.NewClearLogsJob())
 	_, _ = s.cron.AddJob("@daily", job.NewPruneAuditLogJob())
+	_, _ = s.cron.AddJob("@daily", job.NewClientUsagePruneJob())
 	_, _ = s.cron.AddJob("@every 1m", job.NewClientWarningJob())
+	_, _ = s.cron.AddJob("@every 1m", job.NewSharedAccountJob())
 	_, _ = s.cron.AddJob("@hourly", job.NewClientCleanupJob())
+	_, _ = s.cron.AddJob("@hourly", job.NewWeeklySummaryJob(loc))
+	_, _ = s.cron.AddJob(cadenceShopReconcile, job.NewShopReconcileJob())
 	if spec, _ := s.settingService.GetBackupSchedule(); strings.TrimSpace(spec) != "" {
 		scheduleSettingJob(s.cron, "Scheduled backup", spec, "@daily", job.NewScheduledBackupJob())
 	}
@@ -717,6 +774,17 @@ func (s *Server) start(restartXray bool, startTgBot bool) (err error) {
 	s.bus.Subscribe("webhook", s.webhooks.HandleEvent)
 	controller.SetTestWebhookFunc(s.webhooks.Test)
 
+	s.pushChannels = push.New(func() []push.Channel {
+		c := settingSvc.PushConfig()
+		return []push.Channel{
+			{Kind: push.Ntfy, Enabled: c.NtfyEnable, URL: c.NtfyServer, Topic: c.NtfyTopic, Token: c.NtfyToken, Events: push.ParseEvents(c.NtfyEvents)},
+			{Kind: push.Gotify, Enabled: c.GotifyEnable, URL: c.GotifyUrl, Token: c.GotifyToken, Events: push.ParseEvents(c.GotifyEvents)},
+			{Kind: push.Slack, Enabled: c.SlackEnable, URL: c.SlackWebhookUrl, Events: push.ParseEvents(c.SlackEvents)},
+		}
+	})
+	s.bus.Subscribe("push", s.pushChannels.HandleEvent)
+	controller.SetTestPushFunc(func(channel string) error { return s.pushChannels.Test(push.Kind(channel)) })
+
 	serverService := &service.ServerService{}
 	inboundService := &service.InboundService{}
 	s.discordGateway = discord.NewGatewayClient(s.discordService, s.settingService, serverService, inboundService, &s.xrayService)
@@ -753,7 +821,7 @@ func (s *Server) start(restartXray bool, startTgBot bool) (err error) {
 		if err := s.tgbotService.TestConnection(); err != nil {
 			return fmt.Errorf("telegram API test failed: %w", err)
 		}
-		s.tgbotService.SendMsgToTgbotAdmins("✅ Test message from 3x-ui")
+		s.tgbotService.SendMsgToTgbotAdmins("✅ Test message from Eternal")
 		return nil
 	})
 
@@ -829,6 +897,9 @@ func (s *Server) stop(stopXray bool, stopTgBot bool) error {
 		mtproto.GetManager().StopAll()
 		openvpn.GetManager().StopAll()
 		l2tp.GetManager().StopAll()
+		sshtunnel.GetManager().StopAll()
+		sstp.GetManager().StopAll()
+		ocserv.GetManager().StopAll()
 		ipsec.GetManager().StopAll()
 		panel.StopHostedPanels()
 		amneziawgnet.GetManager().StopAll()
@@ -841,6 +912,9 @@ func (s *Server) stop(stopXray bool, stopTgBot bool) error {
 	}
 	if s.bus != nil {
 		s.bus.Stop()
+	}
+	if s.pushChannels != nil {
+		s.pushChannels.Stop()
 	}
 	if s.webhooks != nil {
 		s.webhooks.Stop()

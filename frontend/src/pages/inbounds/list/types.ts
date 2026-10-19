@@ -63,6 +63,7 @@ export type RowAction =
   | 'resetTraffic'
   | 'delAllClients'
   | 'openvpnProfile'
+  | 'rotation'
   | 'clone';
 
 export type GeneralAction = 'import' | 'export' | 'subs' | 'resetInbounds';

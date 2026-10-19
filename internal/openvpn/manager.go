@@ -101,6 +101,19 @@ func GetManager() *Manager {
 	return manager
 }
 
+// KickUser ends the live connections of one account on every running inbound.
+func (m *Manager) KickUser(user string) int {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	kicked := 0
+	for _, p := range m.procs {
+		if p.running() && p.sess != nil {
+			kicked += p.sess.KickUser(user)
+		}
+	}
+	return kicked
+}
+
 // Ensure starts the inbound, restarts it on a structural change, and otherwise
 // applies a user change in place.
 func (m *Manager) Ensure(inst Instance) error {

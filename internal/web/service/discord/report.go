@@ -34,7 +34,7 @@ type InboundProvider interface {
 func (s *DiscordService) BuildReport(ctx context.Context, server ServerProvider, inbound InboundProvider) (MessagePayload, []FileAttachment, error) {
 	hostname, _ := os.Hostname()
 	if hostname == "" {
-		hostname = "3x-ui"
+		hostname = "Eternal"
 	}
 
 	var status *service.Status
@@ -176,12 +176,13 @@ func (s *DiscordService) BuildReport(ctx context.Context, server ServerProvider,
 		} else if len(dbData) > 0 {
 			filename := server.BackupFilename("")
 			if filename == "" {
-				filename = "x-ui.db"
+				filename = "eternal.db"
 			}
-			files = append(files, FileAttachment{
-				Filename: filename,
-				Data:     dbData,
-			})
+			if sealed, data, perr := service.ProtectBackup(filename, dbData); perr != nil {
+				logger.Warning("Discord report: failed to protect DB backup: ", perr)
+			} else {
+				files = append(files, FileAttachment{Filename: sealed, Data: data})
+			}
 		}
 
 		configPath := xray.GetConfigPath()

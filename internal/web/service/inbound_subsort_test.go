@@ -10,7 +10,7 @@ import (
 )
 
 func TestSetInboundSubSortIndexLeavesSettingsUntouched(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 
 	const settings = `{"clients":[{"email":"a@example.test","id":"11111111-1111-1111-1111-111111111111"}]}`
 	ib := &model.Inbound{UserId: 1, Remark: "r", Port: 21001, Protocol: model.VLESS, Settings: settings, SubSortIndex: 1, Enable: true}
@@ -55,7 +55,7 @@ func TestSetInboundSubSortIndexUsesNarrowNodeUpdate(t *testing.T) {
 }
 
 func TestSetInboundSubSortIndexPreservesNegative(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 
 	ib := &model.Inbound{UserId: 1, Remark: "r", Port: 21003, Protocol: model.VLESS, Settings: `{"clients":[]}`, SubSortIndex: 1, Enable: true}
 	if err := database.GetDB().Create(ib).Error; err != nil {

@@ -17,7 +17,7 @@ import (
 func TestResetClientExpiryTimeByEmail_MultiInbound(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	db := database.GetDB()
 
@@ -89,7 +89,7 @@ func TestResetClientExpiryTimeByEmail_MultiInbound(t *testing.T) {
 func TestSetClientEnableByEmail_MultiInbound(t *testing.T) {
 	dbDir := t.TempDir()
 	t.Setenv("XUI_DB_FOLDER", dbDir)
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	db := database.GetDB()
 

@@ -12,6 +12,11 @@ tint them to its theme, the stroke width is raised from 1 to 2 so they stay
 legible at tile size, and the style classes and ids were removed. These modified
 files are distributed under CC BY-SA 4.0 as well.
 
+## Letter marks
+
+`hiddify.svg` and `karing.svg` are plain letter marks (H, K) drawn for this
+page in the same line style. They are not the apps' logos.
+
 ## App icons
 
 The remaining files are each app's own icon, downscaled to 96 px, used only to

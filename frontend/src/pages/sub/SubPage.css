@@ -1,18 +1,18 @@
 .subscription-page {
-  --bg-page: #f6f6f7;
+  --bg-page: #f4f3fa;
   --bg-card: #ffffff;
   min-height: 100vh;
   background: var(--bg-page);
 }
 
 .subscription-page.is-dark {
-  --bg-page: #0b0b0d;
-  --bg-card: #131316;
+  --bg-page: #0d0c14;
+  --bg-card: #15141e;
 }
 
 .subscription-page.is-dark.is-ultra {
   --bg-page: #000;
-  --bg-card: #101013;
+  --bg-card: #0f0e16;
 }
 
 .subscription-page .ant-layout,
@@ -410,6 +410,35 @@ a.sub-row-title:hover {
   flex-direction: column;
   align-items: flex-start;
   gap: 16px;
+}
+
+.sub-platforms {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.sub-guide {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--ant-color-border-secondary);
+  background: var(--ant-color-fill-quaternary);
+}
+
+.sub-guide-title {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ant-color-text);
+}
+
+.sub-guide-steps {
+  margin: 0;
+  padding-inline-start: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--ant-color-text-secondary);
 }
 
 .sub-app-grid {

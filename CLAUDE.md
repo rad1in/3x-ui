@@ -24,15 +24,17 @@ file locations when it can answer in one hop.
   falls back to a process restart on older binaries. A client's panel-side
   traffic reset also calls `POST /secrets/{name}/reset-quota` so a renewed client
   is not re-blocked by the sidecar's quota counter.
-- Storage: SQLite by default (`/etc/x-ui/x-ui.db` on Linux; the executable dir on
-  Windows), PostgreSQL optional (`XUI_DB_TYPE` / `XUI_DB_DSN`). The CGo SQLite
+- Storage: SQLite by default (`/etc/eternal/eternal.db` on Linux, a pre-rename `x-ui.db` is still opened when no `eternal.db` exists; the executable dir on
+  Windows), PostgreSQL or MySQL/MariaDB optional (`XUI_DB_TYPE` / `XUI_DB_DSN`).
+  Raw SQL must run on all three: dialect helpers live in `internal/database/dialect.go`;
+  MySQL sessions run with `ANSI_QUOTES`, so quote reserved columns as `"key"`. The CGo SQLite
   driver (`mattn/go-sqlite3`) needs a C compiler — `CGO_ENABLED=0` builds fail.
 - Frontend: React 19 + Ant Design 6 + Vite 8 + TypeScript in `frontend/`,
   built into `internal/web/dist/` (gitignored) and embedded via `embed.FS`.
 
 ## Repo map
-- `main.go` — entry point + `x-ui` CLI (run, migrate, migrate-db, encrypt-tokens, setting, cert, client).
-- `internal/cliclient/` — `x-ui client`: manages clients through the running panel's API
+- `main.go` — entry point + `eternal` CLI (run, migrate, migrate-db, encrypt-tokens, setting, cert, client).
+- `internal/cliclient/` — `eternal client`: manages clients through the running panel's API
   with a short-lived admin token, so changes take the runtime path like the web UI.
 - `internal/config/` — env parsing (XUI_DEBUG, XUI_LOG_LEVEL, XUI_LOG_FOLDER,
   XUI_BIN_FOLDER, XUI_SKIP_HSTS, XUI_PORT, XUI_DB_*).
@@ -49,6 +51,12 @@ file locations when it can answer in one hop.
   500/4500) driven over vici; EAP logins, per-SA metering, Apple/Android profiles.
 - `internal/l2tp/` — L2TP/IPsec inbound: `xl2tpd` + `pppd` (logins in a marked
   block of `/etc/ppp/chap-secrets`), PSK IPsec on the shared charon.
+- `internal/sshtunnel/` — SSH tunnel inbounds: in-process `x/crypto/ssh` server per inbound,
+  password logins = panel clients, port forwarding only, panel-metered.
+- `internal/sstp/` — SSTP inbounds: in-process TLS/SSTP listener per inbound feeding PPP frames to
+  one `pppd` per client (HDLC at the boundary); logins in a marked `chap-secrets` block (`internal/pppsecrets/`).
+- `internal/ocserv/` — OpenConnect/AnyConnect inbounds: one `ocserv` process each, logins in a
+  crypt-hashed passwd file, bytes read from `occtl`, sessions ended with it.
 - `internal/vpnnat/` — iptables masquerade/forward/MSS clamp for VPN client networks.
 - `internal/tuic/` — TUIC v5 inbounds: `tuic-server` sidecar supervisor, native Go UDP relay traffic metering.
 - `internal/amneziawg/` — AmneziaWG protocol shape: instance/peer derivation
@@ -68,7 +76,7 @@ file locations when it can answer in one hop.
   - `controller/` — panel + REST API handlers; OpenAPI at /panel/api/openapi.json.
   - `service/` — business logic (InboundService, SettingService, XrayService,
     node sync); subpackages tgbot/, discord/, email/, webhook/, outbound/, panel/, integration/.
-  - `job/` — 28 cron jobs (traffic, fail2ban IP-limit, node heartbeat/sync, LDAP,
+  - `job/` — 36 cron jobs (traffic, fail2ban IP-limit, node heartbeat/sync, LDAP,
     CPU/memory watchdogs, …); full table in `docs/architecture.md` §5.4.
   - `middleware/`, `entity/`, `global/`, `session/` (CSRF), `network/`,
     `runtime/` (master/sub-node over mTLS), `websocket/`.
@@ -163,14 +171,14 @@ file locations when it can answer in one hop.
 - Stdlib `testing` only (no testify). Table-driven, `t.Run` subtests,
   `t.Helper()` on helpers. Assert the exact value / typed error / emitted
   string, never just `err != nil`. Prefer real deps over mocks: throwaway DB via
-  `dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))`
+  `dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))`
   (`internal/database/dbtest`: copies a once-migrated template and registers
   `CloseDB` cleanup; a fresh `database.InitDB` costs ~7x more, ~850ms under
   `-race`); `httptest` for HTTP. Keep `database.InitDB` for reopening a file or
   migrating a hand-built legacy DB. `internal/sub`'s `initSubDB(t)` is the template.
 - Code must pass `golangci-lint run` (gofumpt + goimports formatting): `make lint`.
 - Postgres, xray-gRPC-e2e, master+node, OpenVPN, IKEv2 and scale tests `t.Skip` unless
-  `XUI_TEST_PG_DSN`, `XUI_DB_TYPE`+`XUI_DB_DSN`, `XRAY_E2E_BINARY`,
+  `XUI_TEST_PG_DSN`, `XUI_TEST_MYSQL_DSN`, `XUI_DB_TYPE`+`XUI_DB_DSN`, `XRAY_E2E_BINARY`,
   `XUI_NODE_E2E_BINARY`, `OPENVPN_E2E_BINARY` (needs root), `IKEV2_E2E=1` (root, charon, ip netns) or `XUI_SCALE_TEST` is set — a green `go test ./...`
   does not mean those paths ran.
 

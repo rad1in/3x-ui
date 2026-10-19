@@ -76,6 +76,7 @@ type SUBController struct {
 	jsonAutoDetect     bool
 	jsonUserAgent      *regexp.Regexp
 	jsonAlwaysArray    bool
+	jsonApps           xrayJsonApps
 	jsonEnabled        bool
 	clashEnabled       bool
 	singboxEnabled     bool
@@ -87,6 +88,13 @@ type SUBController struct {
 	subClashService *SubClashService
 	clientService   service.ClientService
 	settingService  service.SettingService
+	shortLinks      service.SubShortLinkService
+	fetchLog        service.SubFetchService
+	shortLinksOn    bool
+	ipLimiter       *fixedWindowLimiter
+	profileAliases  []profileFormat
+	subLimiter      *fixedWindowLimiter
+	signing         signingState
 
 	subTemplateMu    sync.RWMutex
 	subTemplateCache map[string]*cachedSubTemplate
@@ -102,6 +110,10 @@ type subControllerConfig struct {
 	subJsonAutoDetect      bool
 	subJsonUserAgentRegex  string
 	subJsonAlwaysArray     bool
+	subJsonApps            string
+	subShortLinks          bool
+	rateLimitPerIP         int
+	rateLimitPerSub        int
 	subJsonEnabled         bool
 	subClashEnabled        bool
 
@@ -165,6 +177,20 @@ func WithSUBJsonUserAgentRegex(value string) SUBControllerOption {
 
 func WithSUBJsonAlwaysArray(value bool) SUBControllerOption {
 	return func(config *subControllerConfig) { config.subJsonAlwaysArray = value }
+}
+
+func WithSUBRateLimits(perIP, perSub int) SUBControllerOption {
+	return func(config *subControllerConfig) {
+		config.rateLimitPerIP, config.rateLimitPerSub = perIP, perSub
+	}
+}
+
+func WithSUBShortLinks(value bool) SUBControllerOption {
+	return func(config *subControllerConfig) { config.subShortLinks = value }
+}
+
+func WithSUBJsonApps(value string) SUBControllerOption {
+	return func(config *subControllerConfig) { config.subJsonApps = value }
 }
 
 func WithSUBJsonEnabled(value bool) SUBControllerOption {
@@ -314,6 +340,7 @@ func NewSUBController(g *gin.RouterGroup, options ...SUBControllerOption) *SUBCo
 		jsonAutoDetect:     config.subJsonAutoDetect,
 		jsonUserAgent:      compileUserAgentRegex("Xray JSON", config.subJsonUserAgentRegex, service.DefaultSubJsonUserAgentRegex),
 		jsonAlwaysArray:    config.subJsonAlwaysArray,
+		jsonApps:           parseXrayJsonApps(config.subJsonApps),
 		jsonEnabled:        config.subJsonEnabled,
 		clashEnabled:       config.subClashEnabled,
 		subEncrypt:         config.subEncrypt,
@@ -324,6 +351,9 @@ func NewSUBController(g *gin.RouterGroup, options ...SUBControllerOption) *SUBCo
 		subClashService: NewSubClashService(config.subClashEnableRouting, config.subClashRules, sub),
 
 		subTemplateCache: map[string]*cachedSubTemplate{},
+		shortLinksOn:     config.subShortLinks,
+		ipLimiter:        newFixedWindowLimiter(config.rateLimitPerIP, nil),
+		subLimiter:       newFixedWindowLimiter(config.rateLimitPerSub, nil),
 	}
 	a.initRouter(g)
 	return a
@@ -332,13 +362,29 @@ func NewSUBController(g *gin.RouterGroup, options ...SUBControllerOption) *SUBCo
 // initRouter registers HTTP routes for subscription links and JSON endpoints
 // on the provided router group.
 func (a *SUBController) initRouter(g *gin.RouterGroup) {
+	g = g.Group("", a.requireSignature)
+	if a.ipLimiter != nil || a.subLimiter != nil {
+		g = g.Group("", a.rateLimit)
+	}
 	gLink := g.Group(a.subPath)
 	gLink.GET(":subid", a.subs)
 	gLink.HEAD(":subid", a.subs)
 	gLink.GET(":subid/hwid-status", a.hwidStatus)
 	gLink.HEAD(":subid/hwid-status", a.hwidStatus)
 	gLink.GET(":subid/openvpn/:inbound", a.openvpnProfile)
+	gLink.GET(":subid/outline/:inbound", a.outlineAccessKey)
 	gLink.GET(":subid/ikev2/:inbound/:format", a.ikev2Profile)
+	gLink.GET(":subid/sstp/:inbound/ca", a.sstpCA)
+	gLink.GET(":subid/ocserv/:inbound/ca", a.ocservCA)
+	if a.shortLinksOn {
+		if owner := a.configuredSubscriptionPathOwner(service.SubShortLinkPath); owner != "" {
+			logger.Warningf("Short subscription links %q are unavailable because they conflict with the configured %s path", service.SubShortLinkPath, owner)
+		} else {
+			gShort := g.Group(service.SubShortLinkPath)
+			gShort.GET(":token", a.subShortLink)
+			gShort.HEAD(":token", a.subShortLink)
+		}
+	}
 	if a.jsonEnabled {
 		gJson := g.Group(a.subJsonPath)
 		gJson.GET(":subid", a.subJsons)
@@ -371,6 +417,16 @@ func (a *SUBController) initRouter(g *gin.RouterGroup) {
 			gSingbox := g.Group(subSingboxPath)
 			gSingbox.GET(":subid", a.subSingbox)
 			gSingbox.HEAD(":subid", a.subSingbox)
+		}
+		for _, f := range profileFormats {
+			if owner := a.configuredSubscriptionPathOwner(f.path); owner != "" {
+				logger.Warningf("Subscription alias %q is unavailable because it conflicts with the configured %s path", f.path, owner)
+				continue
+			}
+			a.profileAliases = append(a.profileAliases, f)
+			gProfile := g.Group(f.path)
+			gProfile.GET(":subid", a.profileHandler(f))
+			gProfile.HEAD(":subid", a.profileHandler(f))
 		}
 	}
 }
@@ -456,6 +512,11 @@ func (a *SUBController) buildSubPageData(c *gin.Context) (PageData, bool) {
 	if a.singboxEnabled {
 		page.SubSingbox = subReq.SingboxURL(subId)
 	}
+	kinds := map[string]string{surgeFormat.path: "SURGE", quanxFormat.path: "QUANX", loonFormat.path: "LOON"}
+	for _, f := range a.profileAliases {
+		page.Profiles = append(page.Profiles, ProfileLink{Kind: kinds[f.path], URL: subReq.ProfileURL(f.path, subId)})
+	}
+	page.Outline = a.subClashService.OutlineKeys(subId, host, subURL)
 	return page, true
 }
 
@@ -494,7 +555,8 @@ func (a *SUBController) subs(c *gin.Context) {
 		logSubscriptionRoute(userAgent, "clash")
 		return
 	}
-	if shouldAutoServeJson(a.jsonAutoDetect, a.jsonEnabled, false, userAgent, a.jsonUserAgent) && a.serveJsonBody(c, true, "application/json; charset=utf-8", false) {
+	wantsJson := shouldAutoServeJson(a.jsonAutoDetect, a.jsonEnabled, false, userAgent, a.jsonUserAgent) || (a.jsonEnabled && a.jsonApps.match(userAgent))
+	if wantsJson && a.serveJsonBody(c, true, "application/json; charset=utf-8", false) {
 		a.recordSubscriptionFetch(c)
 		logSubscriptionRoute(userAgent, "json")
 		return
@@ -540,13 +602,62 @@ func (a *SUBController) subs(c *gin.Context) {
 	}
 }
 
+// subShortLink serves /s/<token> exactly as the subscription it aliases.
+func (a *SUBController) subShortLink(c *gin.Context) {
+	subID, err := a.shortLinks.Resolve(c.Param("token"))
+	if err != nil {
+		if errors.Is(err, service.ErrSubShortLinkNotFound) {
+			err = nil
+		}
+		writeSubError(c, err)
+		return
+	}
+	c.Params = append(c.Params, gin.Param{Key: "subid", Value: subID})
+	a.subs(c)
+}
+
 func (a *SUBController) recordSubscriptionFetch(c *gin.Context) {
 	if c.Request == nil || c.Request.Method != http.MethodGet || c.Writer.Status() != http.StatusOK {
 		return
 	}
-	if err := a.subService.RecordSubscriptionFetch(c.Param("subid")); err != nil {
+	subID := c.Param("subid")
+	if err := a.subService.RecordSubscriptionFetch(subID); err != nil {
 		logger.Warning("Failed to record subscription fetch:", err)
 	}
+	ip, ua := a.subService.VisitorIP(c), c.GetHeader("User-Agent")
+	if err := a.fetchLog.Record(subID, ip, ua, a.fetchFormat(c), time.Now()); err != nil {
+		logger.Warning("Failed to log subscription fetch:", err)
+	}
+}
+
+// fetchFormat names what was served: the alias path decides, and the plain
+// subscription URL is told apart by the body type it auto-selected.
+func (a *SUBController) fetchFormat(c *gin.Context) string {
+	path := c.Request.URL.Path
+	for _, alias := range []struct{ prefix, name string }{
+		{subSingboxPath, "singbox"}, {surgeFormat.path, "surge"}, {quanxFormat.path, "quanx"}, {loonFormat.path, "loon"},
+		{subMihomoPath, "clash"}, {subClashLegacyPath, "clash"},
+	} {
+		if strings.HasPrefix(path, alias.prefix) {
+			return alias.name
+		}
+	}
+	switch {
+	case strings.Contains(c.FullPath(), "/outline/"):
+		return "outline"
+	case a.jsonEnabled && strings.HasPrefix(path, a.subJsonPath):
+		return "json"
+	case a.clashEnabled && strings.HasPrefix(path, a.subClashPath):
+		return "clash"
+	}
+	contentType := c.Writer.Header().Get("Content-Type")
+	switch {
+	case strings.HasPrefix(contentType, "application/yaml"):
+		return "clash"
+	case strings.HasPrefix(contentType, "application/json"):
+		return "json"
+	}
+	return "raw"
 }
 
 func shouldAutoServeClash(autoDetect, clashEnabled, wantsHTML bool, userAgent string, userAgentRegex *regexp.Regexp) bool {
@@ -716,6 +827,8 @@ func (a *SUBController) subPageContext(page PageData) map[string]any {
 		"datepicker":    datepicker,
 		"announce":      page.SubAnnounce,
 		"vpn":           page.VPN,
+		"outline":       page.Outline,
+		"profiles":      page.Profiles,
 	}
 }
 
@@ -737,6 +850,28 @@ func (a *SUBController) openvpnProfile(c *gin.Context) {
 	c.Data(http.StatusOK, "application/x-openvpn-profile", []byte(body))
 }
 
+// outlineAccessKey serves the Outline dynamic access key behind an ssconf:// link;
+// it gates on the device limit like every other body route (#GHSA-7ww3).
+func (a *SUBController) outlineAccessKey(c *gin.Context) {
+	inboundId, err := strconv.Atoi(c.Param("inbound"))
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	if !a.enforceHwid(c) {
+		return
+	}
+	_, host, _, _ := a.subService.ResolveRequest(c)
+	key, err := a.subClashService.OutlineAccessKey(c.Param("subid"), host, inboundId)
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	setNoCacheHeaders(c)
+	c.JSON(http.StatusOK, key)
+	a.recordSubscriptionFetch(c)
+}
+
 // ikev2Profile serves one format of an IKEv2 profile of the subscription.
 func (a *SUBController) ikev2Profile(c *gin.Context) {
 	inboundId, err := strconv.Atoi(c.Param("inbound"))
@@ -745,6 +880,40 @@ func (a *SUBController) ikev2Profile(c *gin.Context) {
 		return
 	}
 	name, mime, body, err := a.subService.IKEv2ProfileFile(c.Param("subid"), inboundId, c.Param("format"))
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	setNoCacheHeaders(c)
+	c.Header("Content-Disposition", `attachment; filename="`+name+`"`)
+	c.Data(http.StatusOK, mime, body)
+}
+
+// sstpCA serves the CA certificate of one of the subscription's SSTP inbounds.
+func (a *SUBController) sstpCA(c *gin.Context) {
+	inboundId, err := strconv.Atoi(c.Param("inbound"))
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	name, mime, body, err := a.subService.SSTPCAFile(c.Param("subid"), inboundId)
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	setNoCacheHeaders(c)
+	c.Header("Content-Disposition", `attachment; filename="`+name+`"`)
+	c.Data(http.StatusOK, mime, body)
+}
+
+// ocservCA serves the CA certificate of one of the subscription's OpenConnect inbounds.
+func (a *SUBController) ocservCA(c *gin.Context) {
+	inboundId, err := strconv.Atoi(c.Param("inbound"))
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	name, mime, body, err := a.subService.OCServCAFile(c.Param("subid"), inboundId)
 	if err != nil {
 		c.Status(http.StatusNotFound)
 		return
@@ -1006,6 +1175,44 @@ func (a *SUBController) subSingbox(c *gin.Context) {
 	a.ApplyCommonHeaders(c, header, a.updateInterval, metadata.Title, metadata.SupportURL, metadata.ProfileURL, metadata.Announce, a.subEnableRouting, a.subRoutingRules, a.subHideSettings)
 	c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(body))
 	a.recordSubscriptionFetch(c)
+}
+
+// profileHandler serves a Surge, Quantumult X or Loon profile built from the Clash proxy list.
+func (a *SUBController) profileHandler(f profileFormat) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if a.maybeServeSubPage(c) {
+			return
+		}
+		if !a.enforceHwid(c) {
+			return
+		}
+		subId := c.Param("subid")
+		scheme, host, hostWithPort, _ := a.subService.ResolveRequest(c)
+		hours, _ := strconv.Atoi(a.updateInterval)
+		opts := profileOptions{
+			managedURL:      fmt.Sprintf("%s://%s%s", scheme, hostWithPort, c.Request.URL.EscapedPath()),
+			intervalSeconds: hours * 3600,
+		}
+		body, header, err := a.subClashService.GetProfile(f, subId, host, opts)
+		if errors.Is(err, errNoProfileProxies) {
+			c.String(http.StatusUnprocessableEntity, err.Error())
+			return
+		}
+		if err != nil || (body == "" && header == "") {
+			writeSubError(c, err)
+			return
+		}
+		var subReq *SubService
+		metadata := a.metadataForSubRequest(func() *SubService {
+			if subReq == nil {
+				subReq = a.subService.ForRequest(host)
+			}
+			return subReq
+		}, subId, builtinProfileURL(c, scheme, hostWithPort))
+		a.ApplyCommonHeaders(c, header, a.updateInterval, metadata.Title, metadata.SupportURL, metadata.ProfileURL, metadata.Announce, a.subEnableRouting, a.subRoutingRules, a.subHideSettings)
+		c.Data(http.StatusOK, "text/plain; charset=utf-8", []byte(body))
+		a.recordSubscriptionFetch(c)
+	}
 }
 
 func builtinProfileURL(c *gin.Context, scheme, hostWithPort string) string {

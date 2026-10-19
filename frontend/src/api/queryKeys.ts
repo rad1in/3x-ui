@@ -1,5 +1,6 @@
 export const keys = {
   sponsors: () => ['sponsors'] as const,
+  sharedAccounts: () => ['sharedAccounts'] as const,
   sponsorAdmin: () => ['sponsors', 'admin'] as const,
   hosted: {
     status: () => ['hosted', 'status'] as const,
@@ -7,12 +8,30 @@ export const keys = {
   hostedPanels: {
     list: () => ['hostedPanels', 'list'] as const,
   },
+  sessions: {
+    list: () => ['sessions', 'list'] as const,
+  },
+  admins: {
+    me: () => ['admins', 'me'] as const,
+    list: () => ['admins', 'list'] as const,
+  },
   audit: {
     list: (params: unknown) => ['audit', 'list', params] as const,
+  },
+  security: {
+    config: () => ['security', 'config'] as const,
+  },
+  reseller: {
+    root: () => ['reseller'] as const,
+    me: () => ['reseller', 'me'] as const,
+    config: () => ['reseller', 'config'] as const,
+    report: (from: number, to: number) => ['reseller', 'report', from, to] as const,
+    account: (id: number) => ['reseller', 'account', id] as const,
   },
   server: {
     status: () => ['server', 'status'] as const,
     fail2banStatus: () => ['server', 'fail2banStatus'] as const,
+    health: () => ['server', 'health'] as const,
   },
   nodes: {
     root: () => ['nodes'] as const,
@@ -23,6 +42,8 @@ export const keys = {
     list: () => ['hosts', 'list'] as const,
     byInbound: (inboundId: number) => ['hosts', 'byInbound', inboundId] as const,
     tags: () => ['hosts', 'tags'] as const,
+    cleanIpStatus: () => ['hosts', 'cleanIp', 'status'] as const,
+    cleanIpResults: (finishedAt: number) => ['hosts', 'cleanIp', 'results', finishedAt] as const,
   },
   subBalancers: {
     root: () => ['sub-balancers'] as const,
@@ -39,6 +60,15 @@ export const keys = {
     slim: () => ['inbounds', 'slim'] as const,
     options: () => ['inbounds', 'options'] as const,
     vpnStatus: () => ['inbounds', 'vpnStatus'] as const,
+    protocolTotals: () => ['inbounds', 'protocolTotals'] as const,
+  },
+  sales: {
+    root: () => ['sales'] as const,
+    plans: () => ['sales', 'plans'] as const,
+    config: () => ['sales', 'config'] as const,
+    discounts: () => ['sales', 'discounts'] as const,
+    wallet: (email: string) => ['sales', 'wallet', email] as const,
+    orders: (status: string, page: number) => ['sales', 'orders', status, page] as const,
   },
   clients: {
     root: () => ['clients'] as const,
@@ -46,9 +76,11 @@ export const keys = {
     all: () => ['clients', 'all'] as const,
     onlines: () => ['clients', 'onlines'] as const,
     onlinesByGuid: () => ['clients', 'onlinesByGuid'] as const,
+    geo: () => ['clients', 'geo'] as const,
     activeInbounds: () => ['clients', 'activeInbounds'] as const,
     lastOnline: () => ['clients', 'lastOnline'] as const,
     groups: () => ['clients', 'groups'] as const,
+    templates: () => ['clients', 'templates'] as const,
   },
   xray: {
     root: () => ['xray'] as const,

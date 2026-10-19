@@ -6,6 +6,7 @@ import { Drawer, Layout, Menu, Tooltip } from 'antd';
 import type { MenuProps } from 'antd';
 import {
   ApiOutlined,
+  BellOutlined,
   BranchesOutlined,
   ApartmentOutlined,
   AppstoreOutlined,
@@ -15,14 +16,16 @@ import {
   CloudUploadOutlined,
   CodeOutlined,
   CrownOutlined,
+  ShoppingCartOutlined,
   DashboardOutlined,
   DatabaseOutlined,
   DiscordOutlined,
   ExportOutlined,
-  GithubOutlined,
   GlobalOutlined,
   HistoryOutlined,
-  HeartOutlined,
+  SafetyCertificateOutlined,
+  UserSwitchOutlined,
+  WalletOutlined,
   ImportOutlined,
   LogoutOutlined,
   MailOutlined,
@@ -32,11 +35,11 @@ import {
   MoonOutlined,
   PushpinFilled,
   PushpinOutlined,
-  ReadOutlined,
   SafetyOutlined,
   SearchOutlined,
   SettingOutlined,
   SunOutlined,
+  TagOutlined,
   SwapOutlined,
   TagsOutlined,
   TeamOutlined,
@@ -48,16 +51,15 @@ import { formatPanelVersion } from '@/lib/panel-version';
 import { pauseAnimationsUntilLeave, useTheme } from '@/hooks/useTheme';
 import { useAllSettings } from '@/api/queries/useAllSettings';
 import { useHostedStatus } from '@/api/queries/useHostedStatus';
+import { useCurrentAdmin } from '@/api/queries/useCurrentAdmin';
+import { canOpenPage } from '@/lib/adminRole';
 import { useCommandPalette } from '@/components/command-palette/useCommandPalette';
 import { BrandMark } from '@/components/ui';
 import './AppSidebar.css';
 
-const DONATE_URL = 'https://donate.sanaei.dev/';
 // The palette listens for Ctrl as well as Cmd, so the chip must not show a
 // Mac glyph to the Linux and Windows operators who are most of this panel's.
 const SHORTCUT_MODIFIER = /Mac|iPhone|iPad|iPod/.test(navigator.userAgent) ? '⌘' : 'Ctrl';
-const DOCS_URL = 'https://docs.sanaei.dev/';
-const REPO_URL = 'https://github.com/MHSanaei/3x-ui';
 const LOGOUT_KEY = '__logout__';
 const RAIL_WIDTH = 72;
 const SIDER_WIDTH = 220;
@@ -76,10 +78,14 @@ type IconName =
   | 'hosts'
   | 'logout'
   | 'sponsors'
+  | 'sales'
   | 'apidocs'
   | 'outbound'
   | 'routing'
   | 'audit'
+  | 'admins'
+  | 'reseller'
+  | 'sessions'
   | 'panels';
 
 const iconByName: Record<IconName, ComponentType> = {
@@ -93,58 +99,25 @@ const iconByName: Record<IconName, ComponentType> = {
   hosts: GlobalOutlined,
   logout: LogoutOutlined,
   sponsors: CrownOutlined,
+  sales: ShoppingCartOutlined,
   apidocs: ApiOutlined,
   outbound: ExportOutlined,
   routing: SwapOutlined,
   audit: HistoryOutlined,
+  admins: UserSwitchOutlined,
+  reseller: WalletOutlined,
+  sessions: SafetyCertificateOutlined,
   panels: AppstoreOutlined,
 };
-
-function DonateButton({ ariaLabel }: { ariaLabel: string }) {
-  return (
-    <a
-      href={DONATE_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="sidebar-donate"
-      aria-label={ariaLabel}
-      title={ariaLabel}
-    >
-      <HeartOutlined />
-    </a>
-  );
-}
-
-function DocsButton({ ariaLabel }: { ariaLabel: string }) {
-  return (
-    <a
-      href={DOCS_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="sidebar-docs"
-      aria-label={ariaLabel}
-      title={ariaLabel}
-    >
-      <ReadOutlined />
-    </a>
-  );
-}
 
 function VersionBadge({ version, collapsed }: { version: string; collapsed?: boolean }) {
   if (!version) return null;
   const label = formatPanelVersion(version);
   return (
-    <a
-      href={REPO_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="sider-version"
-      aria-label={`GitHub ${label}`}
-      title={label}
-    >
-      <GithubOutlined />
+    <div className="sider-version" title={label}>
+      <TagOutlined />
       {!collapsed && <span className="sider-version-text">{label}</span>}
-    </a>
+    </div>
   );
 }
 
@@ -200,6 +173,7 @@ export default function AppSidebar() {
   const showSubFormats = !!(allSetting.subJsonEnable || allSetting.subClashEnable);
   const showSubBalancers = !!allSetting.subJsonEnable;
   const isHostedPanel = !!useHostedStatus().data?.enabled;
+  const role = useCurrentAdmin().data?.role;
 
   const [hovered, setHovered] = useState(() => hoveredAcrossRemounts);
   const [pinned, setPinned] = useState(readSidebarPinned);
@@ -233,27 +207,35 @@ export default function AppSidebar() {
   const currentTheme: 'light' | 'dark' = isDark ? 'dark' : 'light';
   const panelVersion = window.X_UI_CUR_VER || '';
 
-  const tabs = useMemo<{ key: string; icon: IconName; title: string }[]>(
-    () => [
-      { key: '/', icon: 'dashboard', title: t('menu.dashboard') },
-      { key: '/inbounds', icon: 'inbound', title: t('menu.inbounds') },
-      { key: '/clients', icon: 'team', title: t('menu.clients') },
-      { key: '/groups', icon: 'groups', title: t('menu.groups') },
-      { key: '/nodes', icon: 'cluster', title: t('menu.nodes') },
-      ...(isHostedPanel
-        ? []
-        : [{ key: '/panels', icon: 'panels' as const, title: t('menu.panels') }]),
-      { key: '/hosts', icon: 'hosts', title: t('menu.hosts') },
-      { key: '/outbound', icon: 'outbound', title: t('menu.outbounds') },
-      { key: '/routing', icon: 'routing', title: t('menu.routing') },
-      { key: '/settings', icon: 'setting', title: t('menu.settings') },
-      { key: '/xray', icon: 'tool', title: t('menu.xray') },
-      { key: '/audit', icon: 'audit', title: t('menu.audit') },
-      { key: '/api-docs', icon: 'apidocs', title: t('menu.apiDocs') },
-      { key: '/sponsors', icon: 'sponsors', title: t('menu.sponsors') },
-      { key: LOGOUT_KEY, icon: 'logout', title: t('logout') },
-    ],
-    [t, isHostedPanel],
+  type Tab = { key: string; icon: IconName; title: string };
+  const tabs = useMemo<Tab[]>(
+    () =>
+      (
+        [
+          { key: '/', icon: 'dashboard', title: t('menu.dashboard') },
+          { key: '/inbounds', icon: 'inbound', title: t('menu.inbounds') },
+          { key: '/clients', icon: 'team', title: t('menu.clients') },
+          { key: '/groups', icon: 'groups', title: t('menu.groups') },
+          { key: '/nodes', icon: 'cluster', title: t('menu.nodes') },
+          ...(isHostedPanel
+            ? []
+            : [{ key: '/panels', icon: 'panels' as const, title: t('menu.panels') }]),
+          { key: '/hosts', icon: 'hosts', title: t('menu.hosts') },
+          { key: '/outbound', icon: 'outbound', title: t('menu.outbounds') },
+          { key: '/routing', icon: 'routing', title: t('menu.routing') },
+          { key: '/settings', icon: 'setting', title: t('menu.settings') },
+          { key: '/xray', icon: 'tool', title: t('menu.xray') },
+          { key: '/sales', icon: 'sales', title: t('menu.sales') },
+          { key: '/audit', icon: 'audit', title: t('menu.audit') },
+          { key: '/admins', icon: 'admins', title: t('menu.admins') },
+          { key: '/reseller', icon: 'reseller', title: t('menu.reseller') },
+          { key: '/sessions', icon: 'sessions', title: t('menu.sessions') },
+          { key: '/api-docs', icon: 'apidocs', title: t('menu.apiDocs') },
+          { key: '/sponsors', icon: 'sponsors', title: t('menu.sponsors') },
+          { key: LOGOUT_KEY, icon: 'logout', title: t('logout') },
+        ] as Tab[]
+      ).filter((tab) => tab.key === LOGOUT_KEY || canOpenPage(role, tab.key)),
+    [t, isHostedPanel, role],
   );
 
   const navItems = useMemo(() => tabs.filter((tab) => tab.icon !== 'logout'), [tabs]);
@@ -286,6 +268,11 @@ export default function AppSidebar() {
         key: '/settings#webhooks',
         icon: <BranchesOutlined />,
         label: t('pages.settings.webhookSettings'),
+      },
+      {
+        key: '/settings#push',
+        icon: <BellOutlined />,
+        label: t('pages.settings.pushSettings'),
       },
       {
         key: '/settings#backups',
@@ -421,8 +408,6 @@ export default function AppSidebar() {
               >
                 {pinned ? <PushpinFilled /> : <PushpinOutlined />}
               </button>
-              <DocsButton ariaLabel={t('menu.docs') || 'Documentation'} />
-              <DonateButton ariaLabel={t('menu.donate') || 'Donate'} />
               <ThemeCycleButton
                 id="theme-cycle"
                 isDark={isDark}
@@ -498,8 +483,6 @@ export default function AppSidebar() {
             <BrandMark className="drawer-brand" />
           </div>
           <div className="drawer-header-actions">
-            <DocsButton ariaLabel={t('menu.docs') || 'Documentation'} />
-            <DonateButton ariaLabel={t('menu.donate') || 'Donate'} />
             <ThemeCycleButton
               id="theme-cycle-drawer"
               isDark={isDark}

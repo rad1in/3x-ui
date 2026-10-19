@@ -19,7 +19,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service/panel"
 )
 
-const tokenName = "x-ui client (CLI)"
+const tokenName = "eternal client (CLI)"
 
 // Endpoint is where the local panel listens, as its settings say.
 type Endpoint struct {

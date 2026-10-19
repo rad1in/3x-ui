@@ -20,7 +20,9 @@ import { LinkTags, linkMetaText, parseLinkParts } from '@/lib/xray/link-label';
 import { QrPanel } from '@/pages/inbounds/qr';
 import {
   ikev2PanelProfileUrl,
+  ocservPanelCaUrl,
   openvpnPanelProfileUrl,
+  sstpPanelCaUrl,
   type IKEv2ProfileFormat,
 } from '@/pages/inbounds/list/helpers';
 import ClientHwidListModal from '@/components/clients/ClientHwidList';
@@ -36,7 +38,11 @@ import {
   isAmneziaWGClient,
 } from './amneziawgConfig';
 import { tunnelConfigEndpoints, tunnelEndpointLabel } from './tunnelEndpoints';
+import ClientUsageChart from './ClientUsageChart';
 import type { HostRecord } from '@/schemas/api/host';
+import SubFetchList from './SubFetchList';
+import SignedSubLinkRow from './SignedSubLinkRow';
+import SubShortLinkRow from './SubShortLinkRow';
 import './ClientInfoModal.css';
 
 const INBOUND_PROTOCOL_COLORS: Record<string, string> = {
@@ -55,6 +61,9 @@ const INBOUND_PROTOCOL_COLORS: Record<string, string> = {
   openvpn: 'green',
   ikev2: 'blue',
   l2tp: 'purple',
+  ssh: 'cyan',
+  sstp: 'geekblue',
+  ocserv: 'lime',
 };
 
 const INBOUND_CHIP_LIMIT = 1;
@@ -63,6 +72,8 @@ const VPN_TAGS: Record<string, { label: string; color: string }> = {
   openvpn: { label: 'OpenVPN', color: 'green' },
   ikev2: { label: 'IKEv2', color: 'blue' },
   l2tp: { label: 'L2TP', color: 'purple' },
+  sstp: { label: 'SSTP', color: 'geekblue' },
+  ocserv: { label: 'OpenConnect', color: 'lime' },
 };
 
 const IKEV2_DOWNLOADS: { format: IKEv2ProfileFormat; labelKey: string }[] = [
@@ -79,6 +90,8 @@ interface SubSettings {
   subClashURI: string;
   subClashEnable: boolean;
   publicHost?: string;
+  shortLinkEnable?: boolean;
+  signedLinkEnable?: boolean;
 }
 
 interface ClientInfoModalProps {
@@ -253,7 +266,11 @@ export default function ClientInfoModal({
         .map((id) => inboundsById[id])
         .filter(
           (ib): ib is InboundOption =>
-            ib?.protocol === 'openvpn' || ib?.protocol === 'ikev2' || ib?.protocol === 'l2tp',
+            ib?.protocol === 'openvpn' ||
+            ib?.protocol === 'ikev2' ||
+            ib?.protocol === 'l2tp' ||
+            ib?.protocol === 'sstp' ||
+            ib?.protocol === 'ocserv',
         ),
     [client, inboundsById],
   );
@@ -602,6 +619,8 @@ export default function ClientInfoModal({
               </tbody>
             </table>
 
+            {client?.email && <ClientUsageChart email={client.email} />}
+
             {showSubscription && subLink && (
               <>
                 <Divider>{t('subscription.title')}</Divider>
@@ -659,6 +678,13 @@ export default function ClientInfoModal({
                     </Popover>
                   </div>
                 </div>
+                {subSettings.shortLinkEnable && client.subId && (
+                  <SubShortLinkRow subId={client.subId} email={client.email} onCopy={copyValue} />
+                )}
+                {subSettings.signedLinkEnable && client.subId && (
+                  <SignedSubLinkRow subId={client.subId} email={client.email} onCopy={copyValue} />
+                )}
+                {client.subId && <SubFetchList subId={client.subId} datepicker={datepicker} />}
                 {subJsonLink && (
                   <div className="link-row">
                     <Tag color="purple" className="link-row-tag">
@@ -895,6 +921,22 @@ export default function ClientInfoModal({
                             {t('pages.inbounds.form.l2tp.psk')}: <span dir="ltr">{ib.l2tpPsk}</span>
                           </Button>
                         </Tooltip>
+                      ) : ib.protocol === 'ocserv' ? (
+                        <Button
+                          size="small"
+                          icon={<DownloadOutlined />}
+                          href={ocservPanelCaUrl(ib.id)}
+                        >
+                          {t('pages.inbounds.form.sstp.ca')}
+                        </Button>
+                      ) : ib.protocol === 'sstp' ? (
+                        <Button
+                          size="small"
+                          icon={<DownloadOutlined />}
+                          href={sstpPanelCaUrl(ib.id)}
+                        >
+                          {t('pages.inbounds.form.sstp.ca')}
+                        </Button>
                       ) : ib.protocol === 'ikev2' ? (
                         IKEV2_DOWNLOADS.map(({ format, labelKey }) => (
                           <Button

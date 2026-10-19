@@ -35,7 +35,7 @@ func clientInfoLocalizer(t *testing.T) {
 // Regression test: a start-after-first-use client is stored as a negative duration,
 // and a disabled one rendered it as a 1969 date.
 func TestClientInfoShowsStartAfterFirstUseWhenDisabled(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 	clientInfoLocalizer(t)
 
 	traffic := &xray.ClientTraffic{

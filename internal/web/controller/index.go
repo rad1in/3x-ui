@@ -1,11 +1,14 @@
 package controller
 
 import (
+	"encoding/base64"
 	"net/http"
 	"text/template"
 	"time"
 
+	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
+	"github.com/mhsanaei/3x-ui/v3/internal/util/captcha"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/middleware"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
@@ -21,14 +24,33 @@ type LoginForm struct {
 	Username      string `json:"username" form:"username"`
 	Password      string `json:"password" form:"password"`
 	TwoFactorCode string `json:"twoFactorCode" form:"twoFactorCode"`
+	CaptchaId     string `json:"captchaId" form:"captchaId"`
+	CaptchaAnswer string `json:"captchaAnswer" form:"captchaAnswer"`
+	TgCode        string `json:"tgCode" form:"tgCode"`
 }
+
+// telegramLogin is how the login step reaches the bot, replaceable in tests.
+type telegramLogin struct {
+	running func() bool
+	send    func(chatId int64, text string)
+}
+
+// loginCodes holds the open Telegram login codes.
+var loginCodes = service.NewLoginCodeService()
+
+// loginCaptcha holds the open login challenges; a restart simply drops them.
+var loginCaptcha = captcha.NewStore(5*time.Minute, 5000)
 
 // IndexController handles the main index and login-related routes.
 type IndexController struct {
 	BaseController
 
 	settingService service.SettingService
+	security       service.SecurityConfigService
+	alerts         service.LoginAlertService
+	tgLogin        telegramLogin
 	userService    panel.UserService
+	sessionService panel.SessionService
 	panelService   panel.PanelService
 	tgbot          tgbot.Tgbot
 }
@@ -36,6 +58,7 @@ type IndexController struct {
 // NewIndexController creates a new IndexController and initializes its routes.
 func NewIndexController(g *gin.RouterGroup) *IndexController {
 	a := &IndexController{}
+	a.tgLogin = telegramLogin{running: a.tgbot.IsRunning, send: func(chatId int64, text string) { a.tgbot.SendMsgToTgbot(chatId, text) }}
 	a.initRouter(g)
 	return a
 }
@@ -44,6 +67,7 @@ func NewIndexController(g *gin.RouterGroup) *IndexController {
 func (a *IndexController) initRouter(g *gin.RouterGroup) {
 	g.GET("/", a.index)
 	g.GET("/csrf-token", a.csrfToken)
+	g.GET("/captcha", a.captcha)
 	g.GET("/sponsors", a.sponsors)
 	g.GET("/sponsors/logo/:name", a.sponsorLogo)
 	g.GET("/sponsors/feed/sponsors.json", a.sponsorFeed)
@@ -129,6 +153,7 @@ func (a *IndexController) login(c *gin.Context) {
 	remoteIP := getRemoteIp(c)
 	safeUser := template.HTMLEscapeString(form.Username)
 	timeStr := time.Now().Format("2006-01-02 15:04:05")
+	a.applyLockoutSettings()
 	if blockedUntil, ok := defaultLoginLimiter.allow(remoteIP, form.Username); !ok {
 		reason := "too many failed attempts"
 		logger.Warningf("failed login: username=%q, IP=%q, reason=%q, blocked_until=%s", form.Username, remoteIP, reason, blockedUntil.Format(time.RFC3339))
@@ -141,6 +166,13 @@ func (a *IndexController) login(c *gin.Context) {
 		})
 		pureJsonMsg(c, http.StatusOK, false, I18nWeb(c, "pages.login.toasts.wrongUsernameOrPassword"))
 		return
+	}
+
+	if cfg, err := a.security.Get(); err != nil || cfg.CaptchaEnable {
+		if err != nil || !loginCaptcha.Verify(form.CaptchaId, form.CaptchaAnswer) {
+			pureJsonMsg(c, http.StatusOK, false, I18nWeb(c, "pages.login.toasts.wrongCaptcha"))
+			return
+		}
 	}
 
 	user, checkErr := a.userService.CheckUser(form.Username, form.Password, form.TwoFactorCode)
@@ -163,6 +195,18 @@ func (a *IndexController) login(c *gin.Context) {
 		return
 	}
 
+	if on, message := a.settingService.GetMaintenance(); on && user.Role != model.AdminRoleOwner {
+		if message == "" {
+			message = I18nWeb(c, "pages.login.toasts.maintenance")
+		}
+		pureJsonMsg(c, http.StatusOK, false, message)
+		return
+	}
+
+	if !a.passTelegramStep(c, user, form.TgCode, remoteIP) {
+		return
+	}
+
 	defaultLoginLimiter.registerSuccess(remoteIP, form.Username)
 	logger.Infof("logged in successfully: username=%q, IP=%q", form.Username, remoteIP)
 	a.tgbot.UserLoginNotify(tgbot.LoginAttempt{
@@ -172,12 +216,56 @@ func (a *IndexController) login(c *gin.Context) {
 		Status:   tgbot.LoginSuccess,
 	})
 
+	go a.alerts.Observe(user, remoteIP)
+
 	if err := session.SetLoginUser(c, user); err != nil {
 		logger.Warning("Unable to save session:", err)
 		return
 	}
+	if err := a.sessionService.PruneStale(sessionPruneAfter); err != nil {
+		logger.Warning("Unable to prune stale sessions:", err)
+	}
 
 	jsonMsg(c, I18nWeb(c, "pages.login.toasts.successLogin"), nil)
+}
+
+// passTelegramStep asks an admin with a linked chat for the code sent there
+// after the password. It is skipped when the bot is not running, so a broken
+// bot token can never lock everyone out.
+func (a *IndexController) passTelegramStep(c *gin.Context, user *model.User, code, remoteIP string) bool {
+	cfg, err := a.security.Get()
+	if err != nil || !cfg.TgLoginEnable || user.TgChatId == 0 || !a.tgLogin.running() {
+		return true
+	}
+	if code == "" {
+		issued, err := loginCodes.Issue(user.Id)
+		if err != nil {
+			c.JSON(http.StatusOK, entity.Msg{Msg: I18nWeb(c, "pages.login.toasts.tgCodeWait")})
+			return false
+		}
+		a.tgLogin.send(user.TgChatId, I18nWeb(c, "pages.login.tgCodeMessage")+"\n"+issued)
+		c.JSON(http.StatusOK, entity.Msg{Msg: I18nWeb(c, "pages.login.toasts.tgCodeSent"), Obj: gin.H{"tgCodeRequired": true}})
+		return false
+	}
+	if !loginCodes.Verify(user.Id, code) {
+		if _, blocked := defaultLoginLimiter.registerFailure(remoteIP, user.Username); blocked {
+			logger.Warningf("failed login: username=%q, IP=%q, reason=%q", user.Username, remoteIP, "invalid telegram code")
+		}
+		c.JSON(http.StatusOK, entity.Msg{Msg: I18nWeb(c, "pages.login.toasts.tgCodeWrong"), Obj: gin.H{"tgCodeRequired": true}})
+		return false
+	}
+	return true
+}
+
+// applyLockoutSettings reads the operator's limits on every attempt so a
+// change takes effect at once; an unreadable value keeps the built-in default.
+func (a *IndexController) applyLockoutSettings() {
+	maxFailures, err1 := a.settingService.GetLoginMaxFailures()
+	minutes, err2 := a.settingService.GetLoginLockoutMinutes()
+	if err1 != nil || err2 != nil || maxFailures < 1 || minutes < 1 {
+		return
+	}
+	defaultLoginLimiter.configure(maxFailures, time.Duration(minutes)*time.Minute)
 }
 
 func loginFailureReason(err error) string {
@@ -208,6 +296,22 @@ func (a *IndexController) csrfToken(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "obj": token})
+}
+
+// captcha hands the login page a fresh challenge when the captcha is on.
+func (a *IndexController) captcha(c *gin.Context) {
+	c.Header("Cache-Control", "no-store")
+	cfg, err := a.security.Get()
+	if err != nil || !cfg.CaptchaEnable {
+		jsonObj(c, gin.H{"enabled": false}, nil)
+		return
+	}
+	ch, err := loginCaptcha.Issue()
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	jsonObj(c, gin.H{"enabled": true, "id": ch.ID, "image": "data:image/png;base64," + base64.StdEncoding.EncodeToString(ch.PNG)}, nil)
 }
 
 // getTwoFactorEnable retrieves the current status of two-factor authentication.

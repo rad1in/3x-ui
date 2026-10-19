@@ -61,7 +61,7 @@ func runObservatory(t *testing.T, threshold int, seq []probe) []eventbus.EventTy
 }
 
 func TestApplyObservatoryDebounce(t *testing.T) {
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 
 	tests := []struct {
 		name      string
@@ -147,7 +147,7 @@ func TestValidObsTag(t *testing.T) {
 
 func TestApplyObservatoryKeepsUnicodeTags(t *testing.T) {
 	dbDir := t.TempDir()
-	dbtest.InitDB(t, filepath.Join(dbDir, "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(dbDir, "eternal.db"))
 
 	s := &XrayMetricsService{settingService: SettingService{}}
 	s.applyObservatory(time.Unix(1000, 0), map[string]rawObsEntry{

@@ -25,6 +25,7 @@ import { setMessageInstance } from '@/utils/messageBus';
 import type { BulkAddHostValues } from '@/schemas/api/host';
 import HostList, { sortHosts } from './HostList';
 import HostFormModal from './HostFormModal';
+import CleanIPScanModal from './CleanIPScanModal';
 
 export default function HostsPage() {
   const { t } = useTranslation();
@@ -45,6 +46,7 @@ export default function HostsPage() {
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [formHost, setFormHost] = useState<HostRecord | null>(null);
   const [selectedGroupIds, setSelectedGroupIds] = useState<string[]>([]);
+  const [scanOpen, setScanOpen] = useState(false);
 
   const onAdd = useCallback(() => {
     setFormMode('add');
@@ -208,6 +210,7 @@ export default function HostsPage() {
                       selectedGroupIds={selectedGroupIds}
                       onSelectionChange={setSelectedGroupIds}
                       onAdd={onAdd}
+                      onScan={() => setScanOpen(true)}
                       onEdit={onEdit}
                       onDelete={onDelete}
                       onToggleEnable={onToggleEnable}
@@ -230,6 +233,12 @@ export default function HostsPage() {
           existingHosts={hosts}
           save={onSave}
           onOpenChange={setFormOpen}
+        />
+        <CleanIPScanModal
+          open={scanOpen}
+          hosts={hosts}
+          inboundOptions={inboundOptions}
+          onClose={() => setScanOpen(false)}
         />
       </Layout>
     </ConfigProvider>

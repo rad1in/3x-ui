@@ -71,6 +71,9 @@ const TRACKED_PROTOCOLS: readonly string[] = [
   Protocols.OPENVPN,
   Protocols.IKEV2,
   Protocols.L2TP,
+  Protocols.SSH,
+  Protocols.SSTP,
+  Protocols.OCSERV,
 ];
 
 async function fetchSlimInbounds(): Promise<unknown[]> {

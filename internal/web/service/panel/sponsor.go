@@ -29,7 +29,7 @@ type Sponsor struct {
 	Logo   string            `json:"logo,omitempty" example:"/sponsors/logo/acme.png"`
 	Title  map[string]string `json:"title"`
 	Text   map[string]string `json:"text"`
-	Link   string            `json:"link" example:"https://acme.example/?utm_source=3x-ui"`
+	Link   string            `json:"link" example:"https://acme.example/?utm_source=eternal"`
 }
 
 // SponsorList is the active sponsor set plus the contact link for new sponsors.

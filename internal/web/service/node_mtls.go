@@ -26,7 +26,7 @@ func (s *NodeService) NodeMtlsCaCert() (string, error) {
 
 // ReloadMasterMtlsClient validates the master credential currently stored by
 // the panel and drops cached mTLS connection pools. This makes an intentional
-// out-of-process credential rotation take effect without restarting x-ui (and
+// out-of-process credential rotation take effect without restarting eternal (and
 // therefore without stopping the xray child process in the same service).
 func (s *NodeService) ReloadMasterMtlsClient() error {
 	stored, err := (&SettingService{}).LoadMasterClientCert()

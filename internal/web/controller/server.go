@@ -45,6 +45,7 @@ func NewServerController(g *gin.RouterGroup) *ServerController {
 // initRouter sets up the routes for server status, Xray management, and utility endpoints.
 func (a *ServerController) initRouter(g *gin.RouterGroup) {
 	g.GET("/status", a.status)
+	g.GET("/health", a.health)
 	g.GET("/cpuHistory/:bucket", a.getCpuHistoryBucket)
 	g.GET("/history/:metric/:bucket", a.getMetricHistoryBucket)
 	g.GET("/xrayMetricsState", a.getXrayMetricsState)
@@ -66,6 +67,8 @@ func (a *ServerController) initRouter(g *gin.RouterGroup) {
 	g.GET("/getNewVlessEnc", a.getNewVlessEnc)
 	g.GET("/clientIps", a.getClientIps)
 	g.GET("/fail2banStatus", a.getFail2banStatus)
+	g.GET("/speedtestDownload", a.speedtestDownload)
+	g.POST("/speedtestUpload", a.speedtestUpload)
 
 	g.POST("/stopXrayService", a.stopXrayService)
 	g.POST("/restartXrayService", a.restartXrayService)
@@ -108,6 +111,11 @@ func (a *ServerController) startTask() {
 }
 
 // status returns the current server status information.
+// health runs the panel's self-checks: database, Xray, nodes, disk and certificates.
+func (a *ServerController) health(c *gin.Context) {
+	jsonObj(c, (&service.HealthService{}).Check(time.Now()), nil)
+}
+
 func (a *ServerController) status(c *gin.Context) { jsonObj(c, a.serverService.CurrentStatus(), nil) }
 
 func (a *ServerController) getFail2banStatus(c *gin.Context) {
@@ -348,7 +356,11 @@ func (a *ServerController) getDb(c *gin.Context) {
 		return
 	}
 
-	filename := a.serverService.BackupFilename(c.Request.Host)
+	filename, db, err := service.ProtectBackup(a.serverService.BackupFilename(c.Request.Host), db)
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.index.getDatabaseError"), err)
+		return
+	}
 	if !filenameRegex.MatchString(filename) {
 		_ = c.AbortWithError(http.StatusBadRequest, fmt.Errorf("invalid filename"))
 		return
@@ -385,6 +397,11 @@ func (a *ServerController) importDB(c *gin.Context) {
 		return
 	}
 	defer file.Close()
+	file, err = openBackupUpload(file, c.Request.FormValue("passphrase"))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.index.readDatabaseError"), err)
+		return
+	}
 	// Absent field keeps this machine's own listen addresses, certificates and
 	// node identity: the safe default for the common case of moving a config to
 	// a new host. Send keepHostSettings=false to clone a machine wholesale.

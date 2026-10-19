@@ -1,4 +1,4 @@
-// Package cliclient is `x-ui client`: it goes through the running panel's API so
+// Package cliclient is `eternal client`: it goes through the running panel's API so
 // every change reaches Xray and the nodes exactly as an edit in the web UI does.
 package cliclient
 
@@ -72,7 +72,7 @@ func (a *API) call(method, path string, body, out any) error {
 	}
 	resp, err := a.Client.Do(req)
 	if err != nil {
-		return fmt.Errorf("panel not reachable (is x-ui running?): %w", err)
+		return fmt.Errorf("panel not reachable (is eternal running?): %w", err)
 	}
 	defer resp.Body.Close()
 	raw, err := io.ReadAll(io.LimitReader(resp.Body, 64<<20))

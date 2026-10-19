@@ -22,28 +22,28 @@ interface DateTimePickerProps {
 }
 
 const LIGHT_THEME = {
-  primaryColor: '#1677ff',
+  primaryColor: '#5b4fe0',
   backgroundColor: '#ffffff',
   borderColor: '#d9d9d9',
-  hoverColor: 'rgba(22, 119, 255, 0.10)',
+  hoverColor: 'rgba(91, 79, 224, 0.10)',
   selectedTextColor: '#ffffff',
   textColor: 'rgba(0, 0, 0, 0.88)',
 };
 
 const DARK_THEME = {
-  primaryColor: '#1677ff',
-  backgroundColor: '#131316',
+  primaryColor: '#5b4fe0',
+  backgroundColor: '#15141e',
   borderColor: 'rgba(255, 255, 255, 0.12)',
-  hoverColor: 'rgba(22, 119, 255, 0.18)',
+  hoverColor: 'rgba(91, 79, 224, 0.18)',
   selectedTextColor: '#ffffff',
   textColor: 'rgba(255, 255, 255, 0.88)',
 };
 
 const ULTRA_DARK_THEME = {
-  primaryColor: '#1677ff',
-  backgroundColor: '#101013',
+  primaryColor: '#5b4fe0',
+  backgroundColor: '#0f0e16',
   borderColor: 'rgba(255, 255, 255, 0.08)',
-  hoverColor: 'rgba(22, 119, 255, 0.16)',
+  hoverColor: 'rgba(91, 79, 224, 0.16)',
   selectedTextColor: '#ffffff',
   textColor: 'rgba(255, 255, 255, 0.88)',
 };

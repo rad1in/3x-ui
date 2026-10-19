@@ -62,6 +62,10 @@ type SubService struct {
 	// inbound whose NodeID is set. Keeps the per-link host derivation
 	// O(1) instead of O(N) DB hits.
 	nodesByID map[int]*model.Node
+	// failoverTarget maps a node that is down past its grace period to its backup;
+	// backupServes holds each backup's enabled inbounds as "protocol|port".
+	failoverTarget map[int]*model.Node
+	backupServes   map[int]map[string]struct{}
 	// statsByEmail maps a client email to its traffic row across ALL inbounds
 	// loaded for the request. client_traffics.email is globally unique, so this
 	// lets statsForClient resolve usage for a client even on an inbound that
@@ -700,7 +704,7 @@ func (s *SubService) getInboundsBySubId(subId string) ([]*model.Inbound, error) 
 		JOIN client_inbounds ON client_inbounds.inbound_id = inbounds.id
 		JOIN clients ON clients.id = client_inbounds.client_id
 		WHERE
-			inbounds.protocol in ('vmess','vless','trojan','shadowsocks','hysteria','wireguard','amneziawg','mtproto','tuic','masque','openvpn','ikev2','l2tp')
+			inbounds.protocol in ('vmess','vless','trojan','shadowsocks','hysteria','wireguard','amneziawg','mtproto','tuic','masque','openvpn','ikev2','l2tp','ssh','sstp','ocserv')
 			AND clients.sub_id = ? AND inbounds.enable = ?
 	)`, subId, true).Order("sub_sort_index ASC").Order("id ASC").Find(&inbounds).Error
 	if err != nil {
@@ -1652,6 +1656,46 @@ func (s *SubService) loadNodes() {
 		m[n.Id] = n
 	}
 	s.nodesByID = m
+	s.loadFailover(m)
+}
+
+// loadFailover finds the nodes subscriptions must route around, and what each
+// backup can actually serve, so a link is only moved to a node that has the inbound.
+func (s *SubService) loadFailover(nodes map[int]*model.Node) {
+	s.failoverTarget, s.backupServes = nil, nil
+	now := time.Now()
+	targets := map[int]*model.Node{}
+	var backupIDs []int
+	for id, n := range nodes {
+		if t := service.NodeFailoverTarget(n, nodes, now); t != nil {
+			targets[id] = t
+			backupIDs = append(backupIDs, t.Id)
+		}
+	}
+	if len(targets) == 0 {
+		return
+	}
+	var rows []struct {
+		NodeID   int
+		Protocol string
+		Port     int
+	}
+	err := database.GetDB().Model(&model.Inbound{}).
+		Select("node_id, protocol, port").
+		Where("enable = ? AND node_id IN ?", true, backupIDs).
+		Scan(&rows).Error
+	if err != nil {
+		logger.Warning("subscription: load failover inbounds failed:", err)
+		return
+	}
+	serves := make(map[int]map[string]struct{}, len(backupIDs))
+	for _, r := range rows {
+		if serves[r.NodeID] == nil {
+			serves[r.NodeID] = map[string]struct{}{}
+		}
+		serves[r.NodeID][fmt.Sprintf("%s|%d", r.Protocol, r.Port)] = struct{}{}
+	}
+	s.failoverTarget, s.backupServes = targets, serves
 }
 
 // resolveInboundAddress picks the host an external client should connect to,
@@ -1675,6 +1719,11 @@ func (s *SubService) resolveInboundAddress(inbound *model.Inbound) string {
 	if inbound.NodeID != nil && s.nodesByID != nil {
 		if n, ok := s.nodesByID[*inbound.NodeID]; ok {
 			nodeAddr = n.Address
+			if backup := s.failoverTarget[n.Id]; backup != nil {
+				if _, serves := s.backupServes[backup.Id][fmt.Sprintf("%s|%d", inbound.Protocol, inbound.Port)]; serves {
+					nodeAddr = backup.Address
+				}
+			}
 		}
 	}
 	var listenAddr string
@@ -3105,6 +3154,14 @@ type PageData struct {
 	Result        []string
 	Emails        []string
 	VPN           []VPNAccount
+	Outline       []OutlineKey
+	Profiles      []ProfileLink
+}
+
+// ProfileLink is a Surge, Quantumult X or Loon profile URL the subscription page lists.
+type ProfileLink struct {
+	Kind string `json:"kind"`
+	URL  string `json:"url"`
 }
 
 // ResolveRequest extracts scheme, host, and header information from an HTTP request.
@@ -3195,6 +3252,12 @@ func (s *SubService) formatsBase(configuredSubURI, base string) string {
 func (s *SubService) SingboxURL(subId string) string {
 	configuredSubURI, _ := s.settingService.GetSubURI()
 	return s.buildSingleURL("", s.formatsBase(configuredSubURI, s.settingService.BuildSubURIBase(s.address)), subSingboxPath, subId)
+}
+
+// ProfileURL is the URL of an alias-path profile (Surge, Quantumult X, Loon).
+func (s *SubService) ProfileURL(path, subId string) string {
+	configuredSubURI, _ := s.settingService.GetSubURI()
+	return s.buildSingleURL("", s.formatsBase(configuredSubURI, s.settingService.BuildSubURIBase(s.address)), path, subId)
 }
 
 // extractBaseFromURI extracts scheme://host from a configured URI.

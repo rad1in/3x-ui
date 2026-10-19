@@ -8,6 +8,28 @@ export type staticEgressResolver = string;
 export type trafficLocalApplyAction = number;
 export type transportBits = number;
 
+export interface AdminInput {
+  groups: string[];
+  inboundIds: number[];
+  password: string;
+  role: string;
+  tgChatId: number;
+  username: string;
+}
+
+export interface AdminView {
+  createdAt: number;
+  credit: number;
+  groups: string[];
+  id: number;
+  inboundIds: number[];
+  pricePerDay?: number | null;
+  pricePerGb?: number | null;
+  role: string;
+  tgChatId: number;
+  username: string;
+}
+
 export interface AllSetting {
   autoDeleteDepletedDays: number;
   backupKeep: number;
@@ -37,6 +59,10 @@ export interface AllSetting {
   externalSubUserAgent: string;
   externalTrafficInformEnable: boolean;
   externalTrafficInformURI: string;
+  gotifyEnable: boolean;
+  gotifyEvents: string;
+  gotifyToken: string;
+  gotifyUrl: string;
   happLinkEnable: boolean;
   ipLimitAllowlist: string;
   ldapAutoCreate: boolean;
@@ -60,17 +86,40 @@ export interface AllSetting {
   ldapUserAttr: string;
   ldapUserFilter: string;
   ldapVlessField: string;
+  loginLockoutMinutes: number;
+  loginMaxFailures: number;
+  maintenanceMessage: string;
+  maintenanceMode: boolean;
+  metricsEnable: boolean;
+  metricsToken: string;
+  ntfyEnable: boolean;
+  ntfyEvents: string;
+  ntfyServer: string;
+  ntfyToken: string;
+  ntfyTopic: string;
   outboundDownThreshold: number;
   pageSize: number;
+  panelAllowedCidrs: string;
   panelBrandColor: string;
   panelBrandLogo: string;
   panelBrandName: string;
   panelOutbound: string;
+  portProbeEnable: boolean;
+  portProbeExpect: string;
+  portProbeFailures: number;
+  portProbeHost: string;
+  portProbeUrl: string;
   quotaWarnPercent: number;
   realityScanCandidates: string;
   remarkTemplate: string;
   restartXrayOnClientDisable: boolean;
   sessionMaxAge: number;
+  sharedAccountMinCountries: number;
+  sharedAccountMinIPs: number;
+  sharedAccountWindowHours: number;
+  slackEnable: boolean;
+  slackEvents: string;
+  slackWebhookUrl: string;
   smtpCpu: number;
   smtpEnable: boolean;
   smtpEnabledEvents: string;
@@ -155,6 +204,7 @@ export interface AllSetting {
   subIncySupportEmail: string;
   subInfoNodeEnable: boolean;
   subJsonAlwaysArray: boolean;
+  subJsonApps: string;
   subJsonAutoDetect: boolean;
   subJsonDns: string;
   subJsonEnable: boolean;
@@ -172,7 +222,10 @@ export interface AllSetting {
   subPort: number;
   subProfileMode: string;
   subProfileUrl: string;
+  subRateLimitPerIP: number;
+  subRateLimitPerSub: number;
   subRoutingRules: string;
+  subShortLinkEnable: boolean;
   subShowIdentityOnAllLinks: boolean;
   subSupportUrl: string;
   subThemeDir: string;
@@ -184,6 +237,7 @@ export interface AllSetting {
   tgBotBackup: boolean;
   tgBotChatId: string;
   tgBotEnable: boolean;
+  tgBotMessageOverrides: string;
   tgBotProxy: string;
   tgBotToken: string;
   tgCpu: number;
@@ -191,6 +245,8 @@ export interface AllSetting {
   tgLang: string;
   tgMemory: number;
   tgRunTime: string;
+  tgTrialEnable: boolean;
+  tgTrialTemplateId: number;
   timeLocation: string;
   trafficDiff: number;
   trustedProxyCIDRs: string;
@@ -207,6 +263,9 @@ export interface AllSetting {
   webhookEvents: string;
   webhookSecret: string;
   webhookUrls: string;
+  weeklyReportDay: number;
+  weeklyReportEnable: boolean;
+  weeklyReportHour: number;
 }
 
 export interface AllSettingView {
@@ -238,12 +297,19 @@ export interface AllSettingView {
   externalSubUserAgent: string;
   externalTrafficInformEnable: boolean;
   externalTrafficInformURI: string;
+  gotifyEnable: boolean;
+  gotifyEvents: string;
+  gotifyToken: string;
+  gotifyUrl: string;
   happLinkEnable: boolean;
   hasApiToken: boolean;
   hasBackupS3Secret: boolean;
   hasDiscordBotToken: boolean;
+  hasGotifyToken: boolean;
   hasLdapPassword: boolean;
   hasNordSecret: boolean;
+  hasNtfyToken: boolean;
+  hasSlackWebhookUrl: boolean;
   hasSmtpPassword: boolean;
   hasTgBotToken: boolean;
   hasTwoFactorToken: boolean;
@@ -271,17 +337,40 @@ export interface AllSettingView {
   ldapUserAttr: string;
   ldapUserFilter: string;
   ldapVlessField: string;
+  loginLockoutMinutes: number;
+  loginMaxFailures: number;
+  maintenanceMessage: string;
+  maintenanceMode: boolean;
+  metricsEnable: boolean;
+  metricsToken: string;
+  ntfyEnable: boolean;
+  ntfyEvents: string;
+  ntfyServer: string;
+  ntfyToken: string;
+  ntfyTopic: string;
   outboundDownThreshold: number;
   pageSize: number;
+  panelAllowedCidrs: string;
   panelBrandColor: string;
   panelBrandLogo: string;
   panelBrandName: string;
   panelOutbound: string;
+  portProbeEnable: boolean;
+  portProbeExpect: string;
+  portProbeFailures: number;
+  portProbeHost: string;
+  portProbeUrl: string;
   quotaWarnPercent: number;
   realityScanCandidates: string;
   remarkTemplate: string;
   restartXrayOnClientDisable: boolean;
   sessionMaxAge: number;
+  sharedAccountMinCountries: number;
+  sharedAccountMinIPs: number;
+  sharedAccountWindowHours: number;
+  slackEnable: boolean;
+  slackEvents: string;
+  slackWebhookUrl: string;
   smtpCpu: number;
   smtpEnable: boolean;
   smtpEnabledEvents: string;
@@ -366,6 +455,7 @@ export interface AllSettingView {
   subIncySupportEmail: string;
   subInfoNodeEnable: boolean;
   subJsonAlwaysArray: boolean;
+  subJsonApps: string;
   subJsonAutoDetect: boolean;
   subJsonDns: string;
   subJsonEnable: boolean;
@@ -383,7 +473,10 @@ export interface AllSettingView {
   subPort: number;
   subProfileMode: string;
   subProfileUrl: string;
+  subRateLimitPerIP: number;
+  subRateLimitPerSub: number;
   subRoutingRules: string;
+  subShortLinkEnable: boolean;
   subShowIdentityOnAllLinks: boolean;
   subSupportUrl: string;
   subThemeDir: string;
@@ -395,6 +488,7 @@ export interface AllSettingView {
   tgBotBackup: boolean;
   tgBotChatId: string;
   tgBotEnable: boolean;
+  tgBotMessageOverrides: string;
   tgBotProxy: string;
   tgBotToken: string;
   tgCpu: number;
@@ -402,6 +496,8 @@ export interface AllSettingView {
   tgLang: string;
   tgMemory: number;
   tgRunTime: string;
+  tgTrialEnable: boolean;
+  tgTrialTemplateId: number;
   timeLocation: string;
   trafficDiff: number;
   trustedProxyCIDRs: string;
@@ -418,6 +514,9 @@ export interface AllSettingView {
   webhookEvents: string;
   webhookSecret: string;
   webhookUrls: string;
+  weeklyReportDay: number;
+  weeklyReportEnable: boolean;
+  weeklyReportHour: number;
 }
 
 export interface AmneziaWGLogs {
@@ -427,6 +526,7 @@ export interface AmneziaWGLogs {
 }
 
 export interface ApiToken {
+  allowedCidrs: string;
   createdAt: number;
   enabled: boolean;
   expiresAt: number;
@@ -437,6 +537,7 @@ export interface ApiToken {
 }
 
 export interface ApiTokenView {
+  allowedCidrs: string;
   createdAt: number;
   enabled: boolean;
   expiresAt: number;
@@ -466,6 +567,34 @@ export interface BackupResult {
   error?: string;
   name: string;
   pruned: number;
+}
+
+export interface CardPayConfig {
+  bankName: string;
+  cardNumber: string;
+  enabled: boolean;
+  holderName: string;
+  instructions: string;
+}
+
+export interface CleanIPResult {
+  id: number;
+  ip: string;
+  latencyMs: number;
+  lossPct: number;
+  ok: boolean;
+  port: number;
+  reason: string;
+  scannedAt: number;
+}
+
+export interface CleanIPStatus {
+  done: number;
+  error: string;
+  finishedAt: number;
+  running: boolean;
+  startedAt: number;
+  total: number;
 }
 
 export interface Client {
@@ -501,6 +630,19 @@ export interface Client {
   trafficReset?: string;
   trafficResetDay?: number;
   updated_at?: number;
+}
+
+export interface ClientDailyUsage {
+  day: string;
+  down: number;
+  email: string;
+  up: number;
+}
+
+export interface ClientGeo {
+  available: boolean;
+  countries: CountryCount[];
+  unlocated: number;
 }
 
 export interface ClientInbound {
@@ -601,6 +743,24 @@ export interface ClientSlim {
   updatedAt: number;
 }
 
+export interface ClientTemplate {
+  comment: string;
+  createdAt: number;
+  delayedStart: boolean;
+  expiryDays: number;
+  flow: string;
+  group: string;
+  id: number;
+  inboundIds: number[];
+  limitIp: number;
+  name: string;
+  reset: number;
+  totalGB: number;
+  trafficReset: string;
+  trafficResetDay: number;
+  updatedAt: number;
+}
+
 export interface ClientTraffic {
   down: number;
   email: string;
@@ -621,6 +781,23 @@ export interface ClientTraffic {
   uuid: string;
 }
 
+export interface ClientTransferRequest {
+  emails: string[];
+  fromAdminId: number;
+  group: string;
+  toAdminId: number;
+}
+
+export interface ClientTransferResult {
+  moved: string[];
+  skipped: ClientTransferSkip[];
+}
+
+export interface ClientTransferSkip {
+  email: string;
+  reason: string;
+}
+
 export interface ClientsSummary {
   active: number;
   deactive: string[];
@@ -632,6 +809,35 @@ export interface ClientsSummary {
   online: string[];
   onlineCount: number;
   total: number;
+}
+
+export interface CountryCount {
+  addresses: number;
+  clients: number;
+  country: string;
+}
+
+export interface CryptoConfig {
+  apiKey: string;
+  enabled: boolean;
+  ipnSecret: string;
+  sandbox: boolean;
+}
+
+export interface DiscountCode {
+  code: string;
+  createdAt: number;
+  currency: string;
+  enabled: boolean;
+  expiresAt: number;
+  id: number;
+  kind: string;
+  maxUses: number;
+  oncePerCustomer: boolean;
+  planIds: number[];
+  updatedAt: number;
+  uses: number;
+  value: number;
 }
 
 export interface FallbackParentInfo {
@@ -678,6 +884,18 @@ export interface GeodataTokenIssue {
 
 export interface HappLinkResult {
   encryptedLink: string;
+}
+
+export interface HealthCheck {
+  detail?: string;
+  name: string;
+  status: string;
+}
+
+export interface HealthReport {
+  checkedAt: number;
+  checks: HealthCheck[];
+  status: string;
 }
 
 export interface HistoryOfSeeders {
@@ -829,6 +1047,12 @@ export interface HwidSlotStatus {
   remaining: number;
 }
 
+export interface IDPayConfig {
+  apiKey: string;
+  enabled: boolean;
+  sandbox: boolean;
+}
+
 export interface Inbound {
   clientStats: ClientTraffic[];
   disableFlow: boolean;
@@ -901,6 +1125,21 @@ export interface InboundOption {
   wgPublicKey?: string;
 }
 
+export interface InboundRotation {
+  id: number;
+  inboundId: number;
+  intervalHours: number;
+  lastPort: number;
+  lastRotatedAt: number;
+  lastSni: string;
+  nextRotationAt: number;
+  portMax: number;
+  portMin: number;
+  rotatePort: boolean;
+  rotateSni: boolean;
+  sniList: string;
+}
+
 export interface InboundTrafficSummary {
   down: number;
   enable: boolean;
@@ -954,14 +1193,20 @@ export interface Node {
   address: string;
   allowPrivateAddress: boolean;
   basePath: string;
+  billingDay: number;
+  capAction: string;
+  capState: string;
   clientCount: number;
   configDirty: boolean;
   configDirtyAt: number;
+  costCurrency: string;
   cpuPct: number;
   createdAt: number;
   depletedCount: number;
   disabledCount: number;
   enable: boolean;
+  failoverAfterSec: number;
+  failoverNodeId: number;
   guid: string;
   id: number;
   inboundCount: number;
@@ -971,6 +1216,8 @@ export interface Node {
   lastHeartbeat: number;
   latencyMs: number;
   memPct: number;
+  monthlyCapGB: number;
+  monthlyCost: number;
   name: string;
   netDown: number;
   netUp: number;
@@ -978,6 +1225,8 @@ export interface Node {
   outboundTag: string;
   panelVersion: string;
   parentGuid?: string;
+  periodBytes: number;
+  periodStart: number;
   pinnedCertSha256: string;
   port: number;
   remark: string;
@@ -992,16 +1241,29 @@ export interface Node {
   xrayVersion: string;
 }
 
+export interface NodeJoinCommand {
+  command: string;
+  expiresAt: number;
+  joinUrl: string;
+}
+
 export interface NodeMutationRequest {
   address: string;
   allowPrivateAddress: boolean;
   apiToken?: string | null;
   basePath: string;
+  billingDay: number;
+  capAction: string;
   clearApiToken?: boolean;
+  costCurrency: string;
   enable: boolean;
+  failoverAfterSec: number;
+  failoverNodeId: number;
   id: number;
   inboundSyncMode: string;
   inboundTags: string[];
+  monthlyCapGB: number;
+  monthlyCost: number;
   name: string;
   outboundTag: string;
   pinnedCertSha256: string;
@@ -1011,19 +1273,38 @@ export interface NodeMutationRequest {
   tlsVerifyMode: string;
 }
 
+export interface NodeSpeedResult {
+  downloadMbps: number;
+  jitterMs: number;
+  latencyAvgMs: number;
+  latencyMaxMs: number;
+  latencyMinMs: number;
+  lost: number;
+  nodeId: number;
+  samples: number;
+  throughputError?: string;
+  uploadMbps: number;
+}
+
 export interface NodeView {
   activeCount: number;
   address: string;
   allowPrivateAddress: boolean;
   basePath: string;
+  billingDay: number;
+  capAction: string;
+  capState: string;
   clientCount: number;
   configDirty: boolean;
   configDirtyAt: number;
+  costCurrency: string;
   cpuPct: number;
   createdAt: number;
   depletedCount: number;
   disabledCount: number;
   enable: boolean;
+  failoverAfterSec: number;
+  failoverNodeId: number;
   guid: string;
   hasApiToken: boolean;
   id: number;
@@ -1034,6 +1315,8 @@ export interface NodeView {
   lastHeartbeat: number;
   latencyMs: number;
   memPct: number;
+  monthlyCapGB: number;
+  monthlyCost: number;
   name: string;
   netDown: number;
   netUp: number;
@@ -1041,6 +1324,8 @@ export interface NodeView {
   outboundTag: string;
   panelVersion: string;
   parentGuid?: string;
+  periodBytes: number;
+  periodStart: number;
   pinnedCertSha256: string;
   port: number;
   remark: string;
@@ -1053,6 +1338,41 @@ export interface NodeView {
   xrayError: string;
   xrayState: string;
   xrayVersion: string;
+}
+
+export interface Order {
+  amount: number;
+  clientEmail: string;
+  contact: string;
+  createdAt: number;
+  currency: string;
+  discountCode: string;
+  durationDays: number;
+  fulfilledAt: number;
+  gateway: string;
+  gatewayRef: string;
+  id: number;
+  kind: string;
+  limitIp: number;
+  listAmount: number;
+  paidAt: number;
+  payUrl: string;
+  planId: number;
+  planName: string;
+  receiptNote: string;
+  receiptRef: string;
+  referralCode: string;
+  referrerEmail: string;
+  rejectReason: string;
+  status: string;
+  token: string;
+  totalGB: number;
+  updatedAt: number;
+}
+
+export interface OrderPage {
+  items: Order[];
+  total: number;
 }
 
 export interface OutboundTraffics {
@@ -1093,6 +1413,22 @@ export interface PeerActivity {
   up: number;
 }
 
+export interface Plan {
+  createdAt: number;
+  currency: string;
+  description: string;
+  durationDays: number;
+  enabled: boolean;
+  id: number;
+  limitIp: number;
+  name: string;
+  price: number;
+  sortOrder: number;
+  templateId: number;
+  totalGB: number;
+  updatedAt: number;
+}
+
 export interface ProbeResultUI {
   cpuPct: number;
   error: string;
@@ -1112,6 +1448,14 @@ export interface ProcState {
   restarts: number;
   running: boolean;
   startedAt: number;
+}
+
+export interface Quote {
+  currency: string;
+  discount: number;
+  discountCode: string;
+  final: number;
+  list: number;
 }
 
 export interface RealityScanResult {
@@ -1136,6 +1480,117 @@ export interface RealityScanResult {
   tls13: boolean;
   tlsVersion: string;
   x25519: boolean;
+}
+
+export interface ReferralConfig {
+  bonusPercent: number;
+  enabled: boolean;
+}
+
+export interface ResellerAccount {
+  balance: number;
+  entries: ResellerEntry[];
+  prices: ResellerPrices;
+  userId: number;
+}
+
+export interface ResellerConfig {
+  lowCredit: number;
+  pricePerDay: number;
+  pricePerGb: number;
+}
+
+export interface ResellerEntry {
+  amount: number;
+  bytes: number;
+  clientEmail: string;
+  createdAt: number;
+  days: number;
+  id: number;
+  kind: string;
+  note: string;
+  userId: number;
+}
+
+export interface ResellerPrices {
+  pricePerDay: number;
+  pricePerGb: number;
+}
+
+export interface ResellerReport {
+  rows: ResellerReportRow[];
+}
+
+export interface ResellerReportRow {
+  balance: number;
+  bytes: number;
+  created: number;
+  days: number;
+  renewed: number;
+  spent: number;
+  toppedUp: number;
+  userId: number;
+  username: string;
+}
+
+export interface RotationResult {
+  inboundId: number;
+  needRestart: boolean;
+  newPort: number;
+  newSni: string;
+  oldPort: number;
+  oldSni: string;
+}
+
+export interface SalesConfig {
+  card: CardPayConfig;
+  clearSecrets?: string[];
+  crypto: CryptoConfig;
+  idpay: IDPayConfig;
+  publicBaseUrl: string;
+  publicEnabled: boolean;
+  referral: ReferralConfig;
+  walletEnabled: boolean;
+  zarinpal: ZarinpalConfig;
+}
+
+export interface SalesConfigView {
+  card: CardPayConfig;
+  clearSecrets?: string[];
+  crypto: CryptoConfig;
+  hasCryptoApiKey: boolean;
+  hasCryptoIpnSecret: boolean;
+  hasIdpayApiKey: boolean;
+  hasZarinpalMerchantId: boolean;
+  idpay: IDPayConfig;
+  publicBaseUrl: string;
+  publicEnabled: boolean;
+  referral: ReferralConfig;
+  walletEnabled: boolean;
+  zarinpal: ZarinpalConfig;
+}
+
+export interface SecurityConfig {
+  backupPassphrase: string;
+  captchaEnable: boolean;
+  clearBackupPassphrase?: boolean;
+  newLocationAlert: boolean;
+  rotateSubSigningKey?: boolean;
+  subSigningEnable: boolean;
+  subSigningKey: string;
+  tgLoginEnable: boolean;
+}
+
+export interface SecurityConfigView {
+  backupPassphrase: string;
+  captchaEnable: boolean;
+  clearBackupPassphrase?: boolean;
+  hasBackupPassphrase: boolean;
+  newLocationAlert: boolean;
+  rotateSubSigningKey?: boolean;
+  subSigningEnable: boolean;
+  subSigningKey: string;
+  tgLoginEnable: boolean;
 }
 
 export interface ServerSettings {
@@ -1178,10 +1633,76 @@ export interface ServerSettings {
   subnetIp: string;
 }
 
+export interface SessionView {
+  createdAt: number;
+  current: boolean;
+  id: string;
+  ip: string;
+  lastSeen: number;
+  userAgent: string;
+  userId: number;
+  username: string;
+}
+
 export interface Setting {
   id: number;
   key: string;
   value: string;
+}
+
+export interface SharedAccountFlag {
+  countries: string;
+  countryCount: number;
+  email: string;
+  firstFlagged: number;
+  ipCount: number;
+  lastSeen: number;
+}
+
+export interface ShopCatalog {
+  methods: string[];
+  plans: ShopPlan[];
+}
+
+export interface ShopOrderView {
+  amount: number;
+  card?: CardPayConfig | null;
+  clientEmail: string;
+  createdAt: number;
+  currency: string;
+  discountCode: string;
+  fulfilled: boolean;
+  gateway: string;
+  kind: string;
+  listAmount: number;
+  payUrl?: string;
+  planName: string;
+  rejectReason: string;
+  status: string;
+  subscriptionUrl: string;
+  token: string;
+}
+
+export interface ShopPlan {
+  currency: string;
+  description: string;
+  durationDays: number;
+  id: number;
+  limitIp: number;
+  name: string;
+  price: number;
+  totalGB: number;
+}
+
+export interface ShopWallet {
+  balances: WalletBalance[];
+  entries: WalletEntry[];
+  referralCode: string;
+}
+
+export interface SignedSubLink {
+  expiresAt: number;
+  url: string;
 }
 
 export interface Sponsor {
@@ -1237,6 +1758,20 @@ export interface SubBalancer {
   updatedAt: number;
 }
 
+export interface SubFetchInfo {
+  count: number;
+  firstSeen: number;
+  format: string;
+  ip: string;
+  lastSeen: number;
+  userAgent: string;
+}
+
+export interface SubShortLinkView {
+  token: string;
+  url: string;
+}
+
 export interface Traffic {
   Down: number;
   IsInbound: boolean;
@@ -1266,8 +1801,10 @@ export interface TuicServerSettings {
 }
 
 export interface User {
+  createdAt: number;
   id: number;
   password: string;
+  role: string;
   username: string;
 }
 
@@ -1275,5 +1812,33 @@ export interface VPNStatus {
   id: number;
   reason?: string;
   running: boolean;
+}
+
+export interface WalletBalance {
+  amount: number;
+  currency: string;
+}
+
+export interface WalletEntry {
+  amount: number;
+  createdAt: number;
+  currency: string;
+  email: string;
+  id: number;
+  kind: string;
+  note: string;
+  orderId: number;
+}
+
+export interface WalletView {
+  balances: WalletBalance[];
+  email: string;
+  entries: WalletEntry[];
+}
+
+export interface ZarinpalConfig {
+  enabled: boolean;
+  merchantId: string;
+  sandbox: boolean;
 }
 

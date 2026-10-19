@@ -354,7 +354,7 @@ func provisionHostedPanel(p *model.HostedPanel, password string) error {
 	return initHostedPanel(p, password)
 }
 
-// initHostedPanel runs `x-ui hosted-init` in the panel's own environment, so
+// initHostedPanel runs `eternal hosted-init` in the panel's own environment, so
 // the panel's database is written by the same code and migrations it runs on.
 func initHostedPanel(p *model.HostedPanel, password string) error {
 	exe, err := hostedExecutable()

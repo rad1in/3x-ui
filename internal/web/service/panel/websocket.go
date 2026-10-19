@@ -7,6 +7,7 @@ package panel
 import (
 	"time"
 
+	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/websocket"
@@ -37,8 +38,8 @@ func NewWebSocketService(hub *websocket.Hub) *WebSocketService {
 // HandleConnection takes ownership of an upgraded WebSocket connection:
 // registers a new client, starts the read/write pumps, and returns
 // immediately. The connection is closed when both pumps exit.
-func (s *WebSocketService) HandleConnection(conn *ws.Conn, remoteIP string) {
-	if s == nil || s.hub == nil || conn == nil {
+func (s *WebSocketService) HandleConnection(conn *ws.Conn, remoteIP string, user *model.User) {
+	if s == nil || s.hub == nil || conn == nil || user == nil {
 		if conn != nil {
 			conn.Close()
 		}
@@ -46,6 +47,8 @@ func (s *WebSocketService) HandleConnection(conn *ws.Conn, remoteIP string) {
 	}
 
 	client := websocket.NewClient(uuid.New().String())
+	client.UserId = user.Id
+	client.Restricted = user.Role == model.AdminRoleOperator
 	s.hub.Register(client)
 	logger.Debugf("WebSocket client %s registered from %s", client.ID, remoteIP)
 

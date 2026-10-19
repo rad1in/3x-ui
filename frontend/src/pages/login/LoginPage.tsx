@@ -28,8 +28,15 @@ import { FormField, rhfZodValidate } from '@/components/form/rhf';
 import { setMessageInstance } from '@/utils/messageBus';
 import SponsorSlot from '@/components/sponsor/SponsorSlot';
 import { pauseAnimationsUntilLeave, useTheme } from '@/hooks/useTheme';
-import { LoginFormSchema, TwoFactorCodeSchema, type LoginFormValues } from '@/schemas/login';
-import { BrandMark } from '@/components/ui';
+import {
+  CaptchaAnswerSchema,
+  TgCodeSchema,
+  LoginFormSchema,
+  TwoFactorCodeSchema,
+  type LoginFormValues,
+} from '@/schemas/login';
+import { BrandGlyph, BrandMark } from '@/components/ui';
+import { DEFAULT_BRAND_NAME, panelBrand } from '@/lib/brand/brand';
 import './LoginPage.css';
 
 const HEADLINE_INTERVAL_MS = 2000;
@@ -39,6 +46,8 @@ type LoginForm = LoginFormValues;
 const basePath = window.X_UI_BASE_PATH || '';
 
 export default function LoginPage() {
+  const { name: customName, logo } = panelBrand();
+  const brandName = customName || DEFAULT_BRAND_NAME;
   const { t } = useTranslation();
   const { isDark, isUltra, toggleTheme, toggleUltra, antdThemeConfig } = useTheme();
   const [messageApi, messageContextHolder] = message.useMessage();
@@ -50,9 +59,17 @@ export default function LoginPage() {
   const [fetched, setFetched] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [twoFactorEnable, setTwoFactorEnable] = useState(false);
+  const [tgCodeRequired, setTgCodeRequired] = useState(false);
+  const [captcha, setCaptcha] = useState<{ id: string; image: string } | null>(null);
   const [headlineIndex, setHeadlineIndex] = useState(0);
   const methods = useForm<LoginForm>({
-    defaultValues: { username: '', password: '', twoFactorCode: '' },
+    defaultValues: {
+      username: '',
+      password: '',
+      twoFactorCode: '',
+      captchaAnswer: '',
+      tgCode: '',
+    },
   });
   const [lang, setLang] = useState<string>(() => LanguageManager.getLanguage());
 
@@ -65,9 +82,16 @@ export default function LoginPage() {
     return () => window.clearInterval(timer);
   }, [headlineWords.length]);
 
+  const loadCaptcha = useCallback(async () => {
+    const msg = await HttpUtil.get('/captcha', undefined, { silent: true });
+    const obj = msg?.obj as { enabled?: boolean; id?: string; image?: string } | undefined;
+    setCaptcha(obj?.enabled && obj.id && obj.image ? { id: obj.id, image: obj.image } : null);
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      await loadCaptcha();
       const msg = await HttpUtil.post('/getTwoFactorEnable');
       if (cancelled) return;
       if (msg.success) setTwoFactorEnable(!!msg.obj);
@@ -76,17 +100,27 @@ export default function LoginPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [loadCaptcha]);
 
-  const onSubmit = useCallback(async (values: LoginForm) => {
-    setSubmitting(true);
-    try {
-      const msg = await HttpUtil.post('/login', values);
-      if (msg.success) window.location.href = basePath + 'panel/';
-    } finally {
-      setSubmitting(false);
-    }
-  }, []);
+  const onSubmit = useCallback(
+    async (values: LoginForm) => {
+      setSubmitting(true);
+      try {
+        const msg = await HttpUtil.post('/login', { ...values, captchaId: captcha?.id ?? '' });
+        if (msg.success) window.location.href = basePath + 'panel/';
+        else if ((msg.obj as { tgCodeRequired?: boolean } | null)?.tgCodeRequired) {
+          setTgCodeRequired(true);
+          if (captcha) await loadCaptcha();
+        } else if (captcha) {
+          methods.setValue('captchaAnswer', '');
+          await loadCaptcha();
+        }
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [captcha, loadCaptcha, methods],
+  );
 
   const onLangChange = useCallback((next: string) => {
     setLang(next);
@@ -173,85 +207,141 @@ export default function LoginPage() {
             </Popover>
           </div>
 
-          <div className="login-wrapper">
-            {!fetched ? (
-              <div className="login-loading">
-                <Spin size="large" />
+          <div className="login-split">
+            <aside className="login-aside" aria-hidden="true">
+              <div className="login-aside-rings" />
+              <div className="login-aside-brand">
+                {logo ? (
+                  <img className="login-aside-logo" src={logo} alt="" />
+                ) : (
+                  <BrandGlyph bare size={260} className="login-aside-glyph" />
+                )}
+                <span className="login-aside-name" dir="auto">
+                  {brandName}
+                </span>
+                <span className="login-aside-accent" />
               </div>
-            ) : (
-              <div className="login-card">
-                <div className="brand">
-                  <BrandMark className="brand-name" />
-                  <span className="brand-accent" aria-hidden="true" />
+            </aside>
+            <div className="login-wrapper">
+              {!fetched ? (
+                <div className="login-loading">
+                  <Spin size="large" />
                 </div>
-                <h2 className="welcome">
-                  <b key={headlineIndex}>{headlineWords[headlineIndex]}</b>
-                </h2>
+              ) : (
+                <div className="login-card">
+                  <div className="brand">
+                    <BrandMark className="brand-name" />
+                  </div>
+                  <h2 className="welcome">
+                    <b key={headlineIndex}>{headlineWords[headlineIndex]}</b>
+                  </h2>
 
-                <FormProvider {...methods}>
-                  <Form
-                    layout="vertical"
-                    className="login-form"
-                    onFinish={methods.handleSubmit(onSubmit)}
-                  >
-                    <FormField
-                      name="username"
-                      label={t('username')}
-                      rules={{ validate: rhfZodValidate(LoginFormSchema.shape.username) }}
+                  <FormProvider {...methods}>
+                    <Form
+                      layout="vertical"
+                      className="login-form"
+                      onFinish={methods.handleSubmit(onSubmit)}
                     >
-                      <Input
-                        prefix={<UserOutlined />}
-                        autoComplete="username"
-                        size="large"
-                        placeholder={t('username')}
-                        autoFocus
-                      />
-                    </FormField>
-
-                    <FormField
-                      name="password"
-                      label={t('password')}
-                      rules={{ validate: rhfZodValidate(LoginFormSchema.shape.password) }}
-                    >
-                      <Input.Password
-                        prefix={<LockOutlined />}
-                        autoComplete="current-password"
-                        size="large"
-                        placeholder={t('password')}
-                      />
-                    </FormField>
-
-                    {twoFactorEnable && (
                       <FormField
-                        name="twoFactorCode"
-                        label={t('twoFactorCode')}
-                        rules={{ validate: rhfZodValidate(TwoFactorCodeSchema) }}
+                        name="username"
+                        label={t('username')}
+                        rules={{ validate: rhfZodValidate(LoginFormSchema.shape.username) }}
                       >
                         <Input
-                          prefix={<KeyOutlined />}
-                          autoComplete="one-time-code"
+                          prefix={<UserOutlined />}
+                          autoComplete="username"
                           size="large"
-                          placeholder={t('twoFactorCode')}
+                          placeholder={t('username')}
+                          autoFocus
                         />
                       </FormField>
-                    )}
 
-                    <Form.Item className="submit-row">
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        loading={submitting}
-                        size="large"
-                        block
+                      <FormField
+                        name="password"
+                        label={t('password')}
+                        rules={{ validate: rhfZodValidate(LoginFormSchema.shape.password) }}
                       >
-                        {t('login')}
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                </FormProvider>
-                <SponsorSlot slot="login" variant="compact" className="login-sponsor" />
-              </div>
-            )}
+                        <Input.Password
+                          prefix={<LockOutlined />}
+                          autoComplete="current-password"
+                          size="large"
+                          placeholder={t('password')}
+                        />
+                      </FormField>
+
+                      {twoFactorEnable && (
+                        <FormField
+                          name="twoFactorCode"
+                          label={t('twoFactorCode')}
+                          rules={{ validate: rhfZodValidate(TwoFactorCodeSchema) }}
+                        >
+                          <Input
+                            prefix={<KeyOutlined />}
+                            autoComplete="one-time-code"
+                            size="large"
+                            placeholder={t('twoFactorCode')}
+                          />
+                        </FormField>
+                      )}
+
+                      {tgCodeRequired && (
+                        <FormField
+                          name="tgCode"
+                          label={t('pages.login.tgCode')}
+                          rules={{ validate: rhfZodValidate(TgCodeSchema) }}
+                        >
+                          <Input
+                            prefix={<KeyOutlined />}
+                            autoComplete="one-time-code"
+                            inputMode="numeric"
+                            size="large"
+                            placeholder={t('pages.login.tgCodePlaceholder')}
+                          />
+                        </FormField>
+                      )}
+
+                      {captcha && (
+                        <FormField
+                          name="captchaAnswer"
+                          label={t('pages.login.captcha')}
+                          rules={{ validate: rhfZodValidate(CaptchaAnswerSchema) }}
+                        >
+                          <Input
+                            size="large"
+                            autoComplete="off"
+                            inputMode="numeric"
+                            placeholder={t('pages.login.captchaPlaceholder')}
+                            addonAfter={
+                              <button
+                                type="button"
+                                className="captcha-refresh"
+                                aria-label={t('pages.login.captchaRefresh')}
+                                onClick={() => void loadCaptcha()}
+                              >
+                                <img src={captcha.image} alt="" />
+                              </button>
+                            }
+                          />
+                        </FormField>
+                      )}
+
+                      <Form.Item className="submit-row">
+                        <Button
+                          type="primary"
+                          htmlType="submit"
+                          loading={submitting}
+                          size="large"
+                          block
+                        >
+                          {t('login')}
+                        </Button>
+                      </Form.Item>
+                    </Form>
+                  </FormProvider>
+                  <SponsorSlot slot="login" variant="compact" className="login-sponsor" />
+                </div>
+              )}
+            </div>
           </div>
         </Layout.Content>
       </Layout>

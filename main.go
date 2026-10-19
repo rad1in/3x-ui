@@ -269,7 +269,7 @@ func showSetting(show bool) {
 		}
 
 		userService := panel.UserService{}
-		userModel, err := userService.GetFirstUser()
+		userModel, err := userService.GetPrimaryOwner()
 		if err != nil {
 			fmt.Println("get current user info failed, error info:", err)
 		}
@@ -374,7 +374,7 @@ func encryptNodeTokens() {
 }
 
 // updateSetting updates various panel settings including port, credentials, base path, listen IP, and two-factor authentication.
-func updateSetting(port int, username string, password string, webBasePath string, listenIP string, resetTwoFactor bool) error {
+func updateSetting(port int, username string, password string, webBasePath string, listenIP string, resetTwoFactor bool, resetLoginRestrictions bool) error {
 	err := database.InitDB(config.GetDBPath())
 	if err != nil {
 		fmt.Println("Database initialization failed:", err)
@@ -419,6 +419,14 @@ func updateSetting(port int, username string, password string, webBasePath strin
 		} else {
 			_ = settingService.SetTwoFactorToken("")
 			fmt.Println("Two-factor authentication reset successfully")
+		}
+	}
+
+	if resetLoginRestrictions {
+		if err := settingService.SetPanelAllowedCidrs(""); err != nil {
+			fmt.Println("Failed to clear the panel IP allowlist:", err)
+		} else {
+			fmt.Println("Panel IP allowlist cleared")
 		}
 	}
 
@@ -572,7 +580,7 @@ func migrateDb() {
 }
 
 // loadServiceEnvFile loads the systemd EnvironmentFile so CLI subcommands like
-// "x-ui setting" hit the same database backend as the panel. godotenv.Load does
+// "eternal setting" hit the same database backend as the panel. godotenv.Load does
 // not override variables already in the environment, so it is a no-op for the
 // systemd-managed service.
 func loadServiceEnvFile() {
@@ -608,8 +616,8 @@ func main() {
 	var migrateDump string
 	var migrateRestore string
 	var migrateOut string
-	migrateDbCmd.StringVar(&migrateDsn, "dsn", "", "Destination PostgreSQL DSN (postgres://user:pass@host:port/db?sslmode=disable)")
-	migrateDbCmd.StringVar(&migrateSrc, "src", "", "Source SQLite file (defaults to the configured x-ui.db)")
+	migrateDbCmd.StringVar(&migrateDsn, "dsn", "", "Destination PostgreSQL (postgres://user:pass@host:port/db?sslmode=disable) or MySQL/MariaDB (mysql://user:pass@host:3306/db) DSN")
+	migrateDbCmd.StringVar(&migrateSrc, "src", "", "Source SQLite file (defaults to the configured eternal.db)")
 	migrateDbCmd.StringVar(&migrateDump, "dump", "", "Write a portable SQL text dump of --src to this file (.db -> .dump)")
 	migrateDbCmd.StringVar(&migrateRestore, "restore", "", "Rebuild a SQLite database from this SQL text dump (.dump -> .db); requires --out")
 	migrateDbCmd.StringVar(&migrateOut, "out", "", "Destination SQLite file for --restore (must not already exist)")
@@ -634,6 +642,7 @@ func main() {
 	var tokenName string
 	var tokenScope string
 	var resetTwoFactor bool
+	var resetLoginRestrictions bool
 	settingCmd.BoolVar(&reset, "reset", false, "Reset all settings")
 	settingCmd.BoolVar(&show, "show", false, "Display current settings")
 	settingCmd.IntVar(&port, "port", 0, "Set panel port number")
@@ -642,6 +651,7 @@ func main() {
 	settingCmd.StringVar(&webBasePath, "webBasePath", "", "Set base path for Panel")
 	settingCmd.StringVar(&listenIP, "listenIP", "", "set panel listenIP IP")
 	settingCmd.BoolVar(&resetTwoFactor, "resetTwoFactor", false, "Reset two-factor authentication settings")
+	settingCmd.BoolVar(&resetLoginRestrictions, "resetLoginRestrictions", false, "Clear the panel IP allowlist, e.g. after locking yourself out")
 	settingCmd.BoolVar(&getListen, "getListen", false, "Display current panel listenIP IP")
 	settingCmd.BoolVar(&getCert, "getCert", false, "Display current certificate settings")
 	settingCmd.BoolVar(&getApiToken, "getApiToken", false, "Print an API token for CLI use, regenerating it and invalidating the previous one; on a panel with no tokens yet it mints one instead")
@@ -715,7 +725,7 @@ func main() {
 				os.Exit(1)
 			}
 		default:
-			fmt.Println("nothing to do: pass --dump <file>, --restore <file> --out <db>, or --dsn <postgres-dsn>")
+			fmt.Println("nothing to do: pass --dump <file>, --restore <file> --out <db>, or --dsn <postgres-or-mysql-dsn>")
 		}
 	case "setting":
 		err := settingCmd.Parse(os.Args[2:])
@@ -733,7 +743,7 @@ func main() {
 				return
 			}
 		} else {
-			if err = updateSetting(port, username, password, webBasePath, listenIP, resetTwoFactor); err != nil {
+			if err = updateSetting(port, username, password, webBasePath, listenIP, resetTwoFactor, resetLoginRestrictions); err != nil {
 				return
 			}
 		}
@@ -780,7 +790,7 @@ func main() {
 	}
 }
 
-// runClientCommand runs `x-ui client ...` against the panel running on this host.
+// runClientCommand runs `eternal client ...` against the panel running on this host.
 func runClientCommand(args []string) int {
 	if len(args) == 0 || args[0] == "-h" || args[0] == "--help" || args[0] == "help" {
 		fmt.Print(cliclient.Usage)
@@ -818,8 +828,8 @@ func commandHelp() string {
 	return `
 Commands:
     run            run web panel
-    migrate        migrate from other/old x-ui
-    migrate-db     SQLite <-> .dump (--dump/--restore) or copy into PostgreSQL (--dsn)
+    migrate        migrate from other/old eternal
+    migrate-db     SQLite <-> .dump (--dump/--restore) or copy into PostgreSQL/MySQL (--dsn)
     encrypt-tokens encrypt node bearer tokens with the configured active key
     setting        set settings
     client         manage clients: list, show, add, del, enable, disable, reset

@@ -63,7 +63,8 @@ func NewWebSocketController(svc *panel.WebSocketService) *WebSocketController {
 // HandleWebSocket authenticates the request, upgrades the HTTP connection, and
 // hands ownership of the connection off to the service.
 func (w *WebSocketController) HandleWebSocket(c *gin.Context) {
-	if !session.IsLogin(c) {
+	user := session.GetLoginUser(c)
+	if user == nil {
 		logger.Warningf("Unauthorized WebSocket connection attempt from %s", getRemoteIp(c))
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
@@ -75,5 +76,5 @@ func (w *WebSocketController) HandleWebSocket(c *gin.Context) {
 		return
 	}
 
-	w.service.HandleConnection(conn, getRemoteIp(c))
+	w.service.HandleConnection(conn, getRemoteIp(c), user)
 }

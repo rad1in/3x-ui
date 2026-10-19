@@ -22,6 +22,9 @@ import {
 } from '@/schemas/protocols/inbound/openvpn';
 import type { IKEv2InboundSettings } from '@/schemas/protocols/inbound/ikev2';
 import type { L2TPInboundSettings } from '@/schemas/protocols/inbound/l2tp';
+import type { SSHInboundSettings } from '@/schemas/protocols/inbound/ssh';
+import type { SSTPInboundSettings } from '@/schemas/protocols/inbound/sstp';
+import type { OCSERVInboundSettings } from '@/schemas/protocols/inbound/ocserv';
 import type { TunInboundSettings } from '@/schemas/protocols/inbound/tun';
 import type { TunnelInboundSettings } from '@/schemas/protocols/inbound/tunnel';
 import type { VlessClient, VlessInboundSettings } from '@/schemas/protocols/inbound/vless';
@@ -356,8 +359,20 @@ export function createDefaultOpenVPNInboundSettings(): OpenVPNInboundSettings {
   return { proto: 'udp', network: '', dns: [...OPENVPN_DEFAULT_DNS], clients: [] };
 }
 
+export function createDefaultSSHInboundSettings(): SSHInboundSettings {
+  return { hostKey: '', banner: '', allowLocal: false, clients: [] };
+}
+
 export function createDefaultL2TPInboundSettings(): L2TPInboundSettings {
   return { psk: '', pool: '', dns: [...OPENVPN_DEFAULT_DNS], clients: [] };
+}
+
+export function createDefaultOCSERVInboundSettings(serverAddress = ''): OCSERVInboundSettings {
+  return { serverAddress, pool: '', dns: [...OPENVPN_DEFAULT_DNS], clients: [] };
+}
+
+export function createDefaultSSTPInboundSettings(serverAddress = ''): SSTPInboundSettings {
+  return { serverAddress, pool: '', dns: [...OPENVPN_DEFAULT_DNS], clients: [] };
 }
 
 export function createDefaultIKEv2InboundSettings(serverAddress = ''): IKEv2InboundSettings {
@@ -405,7 +420,10 @@ export type AnyInboundSettings =
   | MasqueInboundSettings
   | OpenVPNInboundSettings
   | IKEv2InboundSettings
-  | L2TPInboundSettings;
+  | L2TPInboundSettings
+  | SSHInboundSettings
+  | SSTPInboundSettings
+  | OCSERVInboundSettings;
 
 export function createDefaultInboundSettings(protocol: string): AnyInboundSettings | null {
   switch (protocol) {
@@ -443,6 +461,12 @@ export function createDefaultInboundSettings(protocol: string): AnyInboundSettin
       return createDefaultIKEv2InboundSettings();
     case 'l2tp':
       return createDefaultL2TPInboundSettings();
+    case 'ssh':
+      return createDefaultSSHInboundSettings();
+    case 'sstp':
+      return createDefaultSSTPInboundSettings();
+    case 'ocserv':
+      return createDefaultOCSERVInboundSettings();
     default:
       return null;
   }

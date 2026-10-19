@@ -9,8 +9,26 @@ interface SubLinksTabProps {
   subJsonUrl: string;
   subClashUrl: string;
   subSingboxUrl?: string;
+  profileLinks?: { kind: string; url: string }[];
+  outlineKeys?: { inboundId: number; remark: string; url: string }[];
   onCopy: (value: string) => void;
 }
+
+interface LinkRow {
+  kind: string;
+  tag?: string;
+  color: string;
+  url: string;
+  title: string;
+  downloadable: boolean;
+  importUrl?: string;
+}
+
+const PROFILE_TITLES: Record<string, string> = {
+  SURGE: 'Surge',
+  QUANX: 'Quantumult X',
+  LOON: 'Loon',
+};
 
 const appendRawView = (url: string) => `${url}${url.includes('?') ? '&' : '?'}view=raw`;
 
@@ -23,11 +41,13 @@ export default function SubLinksTab({
   subJsonUrl,
   subClashUrl,
   subSingboxUrl = '',
+  outlineKeys = [],
+  profileLinks = [],
   onCopy,
 }: SubLinksTabProps) {
   const { t } = useTranslation();
   const subLabel = t('pages.settings.subSettings');
-  const rows = [
+  const rows: LinkRow[] = [
     { kind: 'SUB', color: 'green', url: subUrl, title: subLabel, downloadable: false },
     {
       kind: 'JSON',
@@ -45,6 +65,22 @@ export default function SubLinksTab({
       downloadable: false,
       importUrl: subSingboxUrl && singboxImportUrl(subSingboxUrl),
     },
+    ...profileLinks.map((link) => ({
+      kind: link.kind,
+      color: 'magenta',
+      url: link.url,
+      title: PROFILE_TITLES[link.kind] ?? link.kind,
+      downloadable: false,
+    })),
+    ...outlineKeys.map((key) => ({
+      kind: `OUTLINE-${key.inboundId}`,
+      tag: 'OUTLINE',
+      color: 'cyan',
+      url: key.url,
+      title: `Outline · ${key.remark}`,
+      downloadable: false,
+      importUrl: key.url,
+    })),
   ].filter((row) => row.url);
 
   return (
@@ -52,7 +88,7 @@ export default function SubLinksTab({
       {rows.map((row) => (
         <div key={row.kind} className="sub-row">
           <Tag color={row.color} className="sub-row-tag">
-            {row.kind}
+            {row.tag ?? row.kind}
           </Tag>
           <div className="sub-row-main">
             <a href={row.url} target="_blank" rel="noopener noreferrer" className="sub-row-title">
@@ -73,7 +109,7 @@ export default function SubLinksTab({
                 title={t('download')}
               />
             )}
-            {'importUrl' in row && row.importUrl && (
+            {row.importUrl && (
               <Button
                 href={row.importUrl}
                 icon={<ImportOutlined />}
@@ -91,6 +127,7 @@ export default function SubLinksTab({
           </div>
         </div>
       ))}
+      {outlineKeys.length > 0 && <p className="sub-muted">{t('subscription.outlineHint')}</p>}
       {subUrl && (
         <div className="sub-qr-card">
           <div className="sub-qr-code">

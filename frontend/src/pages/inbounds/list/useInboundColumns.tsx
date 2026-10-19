@@ -235,6 +235,20 @@ export function useInboundColumns({
               </Tooltip>,
             );
           }
+          if (record.protocol === 'ocserv') {
+            tags.push(
+              <Tag key="n" color="green">
+                TCP/UDP
+              </Tag>,
+            );
+          }
+          if (record.protocol === 'ssh' || record.protocol === 'sstp') {
+            tags.push(
+              <Tag key="n" color="green">
+                TCP
+              </Tag>,
+            );
+          }
           if (record.protocol === 'openvpn') {
             const settings = coerceInboundJsonField(record.settings) as { proto?: string } | null;
             tags.push(

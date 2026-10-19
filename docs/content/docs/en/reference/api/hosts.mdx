@@ -45,6 +45,22 @@ _openapi:
     - depth: 2
       title: Delete many host groups in one call.
       url: '#delete-many-host-groups-in-one-call'
+    - depth: 2
+      title: Start a background probe of CDN addresses from the panel host. targets
+        takes IPs, CIDRs and a-b IPv4 ranges; with sni set, each attempt is a
+        verified TLS handshake.
+      url: '#start-a-background-probe-of-cdn-addresses-from-the-panel-host-targets-takes-ips-cidrs-and-a-b-ipv4-ranges-with-sni-set-each-attempt-is-a-verified-tls-handshake'
+    - depth: 2
+      title: Progress of the running or most recent clean-IP scan.
+      url: '#progress-of-the-running-or-most-recent-clean-ip-scan'
+    - depth: 2
+      title: 'Results of the last clean-IP scan: reachable addresses first, by packet
+        loss then latency.'
+      url: '#results-of-the-last-clean-ip-scan-reachable-addresses-first-by-packet-loss-then-latency'
+    - depth: 2
+      title: 'Point a subscription host at a scanned address: replace or add it on a
+        host group, or add a new host to an inbound.'
+      url: '#point-a-subscription-host-at-a-scanned-address-replace-or-add-it-on-a-host-group-or-add-a-new-host-to-an-inbound'
   structuredData:
     headings:
       - content: List every host across all inbounds, grouped by inbound then ordered by
@@ -72,6 +88,18 @@ _openapi:
         id: enable-or-disable-many-host-groups-in-one-call
       - content: Delete many host groups in one call.
         id: delete-many-host-groups-in-one-call
+      - content: Start a background probe of CDN addresses from the panel host. targets
+          takes IPs, CIDRs and a-b IPv4 ranges; with sni set, each attempt is a
+          verified TLS handshake.
+        id: start-a-background-probe-of-cdn-addresses-from-the-panel-host-targets-takes-ips-cidrs-and-a-b-ipv4-ranges-with-sni-set-each-attempt-is-a-verified-tls-handshake
+      - content: Progress of the running or most recent clean-IP scan.
+        id: progress-of-the-running-or-most-recent-clean-ip-scan
+      - content: 'Results of the last clean-IP scan: reachable addresses first, by
+          packet loss then latency.'
+        id: results-of-the-last-clean-ip-scan-reachable-addresses-first-by-packet-loss-then-latency
+      - content: 'Point a subscription host at a scanned address: replace or add it on a
+          host group, or add a new host to an inbound.'
+        id: point-a-subscription-host-at-a-scanned-address-replace-or-add-it-on-a-host-group-or-add-a-new-host-to-an-inbound
     contents: []
 ---
 
@@ -84,7 +112,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/hosts/list","method":"get"},{"path":"/panel/api/hosts/get/{groupId}","method":"get"},{"path":"/panel/api/hosts/byInbound/{inboundId}","method":"get"},{"path":"/panel/api/hosts/tags","method":"get"},{"path":"/panel/api/hosts/add","method":"post"},{"path":"/panel/api/hosts/update/{groupId}","method":"post"},{"path":"/panel/api/hosts/del/{groupId}","method":"post"},{"path":"/panel/api/hosts/setEnable/{groupId}","method":"post"},{"path":"/panel/api/hosts/reorder","method":"post"},{"path":"/panel/api/hosts/bulk/add","method":"post"},{"path":"/panel/api/hosts/bulk/setEnable","method":"post"},{"path":"/panel/api/hosts/bulk/del","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/hosts/list","method":"get"},{"path":"/panel/api/hosts/get/{groupId}","method":"get"},{"path":"/panel/api/hosts/byInbound/{inboundId}","method":"get"},{"path":"/panel/api/hosts/tags","method":"get"},{"path":"/panel/api/hosts/add","method":"post"},{"path":"/panel/api/hosts/update/{groupId}","method":"post"},{"path":"/panel/api/hosts/del/{groupId}","method":"post"},{"path":"/panel/api/hosts/setEnable/{groupId}","method":"post"},{"path":"/panel/api/hosts/reorder","method":"post"},{"path":"/panel/api/hosts/bulk/add","method":"post"},{"path":"/panel/api/hosts/bulk/setEnable","method":"post"},{"path":"/panel/api/hosts/bulk/del","method":"post"},{"path":"/panel/api/hosts/cleanip/scan","method":"post"},{"path":"/panel/api/hosts/cleanip/status","method":"get"},{"path":"/panel/api/hosts/cleanip/results","method":"get"},{"path":"/panel/api/hosts/cleanip/apply","method":"post"}]} showTitle />
     </>
   );
 }

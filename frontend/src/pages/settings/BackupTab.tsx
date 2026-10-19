@@ -101,7 +101,7 @@ export default function BackupTab({ allSetting, updateSetting }: BackupTabProps)
         'backupLocalDir',
         t('pages.settings.backupLocalDir'),
         t('pages.settings.backupLocalDirDesc'),
-        '/var/backups/x-ui',
+        '/var/backups/eternal',
       )}
 
       <Typography.Title level={5} style={{ marginTop: 16 }}>
@@ -120,7 +120,7 @@ export default function BackupTab({ allSetting, updateSetting }: BackupTabProps)
         'us-east-1',
       )}
       {text('backupS3Bucket', t('pages.settings.backupS3Bucket'))}
-      {text('backupS3Prefix', t('pages.settings.backupS3Prefix'), undefined, 'x-ui/')}
+      {text('backupS3Prefix', t('pages.settings.backupS3Prefix'), undefined, 'eternal/')}
       {text('backupS3AccessKey', t('pages.settings.backupS3AccessKey'))}
       <SettingListItem paddings="small" title={t('pages.settings.backupS3SecretKey')}>
         <SecretInput

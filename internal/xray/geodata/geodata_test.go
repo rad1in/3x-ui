@@ -344,7 +344,7 @@ func TestErrors(t *testing.T) {
 		},
 		{
 			name: "non dat extension",
-			call: func() error { _, err := store.Categories("x-ui.db", "", 0, 10); return err },
+			call: func() error { _, err := store.Categories("eternal.db", "", 0, 10); return err },
 			want: ErrInvalidName,
 		},
 		{
@@ -436,6 +436,23 @@ func TestIndexCacheInvalidatedWhenFileChanges(t *testing.T) {
 	}
 	if len(store.indexes) != 1 {
 		t.Errorf("cached indexes = %d, want 1 after the stale entry is dropped", len(store.indexes))
+	}
+}
+
+func TestCountryOfNamesTheCategoryHoldingTheAddress(t *testing.T) {
+	dir := t.TempDir()
+	writeIPDB(t, dir, "geoip.dat", geoip("cn", "1.0.1.0/24"), geoip("ir", "5.160.0.0/16", "2a01:5ec0::/32"), geoip("private", "10.0.0.0/8"))
+	store := NewStore(dir)
+	for addr, want := range map[string]string{
+		"1.0.1.9": "CN", "5.160.3.4": "IR", "2a01:5ec0::7": "IR", "8.8.8.8": "", "10.0.0.1": "",
+	} {
+		got, err := store.CountryOf("geoip.dat", netip.MustParseAddr(addr))
+		if err != nil || got != want {
+			t.Errorf("CountryOf(%s) = %q, %v; want %q", addr, got, err, want)
+		}
+	}
+	if _, err := store.CountryOf("missing.dat", netip.MustParseAddr("1.0.1.9")); err == nil {
+		t.Error("a missing database was not reported")
 	}
 }
 

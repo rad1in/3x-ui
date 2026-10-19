@@ -21,6 +21,9 @@ const MULTI_USER_PROTOCOLS = new Set([
   'openvpn',
   'ikev2',
   'l2tp',
+  'ssh',
+  'sstp',
+  'ocserv',
 ]);
 
 interface BulkDetachInboundsModalProps {

@@ -24,20 +24,29 @@ constructs the real router and diffs it against the registry both ways.
 
 Scope: everything under /panel/api/ plus the session-auth surface the
 registry also documents (/login, /logout, /csrf-token, /sponsors,
-/getTwoFactorEnable, /ws). SPA page routes are UI, not API, and stay out;
+/getTwoFactorEnable, /ws) and the public shop API (/shop/api). SPA page routes are UI, not API, and stay out;
 registry paths that start with "/{" describe the standalone subscription
 server, which this engine does not serve.
 */
 
 var contractExtraRoutes = map[string]bool{
-	"POST /login":                      true,
-	"POST /logout":                     true,
-	"GET /csrf-token":                  true,
-	"GET /sponsors":                    true,
-	"GET /sponsors/feed/sponsors.json": true,
-	"GET /sponsors/feed/logos/:name":   true,
-	"POST /getTwoFactorEnable":         true,
-	"GET /ws":                          true,
+	"POST /login":                          true,
+	"POST /logout":                         true,
+	"GET /csrf-token":                      true,
+	"GET /sponsors":                        true,
+	"GET /sponsors/feed/sponsors.json":     true,
+	"GET /sponsors/feed/logos/:name":       true,
+	"POST /getTwoFactorEnable":             true,
+	"GET /ws":                              true,
+	"GET /shop/api/plans":                  true,
+	"POST /shop/api/orders":                true,
+	"GET /shop/api/orders/:token":          true,
+	"POST /shop/api/orders/:token/receipt": true,
+	"GET /shop/api/callback/:gateway":      true,
+	"POST /shop/api/callback/:gateway":     true,
+	"POST /shop/api/quote":                 true,
+	"GET /shop/api/wallet":                 true,
+	"POST /shop/api/ipn/nowpayments":       true,
 }
 
 func inContractScope(method, path string) bool {
@@ -46,7 +55,7 @@ func inContractScope(method, path string) bool {
 
 func registeredContractRoutes(t *testing.T) map[string]bool {
 	t.Helper()
-	dbtest.InitDB(t, filepath.Join(t.TempDir(), "x-ui.db"))
+	dbtest.InitDB(t, filepath.Join(t.TempDir(), "eternal.db"))
 
 	previous := global.GetWebServer()
 	s := NewServer()

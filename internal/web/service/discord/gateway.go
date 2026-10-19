@@ -274,8 +274,8 @@ func (g *GatewayClient) connectAndListen(ctx context.Context) error {
 		Intents: discordIntents,
 		Properties: IdentifyProperties{
 			OS:      "linux",
-			Browser: "3x-ui",
-			Device:  "3x-ui",
+			Browser: "Eternal",
+			Device:  "Eternal",
 		},
 	}
 	dataBytes, _ := json.Marshal(identData)
@@ -484,7 +484,7 @@ func (g *GatewayClient) sendStatus(ctx context.Context) {
 
 	hostname, _ := os.Hostname()
 	if hostname == "" {
-		hostname = "3x-ui"
+		hostname = "Eternal"
 	}
 
 	days := status.Uptime / 86400
@@ -543,9 +543,14 @@ func (g *GatewayClient) sendBackup(ctx context.Context) {
 
 	filename := g.serverService.BackupFilename("")
 	if filename == "" {
-		filename = "x-ui.db"
+		filename = "eternal.db"
 	}
 
+	filename, dbData, err = service.ProtectBackup(filename, dbData)
+	if err != nil {
+		_ = g.discordService.SendMessage(ctx, MessagePayload{Content: tr("discord.commands.backupFailed", "Error=="+err.Error())})
+		return
+	}
 	files := []FileAttachment{
 		{Filename: filename, Data: dbData},
 	}

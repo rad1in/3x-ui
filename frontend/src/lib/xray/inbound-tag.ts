@@ -23,6 +23,8 @@ function inboundTransports(
     protocol === 'l2tp'
   )
     return UDP;
+  if (protocol === 'ssh' || protocol === 'sstp') return TCP;
+  if (protocol === 'ocserv') return TCP | UDP;
   if (protocol === 'masque') return masqueTransports(streamSettings);
   if (protocol === 'openvpn') return asString(settings?.proto) === 'tcp' ? TCP : UDP;
 

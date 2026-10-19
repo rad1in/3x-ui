@@ -5,6 +5,7 @@ import {
   AimOutlined,
   ControlOutlined,
   ExportOutlined,
+  FlagOutlined,
   ImportOutlined,
   MoreOutlined,
   PlusOutlined,
@@ -22,6 +23,12 @@ import type { RoutingRule } from './RuleFormModal';
 import RuleCardList from './RuleCardList';
 import { useRoutingColumns } from './useRoutingColumns';
 import { arrJoin, originalRuleIndex } from './helpers';
+import {
+  applyIranRouting,
+  hasIranRouting,
+  missingIranOutbounds,
+  removeIranRouting,
+} from '@/lib/xray/iranRouting';
 import type { RuleRow } from './types';
 import type { XraySettingsValue, SetTemplate } from '@/hooks/useXraySetting';
 import type { RuleObject } from '@/schemas/routing';
@@ -202,6 +209,31 @@ export default function RoutingTab({
       tt.routing.rules.push(...(list as RuleObject[]));
     });
     setImportOpen(false);
+  }
+
+  const iranApplied = templateSettings ? hasIranRouting(templateSettings) : false;
+
+  function confirmIranTemplate() {
+    if (!templateSettings) return;
+    const missing = missingIranOutbounds(templateSettings);
+    if (missing.length > 0) {
+      messageApi.error(t('pages.xray.iranTemplate.missing', { tags: missing.join(', ') }));
+      return;
+    }
+    modal.confirm({
+      title: t('pages.xray.iranTemplate.confirmTitle'),
+      content: t('pages.xray.iranTemplate.confirmBody'),
+      okText: t('pages.xray.iranTemplate.apply'),
+      cancelText: t('cancel'),
+      onOk: () => {
+        setTemplateSettings((prev) => (prev ? applyIranRouting(prev) : prev));
+        messageApi.success(t('pages.xray.iranTemplate.applied'));
+      },
+    });
+  }
+
+  function removeIranTemplate() {
+    setTemplateSettings((prev) => (prev ? removeIranRouting(prev) : prev));
   }
 
   function openAdd() {
@@ -389,6 +421,20 @@ export default function RoutingTab({
                           icon: <ImportOutlined />,
                           label: t('pages.xray.importRules'),
                           onClick: () => setImportOpen(true),
+                        },
+                        {
+                          key: 'iran',
+                          icon: <FlagOutlined />,
+                          label: iranApplied
+                            ? t('pages.xray.iranTemplate.reapply')
+                            : t('pages.xray.iranTemplate.apply'),
+                          onClick: confirmIranTemplate,
+                        },
+                        {
+                          key: 'iranRemove',
+                          label: t('pages.xray.iranTemplate.remove'),
+                          disabled: !iranApplied,
+                          onClick: removeIranTemplate,
                         },
                         {
                           key: 'export',

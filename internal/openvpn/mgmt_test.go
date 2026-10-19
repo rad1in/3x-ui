@@ -147,3 +147,22 @@ func TestSessionKicksRevokedUsersAndCapsConnections(t *testing.T) {
 	s.SetUsers(map[string]User{"bob": {Password: "new", MaxConns: 1}})
 	srv.expect("client-kill 2")
 }
+
+func TestSessionKickUserEndsOnlyThatUsersConnections(t *testing.T) {
+	s, srv := newSessionPair(t, map[string]User{"alice": {Password: "pw"}, "bob": {Password: "pw"}})
+	srv.connect("1", "1", "alice", "pw")
+	srv.expect("client-auth-nt 1 1")
+	srv.connect("2", "1", "bob", "pw")
+	srv.expect("client-auth-nt 2 1")
+	srv.connect("3", "1", "alice", "pw")
+	srv.expect("client-auth-nt 3 1")
+
+	if got := s.KickUser("alice"); got != 2 {
+		t.Fatalf("KickUser(alice) = %d, want 2", got)
+	}
+	srv.expect("client-kill 1")
+	srv.expect("client-kill 3")
+	if got := s.KickUser("nobody"); got != 0 {
+		t.Fatalf("KickUser(nobody) = %d, want 0", got)
+	}
+}

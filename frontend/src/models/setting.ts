@@ -13,6 +13,9 @@ export class AllSetting {
   realityScanCandidates =
     'www.cloudflare.com:443,www.microsoft.com:443,www.amazon.com:443,aws.amazon.com:443,www.samsung.com:443,www.nvidia.com:443,www.amd.com:443,www.intel.com:443,www.sony.com:443,dl.google.com:443';
   ipLimitAllowlist = '';
+  panelAllowedCidrs = '';
+  loginMaxFailures = 5;
+  loginLockoutMinutes = 15;
   panelOutbound = '';
   panelBrandName = '';
   panelBrandColor = '';
@@ -22,6 +25,11 @@ export class AllSetting {
   trafficDiff = 0;
   quotaWarnPercent = 80;
   autoDeleteDepletedDays = 0;
+  maintenanceMode = false;
+  maintenanceMessage = '';
+  sharedAccountWindowHours = 24;
+  sharedAccountMinIPs = 0;
+  sharedAccountMinCountries = 0;
   decoyMode = '';
   decoyTarget = '';
   decoyHtml = '';
@@ -34,6 +42,8 @@ export class AllSetting {
   backupS3AccessKey = '';
   backupS3SecretKey = '';
   backupS3Prefix = '';
+  metricsEnable = false;
+  metricsToken = '';
   hasBackupS3Secret = false;
   clearBackupS3Secret = false;
   remarkTemplate = '{{INBOUND}}-{{EMAIL}}|📊{{TRAFFIC_LEFT}}|⏳{{DAYS_LEFT}}D';
@@ -50,9 +60,12 @@ export class AllSetting {
   tgBotChatId = '';
   tgRunTime = '@daily';
   tgBotBackup = false;
+  tgTrialEnable = false;
+  tgTrialTemplateId = 0;
   tgCpu = 80;
   tgMemory = 80;
   tgLang = 'en-US';
+  tgBotMessageOverrides = '';
   twoFactorEnable = false;
   twoFactorToken = '';
   xrayTemplateConfig = '';
@@ -62,6 +75,10 @@ export class AllSetting {
   subJsonAutoDetect = false;
   subJsonAlwaysArray = false;
   subJsonUserAgentRegex = '';
+  subJsonApps = '';
+  subShortLinkEnable = false;
+  subRateLimitPerIP = 0;
+  subRateLimitPerSub = 0;
   subClashAutoDetect = false;
   subClashUserAgentRegex = '';
   subTitle = '';
@@ -221,6 +238,32 @@ export class AllSetting {
     'client.created,client.deleted,client.depleted,client.expired,client.renewed,client.quota_warning,client.expiry_warning';
   hasWebhookSecret = false;
   clearWebhookSecret = false;
+  weeklyReportEnable = false;
+  weeklyReportDay = 1;
+  weeklyReportHour = 9;
+  portProbeEnable = false;
+  portProbeHost = '';
+  portProbeUrl = '';
+  portProbeExpect = '';
+  portProbeFailures = 3;
+  ntfyEnable = false;
+  ntfyServer = 'https://ntfy.sh';
+  ntfyTopic = '';
+  ntfyToken = '';
+  ntfyEvents = 'client.depleted,client.expired,xray.crash,node.down,outbound.down';
+  hasNtfyToken = false;
+  clearNtfyToken = false;
+  gotifyEnable = false;
+  gotifyUrl = '';
+  gotifyToken = '';
+  gotifyEvents = 'client.depleted,client.expired,xray.crash,node.down,outbound.down';
+  hasGotifyToken = false;
+  clearGotifyToken = false;
+  slackEnable = false;
+  slackWebhookUrl = '';
+  slackEvents = 'client.depleted,client.expired,xray.crash,node.down,outbound.down';
+  hasSlackWebhookUrl = false;
+  clearSlackWebhookUrl = false;
 
   constructor(data?: unknown) {
     if (data != null) {

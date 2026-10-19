@@ -5,7 +5,10 @@ import (
 
 	"github.com/mhsanaei/3x-ui/v3/internal/ipsec"
 	"github.com/mhsanaei/3x-ui/v3/internal/l2tp"
+	"github.com/mhsanaei/3x-ui/v3/internal/ocserv"
 	"github.com/mhsanaei/3x-ui/v3/internal/openvpn"
+	"github.com/mhsanaei/3x-ui/v3/internal/sshtunnel"
+	"github.com/mhsanaei/3x-ui/v3/internal/sstp"
 )
 
 // VPNStatus is whether a VPN inbound served outside Xray is up and, if not,
@@ -16,7 +19,7 @@ type VPNStatus struct {
 	Reason  string `json:"reason,omitempty" example:"this kernel has no PPP support (/dev/ppp is missing), which L2TP needs"`
 }
 
-// VPNStatuses reports the OpenVPN, IKEv2 and L2TP inbounds that should be
+// VPNStatuses reports the OpenVPN, IKEv2, L2TP, SSH, SSTP and ocserv inbounds that should be
 // serving someone now; idle ones are left out since nothing runs for them.
 func (s *InboundService) VPNStatuses() ([]VPNStatus, error) {
 	out := []VPNStatus{}
@@ -46,6 +49,30 @@ func (s *InboundService) VPNStatuses() ([]VPNStatus, error) {
 		// An unusable IPsec side is worth showing even while xl2tpd itself runs.
 		running, reason := l2tp.GetManager().Status()
 		out = append(out, VPNStatus{Id: inst.Id, Running: running && reason == "", Reason: reason})
+	}
+	ssh, err := s.DesiredSSHInstances()
+	if err != nil {
+		return nil, err
+	}
+	for _, inst := range ssh {
+		running, reason := sshtunnel.GetManager().Status(inst.Id)
+		out = append(out, VPNStatus{Id: inst.Id, Running: running, Reason: reasonIfDown(running, reason)})
+	}
+	st, err := s.DesiredSSTPInstances()
+	if err != nil {
+		return nil, err
+	}
+	for _, inst := range st {
+		running, reason := sstp.GetManager().Status(inst.Id)
+		out = append(out, VPNStatus{Id: inst.Id, Running: running, Reason: reasonIfDown(running, reason)})
+	}
+	oc, err := s.DesiredOCServInstances()
+	if err != nil {
+		return nil, err
+	}
+	for _, inst := range oc {
+		running, reason := ocserv.GetManager().Status(inst.Id)
+		out = append(out, VPNStatus{Id: inst.Id, Running: running, Reason: reasonIfDown(running, reason)})
 	}
 	sort.Slice(out, func(i, j int) bool { return out[i].Id < out[j].Id })
 	return out, nil
