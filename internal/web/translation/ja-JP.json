@@ -1743,6 +1743,8 @@
           "passkeyLoginDesc": "管理者がパスワードの代わりに、PIN または生体認証で本人確認を行うパスキーでログインできるようにします。二要素認証が有効な場合、オーナーには引き続きコードが求められます。",
           "passkeySecondFactor": "パスキーを第二要素にする",
           "passkeySecondFactorDesc": "パスキーを登録している管理者に、パスワードの後でパスキーの確認を求めます。代替手段はないため、該当する管理者全員が使えるパスキーを持っていることを確認してください。",
+          "approval": "二人承認",
+          "approvalDesc": "実行前に、別のオーナーまたは管理者の承認を待つ操作を選びます。他にオーナーや管理者がいない間は無効なので、最後の管理者が締め出されることはありません。",
           "saved": "セキュリティ設定を保存しました"
         },
         "passkeys": {
@@ -3135,6 +3137,31 @@
       "logoutEverywhereConfirm": "このブラウザを含め、すべてのブラウザをサインアウトしますか？",
       "revoked": "セッションを終了しました",
       "revokedAll": "セッションを終了しました"
+    },
+    "approvals": {
+      "requested": "承認待ちとして送信しました。実行前に別の管理者の承認が必要です。",
+      "approved": "承認され、実行されました。",
+      "rejected": "リクエストを却下しました。",
+      "cancelled": "リクエストを取り消しました。",
+      "title": "承認待ち",
+      "intro": "オーナーが制限した重要な操作は、実行前に別の管理者の承認が必要です。リクエストは24時間で期限切れになります。",
+      "empty": "承認待ちはありません。",
+      "requestedBy": "依頼者",
+      "expires": "期限",
+      "approve": "承認",
+      "reject": "却下",
+      "cancel": "リクエストを取り消す",
+      "resultLabel": "結果",
+      "statusPending": "保留中",
+      "statusApproved": "承認済み",
+      "statusRejected": "却下",
+      "statusCancelled": "取り消し済み",
+      "statusExpired": "期限切れ",
+      "statusFailed": "失敗",
+      "inboundDelete": "インバウンドの削除",
+      "clientsBulkDelete": "クライアントの一括削除",
+      "nodeDelete": "ノードの削除",
+      "ownRequestHint": "これはあなたの依頼です。別の管理者が判断する必要があります。"
     },
     "hostedPanels": {
       "saved": "パネルを保存しました",

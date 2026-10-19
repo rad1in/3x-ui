@@ -1743,6 +1743,8 @@
           "passkeyLoginDesc": "Permite a los administradores entrar con una llave de acceso que los verifica con PIN o biometría, en lugar de la contraseña. Al propietario se le sigue pidiendo el código de dos factores si está activado.",
           "passkeySecondFactor": "Llave de acceso como segundo factor",
           "passkeySecondFactorDesc": "Pide a los administradores que tengan una llave de acceso registrada que la confirmen tras la contraseña. No hay alternativa, así que asegúrate de que cada uno tenga una llave que funcione.",
+          "approval": "Aprobación de dos personas",
+          "approvalDesc": "Elige las acciones que esperan a que un segundo propietario o administrador las apruebe antes de ejecutarse. No tiene efecto mientras no haya un segundo propietario o administrador, así que nunca puede dejar fuera al último administrador.",
           "saved": "Ajustes de seguridad guardados"
         },
         "passkeys": {
@@ -3135,6 +3137,31 @@
       "logoutEverywhereConfirm": "¿Cerrar la sesión en todos los navegadores, incluido este?",
       "revoked": "Sesión cerrada",
       "revokedAll": "Sesiones cerradas"
+    },
+    "approvals": {
+      "requested": "Enviado para aprobación. Otro administrador debe aprobarlo antes de que se ejecute.",
+      "approved": "Aprobado y ejecutado.",
+      "rejected": "Solicitud rechazada.",
+      "cancelled": "Solicitud cancelada.",
+      "title": "Aprobaciones pendientes",
+      "intro": "Las acciones sensibles que el propietario ha protegido necesitan la aprobación de un segundo administrador antes de ejecutarse. Las solicitudes caducan a las 24 horas.",
+      "empty": "No hay nada pendiente de aprobación.",
+      "requestedBy": "Solicitado por",
+      "expires": "Caduca",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "cancel": "Cancelar solicitud",
+      "resultLabel": "Resultado",
+      "statusPending": "Pendiente",
+      "statusApproved": "Aprobada",
+      "statusRejected": "Rechazada",
+      "statusCancelled": "Cancelada",
+      "statusExpired": "Caducada",
+      "statusFailed": "Fallida",
+      "inboundDelete": "Eliminar entradas",
+      "clientsBulkDelete": "Eliminar clientes en lote",
+      "nodeDelete": "Eliminar un nodo",
+      "ownRequestHint": "Tú lo solicitaste; otro administrador debe decidirlo."
     },
     "hostedPanels": {
       "saved": "Panel guardado",

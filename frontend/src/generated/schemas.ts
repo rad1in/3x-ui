@@ -6289,6 +6289,76 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "PendingAction": {
+    "description": "PendingAction is a sensitive admin action parked until a second admin\napproves it. Payload is the JSON the executor needs; Status moves once,\nfrom pending to approved, rejected, cancelled or expired (failed when the\napproved action returned an error).",
+    "properties": {
+      "action": {
+        "example": "inbound.delete",
+        "type": "string"
+      },
+      "decidedAt": {
+        "example": 1760684500000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "decidedBy": {
+        "example": 2,
+        "type": "integer"
+      },
+      "decidedByName": {
+        "example": "bob",
+        "type": "string"
+      },
+      "expiresAt": {
+        "example": 1760770800000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 7,
+        "type": "integer"
+      },
+      "requestedAt": {
+        "example": 1760684400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "requestedBy": {
+        "example": 1,
+        "type": "integer"
+      },
+      "requestedByName": {
+        "example": "alice",
+        "type": "string"
+      },
+      "result": {
+        "type": "string"
+      },
+      "status": {
+        "example": "pending",
+        "type": "string"
+      },
+      "target": {
+        "example": "inbound #3",
+        "type": "string"
+      }
+    },
+    "required": [
+      "action",
+      "decidedAt",
+      "decidedBy",
+      "decidedByName",
+      "expiresAt",
+      "id",
+      "requestedAt",
+      "requestedBy",
+      "requestedByName",
+      "result",
+      "status",
+      "target"
+    ],
+    "type": "object"
+  },
   "Plan": {
     "description": "Plan is a sellable package. Price is in the currency's minor unit (see\nservice.CurrencyDecimals); TotalGB is in bytes; DurationDays 0 means no\nexpiry. TemplateId supplies the inbounds and the rest of the client preset.",
     "properties": {
@@ -6773,6 +6843,13 @@ export const SCHEMAS: Record<string, unknown> = {
   "SecurityConfig": {
     "description": "SecurityConfig groups the login and data protections that do not depend on\ntwo-factor codes. It is one JSON setting that only owners may change.\nBackupPassphrase is a secret: stored encrypted, served blank, and kept when a\nsave leaves it blank (ClearBackupPassphrase empties it on purpose).",
     "properties": {
+      "approvalActions": {
+        "description": "PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;\nPasskeySecondFactor asks admins who have passkeys for one after the password.\nApprovalActions lists the sensitive actions that need a second admin's\napproval (see ApprovalActions); empty turns the gate off.",
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
       "backupPassphrase": {
         "type": "string"
       },
@@ -6786,7 +6863,6 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "boolean"
       },
       "passkeyLoginEnable": {
-        "description": "PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;\nPasskeySecondFactor asks admins who have passkeys for one after the password.",
         "type": "boolean"
       },
       "passkeySecondFactor": {
@@ -6807,6 +6883,7 @@ export const SCHEMAS: Record<string, unknown> = {
       }
     },
     "required": [
+      "approvalActions",
       "backupPassphrase",
       "captchaEnable",
       "newLocationAlert",
@@ -6821,6 +6898,13 @@ export const SCHEMAS: Record<string, unknown> = {
   "SecurityConfigView": {
     "description": "SecurityConfigView is the configuration as the admin API serves it: secrets\nare blank and the Has flags say which are set.",
     "properties": {
+      "approvalActions": {
+        "description": "PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;\nPasskeySecondFactor asks admins who have passkeys for one after the password.\nApprovalActions lists the sensitive actions that need a second admin's\napproval (see ApprovalActions); empty turns the gate off.",
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
       "backupPassphrase": {
         "type": "string"
       },
@@ -6837,7 +6921,6 @@ export const SCHEMAS: Record<string, unknown> = {
         "type": "boolean"
       },
       "passkeyLoginEnable": {
-        "description": "PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;\nPasskeySecondFactor asks admins who have passkeys for one after the password.",
         "type": "boolean"
       },
       "passkeySecondFactor": {
@@ -6858,6 +6941,7 @@ export const SCHEMAS: Record<string, unknown> = {
       }
     },
     "required": [
+      "approvalActions",
       "backupPassphrase",
       "captchaEnable",
       "hasBackupPassphrase",

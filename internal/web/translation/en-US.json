@@ -1897,6 +1897,8 @@
           "passkeyLoginDesc": "Lets admins sign in with a passkey that verifies them by PIN or biometrics, instead of the password. The owner is still asked for the two-factor code when it is enabled.",
           "passkeySecondFactor": "Passkey as second factor",
           "passkeySecondFactorDesc": "Asks admins who have registered a passkey to confirm it after the password. There is no fallback, so make sure each such admin has a working passkey.",
+          "approval": "Two-person approval",
+          "approvalDesc": "Choose the actions that wait for a second owner or admin to approve them before they run. It has no effect while there is no second owner or admin, so it can never lock the last admin out.",
           "saved": "Security settings saved"
         },
         "passkeys": {
@@ -3135,6 +3137,31 @@
       "logoutEverywhereConfirm": "Sign out every browser, including this one?",
       "revoked": "Session ended",
       "revokedAll": "Sessions ended"
+    },
+    "approvals": {
+      "requested": "Sent for approval. A second admin must approve it before it runs.",
+      "approved": "Approved and executed.",
+      "rejected": "Request rejected.",
+      "cancelled": "Request cancelled.",
+      "title": "Pending approvals",
+      "intro": "Sensitive actions the owner gated need a second admin to approve them before they run. Requests expire after 24 hours.",
+      "empty": "Nothing is waiting for approval.",
+      "requestedBy": "Requested by",
+      "expires": "Expires",
+      "approve": "Approve",
+      "reject": "Reject",
+      "cancel": "Cancel request",
+      "resultLabel": "Result",
+      "statusPending": "Pending",
+      "statusApproved": "Approved",
+      "statusRejected": "Rejected",
+      "statusCancelled": "Cancelled",
+      "statusExpired": "Expired",
+      "statusFailed": "Failed",
+      "inboundDelete": "Delete inbounds",
+      "clientsBulkDelete": "Delete clients in bulk",
+      "nodeDelete": "Delete a node",
+      "ownRequestHint": "You requested this; another admin has to decide it."
     },
     "hostedPanels": {
       "saved": "Panel saved",

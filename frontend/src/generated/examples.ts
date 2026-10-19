@@ -1564,6 +1564,20 @@ export const EXAMPLES: Record<string, unknown> = {
     "tag": "inbound-51820",
     "up": 1048576
   },
+  "PendingAction": {
+    "action": "inbound.delete",
+    "decidedAt": 1760684500000,
+    "decidedBy": 2,
+    "decidedByName": "bob",
+    "expiresAt": 1760770800000,
+    "id": 7,
+    "requestedAt": 1760684400000,
+    "requestedBy": 1,
+    "requestedByName": "alice",
+    "result": "",
+    "status": "pending",
+    "target": "inbound #3"
+  },
   "Plan": {
     "createdAt": 0,
     "currency": "IRT",
@@ -1717,6 +1731,9 @@ export const EXAMPLES: Record<string, unknown> = {
     }
   },
   "SecurityConfig": {
+    "approvalActions": [
+      ""
+    ],
     "backupPassphrase": "",
     "captchaEnable": false,
     "clearBackupPassphrase": false,
@@ -1729,6 +1746,9 @@ export const EXAMPLES: Record<string, unknown> = {
     "tgLoginEnable": false
   },
   "SecurityConfigView": {
+    "approvalActions": [
+      ""
+    ],
     "backupPassphrase": "",
     "captchaEnable": false,
     "clearBackupPassphrase": false,

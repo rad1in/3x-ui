@@ -1509,6 +1509,22 @@ export const PeerActivitySchema = z.object({
 });
 export type PeerActivity = z.infer<typeof PeerActivitySchema>;
 
+export const PendingActionSchema = z.object({
+  action: z.string(),
+  decidedAt: z.number().int(),
+  decidedBy: z.number().int(),
+  decidedByName: z.string(),
+  expiresAt: z.number().int(),
+  id: z.number().int(),
+  requestedAt: z.number().int(),
+  requestedBy: z.number().int(),
+  requestedByName: z.string(),
+  result: z.string(),
+  status: z.string(),
+  target: z.string(),
+});
+export type PendingAction = z.infer<typeof PendingActionSchema>;
+
 export const PlanSchema = z.object({
   createdAt: z.number().int(),
   currency: z.string(),
@@ -1630,6 +1646,7 @@ export const SalesConfigViewSchema = z.object({
 export type SalesConfigView = z.infer<typeof SalesConfigViewSchema>;
 
 export const SecurityConfigSchema = z.object({
+  approvalActions: z.array(z.string()),
   backupPassphrase: z.string(),
   captchaEnable: z.boolean(),
   clearBackupPassphrase: z.boolean().optional(),
@@ -1644,6 +1661,7 @@ export const SecurityConfigSchema = z.object({
 export type SecurityConfig = z.infer<typeof SecurityConfigSchema>;
 
 export const SecurityConfigViewSchema = z.object({
+  approvalActions: z.array(z.string()),
   backupPassphrase: z.string(),
   captchaEnable: z.boolean(),
   clearBackupPassphrase: z.boolean().optional(),

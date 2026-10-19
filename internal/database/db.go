@@ -122,6 +122,7 @@ func allModels() []any {
 		&model.CleanIPResult{},
 		&model.InboundRotation{},
 		&model.Passkey{},
+		&model.PendingAction{},
 	}
 }
 

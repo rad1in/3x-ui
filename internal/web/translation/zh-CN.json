@@ -1743,6 +1743,8 @@
           "passkeyLoginDesc": "允许管理员使用通过 PIN 或生物识别验证身份的通行密钥登录，而无需密码。若已启用两步验证，所有者仍需输入验证码。",
           "passkeySecondFactor": "通行密钥作为第二重验证",
           "passkeySecondFactorDesc": "要求已注册通行密钥的管理员在输入密码后确认通行密钥。没有备用方式，请确保每位此类管理员都有可用的通行密钥。",
+          "approval": "双人审批",
+          "approvalDesc": "选择需等待另一位所有者或管理员批准后才执行的操作。在没有第二位所有者或管理员时不起作用，因此不会把最后一位管理员锁在外面。",
           "saved": "安全设置已保存"
         },
         "passkeys": {
@@ -3135,6 +3137,31 @@
       "logoutEverywhereConfirm": "退出包括当前浏览器在内的所有浏览器？",
       "revoked": "会话已结束",
       "revokedAll": "会话已结束"
+    },
+    "approvals": {
+      "requested": "已提交审批。需要另一位管理员批准后才会执行。",
+      "approved": "已批准并执行。",
+      "rejected": "请求已拒绝。",
+      "cancelled": "请求已取消。",
+      "title": "待审批",
+      "intro": "所有者设为受限的敏感操作，需经另一位管理员批准后才会执行。请求 24 小时后过期。",
+      "empty": "没有等待审批的请求。",
+      "requestedBy": "申请人",
+      "expires": "过期时间",
+      "approve": "批准",
+      "reject": "拒绝",
+      "cancel": "取消请求",
+      "resultLabel": "结果",
+      "statusPending": "待处理",
+      "statusApproved": "已批准",
+      "statusRejected": "已拒绝",
+      "statusCancelled": "已取消",
+      "statusExpired": "已过期",
+      "statusFailed": "失败",
+      "inboundDelete": "删除入站",
+      "clientsBulkDelete": "批量删除客户端",
+      "nodeDelete": "删除节点",
+      "ownRequestHint": "这是您发起的请求，需由另一位管理员决定。"
     },
     "hostedPanels": {
       "saved": "面板已保存",

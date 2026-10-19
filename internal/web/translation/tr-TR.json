@@ -1743,6 +1743,8 @@
           "passkeyLoginDesc": "Yöneticilerin parola yerine, kendilerini PIN veya biyometri ile doğrulayan bir geçiş anahtarıyla girmesine izin verir. Etkinse sahipten yine iki aşamalı doğrulama kodu istenir.",
           "passkeySecondFactor": "Geçiş anahtarı ikinci aşama olarak",
           "passkeySecondFactorDesc": "Geçiş anahtarı kaydetmiş yöneticilerden parolanın ardından bunu onaylamalarını ister. Yedek yol yoktur; bu yüzden her yöneticinin çalışan bir anahtarı olduğundan emin olun.",
+          "approval": "İki kişili onay",
+          "approvalDesc": "İkinci bir sahip veya yönetici onaylayana kadar bekleyecek işlemleri seçin. İkinci bir sahip veya yönetici yokken etkisizdir; bu yüzden son yöneticinin kilitlenmesine yol açmaz.",
           "saved": "Güvenlik ayarları kaydedildi"
         },
         "passkeys": {
@@ -3135,6 +3137,31 @@
       "logoutEverywhereConfirm": "Bu tarayıcı dahil tüm tarayıcılardan çıkış yapılsın mı?",
       "revoked": "Oturum sonlandırıldı",
       "revokedAll": "Oturumlar sonlandırıldı"
+    },
+    "approvals": {
+      "requested": "Onaya gönderildi. Çalışmadan önce ikinci bir yöneticinin onaylaması gerekir.",
+      "approved": "Onaylandı ve uygulandı.",
+      "rejected": "İstek reddedildi.",
+      "cancelled": "İstek iptal edildi.",
+      "title": "Bekleyen onaylar",
+      "intro": "Sahibin kısıtladığı hassas işlemler, çalışmadan önce ikinci bir yöneticinin onayını gerektirir. İsteklerin süresi 24 saat sonra dolar.",
+      "empty": "Onay bekleyen bir şey yok.",
+      "requestedBy": "İsteyen",
+      "expires": "Bitiş",
+      "approve": "Onayla",
+      "reject": "Reddet",
+      "cancel": "İsteği iptal et",
+      "resultLabel": "Sonuç",
+      "statusPending": "Bekliyor",
+      "statusApproved": "Onaylandı",
+      "statusRejected": "Reddedildi",
+      "statusCancelled": "İptal edildi",
+      "statusExpired": "Süresi doldu",
+      "statusFailed": "Başarısız",
+      "inboundDelete": "Gelen bağlantıları sil",
+      "clientsBulkDelete": "Toplu müşteri silme",
+      "nodeDelete": "Bir düğümü sil",
+      "ownRequestHint": "Bu isteği siz yaptınız; kararı başka bir yönetici vermeli."
     },
     "hostedPanels": {
       "saved": "Panel kaydedildi",

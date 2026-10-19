@@ -1418,6 +1418,21 @@ export interface PeerActivity {
   up: number;
 }
 
+export interface PendingAction {
+  action: string;
+  decidedAt: number;
+  decidedBy: number;
+  decidedByName: string;
+  expiresAt: number;
+  id: number;
+  requestedAt: number;
+  requestedBy: number;
+  requestedByName: string;
+  result: string;
+  status: string;
+  target: string;
+}
+
 export interface Plan {
   createdAt: number;
   currency: string;
@@ -1530,6 +1545,7 @@ export interface SalesConfigView {
 }
 
 export interface SecurityConfig {
+  approvalActions: string[];
   backupPassphrase: string;
   captchaEnable: boolean;
   clearBackupPassphrase?: boolean;
@@ -1543,6 +1559,7 @@ export interface SecurityConfig {
 }
 
 export interface SecurityConfigView {
+  approvalActions: string[];
   backupPassphrase: string;
   captchaEnable: boolean;
   clearBackupPassphrase?: boolean;

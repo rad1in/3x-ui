@@ -1743,6 +1743,8 @@
           "passkeyLoginDesc": "允許管理員使用透過 PIN 或生物辨識驗證身分的通行金鑰登入，而不需密碼。若已啟用兩步驟驗證，擁有者仍須輸入驗證碼。",
           "passkeySecondFactor": "通行金鑰作為第二重驗證",
           "passkeySecondFactorDesc": "要求已註冊通行金鑰的管理員在輸入密碼後確認通行金鑰。沒有備用方式，請確保每位此類管理員都有可用的通行金鑰。",
+          "approval": "雙人審核",
+          "approvalDesc": "選擇須等待另一位擁有者或管理員核准後才執行的操作。在沒有第二位擁有者或管理員時不會生效，因此不會把最後一位管理員鎖在外面。",
           "saved": "安全設定已儲存"
         },
         "passkeys": {
@@ -3135,6 +3137,31 @@
       "logoutEverywhereConfirm": "登出包含目前瀏覽器在內的所有瀏覽器？",
       "revoked": "工作階段已結束",
       "revokedAll": "工作階段已結束"
+    },
+    "approvals": {
+      "requested": "已送出審核。需要另一位管理員核准後才會執行。",
+      "approved": "已核准並執行。",
+      "rejected": "請求已拒絕。",
+      "cancelled": "請求已取消。",
+      "title": "待審核",
+      "intro": "擁有者設為受限的敏感操作，須經另一位管理員核准後才會執行。請求 24 小時後過期。",
+      "empty": "沒有等待審核的請求。",
+      "requestedBy": "申請人",
+      "expires": "到期時間",
+      "approve": "核准",
+      "reject": "拒絕",
+      "cancel": "取消請求",
+      "resultLabel": "結果",
+      "statusPending": "待處理",
+      "statusApproved": "已核准",
+      "statusRejected": "已拒絕",
+      "statusCancelled": "已取消",
+      "statusExpired": "已過期",
+      "statusFailed": "失敗",
+      "inboundDelete": "刪除入站",
+      "clientsBulkDelete": "批次刪除客戶端",
+      "nodeDelete": "刪除節點",
+      "ownRequestHint": "這是您發出的請求，須由另一位管理員決定。"
     },
     "hostedPanels": {
       "saved": "面板已儲存",

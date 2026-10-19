@@ -1743,6 +1743,8 @@
           "passkeyLoginDesc": "Memungkinkan admin masuk dengan passkey yang memverifikasi mereka lewat PIN atau biometrik, sebagai pengganti kata sandi. Pemilik tetap diminta kode dua faktor jika diaktifkan.",
           "passkeySecondFactor": "Passkey sebagai faktor kedua",
           "passkeySecondFactorDesc": "Meminta admin yang memiliki passkey terdaftar untuk mengonfirmasinya setelah kata sandi. Tidak ada cadangan, jadi pastikan setiap admin tersebut punya passkey yang berfungsi.",
+          "approval": "Persetujuan dua orang",
+          "approvalDesc": "Pilih tindakan yang menunggu persetujuan pemilik atau admin kedua sebelum dijalankan. Tidak berpengaruh selama belum ada pemilik atau admin kedua, sehingga tidak akan mengunci admin terakhir.",
           "saved": "Pengaturan keamanan disimpan"
         },
         "passkeys": {
@@ -3135,6 +3137,31 @@
       "logoutEverywhereConfirm": "Keluarkan semua peramban, termasuk yang ini?",
       "revoked": "Sesi diakhiri",
       "revokedAll": "Sesi diakhiri"
+    },
+    "approvals": {
+      "requested": "Dikirim untuk persetujuan. Admin kedua harus menyetujuinya sebelum dijalankan.",
+      "approved": "Disetujui dan dijalankan.",
+      "rejected": "Permintaan ditolak.",
+      "cancelled": "Permintaan dibatalkan.",
+      "title": "Persetujuan tertunda",
+      "intro": "Tindakan sensitif yang dibatasi pemilik memerlukan persetujuan admin kedua sebelum dijalankan. Permintaan kedaluwarsa setelah 24 jam.",
+      "empty": "Tidak ada yang menunggu persetujuan.",
+      "requestedBy": "Diminta oleh",
+      "expires": "Kedaluwarsa",
+      "approve": "Setujui",
+      "reject": "Tolak",
+      "cancel": "Batalkan permintaan",
+      "resultLabel": "Hasil",
+      "statusPending": "Menunggu",
+      "statusApproved": "Disetujui",
+      "statusRejected": "Ditolak",
+      "statusCancelled": "Dibatalkan",
+      "statusExpired": "Kedaluwarsa",
+      "statusFailed": "Gagal",
+      "inboundDelete": "Hapus inbound",
+      "clientsBulkDelete": "Hapus klien secara massal",
+      "nodeDelete": "Hapus node",
+      "ownRequestHint": "Anda yang meminta ini; admin lain harus memutuskannya."
     },
     "hostedPanels": {
       "saved": "Panel disimpan",

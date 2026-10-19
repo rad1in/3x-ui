@@ -2934,7 +2934,7 @@ export const sections: readonly Section[] = [
         method: 'POST',
         path: '/panel/api/security/config/save',
         summary:
-          'Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); passkeyLoginEnable allows passwordless sign-in with a user-verifying passkey and passkeySecondFactor asks admins who have passkeys for one after the password; subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.',
+          'Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); passkeyLoginEnable allows passwordless sign-in with a user-verifying passkey and passkeySecondFactor asks admins who have passkeys for one after the password; approvalActions lists the actions that need approval by a second admin; subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.',
         params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SecurityConfig.' }],
       },
     ],
@@ -3034,6 +3034,45 @@ export const sections: readonly Section[] = [
         path: '/panel/api/passkeys/del/:id',
         summary: "Remove one of the caller's own passkeys.",
         params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Passkey id from the list.' }],
+      },
+    ],
+  },
+
+  {
+    id: 'approvals',
+    title: 'Approvals',
+    description:
+      "Two-person approval. When the owner gates an action in Settings → Security → Extra protection, a request for it is parked here instead of running, and a different owner or admin must approve it. Gateable actions: inbound.delete (single and bulk inbound delete), clients.bulkDelete, node.delete. The gate is off while no second owner or admin exists. Requests expire after 24 hours; every request and decision is written to the activity log. A master panel's node-sync pushes are never parked. All endpoints under /panel/api/approvals.",
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/approvals/list',
+        summary:
+          'Open requests first, then the most recent decided ones. Owners, admins and viewers may read it.',
+        responseSchema: 'PendingAction',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/approvals/approve/:id',
+        summary:
+          'Approve and run the request. Refused for the admin who made the request. A failing action is recorded with status failed and its error.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Request id from the list.' }],
+        responseSchema: 'PendingAction',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/approvals/reject/:id',
+        summary: 'Reject the request without running it. Refused for the admin who made it.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Request id from the list.' }],
+        responseSchema: 'PendingAction',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/approvals/cancel/:id',
+        summary: 'Withdraw your own pending request.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Request id from the list.' }],
+        responseSchema: 'PendingAction',
       },
     ],
   },

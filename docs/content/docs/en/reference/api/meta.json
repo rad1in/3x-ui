@@ -9,6 +9,7 @@
     "admins",
     "sessions",
     "passkeys",
+    "approvals",
     "sales",
     "extra-security",
     "public-shop",

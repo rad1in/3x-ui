@@ -1743,6 +1743,8 @@
           "passkeyLoginDesc": "Cho phép quản trị viên đăng nhập bằng passkey xác minh họ qua mã PIN hoặc sinh trắc học thay cho mật khẩu. Chủ sở hữu vẫn bị yêu cầu mã xác thực hai yếu tố nếu đã bật.",
           "passkeySecondFactor": "Passkey làm yếu tố thứ hai",
           "passkeySecondFactorDesc": "Yêu cầu quản trị viên đã đăng ký passkey xác nhận nó sau mật khẩu. Không có phương án dự phòng, nên hãy chắc chắn mỗi quản trị viên đó có passkey dùng được.",
+          "approval": "Phê duyệt hai người",
+          "approvalDesc": "Chọn các thao tác phải chờ chủ sở hữu hoặc quản trị viên thứ hai duyệt trước khi chạy. Không có tác dụng khi chưa có chủ sở hữu hoặc quản trị viên thứ hai, nên không bao giờ khóa quản trị viên cuối cùng.",
           "saved": "Đã lưu cài đặt bảo mật"
         },
         "passkeys": {
@@ -3135,6 +3137,31 @@
       "logoutEverywhereConfirm": "Đăng xuất mọi trình duyệt, kể cả trình duyệt này?",
       "revoked": "Đã kết thúc phiên",
       "revokedAll": "Đã kết thúc các phiên"
+    },
+    "approvals": {
+      "requested": "Đã gửi để phê duyệt. Quản trị viên thứ hai phải duyệt trước khi thực hiện.",
+      "approved": "Đã duyệt và thực hiện.",
+      "rejected": "Đã từ chối yêu cầu.",
+      "cancelled": "Đã hủy yêu cầu.",
+      "title": "Yêu cầu chờ duyệt",
+      "intro": "Các thao tác nhạy cảm do chủ sở hữu giới hạn cần quản trị viên thứ hai duyệt trước khi chạy. Yêu cầu hết hạn sau 24 giờ.",
+      "empty": "Không có gì đang chờ duyệt.",
+      "requestedBy": "Người yêu cầu",
+      "expires": "Hết hạn",
+      "approve": "Duyệt",
+      "reject": "Từ chối",
+      "cancel": "Hủy yêu cầu",
+      "resultLabel": "Kết quả",
+      "statusPending": "Đang chờ",
+      "statusApproved": "Đã duyệt",
+      "statusRejected": "Đã từ chối",
+      "statusCancelled": "Đã hủy",
+      "statusExpired": "Đã hết hạn",
+      "statusFailed": "Thất bại",
+      "inboundDelete": "Xóa inbound",
+      "clientsBulkDelete": "Xóa hàng loạt khách hàng",
+      "nodeDelete": "Xóa một node",
+      "ownRequestHint": "Bạn đã tạo yêu cầu này; một quản trị viên khác phải quyết định."
     },
     "hostedPanels": {
       "saved": "Đã lưu bảng điều khiển",

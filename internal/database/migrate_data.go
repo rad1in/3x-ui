@@ -81,6 +81,7 @@ func migrationModels() []any {
 		&model.CleanIPResult{},
 		&model.InboundRotation{},
 		&model.Passkey{},
+		&model.PendingAction{},
 	}
 }
 

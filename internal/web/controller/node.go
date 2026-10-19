@@ -213,6 +213,9 @@ func (a *NodeController) del(c *gin.Context) {
 		jsonMsg(c, I18nWeb(c, "get"), err)
 		return
 	}
+	if parkForApproval(c, service.ApprovalNodeDelete, fmt.Sprintf("node #%d", id), service.NodeDeleteApproval{Id: id}) {
+		return
+	}
 	if err := a.nodeService.Delete(id); err != nil {
 		jsonMsg(c, I18nWeb(c, "pages.nodes.toasts.delete"), err)
 		return
