@@ -1,15 +1,10 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Menu, Popover, Space } from 'antd';
-import {
-  MoonFilled,
-  MoonOutlined,
-  SunOutlined,
-  TranslationOutlined,
-  WifiOutlined,
-} from '@ant-design/icons';
+import { MoonFilled, MoonOutlined, SunOutlined, TranslationOutlined } from '@ant-design/icons';
 
 import { LanguageManager } from '@/utils';
+import { BrandGlyph } from '@/components/ui';
 import { pauseAnimationsUntilLeave, useTheme } from '@/hooks/useTheme';
 
 interface SubHeaderProps {
@@ -60,7 +55,7 @@ export default function SubHeader({ title, sId, email, lang, onLangChange }: Sub
     <header className="sub-header">
       <div className="sub-brand">
         <span className="sub-brand-mark" aria-hidden="true">
-          {initial ?? <WifiOutlined />}
+          {initial ?? <BrandGlyph size={44} />}
         </span>
         <div className="sub-brand-text">
           <div className="sub-brand-title" dir="auto">

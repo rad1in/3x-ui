@@ -3,9 +3,10 @@ import { useId } from 'react';
 export interface BrandGlyphProps {
   size?: number;
   className?: string;
+  bare?: boolean;
 }
 
-export default function BrandGlyph({ size = 28, className }: BrandGlyphProps) {
+export default function BrandGlyph({ size = 28, className, bare = false }: BrandGlyphProps) {
   const gradientId = `brand-glyph-${useId().replace(/:/g, '')}`;
   return (
     <svg
@@ -30,7 +31,7 @@ export default function BrandGlyph({ size = 28, className }: BrandGlyphProps) {
           <stop offset="1" stopColor="#3b30b0" />
         </linearGradient>
       </defs>
-      <rect width="1024" height="1024" rx="230" fill={`url(#${gradientId})`} />
+      {!bare && <rect width="1024" height="1024" rx="230" fill={`url(#${gradientId})`} />}
       <path
         d="M553 551H263A145 145 0 0 1 553 551M263 551A145 145 0 0 0 408 696H560A97 97 0 0 0 657 599V328M594 459H763"
         fill="none"
