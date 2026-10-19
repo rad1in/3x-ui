@@ -33,8 +33,8 @@ RUN go mod download && go mod verify
 RUN cd frontend && HUSKY=0 npm ci && npm run build
 
 # Debug info and no inlining, so stack traces and debuggers map straight to the source.
-RUN go build -gcflags=all="-N -l" -o /usr/local/bin/x-ui . \
-    && ln -s /usr/local/bin/x-ui /src/x-ui
+RUN go build -gcflags=all="-N -l" -o /usr/local/bin/eternal . \
+    && ln -s /usr/local/bin/eternal /src/eternal
 
 # Xray-core, the mtg-multi MTProto sidecar and the geo databases, exactly as the release image ships them.
 RUN ./DockerInit.sh "$(dpkg --print-architecture)" \
