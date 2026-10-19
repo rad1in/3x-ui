@@ -1,0 +1,93 @@
+image:
+  repository: ghcr.io/rad1in/eternal
+  # CI publishes the branch name (main), release tags and bare semver tags.
+  # Pin a release version in production.
+  tag: main
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+
+# The panel and Xray keep process state, so the chart always runs one replica.
+nameOverride: ""
+fullnameOverride: ""
+
+# Proxy inbounds are created at runtime on arbitrary ports, which a Service cannot
+# know in advance. hostNetwork exposes every inbound port directly on the node
+# (the panel then listens on panel.port of the host). Without it, list the ports
+# you intend to use in service.extraPorts.
+hostNetwork: false
+
+panel:
+  # Sets XUI_PORT and the container/Service port.
+  port: 2053
+
+service:
+  type: ClusterIP
+  annotations: {}
+  # Extra inbound ports published by the Service, for example:
+  #   - {name: vless, port: 443, protocol: TCP}
+  extraPorts: []
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  host: panel.example.com
+  path: /
+  pathType: Prefix
+  tls: []
+  #  - secretName: eternal-tls
+  #    hosts: [panel.example.com]
+
+persistence:
+  enabled: true
+  # Mounted at /etc/eternal (SQLite database and settings).
+  size: 1Gi
+  storageClass: ""
+  accessModes: [ReadWriteOnce]
+  existingClaim: ""
+  annotations: {}
+
+database:
+  # sqlite (default, stored on the PVC), postgres or mysql.
+  type: sqlite
+  # DSN is stored in a Secret and exposed as XUI_DB_DSN.
+  dsn: ""
+  # Use an existing Secret instead (key defaults to dsn).
+  existingSecret: ""
+  existingSecretKey: dsn
+
+env: {}
+#  XUI_ENABLE_FAIL2BAN: "false"
+#  XUI_INIT_WEB_BASE_PATH: "/"
+
+extraEnv: []
+
+# The image runs as root: Xray, fail2ban and the VPN sidecars need it.
+# NET_ADMIN/NET_RAW are required for fail2ban IP limits and VPN inbounds.
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: [ALL]
+    add: [NET_ADMIN, NET_RAW, NET_BIND_SERVICE, CHOWN, DAC_OVERRIDE, SETUID, SETGID, FOWNER, KILL]
+
+podSecurityContext: {}
+
+probes:
+  # /panel/api/server/health needs a login, so probes check the TCP port.
+  startup:
+    failureThreshold: 30
+    periodSeconds: 5
+  liveness:
+    initialDelaySeconds: 10
+    periodSeconds: 20
+    failureThreshold: 3
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    failureThreshold: 3
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+podAnnotations: {}
