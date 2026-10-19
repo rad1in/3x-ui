@@ -1,12 +1,24 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Descriptions, Input, Modal, Popconfirm, Select, Space, Table, Tag } from 'antd';
+import {
+  Button,
+  Descriptions,
+  Dropdown,
+  Input,
+  Modal,
+  Popconfirm,
+  Select,
+  Space,
+  Table,
+  Tag,
+} from 'antd';
 import type { TableColumnsType } from 'antd';
-import { CheckOutlined, CloseOutlined, ReloadOutlined } from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
 
 import { ORDER_PAGE_SIZE, useOrderActions, useOrders } from '@/api/queries/useSales';
 import type { Order } from '@/generated/zod';
 import { formatMoney } from '@/lib/money';
+import { downloadReport } from '@/lib/report-download';
 import { ORDER_STATUSES } from '@/schemas/sales';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -133,6 +145,19 @@ export default function OrdersTab() {
             })),
           ]}
         />
+        <Dropdown
+          menu={{
+            items: [
+              { key: 'xlsx', label: t('pages.sales.orders.exportXlsx') },
+              { key: 'pdf', label: t('pages.sales.orders.exportPdf') },
+              { key: 'csv', label: t('pages.sales.orders.exportCsv') },
+            ],
+            onClick: ({ key }) =>
+              downloadReport('panel/api/sales/orders/export', { format: key, status }),
+          }}
+        >
+          <Button icon={<DownloadOutlined />}>{t('pages.sales.orders.export')}</Button>
+        </Dropdown>
       </div>
       <Table<Order>
         rowKey="id"

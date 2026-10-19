@@ -17,6 +17,11 @@ _openapi:
         accepted on write.
       url: '#list-every-inbound-owned-by-the-authenticated-user-including-each-inbounds-clientstats-traffic-counters-settings-streamsettings-and-sniffing-are-returned-as-nested-json-objects-no-escaped-strings-legacy-callers-that-send-them-back-as-json-encoded-strings-are-still-accepted-on-write'
     - depth: 2
+      title: Download a traffic summary of the inbounds you can see (up, down, quota,
+        expiry, client count) as an Excel workbook, PDF table or CSV. Cells
+        starting with = + - or @ are quoted so spreadsheets do not run them.
+      url: '#download-a-traffic-summary-of-the-inbounds-you-can-see-up-down-quota-expiry-client-count-as-an-excel-workbook-pdf-table-or-csv-cells-starting-with-----or--are-quoted-so-spreadsheets-do-not-run-them'
+    - depth: 2
       title: Same shape as /list but with settings.clients[] stripped down to {email,
         enable, comment} and ClientStats not enriched with UUID/SubId. Use this
         for list pages; fetch /get/:id when you need the full per-client payload
@@ -161,6 +166,11 @@ _openapi:
           legacy callers that send them back as JSON-encoded strings are still
           accepted on write.
         id: list-every-inbound-owned-by-the-authenticated-user-including-each-inbounds-clientstats-traffic-counters-settings-streamsettings-and-sniffing-are-returned-as-nested-json-objects-no-escaped-strings-legacy-callers-that-send-them-back-as-json-encoded-strings-are-still-accepted-on-write
+      - content: Download a traffic summary of the inbounds you can see (up, down,
+          quota, expiry, client count) as an Excel workbook, PDF table or CSV.
+          Cells starting with = + - or @ are quoted so spreadsheets do not run
+          them.
+        id: download-a-traffic-summary-of-the-inbounds-you-can-see-up-down-quota-expiry-client-count-as-an-excel-workbook-pdf-table-or-csv-cells-starting-with-----or--are-quoted-so-spreadsheets-do-not-run-them
       - content: Same shape as /list but with settings.clients[] stripped down to
           {email, enable, comment} and ClientStats not enriched with UUID/SubId.
           Use this for list pages; fetch /get/:id when you need the full
@@ -287,7 +297,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/inbounds/list","method":"get"},{"path":"/panel/api/inbounds/list/slim","method":"get"},{"path":"/panel/api/inbounds/options","method":"get"},{"path":"/panel/api/inbounds/allLinks","method":"get"},{"path":"/panel/api/inbounds/get/{id}","method":"get"},{"path":"/panel/api/inbounds/add","method":"post"},{"path":"/panel/api/inbounds/del/{id}","method":"post"},{"path":"/panel/api/inbounds/bulkDel","method":"post"},{"path":"/panel/api/inbounds/update/{id}","method":"post"},{"path":"/panel/api/inbounds/setEnable/{id}","method":"post"},{"path":"/panel/api/inbounds/{id}/subSortIndex","method":"post"},{"path":"/panel/api/inbounds/{id}/resetTraffic","method":"post"},{"path":"/panel/api/inbounds/{id}/delAllClients","method":"post"},{"path":"/panel/api/inbounds/{id}/rotation","method":"get"},{"path":"/panel/api/inbounds/{id}/rotation","method":"post"},{"path":"/panel/api/inbounds/{id}/rotate","method":"post"},{"path":"/panel/api/inbounds/resetAllTraffics","method":"post"},{"path":"/panel/api/inbounds/import","method":"post"},{"path":"/panel/api/inbounds/pushClientTraffics","method":"post"},{"path":"/panel/api/inbounds/{id}/openvpnProfile","method":"get"},{"path":"/panel/api/inbounds/vpnStatus","method":"get"},{"path":"/panel/api/inbounds/{id}/ocservCa","method":"get"},{"path":"/panel/api/inbounds/{id}/sstpCa","method":"get"},{"path":"/panel/api/inbounds/{id}/ikev2Profile","method":"get"},{"path":"/panel/api/inbounds/{id}/fallbacks","method":"get"},{"path":"/panel/api/inbounds/{id}/fallbacks","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/inbounds/list","method":"get"},{"path":"/panel/api/inbounds/report","method":"get"},{"path":"/panel/api/inbounds/list/slim","method":"get"},{"path":"/panel/api/inbounds/options","method":"get"},{"path":"/panel/api/inbounds/allLinks","method":"get"},{"path":"/panel/api/inbounds/get/{id}","method":"get"},{"path":"/panel/api/inbounds/add","method":"post"},{"path":"/panel/api/inbounds/del/{id}","method":"post"},{"path":"/panel/api/inbounds/bulkDel","method":"post"},{"path":"/panel/api/inbounds/update/{id}","method":"post"},{"path":"/panel/api/inbounds/setEnable/{id}","method":"post"},{"path":"/panel/api/inbounds/{id}/subSortIndex","method":"post"},{"path":"/panel/api/inbounds/{id}/resetTraffic","method":"post"},{"path":"/panel/api/inbounds/{id}/delAllClients","method":"post"},{"path":"/panel/api/inbounds/{id}/rotation","method":"get"},{"path":"/panel/api/inbounds/{id}/rotation","method":"post"},{"path":"/panel/api/inbounds/{id}/rotate","method":"post"},{"path":"/panel/api/inbounds/resetAllTraffics","method":"post"},{"path":"/panel/api/inbounds/import","method":"post"},{"path":"/panel/api/inbounds/pushClientTraffics","method":"post"},{"path":"/panel/api/inbounds/{id}/openvpnProfile","method":"get"},{"path":"/panel/api/inbounds/vpnStatus","method":"get"},{"path":"/panel/api/inbounds/{id}/ocservCa","method":"get"},{"path":"/panel/api/inbounds/{id}/sstpCa","method":"get"},{"path":"/panel/api/inbounds/{id}/ikev2Profile","method":"get"},{"path":"/panel/api/inbounds/{id}/fallbacks","method":"get"},{"path":"/panel/api/inbounds/{id}/fallbacks","method":"post"}]} showTitle />
     </>
   );
 }

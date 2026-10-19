@@ -46,6 +46,7 @@ var auditSkipRoutes = map[string]bool{
 	"POST /nodes/certFingerprint":       true,
 	"POST /nodes/inbounds":              true,
 	"POST /nodes/probe/:id":             true,
+	"POST /admins/me/dashboardLayout":   true,
 	"POST /setting/all":                 true,
 	"POST /setting/defaultSettings":     true,
 	"POST /setting/factoryDefaults":     true,

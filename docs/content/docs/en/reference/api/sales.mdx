@@ -26,6 +26,11 @@ _openapi:
         pending, review, paid, rejected, failed or canceled; empty lists all.
       url: '#orders-newest-first-with-the-total-for-the-filter-status-is-one-of-pending-review-paid-rejected-failed-or-canceled-empty-lists-all'
     - depth: 2
+      title: Download the orders (newest first, at most 50000) as an Excel workbook,
+        PDF table or CSV. The order token and pay link are left out; cells
+        starting with = + - or @ are quoted so spreadsheets do not run them.
+      url: '#download-the-orders-newest-first-at-most-50000-as-an-excel-workbook-pdf-table-or-csv-the-order-token-and-pay-link-are-left-out-cells-starting-with-----or--are-quoted-so-spreadsheets-do-not-run-them'
+    - depth: 2
       title: 'Accept the payment of a pending or in-review order and deliver it: a new
         purchase creates the client from the plan terms the order was bought
         under, a renewal zeroes the usage, applies the plan quota and IP limit
@@ -124,6 +129,10 @@ _openapi:
       - content: Orders newest first, with the total for the filter. status is one of
           pending, review, paid, rejected, failed or canceled; empty lists all.
         id: orders-newest-first-with-the-total-for-the-filter-status-is-one-of-pending-review-paid-rejected-failed-or-canceled-empty-lists-all
+      - content: Download the orders (newest first, at most 50000) as an Excel workbook,
+          PDF table or CSV. The order token and pay link are left out; cells
+          starting with = + - or @ are quoted so spreadsheets do not run them.
+        id: download-the-orders-newest-first-at-most-50000-as-an-excel-workbook-pdf-table-or-csv-the-order-token-and-pay-link-are-left-out-cells-starting-with-----or--are-quoted-so-spreadsheets-do-not-run-them
       - content: 'Accept the payment of a pending or in-review order and deliver it: a
           new purchase creates the client from the plan terms the order was
           bought under, a renewal zeroes the usage, applies the plan quota and
@@ -207,7 +216,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/sales/plans","method":"get"},{"path":"/panel/api/sales/plans/save","method":"post"},{"path":"/panel/api/sales/plans/del/{id}","method":"post"},{"path":"/panel/api/sales/orders","method":"get"},{"path":"/panel/api/sales/orders/approve/{id}","method":"post"},{"path":"/panel/api/sales/orders/reject/{id}","method":"post"},{"path":"/panel/api/sales/tickets","method":"get"},{"path":"/panel/api/sales/tickets/{id}","method":"get"},{"path":"/panel/api/sales/tickets/reply/{id}","method":"post"},{"path":"/panel/api/sales/tickets/close/{id}","method":"post"},{"path":"/panel/api/sales/tickets/reopen/{id}","method":"post"},{"path":"/panel/api/sales/discounts","method":"get"},{"path":"/panel/api/sales/discounts/save","method":"post"},{"path":"/panel/api/sales/discounts/del/{id}","method":"post"},{"path":"/panel/api/sales/wallet","method":"get"},{"path":"/panel/api/sales/wallet/adjust","method":"post"},{"path":"/panel/api/sales/config","method":"get"},{"path":"/panel/api/sales/config/save","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/panel/api/sales/plans","method":"get"},{"path":"/panel/api/sales/plans/save","method":"post"},{"path":"/panel/api/sales/plans/del/{id}","method":"post"},{"path":"/panel/api/sales/orders","method":"get"},{"path":"/panel/api/sales/orders/export","method":"get"},{"path":"/panel/api/sales/orders/approve/{id}","method":"post"},{"path":"/panel/api/sales/orders/reject/{id}","method":"post"},{"path":"/panel/api/sales/tickets","method":"get"},{"path":"/panel/api/sales/tickets/{id}","method":"get"},{"path":"/panel/api/sales/tickets/reply/{id}","method":"post"},{"path":"/panel/api/sales/tickets/close/{id}","method":"post"},{"path":"/panel/api/sales/tickets/reopen/{id}","method":"post"},{"path":"/panel/api/sales/discounts","method":"get"},{"path":"/panel/api/sales/discounts/save","method":"post"},{"path":"/panel/api/sales/discounts/del/{id}","method":"post"},{"path":"/panel/api/sales/wallet","method":"get"},{"path":"/panel/api/sales/wallet/adjust","method":"post"},{"path":"/panel/api/sales/config","method":"get"},{"path":"/panel/api/sales/config/save","method":"post"}]} showTitle />
     </>
   );
 }

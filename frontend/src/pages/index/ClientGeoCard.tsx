@@ -1,8 +1,11 @@
+import { lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, Progress } from 'antd';
 
 import { useClientGeo } from '@/api/queries/useClientGeo';
 import { countryFlag, countryName } from '@/lib/country';
+
+const WorldMap = lazy(() => import('./WorldMap'));
 
 export default function ClientGeoCard() {
   const { t, i18n } = useTranslation();
@@ -14,6 +17,11 @@ export default function ClientGeoCard() {
     <Card hoverable styles={{ body: { padding: 0 } }} data-testid="client-geo">
       <div className="ov-insight-head">
         <div className="ov-kicker">{t('pages.index.clientCountries')}</div>
+      </div>
+      <div style={{ padding: '0 20px 8px' }}>
+        <Suspense fallback={<div style={{ aspectRatio: '2 / 1' }} />}>
+          <WorldMap countries={data.countries} />
+        </Suspense>
       </div>
       <ul className="ov-insight-list" style={{ padding: '0 20px 12px', margin: 0 }}>
         {data.countries.map((c) => (

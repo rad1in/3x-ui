@@ -298,6 +298,22 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/inbounds/report',
+        summary:
+          'Download a traffic summary of the inbounds you can see (up, down, quota, expiry, client count) as an Excel workbook, PDF table or CSV. Cells starting with = + - or @ are quoted so spreadsheets do not run them.',
+        params: [
+          {
+            name: 'format',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            defaultValue: 'xlsx',
+            desc: 'xlsx, pdf or csv.',
+          },
+        ],
+      },
+      {
+        method: 'GET',
         path: '/panel/api/inbounds/list/slim',
         summary:
           'Same shape as /list but with settings.clients[] stripped down to {email, enable, comment} and ClientStats not enriched with UUID/SubId. Use this for list pages; fetch /get/:id when you need the full per-client payload (uuid, password, flow, ...).',
@@ -1662,7 +1678,7 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/panel/api/clients/report',
         summary:
-          'Usage report of every client you can see. format=csv (default) downloads a spreadsheet-ready file with byte counts; format=html returns a printable page that can be saved as PDF from the browser. Period columns sum the per-day usage of the last days days; cells starting with = + - or @ are quoted so spreadsheets do not run them.',
+          'Usage report of every client you can see. format=csv (default) downloads a spreadsheet-ready file with byte counts; format=xlsx downloads an Excel workbook; format=pdf downloads a PDF table; format=html returns a printable page. Period columns sum the per-day usage of the last days days; cells starting with = + - or @ are quoted so spreadsheets do not run them.',
         params: [
           {
             name: 'days',
@@ -1678,7 +1694,7 @@ export const sections: readonly Section[] = [
             type: 'string',
             optional: true,
             defaultValue: 'csv',
-            desc: 'csv or html.',
+            desc: 'csv, xlsx, pdf or html.',
           },
         ],
         response:
@@ -2636,6 +2652,29 @@ export const sections: readonly Section[] = [
         responseSchema: 'OrderPage',
       },
       {
+        method: 'GET',
+        path: '/panel/api/sales/orders/export',
+        summary:
+          'Download the orders (newest first, at most 50000) as an Excel workbook, PDF table or CSV. The order token and pay link are left out; cells starting with = + - or @ are quoted so spreadsheets do not run them.',
+        params: [
+          {
+            name: 'format',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            defaultValue: 'xlsx',
+            desc: 'xlsx, pdf or csv.',
+          },
+          {
+            name: 'status',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'Only orders of this status; empty exports every status.',
+          },
+        ],
+      },
+      {
         method: 'POST',
         path: '/panel/api/sales/orders/approve/:id',
         summary:
@@ -3092,6 +3131,20 @@ export const sections: readonly Section[] = [
         summary:
           'The signed-in admin with its role and, for an operator, its scope. An API token answers as the oldest owner.',
         responseSchema: 'AdminView',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/admins/me/dashboardLayout',
+        summary:
+          "The signed-in admin's overview layout: widget order, hidden widgets and column spans. Empty widgets means the default layout.",
+        responseSchema: 'DashboardLayout',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/admins/me/dashboardLayout',
+        summary:
+          "Replace the signed-in admin's overview layout. Spans are 1 to 12 grid columns, ids must be unique, at most 40 widgets.",
+        body: '{"widgets":[{"id":"clientGeo","hidden":false,"span":6}]}',
       },
       {
         method: 'GET',

@@ -12,6 +12,7 @@ export const keys = {
   },
   admins: {
     me: () => ['admins', 'me'] as const,
+    dashboardLayout: () => ['admins', 'me', 'dashboardLayout'] as const,
     list: () => ['admins', 'list'] as const,
   },
   audit: {
