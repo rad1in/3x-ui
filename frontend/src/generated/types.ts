@@ -1397,6 +1397,14 @@ export interface PanelUpdateStatus {
   state: string;
 }
 
+export interface Passkey {
+  createdAt: number;
+  id: number;
+  lastUsedAt: number;
+  name: string;
+  userId: number;
+}
+
 export interface PayPalConfig {
   clientId: string;
   clientSecret: string;
@@ -1415,6 +1423,21 @@ export interface PeerActivity {
   online: boolean;
   tag: string;
   up: number;
+}
+
+export interface PendingAction {
+  action: string;
+  decidedAt: number;
+  decidedBy: number;
+  decidedByName: string;
+  expiresAt: number;
+  id: number;
+  requestedAt: number;
+  requestedBy: number;
+  requestedByName: string;
+  result: string;
+  status: string;
+  target: string;
 }
 
 export interface Plan {
@@ -1538,10 +1561,13 @@ export interface SalesConfigView {
 }
 
 export interface SecurityConfig {
+  approvalActions: string[];
   backupPassphrase: string;
   captchaEnable: boolean;
   clearBackupPassphrase?: boolean;
   newLocationAlert: boolean;
+  passkeyLoginEnable: boolean;
+  passkeySecondFactor: boolean;
   rotateSubSigningKey?: boolean;
   subSigningEnable: boolean;
   subSigningKey: string;
@@ -1549,11 +1575,14 @@ export interface SecurityConfig {
 }
 
 export interface SecurityConfigView {
+  approvalActions: string[];
   backupPassphrase: string;
   captchaEnable: boolean;
   clearBackupPassphrase?: boolean;
   hasBackupPassphrase: boolean;
   newLocationAlert: boolean;
+  passkeyLoginEnable: boolean;
+  passkeySecondFactor: boolean;
   rotateSubSigningKey?: boolean;
   subSigningEnable: boolean;
   subSigningKey: string;

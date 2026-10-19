@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -431,6 +432,9 @@ func (a *ClientController) bulkDelete(c *gin.Context) {
 	var req bulkDeleteRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	if len(req.Emails) > 0 && parkForApproval(c, service.ApprovalClientsBulkDelete, fmt.Sprintf("%d clients", len(req.Emails)), service.ClientsBulkDeleteApproval{Emails: req.Emails, KeepTraffic: req.KeepTraffic}) {
 		return
 	}
 	result, needRestart, err := a.clientService.BulkDelete(&a.inboundService, req.Emails, req.KeepTraffic)

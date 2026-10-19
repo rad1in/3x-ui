@@ -1545,6 +1545,13 @@ export const EXAMPLES: Record<string, unknown> = {
     "runId": "1735689600123456789",
     "state": "success"
   },
+  "Passkey": {
+    "createdAt": 1760684400000,
+    "id": 1,
+    "lastUsedAt": 1760684400000,
+    "name": "YubiKey",
+    "userId": 1
+  },
   "PayPalConfig": {
     "clientId": "",
     "clientSecret": "",
@@ -1562,6 +1569,20 @@ export const EXAMPLES: Record<string, unknown> = {
     "online": true,
     "tag": "inbound-51820",
     "up": 1048576
+  },
+  "PendingAction": {
+    "action": "inbound.delete",
+    "decidedAt": 1760684500000,
+    "decidedBy": 2,
+    "decidedByName": "bob",
+    "expiresAt": 1760770800000,
+    "id": 7,
+    "requestedAt": 1760684400000,
+    "requestedBy": 1,
+    "requestedByName": "alice",
+    "result": "",
+    "status": "pending",
+    "target": "inbound #3"
   },
   "Plan": {
     "createdAt": 0,
@@ -1743,21 +1764,31 @@ export const EXAMPLES: Record<string, unknown> = {
     }
   },
   "SecurityConfig": {
+    "approvalActions": [
+      ""
+    ],
     "backupPassphrase": "",
     "captchaEnable": false,
     "clearBackupPassphrase": false,
     "newLocationAlert": false,
+    "passkeyLoginEnable": false,
+    "passkeySecondFactor": false,
     "rotateSubSigningKey": false,
     "subSigningEnable": false,
     "subSigningKey": "",
     "tgLoginEnable": false
   },
   "SecurityConfigView": {
+    "approvalActions": [
+      ""
+    ],
     "backupPassphrase": "",
     "captchaEnable": false,
     "clearBackupPassphrase": false,
     "hasBackupPassphrase": false,
     "newLocationAlert": false,
+    "passkeyLoginEnable": false,
+    "passkeySecondFactor": false,
     "rotateSubSigningKey": false,
     "subSigningEnable": false,
     "subSigningKey": "",

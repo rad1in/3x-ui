@@ -75,6 +75,41 @@ function ExtraForm({
       </SettingListItem>
       <SettingListItem
         paddings="small"
+        title={t('pages.settings.security.extra.passkeyLogin')}
+        description={t('pages.settings.security.extra.passkeyLoginDesc')}
+      >
+        <Switch
+          checked={cfg.passkeyLoginEnable}
+          onChange={(v) => setCfg({ ...cfg, passkeyLoginEnable: v })}
+        />
+      </SettingListItem>
+      <SettingListItem
+        paddings="small"
+        title={t('pages.settings.security.extra.passkeySecondFactor')}
+        description={t('pages.settings.security.extra.passkeySecondFactorDesc')}
+      >
+        <Switch
+          checked={cfg.passkeySecondFactor}
+          onChange={(v) => setCfg({ ...cfg, passkeySecondFactor: v })}
+        />
+      </SettingListItem>
+      <SettingListItem
+        paddings="small"
+        title={t('pages.settings.security.extra.approval')}
+        description={t('pages.settings.security.extra.approvalDesc')}
+      >
+        <Checkbox.Group
+          value={cfg.approvalActions}
+          options={[
+            { value: 'inbound.delete', label: t('pages.approvals.inboundDelete') },
+            { value: 'clients.bulkDelete', label: t('pages.approvals.clientsBulkDelete') },
+            { value: 'node.delete', label: t('pages.approvals.nodeDelete') },
+          ]}
+          onChange={(v) => setCfg({ ...cfg, approvalActions: v.map(String) })}
+        />
+      </SettingListItem>
+      <SettingListItem
+        paddings="small"
         title={t('pages.settings.security.extra.subSigning')}
         description={t('pages.settings.security.extra.subSigningDesc')}
       >

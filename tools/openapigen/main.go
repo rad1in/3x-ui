@@ -53,6 +53,8 @@ func run(root, outDir string) error {
 				"TicketMessage",
 				"CleanIPResult",
 				"InboundRotation",
+				"Passkey",
+				"PendingAction",
 			),
 			AliasAllow: setOf("Protocol"),
 			Overrides: map[string][]walkOverride{

@@ -6218,6 +6218,41 @@
         ],
         "type": "object"
       },
+      "Passkey": {
+        "description": "Passkey is one WebAuthn credential an admin registered. The public key is the\nCOSE_Key as the authenticator sent it; CredentialId is unpadded base64url.",
+        "properties": {
+          "createdAt": {
+            "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "lastUsedAt": {
+            "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "name": {
+            "example": "YubiKey",
+            "type": "string"
+          },
+          "userId": {
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "createdAt",
+          "id",
+          "lastUsedAt",
+          "name",
+          "userId"
+        ],
+        "type": "object"
+      },
       "PayPalConfig": {
         "description": "PayPalConfig is the PayPal REST app. ClientSecret is a secret; the client id\nis public by design.",
         "properties": {
@@ -6301,6 +6336,76 @@
           "online",
           "tag",
           "up"
+        ],
+        "type": "object"
+      },
+      "PendingAction": {
+        "description": "PendingAction is a sensitive admin action parked until a second admin\napproves it. Payload is the JSON the executor needs; Status moves once,\nfrom pending to approved, rejected, cancelled or expired (failed when the\napproved action returned an error).",
+        "properties": {
+          "action": {
+            "example": "inbound.delete",
+            "type": "string"
+          },
+          "decidedAt": {
+            "example": 1760684500000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "decidedBy": {
+            "example": 2,
+            "type": "integer"
+          },
+          "decidedByName": {
+            "example": "bob",
+            "type": "string"
+          },
+          "expiresAt": {
+            "example": 1760770800000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 7,
+            "type": "integer"
+          },
+          "requestedAt": {
+            "example": 1760684400000,
+            "format": "int64",
+            "type": "integer"
+          },
+          "requestedBy": {
+            "example": 1,
+            "type": "integer"
+          },
+          "requestedByName": {
+            "example": "alice",
+            "type": "string"
+          },
+          "result": {
+            "type": "string"
+          },
+          "status": {
+            "example": "pending",
+            "type": "string"
+          },
+          "target": {
+            "example": "inbound #3",
+            "type": "string"
+          }
+        },
+        "required": [
+          "action",
+          "decidedAt",
+          "decidedBy",
+          "decidedByName",
+          "expiresAt",
+          "id",
+          "requestedAt",
+          "requestedBy",
+          "requestedByName",
+          "result",
+          "status",
+          "target"
         ],
         "type": "object"
       },
@@ -6826,6 +6931,13 @@
       "SecurityConfig": {
         "description": "SecurityConfig groups the login and data protections that do not depend on\ntwo-factor codes. It is one JSON setting that only owners may change.\nBackupPassphrase is a secret: stored encrypted, served blank, and kept when a\nsave leaves it blank (ClearBackupPassphrase empties it on purpose).",
         "properties": {
+          "approvalActions": {
+            "description": "PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;\nPasskeySecondFactor asks admins who have passkeys for one after the password.\nApprovalActions lists the sensitive actions that need a second admin's\napproval (see ApprovalActions); empty turns the gate off.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "backupPassphrase": {
             "type": "string"
           },
@@ -6836,6 +6948,12 @@
             "type": "boolean"
           },
           "newLocationAlert": {
+            "type": "boolean"
+          },
+          "passkeyLoginEnable": {
+            "type": "boolean"
+          },
+          "passkeySecondFactor": {
             "type": "boolean"
           },
           "rotateSubSigningKey": {
@@ -6853,9 +6971,12 @@
           }
         },
         "required": [
+          "approvalActions",
           "backupPassphrase",
           "captchaEnable",
           "newLocationAlert",
+          "passkeyLoginEnable",
+          "passkeySecondFactor",
           "subSigningEnable",
           "subSigningKey",
           "tgLoginEnable"
@@ -6865,6 +6986,13 @@
       "SecurityConfigView": {
         "description": "SecurityConfigView is the configuration as the admin API serves it: secrets\nare blank and the Has flags say which are set.",
         "properties": {
+          "approvalActions": {
+            "description": "PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;\nPasskeySecondFactor asks admins who have passkeys for one after the password.\nApprovalActions lists the sensitive actions that need a second admin's\napproval (see ApprovalActions); empty turns the gate off.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
           "backupPassphrase": {
             "type": "string"
           },
@@ -6880,6 +7008,12 @@
           "newLocationAlert": {
             "type": "boolean"
           },
+          "passkeyLoginEnable": {
+            "type": "boolean"
+          },
+          "passkeySecondFactor": {
+            "type": "boolean"
+          },
           "rotateSubSigningKey": {
             "type": "boolean"
           },
@@ -6895,10 +7029,13 @@
           }
         },
         "required": [
+          "approvalActions",
           "backupPassphrase",
           "captchaEnable",
           "hasBackupPassphrase",
           "newLocationAlert",
+          "passkeyLoginEnable",
+          "passkeySecondFactor",
           "subSigningEnable",
           "subSigningKey",
           "tgLoginEnable"
@@ -8088,6 +8225,14 @@
       "description": "Browsers signed in to the panel. Every role may list and end its own sessions; owners may also act on other admins. API tokens are not sessions. All endpoints under /panel/api/sessions."
     },
     {
+      "name": "Passkeys",
+      "description": "WebAuthn passkeys of the signed-in admin; every role manages only its own. Registration asks for the account password again. The browser-side payloads are the standard WebAuthn JSON with base64url binary fields. All endpoints under /panel/api/passkeys."
+    },
+    {
+      "name": "Approvals",
+      "description": "Two-person approval. When the owner gates an action in Settings → Security → Extra protection, a request for it is parked here instead of running, and a different owner or admin must approve it. Gateable actions: inbound.delete (single and bulk inbound delete), clients.bulkDelete, node.delete. The gate is off while no second owner or admin exists. Requests expire after 24 hours; every request and decision is written to the activity log. A master panel's node-sync pushes are never parked. All endpoints under /panel/api/approvals."
+    },
+    {
       "name": "Activity Log",
       "description": "Who changed what and when. Every state-changing API call is recorded with its actor (panel user or token:<name>), client IP, route template, path parameters and outcome, along with every login attempt. Request bodies are never stored. Rows older than 90 days are pruned daily."
     },
@@ -8312,6 +8457,130 @@
                       }
                     ]
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/passkey/login/status": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Returns whether passwordless passkey sign-in is enabled — used by the login page to decide whether to show the passkey button.",
+        "operationId": "post_passkey_login_status",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/passkey/login/begin": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Start a passwordless sign-in. Needs the passkey login option enabled in Settings → Security. Returns navigator.credentials.get() options (user verification required) and a single-use challengeId.",
+        "operationId": "post_passkey_login_begin",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "options": {},
+                    "challengeId": "..."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/passkey/login/finish": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Complete a passwordless sign-in with the assertion. The owner account still needs its twoFactorCode when panel 2FA is on. Failures count toward the login lockout.",
+        "operationId": "post_passkey_login_finish",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{ \"challengeId\": \"...\", \"credential\": { \"id\": \"...\", \"response\": { \"clientDataJSON\": \"...\", \"authenticatorData\": \"...\", \"signature\": \"...\", \"userHandle\": \"...\" } }, \"twoFactorCode\": \"\" }"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "msg": "Logged in successfully"
                 }
               }
             }
@@ -21622,11 +21891,16 @@
                 "example": {
                   "success": true,
                   "obj": {
+                    "approvalActions": [
+                      ""
+                    ],
                     "backupPassphrase": "",
                     "captchaEnable": false,
                     "clearBackupPassphrase": false,
                     "hasBackupPassphrase": false,
                     "newLocationAlert": false,
+                    "passkeyLoginEnable": false,
+                    "passkeySecondFactor": false,
                     "rotateSubSigningKey": false,
                     "subSigningEnable": false,
                     "subSigningKey": "",
@@ -21644,7 +21918,7 @@
         "tags": [
           "Extra security"
         ],
-        "summary": "Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.",
+        "summary": "Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); passkeyLoginEnable allows passwordless sign-in with a user-verifying passkey and passkeySecondFactor asks admins who have passkeys for one after the password; approvalActions lists the actions that need approval by a second admin; subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.",
         "operationId": "post_panel_api_security_config_save",
         "requestBody": {
           "required": true,
@@ -21831,6 +22105,438 @@
                       "type": "string"
                     },
                     "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/passkeys/list": {
+      "get": {
+        "tags": [
+          "Passkeys"
+        ],
+        "summary": "The caller's registered passkeys (name, creation and last-use time).",
+        "operationId": "get_panel_api_passkeys_list",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Passkey"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "createdAt": 1760684400000,
+                      "id": 1,
+                      "lastUsedAt": 1760684400000,
+                      "name": "YubiKey",
+                      "userId": 1
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/passkeys/register/begin": {
+      "post": {
+        "tags": [
+          "Passkeys"
+        ],
+        "summary": "Start a registration ceremony. Returns the navigator.credentials.create() options and a single-use challengeId valid for five minutes.",
+        "operationId": "post_panel_api_passkeys_register_begin",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{ \"password\": \"current account password\" }"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/passkeys/register/finish": {
+      "post": {
+        "tags": [
+          "Passkeys"
+        ],
+        "summary": "Finish the registration: the origin, RP ID, challenge and presence flag are verified, then the public key is stored.",
+        "operationId": "post_panel_api_passkeys_register_finish",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "object",
+                    "description": "{ \"challengeId\": \"...\", \"name\": \"YubiKey\", \"credential\": { \"id\": \"...\", \"response\": { \"clientDataJSON\": \"...\", \"attestationObject\": \"...\" } } }"
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/Passkey"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "createdAt": 1760684400000,
+                    "id": 1,
+                    "lastUsedAt": 1760684400000,
+                    "name": "YubiKey",
+                    "userId": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/passkeys/del/{id}": {
+      "post": {
+        "tags": [
+          "Passkeys"
+        ],
+        "summary": "Remove one of the caller's own passkeys.",
+        "operationId": "post_panel_api_passkeys_del_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Passkey id from the list.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/approvals/list": {
+      "get": {
+        "tags": [
+          "Approvals"
+        ],
+        "summary": "Open requests first, then the most recent decided ones. Owners, admins and viewers may read it.",
+        "operationId": "get_panel_api_approvals_list",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PendingAction"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "action": "inbound.delete",
+                      "decidedAt": 1760684500000,
+                      "decidedBy": 2,
+                      "decidedByName": "bob",
+                      "expiresAt": 1760770800000,
+                      "id": 7,
+                      "requestedAt": 1760684400000,
+                      "requestedBy": 1,
+                      "requestedByName": "alice",
+                      "result": "",
+                      "status": "pending",
+                      "target": "inbound #3"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/approvals/approve/{id}": {
+      "post": {
+        "tags": [
+          "Approvals"
+        ],
+        "summary": "Approve and run the request. Refused for the admin who made the request. A failing action is recorded with status failed and its error.",
+        "operationId": "post_panel_api_approvals_approve_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Request id from the list.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/PendingAction"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "action": "inbound.delete",
+                    "decidedAt": 1760684500000,
+                    "decidedBy": 2,
+                    "decidedByName": "bob",
+                    "expiresAt": 1760770800000,
+                    "id": 7,
+                    "requestedAt": 1760684400000,
+                    "requestedBy": 1,
+                    "requestedByName": "alice",
+                    "result": "",
+                    "status": "pending",
+                    "target": "inbound #3"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/approvals/reject/{id}": {
+      "post": {
+        "tags": [
+          "Approvals"
+        ],
+        "summary": "Reject the request without running it. Refused for the admin who made it.",
+        "operationId": "post_panel_api_approvals_reject_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Request id from the list.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/PendingAction"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "action": "inbound.delete",
+                    "decidedAt": 1760684500000,
+                    "decidedBy": 2,
+                    "decidedByName": "bob",
+                    "expiresAt": 1760770800000,
+                    "id": 7,
+                    "requestedAt": 1760684400000,
+                    "requestedBy": 1,
+                    "requestedByName": "alice",
+                    "result": "",
+                    "status": "pending",
+                    "target": "inbound #3"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/approvals/cancel/{id}": {
+      "post": {
+        "tags": [
+          "Approvals"
+        ],
+        "summary": "Withdraw your own pending request.",
+        "operationId": "post_panel_api_approvals_cancel_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Request id from the list.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/PendingAction"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "action": "inbound.delete",
+                    "decidedAt": 1760684500000,
+                    "decidedBy": 2,
+                    "decidedByName": "bob",
+                    "expiresAt": 1760770800000,
+                    "id": 7,
+                    "requestedAt": 1760684400000,
+                    "requestedBy": 1,
+                    "requestedByName": "alice",
+                    "result": "",
+                    "status": "pending",
+                    "target": "inbound #3"
                   }
                 }
               }

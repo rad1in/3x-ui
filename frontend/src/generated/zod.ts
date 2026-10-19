@@ -1486,6 +1486,15 @@ export const PanelUpdateStatusSchema = z.object({
 });
 export type PanelUpdateStatus = z.infer<typeof PanelUpdateStatusSchema>;
 
+export const PasskeySchema = z.object({
+  createdAt: z.number().int(),
+  id: z.number().int(),
+  lastUsedAt: z.number().int(),
+  name: z.string(),
+  userId: z.number().int(),
+});
+export type Passkey = z.infer<typeof PasskeySchema>;
+
 export const PayPalConfigSchema = z.object({
   clientId: z.string(),
   clientSecret: z.string(),
@@ -1507,6 +1516,22 @@ export const PeerActivitySchema = z.object({
   up: z.number().int(),
 });
 export type PeerActivity = z.infer<typeof PeerActivitySchema>;
+
+export const PendingActionSchema = z.object({
+  action: z.string(),
+  decidedAt: z.number().int(),
+  decidedBy: z.number().int(),
+  decidedByName: z.string(),
+  expiresAt: z.number().int(),
+  id: z.number().int(),
+  requestedAt: z.number().int(),
+  requestedBy: z.number().int(),
+  requestedByName: z.string(),
+  result: z.string(),
+  status: z.string(),
+  target: z.string(),
+});
+export type PendingAction = z.infer<typeof PendingActionSchema>;
 
 export const PlanSchema = z.object({
   createdAt: z.number().int(),
@@ -1638,10 +1663,13 @@ export const SalesConfigViewSchema = z.object({
 export type SalesConfigView = z.infer<typeof SalesConfigViewSchema>;
 
 export const SecurityConfigSchema = z.object({
+  approvalActions: z.array(z.string()),
   backupPassphrase: z.string(),
   captchaEnable: z.boolean(),
   clearBackupPassphrase: z.boolean().optional(),
   newLocationAlert: z.boolean(),
+  passkeyLoginEnable: z.boolean(),
+  passkeySecondFactor: z.boolean(),
   rotateSubSigningKey: z.boolean().optional(),
   subSigningEnable: z.boolean(),
   subSigningKey: z.string(),
@@ -1650,11 +1678,14 @@ export const SecurityConfigSchema = z.object({
 export type SecurityConfig = z.infer<typeof SecurityConfigSchema>;
 
 export const SecurityConfigViewSchema = z.object({
+  approvalActions: z.array(z.string()),
   backupPassphrase: z.string(),
   captchaEnable: z.boolean(),
   clearBackupPassphrase: z.boolean().optional(),
   hasBackupPassphrase: z.boolean(),
   newLocationAlert: z.boolean(),
+  passkeyLoginEnable: z.boolean(),
+  passkeySecondFactor: z.boolean(),
   rotateSubSigningKey: z.boolean().optional(),
   subSigningEnable: z.boolean(),
   subSigningKey: z.string(),

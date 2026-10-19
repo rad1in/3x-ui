@@ -123,6 +123,8 @@ func allModels() []any {
 		&model.InboundRotation{},
 		&model.Ticket{},
 		&model.TicketMessage{},
+		&model.Passkey{},
+		&model.PendingAction{},
 	}
 }
 

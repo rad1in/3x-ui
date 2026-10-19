@@ -245,6 +245,35 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/passkey/login/status',
+        summary:
+          'Returns whether passwordless passkey sign-in is enabled — used by the login page to decide whether to show the passkey button.',
+        response: '{\n  "success": true,\n  "obj": false\n}',
+      },
+      {
+        method: 'POST',
+        path: '/passkey/login/begin',
+        summary:
+          'Start a passwordless sign-in. Needs the passkey login option enabled in Settings → Security. Returns navigator.credentials.get() options (user verification required) and a single-use challengeId.',
+        response: '{\n  "success": true,\n  "obj": { "options": {}, "challengeId": "..." }\n}',
+      },
+      {
+        method: 'POST',
+        path: '/passkey/login/finish',
+        summary:
+          'Complete a passwordless sign-in with the assertion. The owner account still needs its twoFactorCode when panel 2FA is on. Failures count toward the login lockout.',
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{ "challengeId": "...", "credential": { "id": "...", "response": { "clientDataJSON": "...", "authenticatorData": "...", "signature": "...", "userHandle": "..." } }, "twoFactorCode": "" }',
+          },
+        ],
+        response: '{\n  "success": true,\n  "msg": "Logged in successfully"\n}',
+      },
+      {
+        method: 'POST',
         path: '/getTwoFactorEnable',
         summary:
           'Returns whether 2FA is enabled on the panel — used by the login page to decide whether to show the OTP field.',
@@ -3116,7 +3145,7 @@ export const sections: readonly Section[] = [
         method: 'POST',
         path: '/panel/api/security/config/save',
         summary:
-          'Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.',
+          'Save the extra-security configuration. captchaEnable adds a self-hosted math captcha to the login form; newLocationAlert raises login.new_location for an unfamiliar address or country; backupPassphrase encrypts every backup (clearBackupPassphrase removes it); passkeyLoginEnable allows passwordless sign-in with a user-verifying passkey and passkeySecondFactor asks admins who have passkeys for one after the password; approvalActions lists the actions that need approval by a second admin; subSigningEnable makes the subscription server require signed links and rotateSubSigningKey voids the existing ones.',
         params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SecurityConfig.' }],
       },
     ],
@@ -3165,6 +3194,96 @@ export const sections: readonly Section[] = [
             desc: '{ "userId": 0, "keepCurrent": true }',
           },
         ],
+      },
+    ],
+  },
+
+  {
+    id: 'passkeys',
+    title: 'Passkeys',
+    description:
+      'WebAuthn passkeys of the signed-in admin; every role manages only its own. Registration asks for the account password again. The browser-side payloads are the standard WebAuthn JSON with base64url binary fields. All endpoints under /panel/api/passkeys.',
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/passkeys/list',
+        summary: "The caller's registered passkeys (name, creation and last-use time).",
+        responseSchema: 'Passkey',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/passkeys/register/begin',
+        summary:
+          'Start a registration ceremony. Returns the navigator.credentials.create() options and a single-use challengeId valid for five minutes.',
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{ "password": "current account password" }',
+          },
+        ],
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/passkeys/register/finish',
+        summary:
+          'Finish the registration: the origin, RP ID, challenge and presence flag are verified, then the public key is stored.',
+        params: [
+          {
+            name: 'body',
+            in: 'body (json)',
+            type: 'object',
+            desc: '{ "challengeId": "...", "name": "YubiKey", "credential": { "id": "...", "response": { "clientDataJSON": "...", "attestationObject": "..." } } }',
+          },
+        ],
+        responseSchema: 'Passkey',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/passkeys/del/:id',
+        summary: "Remove one of the caller's own passkeys.",
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Passkey id from the list.' }],
+      },
+    ],
+  },
+
+  {
+    id: 'approvals',
+    title: 'Approvals',
+    description:
+      "Two-person approval. When the owner gates an action in Settings → Security → Extra protection, a request for it is parked here instead of running, and a different owner or admin must approve it. Gateable actions: inbound.delete (single and bulk inbound delete), clients.bulkDelete, node.delete. The gate is off while no second owner or admin exists. Requests expire after 24 hours; every request and decision is written to the activity log. A master panel's node-sync pushes are never parked. All endpoints under /panel/api/approvals.",
+    endpoints: [
+      {
+        method: 'GET',
+        path: '/panel/api/approvals/list',
+        summary:
+          'Open requests first, then the most recent decided ones. Owners, admins and viewers may read it.',
+        responseSchema: 'PendingAction',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/approvals/approve/:id',
+        summary:
+          'Approve and run the request. Refused for the admin who made the request. A failing action is recorded with status failed and its error.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Request id from the list.' }],
+        responseSchema: 'PendingAction',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/approvals/reject/:id',
+        summary: 'Reject the request without running it. Refused for the admin who made it.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Request id from the list.' }],
+        responseSchema: 'PendingAction',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/approvals/cancel/:id',
+        summary: 'Withdraw your own pending request.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Request id from the list.' }],
+        responseSchema: 'PendingAction',
       },
     ],
   },
