@@ -19,7 +19,7 @@ const (
 	nodeJoinMaxTokens = 20
 	nodeJoinProbe     = 6 * time.Second
 	// JoinScriptURL is the one-command node installer the join command downloads.
-	JoinScriptURL = "https://raw.githubusercontent.com/mhsanaei/3x-ui/master/join-node.sh"
+	JoinScriptURL = "https://raw.githubusercontent.com/rad1in/3x-ui/main/join-node.sh"
 )
 
 // nodeJoinMu serializes token claims so one token can only ever add one node.
