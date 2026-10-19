@@ -18,9 +18,9 @@ describe('buildAntdThemeConfig with a panel brand colour', () => {
     expect(cfg.components?.Button?.colorPrimary).toBeUndefined();
   });
 
-  it('keeps the stock light-mode button contrast fix without a brand', () => {
+  it('keeps the Eternal light-mode button contrast fix without a brand', () => {
     const cfg = buildAntdThemeConfig(false, false);
-    expect(cfg.token?.colorPrimary).toBeUndefined();
-    expect(cfg.components?.Button?.colorPrimary).toBe('#0958d9');
+    expect(cfg.token?.colorPrimary).toBe('#5b4fe0');
+    expect(cfg.components?.Button?.colorPrimary).toBe('#4f43d4');
   });
 });

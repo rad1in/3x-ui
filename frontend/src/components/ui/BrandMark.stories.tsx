@@ -13,7 +13,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Panel name and logo from the Branding settings (injected by the server as window.X_UI_BRAND), falling back to 3X-UI. The compact form shows only the logo, or initials when there is no logo, for the collapsed sidebar rail.',
+          'Panel name and logo from the Branding settings (injected by the server as window.X_UI_BRAND), falling back to Eternal. The compact form shows only the logo, or initials when there is no logo, for the collapsed sidebar rail.',
       },
     },
   },

@@ -83,7 +83,7 @@ export default function WebhookTab({ allSetting, updateSetting }: WebhookTabProp
         <Input.TextArea
           value={allSetting.webhookUrls}
           autoSize={{ minRows: 2, maxRows: 6 }}
-          placeholder="https://example.com/hooks/3x-ui"
+          placeholder="https://example.com/hooks/eternal"
           onChange={(e) => updateSetting({ webhookUrls: e.target.value })}
           style={{ direction: 'ltr' }}
           aria-label={t('pages.settings.webhookUrls')}

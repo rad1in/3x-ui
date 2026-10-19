@@ -59,9 +59,12 @@
 }
 
 .brand-actions .sidebar-pin,
-.brand-actions .sidebar-docs,
-.brand-actions .sidebar-donate,
 .brand-actions .sidebar-theme-cycle {
+  width: 26px;
+  height: 26px;
+}
+
+.sidebar-theme-cycle {
   width: 26px;
   height: 26px;
 }
@@ -338,12 +341,12 @@
 
 body.dark .ant-drawer-content,
 body.dark .ant-drawer-body {
-  background-color: #0b0b0d;
+  background-color: #0d0c14;
 }
 
 html[data-theme='ultra-dark'] body.dark .ant-drawer-content,
 html[data-theme='ultra-dark'] body.dark .ant-drawer-body {
-  background-color: #050507;
+  background-color: #050509;
 }
 
 body.dark .ant-drawer-body .drawer-menu,

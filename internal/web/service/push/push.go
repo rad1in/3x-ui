@@ -227,7 +227,7 @@ func (s *Sender) Test(kind Kind) error {
 		if !ch.configured() {
 			return errors.New("channel is not fully configured")
 		}
-		_, err := s.send(ch, Message{Title: "3x-ui test", Body: "Test notification from " + s.host, Priority: 3})
+		_, err := s.send(ch, Message{Title: "Eternal test", Body: "Test notification from " + s.host, Priority: 3})
 		return err
 	}
 	return fmt.Errorf("unknown channel %q", kind)

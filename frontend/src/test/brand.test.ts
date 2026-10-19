@@ -34,8 +34,8 @@ describe('readBrandLogo', () => {
 
 describe('brandInitials', () => {
   it.each([
-    ['', '3X'],
-    ['3X-UI', '3X'],
+    ['', 'E'],
+    ['Eternal', 'E'],
     ['Acme VPN', 'AV'],
     ['nexora-panel', 'NP'],
     ['Zed', 'ZE'],

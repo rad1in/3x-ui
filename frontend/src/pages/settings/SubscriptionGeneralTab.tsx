@@ -389,22 +389,11 @@ export default function SubscriptionGeneralTab({
               <SettingListItem
                 paddings="small"
                 title={t('pages.settings.subThemeDir')}
-                description={
-                  <>
-                    {t('pages.settings.subThemeDirDesc')}{' '}
-                    <a
-                      href="https://github.com/MHSanaei/3x-ui/blob/main/docs/custom-subscription-templates.md"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {t('pages.settings.subThemeDirDocs')}
-                    </a>
-                  </>
-                }
+                description={t('pages.settings.subThemeDirDesc')}
               >
                 <Input
                   value={allSetting.subThemeDir}
-                  placeholder="/etc/3x-ui/sub_templates/my-theme/"
+                  placeholder="/etc/x-ui/sub_templates/my-theme/"
                   onChange={(e) => updateSetting({ subThemeDir: e.target.value })}
                 />
               </SettingListItem>
