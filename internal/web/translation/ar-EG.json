@@ -3050,7 +3050,11 @@
         "stripeTitle": "Stripe",
         "stripeHint": "البطاقات والمحافظ عبر Stripe Checkout للباقات المسعّرة بالدولار أو اليورو. أضف عنوان المتجر مع المسار /shop/api/webhook/stripe كنقطة Webhook في Stripe للحدثين checkout.session.completed وcheckout.session.async_payment_succeeded. المفتاح الذي يبدأ بـ sk_test_ يعمل في وضع الاختبار.",
         "secretKey": "المفتاح السري",
-        "webhookSecret": "سر توقيع Webhook"
+        "webhookSecret": "سر توقيع Webhook",
+        "paypalTitle": "PayPal",
+        "paypalHint": "الدفع عبر PayPal للباقات المسعّرة بالدولار أو اليورو. أنشئ تطبيق REST في لوحة مطوري PayPal والصق معرّف العميل والسر هنا. يسحب المتجر المبلغ بعد موافقة العميل، وبالسعر المطابق فقط.",
+        "clientId": "معرّف العميل",
+        "clientSecret": "سر العميل"
       },
       "discounts": {
         "add": "إضافة كود خصم",
@@ -3095,7 +3099,8 @@
         "zarinpal": "زرين بال",
         "idpay": "IDPay",
         "crypto": "عملات رقمية",
-        "stripe": "Stripe"
+        "stripe": "Stripe",
+        "paypal": "PayPal"
       }
     },
     "sessions": {

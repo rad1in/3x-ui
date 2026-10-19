@@ -21,6 +21,7 @@ const view = {
   hasCryptoIpnSecret: false,
   hasStripeSecretKey: false,
   hasStripeWebhookSecret: false,
+  hasPaypalClientSecret: false,
 };
 
 function savedBodies() {

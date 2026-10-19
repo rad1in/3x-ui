@@ -3050,7 +3050,11 @@
         "stripeTitle": "Stripe",
         "stripeHint": "透過 Stripe Checkout 接受信用卡與電子錢包付款，適用於以美元或歐元計價的方案。請在 Stripe 中將商店網址加上 /shop/api/webhook/stripe 新增為 Webhook 端點，訂閱 checkout.session.completed 與 checkout.session.async_payment_succeeded。以 sk_test_ 開頭的金鑰為測試模式。",
         "secretKey": "密鑰",
-        "webhookSecret": "Webhook 簽署密鑰"
+        "webhookSecret": "Webhook 簽署密鑰",
+        "paypalTitle": "PayPal",
+        "paypalHint": "透過 PayPal 收款，適用於以美元或歐元計價的方案。請在 PayPal 開發者後台建立 REST 應用程式，並貼上其用戶端 ID 與密鑰。客戶核准訂單後，商店僅在金額完全相符時才會請款。",
+        "clientId": "用戶端 ID",
+        "clientSecret": "用戶端密鑰"
       },
       "discounts": {
         "add": "新增優惠碼",
@@ -3095,7 +3099,8 @@
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
         "crypto": "加密貨幣",
-        "stripe": "Stripe"
+        "stripe": "Stripe",
+        "paypal": "PayPal"
       }
     },
     "sessions": {

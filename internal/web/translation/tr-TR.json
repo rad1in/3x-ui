@@ -3050,7 +3050,11 @@
         "stripeTitle": "Stripe",
         "stripeHint": "USD veya EUR fiyatlı planlar için Stripe Checkout ile kart ve cüzdan ödemesi. Mağaza adresine /shop/api/webhook/stripe ekleyip Stripe'ta checkout.session.completed ve checkout.session.async_payment_succeeded için webhook uç noktası olarak tanımlayın. sk_test_ ile başlayan anahtar test modundadır.",
         "secretKey": "Gizli anahtar",
-        "webhookSecret": "Webhook imza anahtarı"
+        "webhookSecret": "Webhook imza anahtarı",
+        "paypalTitle": "PayPal",
+        "paypalHint": "USD veya EUR fiyatlı planlar için PayPal ödemesi. PayPal geliştirici panelinde bir REST uygulaması oluşturup istemci kimliğini ve gizli anahtarını yapıştırın. Mağaza, müşteri onayladıktan sonra siparişi yalnızca tam fiyat için tahsil eder.",
+        "clientId": "İstemci kimliği",
+        "clientSecret": "İstemci gizli anahtarı"
       },
       "discounts": {
         "add": "İndirim kodu ekle",
@@ -3095,7 +3099,8 @@
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
         "crypto": "Kripto",
-        "stripe": "Stripe"
+        "stripe": "Stripe",
+        "paypal": "PayPal"
       }
     },
     "sessions": {

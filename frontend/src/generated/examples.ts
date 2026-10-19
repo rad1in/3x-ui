@@ -1545,6 +1545,12 @@ export const EXAMPLES: Record<string, unknown> = {
     "runId": "1735689600123456789",
     "state": "success"
   },
+  "PayPalConfig": {
+    "clientId": "",
+    "clientSecret": "",
+    "enabled": false,
+    "sandbox": false
+  },
   "PeerActivity": {
     "allowedIPs": "10.8.1.2/32",
     "down": 4194304,
@@ -1657,6 +1663,12 @@ export const EXAMPLES: Record<string, unknown> = {
       "enabled": false,
       "sandbox": false
     },
+    "paypal": {
+      "clientId": "",
+      "clientSecret": "",
+      "enabled": false,
+      "sandbox": false
+    },
     "publicBaseUrl": "https://shop.example.com",
     "publicEnabled": false,
     "referral": {
@@ -1695,11 +1707,18 @@ export const EXAMPLES: Record<string, unknown> = {
     "hasCryptoApiKey": false,
     "hasCryptoIpnSecret": false,
     "hasIdpayApiKey": false,
+    "hasPaypalClientSecret": false,
     "hasStripeSecretKey": false,
     "hasStripeWebhookSecret": false,
     "hasZarinpalMerchantId": false,
     "idpay": {
       "apiKey": "",
+      "enabled": false,
+      "sandbox": false
+    },
+    "paypal": {
+      "clientId": "",
+      "clientSecret": "",
       "enabled": false,
       "sandbox": false
     },

@@ -1397,6 +1397,13 @@ export interface PanelUpdateStatus {
   state: string;
 }
 
+export interface PayPalConfig {
+  clientId: string;
+  clientSecret: string;
+  enabled: boolean;
+  sandbox: boolean;
+}
+
 export interface PeerActivity {
   allowedIPs: string;
   down: number;
@@ -1498,6 +1505,7 @@ export interface SalesConfig {
   clearSecrets?: string[];
   crypto: CryptoConfig;
   idpay: IDPayConfig;
+  paypal: PayPalConfig;
   publicBaseUrl: string;
   publicEnabled: boolean;
   referral: ReferralConfig;
@@ -1513,10 +1521,12 @@ export interface SalesConfigView {
   hasCryptoApiKey: boolean;
   hasCryptoIpnSecret: boolean;
   hasIdpayApiKey: boolean;
+  hasPaypalClientSecret: boolean;
   hasStripeSecretKey: boolean;
   hasStripeWebhookSecret: boolean;
   hasZarinpalMerchantId: boolean;
   idpay: IDPayConfig;
+  paypal: PayPalConfig;
   publicBaseUrl: string;
   publicEnabled: boolean;
   referral: ReferralConfig;

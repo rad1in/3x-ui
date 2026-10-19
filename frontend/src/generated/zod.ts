@@ -1486,6 +1486,14 @@ export const PanelUpdateStatusSchema = z.object({
 });
 export type PanelUpdateStatus = z.infer<typeof PanelUpdateStatusSchema>;
 
+export const PayPalConfigSchema = z.object({
+  clientId: z.string(),
+  clientSecret: z.string(),
+  enabled: z.boolean(),
+  sandbox: z.boolean(),
+});
+export type PayPalConfig = z.infer<typeof PayPalConfigSchema>;
+
 export const PeerActivitySchema = z.object({
   allowedIPs: z.string(),
   down: z.number().int(),
@@ -1595,6 +1603,7 @@ export const SalesConfigSchema = z.object({
   clearSecrets: z.array(z.string()).optional(),
   crypto: z.lazy(() => CryptoConfigSchema),
   idpay: z.lazy(() => IDPayConfigSchema),
+  paypal: z.lazy(() => PayPalConfigSchema),
   publicBaseUrl: z.string(),
   publicEnabled: z.boolean(),
   referral: z.lazy(() => ReferralConfigSchema),
@@ -1611,10 +1620,12 @@ export const SalesConfigViewSchema = z.object({
   hasCryptoApiKey: z.boolean(),
   hasCryptoIpnSecret: z.boolean(),
   hasIdpayApiKey: z.boolean(),
+  hasPaypalClientSecret: z.boolean(),
   hasStripeSecretKey: z.boolean(),
   hasStripeWebhookSecret: z.boolean(),
   hasZarinpalMerchantId: z.boolean(),
   idpay: z.lazy(() => IDPayConfigSchema),
+  paypal: z.lazy(() => PayPalConfigSchema),
   publicBaseUrl: z.string(),
   publicEnabled: z.boolean(),
   referral: z.lazy(() => ReferralConfigSchema),

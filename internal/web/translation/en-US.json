@@ -3050,7 +3050,11 @@
         "stripeTitle": "Stripe",
         "stripeHint": "Cards and wallets through Stripe Checkout, for plans priced in USD or EUR. Add the shop address plus /shop/api/webhook/stripe as a Stripe webhook endpoint for checkout.session.completed and checkout.session.async_payment_succeeded. A sk_test_ key is Stripe's test mode.",
         "secretKey": "Secret key",
-        "webhookSecret": "Webhook signing secret"
+        "webhookSecret": "Webhook signing secret",
+        "paypalTitle": "PayPal",
+        "paypalHint": "PayPal checkout for plans priced in USD or EUR. Create a REST app in the PayPal developer dashboard and paste its client id and secret. The order is captured by the shop after the customer approves it, only for the exact price.",
+        "clientId": "Client id",
+        "clientSecret": "Client secret"
       },
       "discounts": {
         "add": "Add discount code",
@@ -3095,7 +3099,8 @@
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
         "crypto": "Crypto",
-        "stripe": "Stripe"
+        "stripe": "Stripe",
+        "paypal": "PayPal"
       }
     },
     "sessions": {

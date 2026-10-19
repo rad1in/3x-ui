@@ -6218,6 +6218,30 @@
         ],
         "type": "object"
       },
+      "PayPalConfig": {
+        "description": "PayPalConfig is the PayPal REST app. ClientSecret is a secret; the client id\nis public by design.",
+        "properties": {
+          "clientId": {
+            "type": "string"
+          },
+          "clientSecret": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "sandbox": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "clientId",
+          "clientSecret",
+          "enabled",
+          "sandbox"
+        ],
+        "type": "object"
+      },
       "PeerActivity": {
         "description": "PeerActivity is one peer's live embedded-Device-reported state, the\ncounterpart of an Xray access-log entry: a tunnel logs no requests, only\nhandshakes and bytes.",
         "properties": {
@@ -6669,6 +6693,9 @@
           "idpay": {
             "$ref": "#/components/schemas/IDPayConfig"
           },
+          "paypal": {
+            "$ref": "#/components/schemas/PayPalConfig"
+          },
           "publicBaseUrl": {
             "example": "https://shop.example.com",
             "type": "string"
@@ -6693,6 +6720,7 @@
           "card",
           "crypto",
           "idpay",
+          "paypal",
           "publicBaseUrl",
           "publicEnabled",
           "referral",
@@ -6726,6 +6754,9 @@
           "hasIdpayApiKey": {
             "type": "boolean"
           },
+          "hasPaypalClientSecret": {
+            "type": "boolean"
+          },
           "hasStripeSecretKey": {
             "type": "boolean"
           },
@@ -6737,6 +6768,9 @@
           },
           "idpay": {
             "$ref": "#/components/schemas/IDPayConfig"
+          },
+          "paypal": {
+            "$ref": "#/components/schemas/PayPalConfig"
           },
           "publicBaseUrl": {
             "example": "https://shop.example.com",
@@ -6764,10 +6798,12 @@
           "hasCryptoApiKey",
           "hasCryptoIpnSecret",
           "hasIdpayApiKey",
+          "hasPaypalClientSecret",
           "hasStripeSecretKey",
           "hasStripeWebhookSecret",
           "hasZarinpalMerchantId",
           "idpay",
+          "paypal",
           "publicBaseUrl",
           "publicEnabled",
           "referral",
@@ -19678,7 +19714,7 @@
         "tags": [
           "Sales"
         ],
-        "summary": "Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto, Stripe). Secrets (the Zarinpal merchant id, the IDPay API key, the NOWPayments API key and IPN secret and the Stripe secret key and webhook signing secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.",
+        "summary": "Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto, Stripe, PayPal). Secrets (the Zarinpal merchant id, the IDPay API key, the NOWPayments API key and IPN secret the Stripe secret key and webhook signing secret and the PayPal client secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.",
         "operationId": "get_panel_api_sales_config",
         "responses": {
           "200": {
@@ -19721,11 +19757,18 @@
                     "hasCryptoApiKey": false,
                     "hasCryptoIpnSecret": false,
                     "hasIdpayApiKey": false,
+                    "hasPaypalClientSecret": false,
                     "hasStripeSecretKey": false,
                     "hasStripeWebhookSecret": false,
                     "hasZarinpalMerchantId": false,
                     "idpay": {
                       "apiKey": "",
+                      "enabled": false,
+                      "sandbox": false
+                    },
+                    "paypal": {
+                      "clientId": "",
+                      "clientSecret": "",
                       "enabled": false,
                       "sandbox": false
                     },
@@ -19759,7 +19802,7 @@
         "tags": [
           "Sales"
         ],
-        "summary": "Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay, crypto or Stripe section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret, stripe.secretKey, stripe.webhookSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.",
+        "summary": "Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay, crypto, Stripe or PayPal section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret, stripe.secretKey, stripe.webhookSecret, paypal.clientSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.",
         "operationId": "post_panel_api_sales_config_save",
         "requestBody": {
           "required": true,
@@ -20032,7 +20075,7 @@
                   },
                   "gateway": {
                     "type": "string",
-                    "description": "Payment method: card, zarinpal, idpay, crypto, stripe or wallet. A wallet payment is for renewals only, needs proof and is delivered at once."
+                    "description": "Payment method: card, zarinpal, idpay, crypto, stripe, paypal or wallet. A wallet payment is for renewals only, needs proof and is delivered at once."
                   },
                   "discountCode": {
                     "type": "string",
@@ -20263,7 +20306,7 @@
         "tags": [
           "Public Shop"
         ],
-        "summary": "Where Zarinpal (Status and Authority in the query), IDPay (a form POST, see the POST entry) and Stripe Checkout (success URL, or cancel=1 when the customer backs out) send the customer back. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.",
+        "summary": "Where Zarinpal (Status and Authority in the query), IDPay (a form POST, see the POST entry), Stripe Checkout and PayPal (success URL, or cancel=1 when the customer backs out) send the customer back. For PayPal the shop also captures the approved order here, after checking it is the order it created for the exact price. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.",
         "operationId": "get_shop_api_callback_gateway",
         "parameters": [
           {
@@ -20276,7 +20319,8 @@
               "enum": [
                 "zarinpal",
                 "idpay",
-                "stripe"
+                "stripe",
+                "paypal"
               ]
             }
           },
@@ -20328,8 +20372,7 @@
               "type": "string",
               "enum": [
                 "zarinpal",
-                "idpay",
-                "stripe"
+                "idpay"
               ]
             }
           },

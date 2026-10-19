@@ -6192,6 +6192,30 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "PayPalConfig": {
+    "description": "PayPalConfig is the PayPal REST app. ClientSecret is a secret; the client id\nis public by design.",
+    "properties": {
+      "clientId": {
+        "type": "string"
+      },
+      "clientSecret": {
+        "type": "string"
+      },
+      "enabled": {
+        "type": "boolean"
+      },
+      "sandbox": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "clientId",
+      "clientSecret",
+      "enabled",
+      "sandbox"
+    ],
+    "type": "object"
+  },
   "PeerActivity": {
     "description": "PeerActivity is one peer's live embedded-Device-reported state, the\ncounterpart of an Xray access-log entry: a tunnel logs no requests, only\nhandshakes and bytes.",
     "properties": {
@@ -6643,6 +6667,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "idpay": {
         "$ref": "#/components/schemas/IDPayConfig"
       },
+      "paypal": {
+        "$ref": "#/components/schemas/PayPalConfig"
+      },
       "publicBaseUrl": {
         "example": "https://shop.example.com",
         "type": "string"
@@ -6667,6 +6694,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "card",
       "crypto",
       "idpay",
+      "paypal",
       "publicBaseUrl",
       "publicEnabled",
       "referral",
@@ -6700,6 +6728,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "hasIdpayApiKey": {
         "type": "boolean"
       },
+      "hasPaypalClientSecret": {
+        "type": "boolean"
+      },
       "hasStripeSecretKey": {
         "type": "boolean"
       },
@@ -6711,6 +6742,9 @@ export const SCHEMAS: Record<string, unknown> = {
       },
       "idpay": {
         "$ref": "#/components/schemas/IDPayConfig"
+      },
+      "paypal": {
+        "$ref": "#/components/schemas/PayPalConfig"
       },
       "publicBaseUrl": {
         "example": "https://shop.example.com",
@@ -6738,10 +6772,12 @@ export const SCHEMAS: Record<string, unknown> = {
       "hasCryptoApiKey",
       "hasCryptoIpnSecret",
       "hasIdpayApiKey",
+      "hasPaypalClientSecret",
       "hasStripeSecretKey",
       "hasStripeWebhookSecret",
       "hasZarinpalMerchantId",
       "idpay",
+      "paypal",
       "publicBaseUrl",
       "publicEnabled",
       "referral",

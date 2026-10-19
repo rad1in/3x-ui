@@ -2683,14 +2683,14 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/panel/api/sales/config',
         summary:
-          'Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto, Stripe). Secrets (the Zarinpal merchant id, the IDPay API key, the NOWPayments API key and IPN secret and the Stripe secret key and webhook signing secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.',
+          'Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto, Stripe, PayPal). Secrets (the Zarinpal merchant id, the IDPay API key, the NOWPayments API key and IPN secret the Stripe secret key and webhook signing secret and the PayPal client secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.',
         responseSchema: 'SalesConfigView',
       },
       {
         method: 'POST',
         path: '/panel/api/sales/config/save',
         summary:
-          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay, crypto or Stripe section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret, stripe.secretKey, stripe.webhookSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.',
+          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay, crypto, Stripe or PayPal section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret, stripe.secretKey, stripe.webhookSecret, paypal.clientSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.',
         params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SalesConfig.' }],
       },
     ],
@@ -2750,7 +2750,7 @@ export const sections: readonly Section[] = [
             name: 'gateway',
             in: 'body (json)',
             type: 'string',
-            desc: 'Payment method: card, zarinpal, idpay, crypto, stripe or wallet. A wallet payment is for renewals only, needs proof and is delivered at once.',
+            desc: 'Payment method: card, zarinpal, idpay, crypto, stripe, paypal or wallet. A wallet payment is for renewals only, needs proof and is delivered at once.',
           },
           {
             name: 'discountCode',
@@ -2807,9 +2807,9 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/shop/api/callback/:gateway',
         summary:
-          'Where Zarinpal (Status and Authority in the query), IDPay (a form POST, see the POST entry) and Stripe Checkout (success URL, or cancel=1 when the customer backs out) send the customer back. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.',
+          'Where Zarinpal (Status and Authority in the query), IDPay (a form POST, see the POST entry), Stripe Checkout and PayPal (success URL, or cancel=1 when the customer backs out) send the customer back. For PayPal the shop also captures the approved order here, after checking it is the order it created for the exact price. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.',
         params: [
-          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay', 'stripe'] },
+          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay', 'stripe', 'paypal'] },
           { name: 'order', in: 'query', type: 'string', desc: 'Order token.' },
         ],
       },
@@ -2847,7 +2847,7 @@ export const sections: readonly Section[] = [
         summary:
           'The same callback for gateways that return the customer with a form POST (IDPay sends status 10 when the customer paid).',
         params: [
-          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay', 'stripe'] },
+          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay'] },
           { name: 'order', in: 'query', type: 'string', desc: 'Order token.' },
         ],
       },

@@ -3050,7 +3050,11 @@
         "stripeTitle": "Stripe",
         "stripeHint": "Картки й гаманці через Stripe Checkout для тарифів із ціною в USD або EUR. Додайте адресу магазину зі шляхом /shop/api/webhook/stripe як webhook-ендпоїнт у Stripe для подій checkout.session.completed і checkout.session.async_payment_succeeded. Ключ, що починається з sk_test_, працює в тестовому режимі.",
         "secretKey": "Секретний ключ",
-        "webhookSecret": "Секрет підпису webhook"
+        "webhookSecret": "Секрет підпису webhook",
+        "paypalTitle": "PayPal",
+        "paypalHint": "Оплата через PayPal для тарифів із ціною в USD або EUR. Створіть REST-застосунок у панелі розробника PayPal і вставте його client id та секрет. Магазин списує оплату після підтвердження клієнтом і лише на точну суму замовлення.",
+        "clientId": "Client id",
+        "clientSecret": "Секрет клієнта"
       },
       "discounts": {
         "add": "Додати промокод",
@@ -3095,7 +3099,8 @@
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
         "crypto": "Криптовалюта",
-        "stripe": "Stripe"
+        "stripe": "Stripe",
+        "paypal": "PayPal"
       }
     },
     "sessions": {

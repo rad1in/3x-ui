@@ -3050,7 +3050,11 @@
         "stripeTitle": "Stripe",
         "stripeHint": "USD または EUR で価格設定したプラン向けに、Stripe Checkout でカードやウォレット決済を受け付けます。ショップのアドレスに /shop/api/webhook/stripe を付けた URL を、checkout.session.completed と checkout.session.async_payment_succeeded の Webhook エンドポイントとして Stripe に登録してください。sk_test_ で始まるキーはテストモードです。",
         "secretKey": "シークレットキー",
-        "webhookSecret": "Webhook 署名シークレット"
+        "webhookSecret": "Webhook 署名シークレット",
+        "paypalTitle": "PayPal",
+        "paypalHint": "USD または EUR で価格設定したプラン向けの PayPal 決済です。PayPal デベロッパーダッシュボードで REST アプリを作成し、クライアント ID とシークレットを貼り付けてください。顧客が承認した後、正確な金額の場合に限り、ショップが注文をキャプチャします。",
+        "clientId": "クライアント ID",
+        "clientSecret": "クライアントシークレット"
       },
       "discounts": {
         "add": "割引コードを追加",
@@ -3095,7 +3099,8 @@
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
         "crypto": "暗号資産",
-        "stripe": "Stripe"
+        "stripe": "Stripe",
+        "paypal": "PayPal"
       }
     },
     "sessions": {

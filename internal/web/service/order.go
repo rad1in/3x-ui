@@ -164,6 +164,8 @@ func gatewayEnabled(cfg *SalesConfig, gateway string) bool {
 		return cfg.Crypto.Enabled && cfg.Crypto.ApiKey != "" && cfg.Crypto.IpnSecret != "" && cfg.PublicBaseURL != ""
 	case GatewayStripe:
 		return cfg.Stripe.Enabled && cfg.Stripe.SecretKey != "" && cfg.PublicBaseURL != ""
+	case GatewayPayPal:
+		return cfg.PayPal.Enabled && cfg.PayPal.ClientId != "" && cfg.PayPal.ClientSecret != "" && cfg.PublicBaseURL != ""
 	default:
 		return false
 	}

@@ -3050,7 +3050,11 @@
         "stripeTitle": "Stripe",
         "stripeHint": "Kartu dan dompet digital lewat Stripe Checkout, untuk paket berharga USD atau EUR. Tambahkan alamat toko plus /shop/api/webhook/stripe sebagai endpoint webhook Stripe untuk checkout.session.completed dan checkout.session.async_payment_succeeded. Kunci sk_test_ memakai mode uji.",
         "secretKey": "Kunci rahasia",
-        "webhookSecret": "Rahasia tanda tangan webhook"
+        "webhookSecret": "Rahasia tanda tangan webhook",
+        "paypalTitle": "PayPal",
+        "paypalHint": "Pembayaran PayPal untuk paket berharga USD atau EUR. Buat aplikasi REST di dasbor pengembang PayPal lalu tempel client id dan rahasianya. Toko menangkap pesanan setelah pelanggan menyetujuinya, hanya untuk harga yang tepat.",
+        "clientId": "Client id",
+        "clientSecret": "Rahasia klien"
       },
       "discounts": {
         "add": "Tambah kode diskon",
@@ -3095,7 +3099,8 @@
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
         "crypto": "Kripto",
-        "stripe": "Stripe"
+        "stripe": "Stripe",
+        "paypal": "PayPal"
       }
     },
     "sessions": {

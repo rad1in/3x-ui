@@ -15,6 +15,7 @@ const EMPTY: SalesConfigValues = {
   idpay: { enabled: false, apiKey: '', sandbox: false },
   crypto: { enabled: false, apiKey: '', ipnSecret: '', sandbox: false },
   stripe: { enabled: false, secretKey: '', webhookSecret: '' },
+  paypal: { enabled: false, clientId: '', clientSecret: '', sandbox: false },
   walletEnabled: false,
   referral: { enabled: false, bonusPercent: 10 },
   clearSecrets: [],
@@ -31,6 +32,7 @@ const SECRET_CRYPTO_KEY = 'crypto.apiKey';
 const SECRET_CRYPTO_IPN = 'crypto.ipnSecret';
 const SECRET_STRIPE_KEY = 'stripe.secretKey';
 const SECRET_STRIPE_WEBHOOK = 'stripe.webhookSecret';
+const SECRET_PAYPAL = 'paypal.clientSecret';
 
 export default function SalesSettingsTab() {
   const { t } = useTranslation();
@@ -251,6 +253,37 @@ export default function SalesSettingsTab() {
             autoComplete="off"
             placeholder={config?.hasStripeWebhookSecret ? t('pages.sales.config.secretKept') : ''}
           />
+        </FormField>
+
+        <h4>{t('pages.sales.config.paypalTitle')}</h4>
+        <FormField
+          label={t('pages.sales.config.gatewayEnabled')}
+          name="paypal.enabled"
+          valueProp="checked"
+          extra={t('pages.sales.config.paypalHint')}
+        >
+          <Switch />
+        </FormField>
+        <FormField label={t('pages.sales.config.clientId')} name="paypal.clientId">
+          <Input dir="ltr" autoComplete="off" />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.clientSecret')}
+          name="paypal.clientSecret"
+          extra={secretField(SECRET_PAYPAL, config?.hasPaypalClientSecret)}
+        >
+          <Input.Password
+            dir="ltr"
+            autoComplete="off"
+            placeholder={config?.hasPaypalClientSecret ? t('pages.sales.config.secretKept') : ''}
+          />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.sandbox')}
+          name="paypal.sandbox"
+          valueProp="checked"
+        >
+          <Switch />
         </FormField>
 
         <Button

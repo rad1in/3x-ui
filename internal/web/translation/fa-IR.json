@@ -3050,7 +3050,11 @@
         "stripeTitle": "Stripe",
         "stripeHint": "پرداخت با کارت و کیف پول از طریق Stripe Checkout برای پلن‌هایی که قیمتشان به دلار یا یورو است. نشانی فروشگاه را به همراه مسیر /shop/api/webhook/stripe در Stripe به‌عنوان وب‌هوک برای رویدادهای checkout.session.completed و checkout.session.async_payment_succeeded ثبت کنید. کلیدی که با sk_test_ شروع شود حالت آزمایشی است.",
         "secretKey": "کلید محرمانه",
-        "webhookSecret": "رمز امضای وب‌هوک"
+        "webhookSecret": "رمز امضای وب‌هوک",
+        "paypalTitle": "PayPal",
+        "paypalHint": "پرداخت با PayPal برای پلن‌هایی که قیمتشان به دلار یا یورو است. در پنل توسعه‌دهندگان PayPal یک اپ REST بسازید و شناسه و رمز آن را اینجا وارد کنید. فروشگاه پس از تأیید مشتری و فقط با مبلغ دقیق سفارش، پرداخت را برداشت می‌کند.",
+        "clientId": "شناسه کلاینت",
+        "clientSecret": "رمز کلاینت"
       },
       "discounts": {
         "add": "افزودن کد تخفیف",
@@ -3095,7 +3099,8 @@
         "zarinpal": "زرین‌پال",
         "idpay": "آی‌دی‌پی",
         "crypto": "ارز دیجیتال",
-        "stripe": "Stripe"
+        "stripe": "Stripe",
+        "paypal": "PayPal"
       }
     },
     "sessions": {

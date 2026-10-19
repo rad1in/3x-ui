@@ -47,6 +47,12 @@ export const salesConfigSchema = z.object({
     sandbox: z.boolean(),
   }),
   stripe: z.object({ enabled: z.boolean(), secretKey: z.string(), webhookSecret: z.string() }),
+  paypal: z.object({
+    enabled: z.boolean(),
+    clientId: z.string(),
+    clientSecret: z.string(),
+    sandbox: z.boolean(),
+  }),
   walletEnabled: z.boolean(),
   referral: z.object({
     enabled: z.boolean(),

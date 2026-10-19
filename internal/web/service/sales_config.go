@@ -49,6 +49,15 @@ type StripeConfig struct {
 	WebhookSecret string `json:"webhookSecret"`
 }
 
+// PayPalConfig is the PayPal REST app. ClientSecret is a secret; the client id
+// is public by design.
+type PayPalConfig struct {
+	Enabled      bool   `json:"enabled"`
+	ClientId     string `json:"clientId"`
+	ClientSecret string `json:"clientSecret"`
+	Sandbox      bool   `json:"sandbox"`
+}
+
 // ReferralConfig pays a customer a share of a friend's first purchase, into
 // their wallet, in the currency of the purchase.
 type ReferralConfig struct {
@@ -64,6 +73,7 @@ const (
 	secretCryptoIPN        = "crypto.ipnSecret"
 	secretStripeKey        = "stripe.secretKey"
 	secretStripeWebhook    = "stripe.webhookSecret"
+	secretPayPalSecret     = "paypal.clientSecret"
 )
 
 // SalesConfig is everything the operator configures about selling. It is one
@@ -77,6 +87,7 @@ type SalesConfig struct {
 	IDPay         IDPayConfig    `json:"idpay"`
 	Crypto        CryptoConfig   `json:"crypto"`
 	Stripe        StripeConfig   `json:"stripe"`
+	PayPal        PayPalConfig   `json:"paypal"`
 	WalletEnabled bool           `json:"walletEnabled"`
 	Referral      ReferralConfig `json:"referral"`
 	ClearSecrets  []string       `json:"clearSecrets,omitempty"`
@@ -92,6 +103,7 @@ type SalesConfigView struct {
 	HasCryptoIpnSecret     bool `json:"hasCryptoIpnSecret"`
 	HasStripeSecretKey     bool `json:"hasStripeSecretKey"`
 	HasStripeWebhookSecret bool `json:"hasStripeWebhookSecret"`
+	HasPaypalClientSecret  bool `json:"hasPaypalClientSecret"`
 }
 
 const salesConfigKey = "salesConfig"
@@ -110,6 +122,7 @@ func (c *SalesConfig) secrets() map[string]*string {
 		secretCryptoIPN:        &c.Crypto.IpnSecret,
 		secretStripeKey:        &c.Stripe.SecretKey,
 		secretStripeWebhook:    &c.Stripe.WebhookSecret,
+		secretPayPalSecret:     &c.PayPal.ClientSecret,
 	}
 }
 
@@ -155,6 +168,7 @@ func (s *SalesConfigService) GetView() (*SalesConfigView, error) {
 		HasCryptoIpnSecret:     cfg.Crypto.IpnSecret != "",
 		HasStripeSecretKey:     cfg.Stripe.SecretKey != "",
 		HasStripeWebhookSecret: cfg.Stripe.WebhookSecret != "",
+		HasPaypalClientSecret:  cfg.PayPal.ClientSecret != "",
 	}
 	for _, field := range cfg.secrets() {
 		*field = ""
@@ -215,7 +229,7 @@ func (c *SalesConfig) normalize() error {
 	if c.Referral.Enabled && (c.Referral.BonusPercent < 1 || c.Referral.BonusPercent > 100) {
 		return common.NewError("the referral bonus must be between 1 and 100 percent")
 	}
-	online := c.Zarinpal.Enabled || c.IDPay.Enabled || c.Crypto.Enabled || c.Stripe.Enabled
+	online := c.Zarinpal.Enabled || c.IDPay.Enabled || c.Crypto.Enabled || c.Stripe.Enabled || c.PayPal.Enabled
 	if online && !validBaseURL(c.PublicBaseURL) {
 		return common.NewError("an online payment method needs the public base URL (http or https)")
 	}
@@ -230,6 +244,10 @@ func (c *SalesConfig) normalize() error {
 	}
 	if c.Stripe.Enabled && c.Stripe.SecretKey == "" {
 		return common.NewError("stripe needs a secret key")
+	}
+	c.PayPal.ClientId = strings.TrimSpace(c.PayPal.ClientId)
+	if c.PayPal.Enabled && (c.PayPal.ClientId == "" || c.PayPal.ClientSecret == "") {
+		return common.NewError("paypal needs a client id and a client secret")
 	}
 	return nil
 }

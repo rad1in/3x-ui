@@ -178,7 +178,7 @@ func (a *ShopController) callback(c *gin.Context) {
 		claimsPaid = payment.ZarinpalCallbackPaid(c.Request.URL.Query())
 	case service.GatewayIDPay:
 		claimsPaid = payment.IDPayCallbackPaid(c.Request.Form)
-	case service.GatewayStripe:
+	case service.GatewayStripe, service.GatewayPayPal:
 		claimsPaid = payment.CheckoutReturnPaid(c.Request.URL.Query())
 	default:
 		a.deny(c)

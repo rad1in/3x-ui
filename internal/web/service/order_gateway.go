@@ -21,6 +21,7 @@ const (
 	GatewayIDPay    = payment.IDPay
 	GatewayCrypto   = payment.NOWPayments
 	GatewayStripe   = payment.Stripe
+	GatewayPayPal   = payment.PayPal
 )
 
 const (
@@ -50,22 +51,22 @@ func isVerifiable(gateway string) bool {
 	return slices.Contains(verifiableGateways, gateway)
 }
 
-var verifiableGateways = []string{GatewayZarinpal, GatewayIDPay, GatewayStripe}
+var verifiableGateways = []string{GatewayZarinpal, GatewayIDPay, GatewayStripe, GatewayPayPal}
 
 // usesPlanCurrency marks the gateways that charge in the plan's own currency
 // instead of converting to rials.
 func usesPlanCurrency(gateway string) bool {
-	return gateway == GatewayCrypto || gateway == GatewayStripe
+	return gateway == GatewayCrypto || gateway == GatewayStripe || gateway == GatewayPayPal
 }
 
 // gatewayAcceptsCurrency: the Iranian gateways take toman and rials, the
-// crypto invoice and Stripe are priced in dollars or euros.
+// crypto invoice, Stripe and PayPal are priced in dollars or euros.
 func gatewayAcceptsCurrency(gateway, currency string) bool {
 	switch gateway {
 	case GatewayZarinpal, GatewayIDPay:
 		_, ok := payment.RialAmount(0, currency)
 		return ok
-	case GatewayCrypto, GatewayStripe:
+	case GatewayCrypto, GatewayStripe, GatewayPayPal:
 		return currency == "USD" || currency == "EUR"
 	default:
 		return true
@@ -98,6 +99,8 @@ func (s *OrderService) newGateway(name string, cfg *SalesConfig) payment.Starter
 		return &payment.NOWPaymentsGateway{APIKey: cfg.Crypto.ApiKey, Sandbox: cfg.Crypto.Sandbox}
 	case GatewayStripe:
 		return &payment.StripeGateway{SecretKey: cfg.Stripe.SecretKey}
+	case GatewayPayPal:
+		return &payment.PayPalGateway{ClientID: cfg.PayPal.ClientId, ClientSecret: cfg.PayPal.ClientSecret, Sandbox: cfg.PayPal.Sandbox}
 	default:
 		return nil
 	}

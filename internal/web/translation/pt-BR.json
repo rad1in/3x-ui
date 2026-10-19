@@ -3050,7 +3050,11 @@
         "stripeTitle": "Stripe",
         "stripeHint": "Cartões e carteiras pelo Stripe Checkout, para planos com preço em USD ou EUR. Adicione o endereço da loja mais /shop/api/webhook/stripe como endpoint de webhook no Stripe para checkout.session.completed e checkout.session.async_payment_succeeded. Uma chave sk_test_ usa o modo de teste.",
         "secretKey": "Chave secreta",
-        "webhookSecret": "Segredo de assinatura do webhook"
+        "webhookSecret": "Segredo de assinatura do webhook",
+        "paypalTitle": "PayPal",
+        "paypalHint": "Pagamento com PayPal para planos com preço em USD ou EUR. Crie um app REST no painel de desenvolvedores do PayPal e cole o client id e o segredo. A loja captura o pedido depois que o cliente aprova, somente pelo preço exato.",
+        "clientId": "Client id",
+        "clientSecret": "Segredo do cliente"
       },
       "discounts": {
         "add": "Adicionar código de desconto",
@@ -3095,7 +3099,8 @@
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
         "crypto": "Cripto",
-        "stripe": "Stripe"
+        "stripe": "Stripe",
+        "paypal": "PayPal"
       }
     },
     "sessions": {

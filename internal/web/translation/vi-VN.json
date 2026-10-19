@@ -3050,7 +3050,11 @@
         "stripeTitle": "Stripe",
         "stripeHint": "Thanh toán thẻ và ví qua Stripe Checkout cho các gói định giá bằng USD hoặc EUR. Thêm địa chỉ cửa hàng cùng /shop/api/webhook/stripe làm endpoint webhook trong Stripe cho checkout.session.completed và checkout.session.async_payment_succeeded. Khóa sk_test_ chạy ở chế độ thử nghiệm.",
         "secretKey": "Khóa bí mật",
-        "webhookSecret": "Bí mật ký webhook"
+        "webhookSecret": "Bí mật ký webhook",
+        "paypalTitle": "PayPal",
+        "paypalHint": "Thanh toán PayPal cho các gói định giá bằng USD hoặc EUR. Tạo ứng dụng REST trong bảng điều khiển nhà phát triển PayPal rồi dán client id và mã bí mật. Cửa hàng thu tiền sau khi khách duyệt đơn, chỉ với đúng giá.",
+        "clientId": "Client id",
+        "clientSecret": "Mã bí mật của client"
       },
       "discounts": {
         "add": "Thêm mã giảm giá",
@@ -3095,7 +3099,8 @@
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
         "crypto": "Tiền mã hóa",
-        "stripe": "Stripe"
+        "stripe": "Stripe",
+        "paypal": "PayPal"
       }
     },
     "sessions": {

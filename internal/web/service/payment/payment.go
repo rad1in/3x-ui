@@ -87,7 +87,7 @@ type Gateway interface {
 }
 
 // CheckoutReturnPaid reports whether the customer came back from a hosted
-// checkout through its success URL; the cancel URL carries cancel=1. It is only
+// Stripe or PayPal checkout through its success URL; the cancel URL carries cancel=1. It is only
 // a hint: Verify decides.
 func CheckoutReturnPaid(query url.Values) bool { return query.Get("cancel") == "" }
 

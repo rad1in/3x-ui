@@ -116,6 +116,7 @@ func run(root, outDir string) error {
 				"IDPayConfig",
 				"CryptoConfig",
 				"StripeConfig",
+				"PayPalConfig",
 				"ReferralConfig",
 				"WalletView",
 				"WalletBalance",

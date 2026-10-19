@@ -135,6 +135,8 @@ func TestSalesConfigRejectsOnlineMethodsThatCannotWork(t *testing.T) {
 		{"zarinpal without merchant", SalesConfig{PublicBaseURL: "https://s.example.com", Zarinpal: ZarinpalConfig{Enabled: true}}, "merchant id"},
 		{"crypto without ipn secret", SalesConfig{PublicBaseURL: "https://s.example.com", Crypto: CryptoConfig{Enabled: true, ApiKey: "k"}}, "IPN secret"},
 		{"stripe without secret key", SalesConfig{PublicBaseURL: "https://s.example.com", Stripe: StripeConfig{Enabled: true}}, "secret key"},
+		{"paypal without client secret", SalesConfig{PublicBaseURL: "https://s.example.com", PayPal: PayPalConfig{Enabled: true, ClientId: "cid"}}, "client secret"},
+		{"paypal without client id", SalesConfig{PublicBaseURL: "https://s.example.com", PayPal: PayPalConfig{Enabled: true, ClientSecret: "s"}}, "client id"},
 		{"idpay without key", SalesConfig{PublicBaseURL: "https://s.example.com", IDPay: IDPayConfig{Enabled: true}}, "API key"},
 	}
 	for _, tc := range cases {
@@ -194,5 +196,17 @@ func TestSalesConfigStripeSecretsAreHiddenAndRotateIndependently(t *testing.T) {
 	view, _ := svc.GetView()
 	if view.Stripe.SecretKey != "" || view.Stripe.WebhookSecret != "" || !view.HasStripeSecretKey || !view.HasStripeWebhookSecret {
 		t.Fatalf("view = %+v, want blank secrets with both Has flags", view)
+	}
+}
+
+func TestSalesConfigPayPalSecretIsHiddenButTheClientIdIsServed(t *testing.T) {
+	setupBulkDB(t)
+	svc := &SalesConfigService{}
+	if err := svc.Save(&SalesConfig{PublicBaseURL: "https://s.example.com", PayPal: PayPalConfig{Enabled: true, ClientId: " cid ", ClientSecret: "sec", Sandbox: true}}); err != nil {
+		t.Fatalf("Save: %v", err)
+	}
+	view, _ := svc.GetView()
+	if view.PayPal.ClientId != "cid" || view.PayPal.ClientSecret != "" || !view.HasPaypalClientSecret || !view.PayPal.Sandbox {
+		t.Fatalf("view = %+v, want the trimmed client id, no secret and the Has flag", view.PayPal)
 	}
 }
