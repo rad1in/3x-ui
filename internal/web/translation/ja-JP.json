@@ -3019,6 +3019,7 @@
         "saved": "販売設定を保存しました",
         "publicEnabled": "公開購入ページ",
         "publicEnabledHint": "オンにすると、顧客はログインなしで購入できます。初期設定はオフです。",
+        "shopLink": "ショップのリンク:",
         "publicBaseUrl": "公開ベース URL",
         "publicBaseUrlHint": "顧客がショップにアクセスするアドレス。決済ゲートウェイはここへ顧客を戻します。",
         "cardTitle": "カード間振込",

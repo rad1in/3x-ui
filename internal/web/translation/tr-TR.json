@@ -3019,6 +3019,7 @@
         "saved": "Satış ayarları kaydedildi",
         "publicEnabled": "Herkese açık satın alma sayfası",
         "publicEnabledHint": "Açıkken müşteriler giriş yapmadan satın alabilir. Varsayılan olarak kapalıdır.",
+        "shopLink": "Mağaza bağlantınız:",
         "publicBaseUrl": "Herkese açık temel URL",
         "publicBaseUrlHint": "Müşterilerin mağazaya ulaştığı adres; ödeme geçitleri müşterileri buraya geri yönlendirir.",
         "cardTitle": "Karttan karta ödeme",

@@ -3019,6 +3019,7 @@
         "saved": "Đã lưu cài đặt bán hàng",
         "publicEnabled": "Trang mua hàng công khai",
         "publicEnabledHint": "Khi bật, khách có thể mua mà không cần đăng nhập. Mặc định tắt.",
+        "shopLink": "Liên kết cửa hàng của bạn:",
         "publicBaseUrl": "URL công khai",
         "publicBaseUrlHint": "Địa chỉ khách truy cập cửa hàng; cổng thanh toán đưa khách quay lại địa chỉ này.",
         "cardTitle": "Thanh toán chuyển khoản thẻ",

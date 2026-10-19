@@ -3019,6 +3019,7 @@
         "saved": "销售设置已保存",
         "publicEnabled": "公开购买页面",
         "publicEnabledHint": "开启后客户无需登录即可购买，默认关闭。",
+        "shopLink": "您的商店链接:",
         "publicBaseUrl": "公开基础网址",
         "publicBaseUrlHint": "客户访问商店的地址，支付网关会把客户跳转回该地址。",
         "cardTitle": "银行卡转账支付",

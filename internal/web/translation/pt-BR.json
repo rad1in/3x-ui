@@ -3019,6 +3019,7 @@
         "saved": "Configurações de vendas salvas",
         "publicEnabled": "Página de compra pública",
         "publicEnabledHint": "Quando ativada, os clientes compram sem fazer login. Desativada por padrão.",
+        "shopLink": "Link da sua loja:",
         "publicBaseUrl": "URL pública base",
         "publicBaseUrlHint": "O endereço pelo qual os clientes acessam a loja; os gateways de pagamento os trazem de volta a ele.",
         "cardTitle": "Pagamento cartão a cartão",

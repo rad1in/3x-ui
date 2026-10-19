@@ -3019,6 +3019,7 @@
         "saved": "銷售設定已儲存",
         "publicEnabled": "公開購買頁面",
         "publicEnabledHint": "開啟後客戶無需登入即可購買，預設關閉。",
+        "shopLink": "您的商店連結:",
         "publicBaseUrl": "公開基礎網址",
         "publicBaseUrlHint": "客戶造訪商店的位址，支付閘道會將客戶導回該位址。",
         "cardTitle": "銀行卡轉帳付款",
