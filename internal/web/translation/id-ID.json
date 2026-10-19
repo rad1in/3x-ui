@@ -3019,6 +3019,7 @@
         "saved": "Pengaturan penjualan disimpan",
         "publicEnabled": "Halaman pembelian publik",
         "publicEnabledHint": "Jika aktif, pelanggan dapat membeli tanpa login. Nonaktif secara bawaan.",
+        "shopLink": "Tautan toko Anda:",
         "publicBaseUrl": "URL dasar publik",
         "publicBaseUrlHint": "Alamat tempat pelanggan membuka toko; gerbang pembayaran mengembalikan pelanggan ke sana.",
         "cardTitle": "Pembayaran kartu ke kartu",

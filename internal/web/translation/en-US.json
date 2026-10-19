@@ -3019,6 +3019,7 @@
         "saved": "Sales settings saved",
         "publicEnabled": "Public purchase page",
         "publicEnabledHint": "When on, customers can buy without logging in. Off by default.",
+        "shopLink": "Your shop link:",
         "publicBaseUrl": "Public base URL",
         "publicBaseUrlHint": "The address customers reach the shop at; payment gateways send customers back to it.",
         "cardTitle": "Card-to-card payment",

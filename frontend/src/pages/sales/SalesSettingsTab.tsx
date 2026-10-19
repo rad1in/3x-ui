@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Checkbox, Form, Input, InputNumber, Switch } from 'antd';
+import { Button, Checkbox, Form, Input, InputNumber, Switch, Typography } from 'antd';
 import { FormProvider, useWatch } from 'react-hook-form';
 
 import { useSalesConfig } from '@/api/queries/useSales';
@@ -19,6 +19,11 @@ const EMPTY: SalesConfigValues = {
   clearSecrets: [],
 };
 
+function shopLink(baseUrl: string): string {
+  const origin = baseUrl.trim().replace(/\/+$/, '') || window.location.origin;
+  return `${origin}/shop/`;
+}
+
 const SECRET_MERCHANT = 'zarinpal.merchantId';
 const SECRET_IDPAY = 'idpay.apiKey';
 const SECRET_CRYPTO_KEY = 'crypto.apiKey';
@@ -29,6 +34,8 @@ export default function SalesSettingsTab() {
   const { config, save, saving } = useSalesConfig();
   const methods = useZodForm<SalesConfigValues>(salesConfigSchema, { defaultValues: EMPTY });
   const clearSecrets = useWatch({ control: methods.control, name: 'clearSecrets' }) ?? [];
+
+  const publicBaseUrl = useWatch({ control: methods.control, name: 'publicBaseUrl' }) ?? '';
 
   useEffect(() => {
     if (config) methods.reset({ ...config, clearSecrets: [] });
@@ -57,7 +64,16 @@ export default function SalesSettingsTab() {
           label={t('pages.sales.config.publicEnabled')}
           name="publicEnabled"
           valueProp="checked"
-          extra={t('pages.sales.config.publicEnabledHint')}
+          extra={
+            <>
+              {t('pages.sales.config.publicEnabledHint')}
+              <br />
+              {t('pages.sales.config.shopLink')}{' '}
+              <Typography.Text copyable dir="ltr">
+                {shopLink(publicBaseUrl)}
+              </Typography.Text>
+            </>
+          }
         >
           <Switch />
         </FormField>

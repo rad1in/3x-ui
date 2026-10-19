@@ -59,4 +59,9 @@ describe('SalesSettingsTab secrets', () => {
       'zarinpal.merchantId',
     ]);
   });
+
+  it('shows the link customers open to buy, built from the public base URL', async () => {
+    await renderLoaded();
+    expect(screen.getByText('https://shop.example.com/shop/')).toBeTruthy();
+  });
 });

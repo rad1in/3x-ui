@@ -3019,6 +3019,7 @@
         "saved": "Ajustes de ventas guardados",
         "publicEnabled": "Página de compra pública",
         "publicEnabledHint": "Si se activa, los clientes pueden comprar sin iniciar sesión. Desactivada por defecto.",
+        "shopLink": "Enlace de tu tienda:",
         "publicBaseUrl": "URL pública base",
         "publicBaseUrlHint": "La dirección con la que los clientes llegan a la tienda; las pasarelas de pago les devuelven a ella.",
         "cardTitle": "Pago de tarjeta a tarjeta",
