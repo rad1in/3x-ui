@@ -16,7 +16,6 @@ import (
 	"strings"
 	"sync"
 	"sync/atomic"
-	"syscall"
 	"time"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/config"
@@ -286,7 +285,7 @@ func (m *Manager) kill(s session) {
 	if !isPPPD(s.pid) {
 		return
 	}
-	if err := syscall.Kill(s.pid, syscall.SIGTERM); err != nil {
+	if err := terminate(s.pid); err != nil {
 		logger.Debug("l2tp: end link", s.ifname, err)
 	}
 }
