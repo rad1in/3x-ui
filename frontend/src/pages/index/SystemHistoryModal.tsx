@@ -77,7 +77,7 @@ const METRICS: MetricDef[] = [
     icon: <GlobalOutlined />,
     valueMax: null,
     unit: 'B/s',
-    stroke: '#1890ff',
+    stroke: '#5b4fe0',
     key2: 'netDown',
     stroke2: '#13c2c2',
     name1: 'Up',

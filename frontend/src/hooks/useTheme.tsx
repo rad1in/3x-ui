@@ -36,56 +36,75 @@ const initialDark = readBool(STORAGE_DARK, true);
 const initialUltra = readBool(STORAGE_ULTRA, false);
 applyDom(initialDark, initialUltra);
 
+const FONT_FAMILY =
+  "ui-sans-serif, system-ui, -apple-system, 'Segoe UI Variable', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Vazirmatn', 'Noto Naskh Arabic', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'";
 const BASE_TOKENS = {
-  borderRadius: 8,
-  borderRadiusLG: 10,
-  borderRadiusSM: 6,
+  fontFamily: FONT_FAMILY,
+  borderRadius: 10,
+  borderRadiusLG: 16,
+  borderRadiusSM: 7,
   fontWeightStrong: 600,
-  controlHeight: 34,
+  controlHeight: 36,
+  colorLink: '#5b4fe0',
 };
 const DARK_TOKENS = {
   ...BASE_TOKENS,
-  colorBgBase: '#0b0b0d',
-  colorBgLayout: '#0b0b0d',
-  colorBgContainer: '#131316',
-  colorBgElevated: '#1b1b1f',
+  colorPrimary: '#8a80f4',
+  colorInfo: '#8a80f4',
+  colorLink: '#a8a1f8',
+  colorBgBase: '#0d0c14',
+  colorBgLayout: '#0d0c14',
+  colorBgContainer: '#15141e',
+  colorBgElevated: '#1d1c28',
   colorBorder: 'rgba(255, 255, 255, 0.12)',
   colorBorderSecondary: 'rgba(255, 255, 255, 0.07)',
 };
 const ULTRA_DARK_TOKENS = {
   ...BASE_TOKENS,
+  colorPrimary: '#8a80f4',
+  colorInfo: '#8a80f4',
+  colorLink: '#a8a1f8',
   colorBgBase: '#000',
   colorBgLayout: '#000',
-  colorBgContainer: '#101013',
-  colorBgElevated: '#1a1a1e',
+  colorBgContainer: '#0f0e16',
+  colorBgElevated: '#191822',
 };
 const DARK_LAYOUT_TOKENS = {
-  bodyBg: '#0b0b0d',
-  headerBg: '#0b0b0d',
+  bodyBg: '#0d0c14',
+  headerBg: '#0d0c14',
   headerColor: '#ffffff',
-  footerBg: '#0b0b0d',
-  siderBg: '#0b0b0d',
-  triggerBg: '#131316',
+  footerBg: '#0d0c14',
+  siderBg: '#100f19',
+  triggerBg: '#15141e',
   triggerColor: '#ffffff',
 };
 const ULTRA_DARK_LAYOUT_TOKENS = {
   bodyBg: '#000',
-  headerBg: '#050507',
+  headerBg: '#050509',
   headerColor: '#ffffff',
   footerBg: '#000',
-  siderBg: '#050507',
-  triggerBg: '#1a1a1e',
+  siderBg: '#050509',
+  triggerBg: '#191822',
   triggerColor: '#ffffff',
 };
+const MENU_SHAPE_TOKENS = {
+  itemBorderRadius: 10,
+};
 const DARK_MENU_TOKENS = {
-  darkItemBg: '#0b0b0d',
-  darkSubMenuItemBg: '#0b0b0d',
-  darkPopupBg: '#131316',
+  darkItemBg: '#100f19',
+  darkSubMenuItemBg: '#100f19',
+  darkPopupBg: '#15141e',
+  ...MENU_SHAPE_TOKENS,
+  darkItemSelectedBg: 'rgba(138, 128, 244, 0.18)',
+  darkItemSelectedColor: '#c4bffb',
 };
 const ULTRA_DARK_MENU_TOKENS = {
-  darkItemBg: '#050507',
+  darkItemBg: '#050509',
   darkSubMenuItemBg: '#000',
-  darkPopupBg: '#101013',
+  darkPopupBg: '#0f0e16',
+  ...MENU_SHAPE_TOKENS,
+  darkItemSelectedBg: 'rgba(138, 128, 244, 0.18)',
+  darkItemSelectedColor: '#c4bffb',
 };
 const DARK_CARD_TOKENS = {
   colorBorderSecondary: 'rgba(255, 255, 255, 0.07)',
@@ -99,9 +118,11 @@ const STATISTIC_TOKENS = {
 };
 const LIGHT_CONTRAST_TOKENS = {
   ...BASE_TOKENS,
-  colorBgLayout: '#f6f6f7',
-  colorBorder: '#dcdce0',
-  colorBorderSecondary: '#e8e8eb',
+  colorPrimary: '#5b4fe0',
+  colorInfo: '#5b4fe0',
+  colorBgLayout: '#f4f3fa',
+  colorBorder: '#d9d7e8',
+  colorBorderSecondary: '#e7e5f1',
   colorTextDescription: 'rgba(0, 0, 0, 0.58)',
   colorTextTertiary: 'rgba(0, 0, 0, 0.58)',
   colorTextPlaceholder: '#767676',
@@ -110,9 +131,14 @@ const LIGHT_CONTRAST_TOKENS = {
   colorSuccessText: '#237804',
 };
 const LIGHT_BUTTON_TOKENS = {
-  colorPrimary: '#0958d9',
-  colorPrimaryHover: '#2468e5',
-  colorPrimaryActive: '#073ea8',
+  colorPrimary: '#4f43d4',
+  colorPrimaryHover: '#6459e6',
+  colorPrimaryActive: '#4338ca',
+};
+const LIGHT_MENU_TOKENS = {
+  ...MENU_SHAPE_TOKENS,
+  itemSelectedBg: 'rgba(91, 79, 224, 0.1)',
+  itemSelectedColor: '#4338ca',
 };
 
 // hashed:false drops the `:where(.css-<hash>)` wrapper antd puts around every
@@ -139,6 +165,7 @@ export function buildAntdThemeConfig(isDark: boolean, isUltra: boolean): ThemeCo
       token: { ...LIGHT_CONTRAST_TOKENS, ...brandTokens },
       components: {
         Statistic: STATISTIC_TOKENS,
+        Menu: LIGHT_MENU_TOKENS,
         // The stock-blue contrast fix would paint over a brand colour.
         Button: brandColor ? {} : LIGHT_BUTTON_TOKENS,
       },
