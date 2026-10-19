@@ -1486,6 +1486,15 @@ export const PanelUpdateStatusSchema = z.object({
 });
 export type PanelUpdateStatus = z.infer<typeof PanelUpdateStatusSchema>;
 
+export const PasskeySchema = z.object({
+  createdAt: z.number().int(),
+  id: z.number().int(),
+  lastUsedAt: z.number().int(),
+  name: z.string(),
+  userId: z.number().int(),
+});
+export type Passkey = z.infer<typeof PasskeySchema>;
+
 export const PeerActivitySchema = z.object({
   allowedIPs: z.string(),
   down: z.number().int(),
@@ -1625,6 +1634,8 @@ export const SecurityConfigSchema = z.object({
   captchaEnable: z.boolean(),
   clearBackupPassphrase: z.boolean().optional(),
   newLocationAlert: z.boolean(),
+  passkeyLoginEnable: z.boolean(),
+  passkeySecondFactor: z.boolean(),
   rotateSubSigningKey: z.boolean().optional(),
   subSigningEnable: z.boolean(),
   subSigningKey: z.string(),
@@ -1638,6 +1649,8 @@ export const SecurityConfigViewSchema = z.object({
   clearBackupPassphrase: z.boolean().optional(),
   hasBackupPassphrase: z.boolean(),
   newLocationAlert: z.boolean(),
+  passkeyLoginEnable: z.boolean(),
+  passkeySecondFactor: z.boolean(),
   rotateSubSigningKey: z.boolean().optional(),
   subSigningEnable: z.boolean(),
   subSigningKey: z.string(),

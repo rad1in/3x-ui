@@ -174,6 +174,7 @@
       "tgCode": "Código do Telegram",
       "tgCodePlaceholder": "Código de 6 dígitos do Telegram",
       "tgCodeMessage": "Seu código de login do painel:",
+      "passkeyButton": "Entrar com uma chave de acesso",
       "toasts": {
         "invalidFormData": "O formato dos dados de entrada é inválido.",
         "emptyUsername": "Nome de usuário é obrigatório",
@@ -184,6 +185,10 @@
         "tgCodeSent": "Um código de login foi enviado ao seu Telegram.",
         "tgCodeWait": "Um código foi enviado há instantes, aguarde antes de pedir outro.",
         "tgCodeWrong": "O código do Telegram está errado ou expirou.",
+        "passkeyDisabled": "O login com chave de acesso não está ativado.",
+        "passkeyFailed": "Não foi possível verificar a chave de acesso.",
+        "passkeyRequired": "Confirme com sua chave de acesso.",
+        "passkeyNeedsTwoFactor": "Informe o código de dois fatores e use a chave de acesso novamente.",
         "maintenance": "O painel está em manutenção. No momento, apenas o proprietário pode entrar."
       }
     },
@@ -1734,7 +1739,29 @@
           "subSigningRotate": "Girar a chave de assinatura (invalida todos os links emitidos)",
           "tgLogin": "Código de login pelo Telegram",
           "tgLoginDesc": "Pede aos administradores com um chat do Telegram vinculado um código de uso único, enviado pelo bot, após a senha. É ignorado enquanto o bot do Telegram não estiver rodando, para que um bot com defeito nunca o bloqueie. Administradores sem chat vinculado não são solicitados.",
+          "passkeyLogin": "Login sem senha com chave de acesso",
+          "passkeyLoginDesc": "Permite que administradores entrem com uma chave de acesso que os verifica por PIN ou biometria, no lugar da senha. O proprietário ainda recebe o pedido do código de dois fatores quando ele está ativado.",
+          "passkeySecondFactor": "Chave de acesso como segundo fator",
+          "passkeySecondFactorDesc": "Pede aos administradores que têm uma chave de acesso cadastrada que a confirmem após a senha. Não há alternativa, então garanta que cada um tenha uma chave funcionando.",
           "saved": "Configurações de segurança salvas"
+        },
+        "passkeys": {
+          "title": "Chaves de acesso",
+          "intro": "As chaves de acesso permitem entrar com seu dispositivo, uma chave de segurança ou um gerenciador de senhas. Cadastrar uma pede sua senha atual.",
+          "name": "Nome",
+          "namePlaceholder": "ex.: YubiKey, notebook",
+          "add": "Adicionar uma chave de acesso",
+          "created": "Adicionada",
+          "lastUsed": "Último uso",
+          "never": "Nunca",
+          "delete": "Excluir",
+          "deleteConfirm": "Remover esta chave de acesso?",
+          "empty": "Nenhuma chave de acesso cadastrada.",
+          "passwordTitle": "Confirme sua senha",
+          "unsupported": "Este navegador não oferece suporte a chaves de acesso.",
+          "wrongPassword": "A senha está incorreta.",
+          "added": "Chave de acesso adicionada",
+          "removed": "Chave de acesso removida"
         },
         "show": "Mostrar",
         "hide": "Ocultar",

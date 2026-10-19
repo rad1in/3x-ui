@@ -174,6 +174,7 @@
       "tgCode": "Código de Telegram",
       "tgCodePlaceholder": "Código de 6 dígitos de Telegram",
       "tgCodeMessage": "Tu código de acceso al panel:",
+      "passkeyButton": "Iniciar sesión con una llave de acceso",
       "toasts": {
         "invalidFormData": "El formato de los datos de entrada es inválido.",
         "emptyUsername": "Por favor ingresa el nombre de usuario.",
@@ -184,6 +185,10 @@
         "tgCodeSent": "Se envió un código de acceso a tu Telegram.",
         "tgCodeWait": "Se envió un código hace un momento, espera antes de pedir otro.",
         "tgCodeWrong": "El código de Telegram es incorrecto o ha caducado.",
+        "passkeyDisabled": "El inicio de sesión con llave de acceso no está activado.",
+        "passkeyFailed": "No se pudo verificar la llave de acceso.",
+        "passkeyRequired": "Confirma con tu llave de acceso.",
+        "passkeyNeedsTwoFactor": "Introduce el código de dos factores y vuelve a usar la llave de acceso.",
         "maintenance": "El panel está en mantenimiento. Ahora solo el propietario puede iniciar sesión."
       }
     },
@@ -1734,7 +1739,29 @@
           "subSigningRotate": "Rotar la clave de firma (invalida todos los enlaces emitidos)",
           "tgLogin": "Código de acceso por Telegram",
           "tgLoginDesc": "Pide a los administradores con un chat de Telegram vinculado un código de un solo uso, enviado por el bot, tras la contraseña. Se omite mientras el bot no esté en marcha, para que un bot averiado nunca te deje fuera. Los administradores sin chat vinculado no lo reciben.",
+          "passkeyLogin": "Inicio de sesión sin contraseña con llave de acceso",
+          "passkeyLoginDesc": "Permite a los administradores entrar con una llave de acceso que los verifica con PIN o biometría, en lugar de la contraseña. Al propietario se le sigue pidiendo el código de dos factores si está activado.",
+          "passkeySecondFactor": "Llave de acceso como segundo factor",
+          "passkeySecondFactorDesc": "Pide a los administradores que tengan una llave de acceso registrada que la confirmen tras la contraseña. No hay alternativa, así que asegúrate de que cada uno tenga una llave que funcione.",
           "saved": "Ajustes de seguridad guardados"
+        },
+        "passkeys": {
+          "title": "Llaves de acceso",
+          "intro": "Las llaves de acceso permiten iniciar sesión con tu dispositivo, una llave de seguridad o un gestor de contraseñas. Para registrar una se pide tu contraseña actual.",
+          "name": "Nombre",
+          "namePlaceholder": "p. ej. YubiKey, portátil",
+          "add": "Añadir una llave de acceso",
+          "created": "Añadida",
+          "lastUsed": "Último uso",
+          "never": "Nunca",
+          "delete": "Eliminar",
+          "deleteConfirm": "¿Eliminar esta llave de acceso?",
+          "empty": "No hay llaves de acceso registradas.",
+          "passwordTitle": "Confirma tu contraseña",
+          "unsupported": "Este navegador no admite llaves de acceso.",
+          "wrongPassword": "La contraseña es incorrecta.",
+          "added": "Llave de acceso añadida",
+          "removed": "Llave de acceso eliminada"
         },
         "show": "Mostrar",
         "hide": "Ocultar",

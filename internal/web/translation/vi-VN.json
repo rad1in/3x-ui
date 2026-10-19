@@ -174,6 +174,7 @@
       "tgCode": "Mã Telegram",
       "tgCodePlaceholder": "Mã 6 chữ số từ Telegram",
       "tgCodeMessage": "Mã đăng nhập bảng điều khiển của bạn:",
+      "passkeyButton": "Đăng nhập bằng passkey",
       "toasts": {
         "invalidFormData": "Dạng dữ liệu nhập không hợp lệ.",
         "emptyUsername": "Vui lòng nhập tên người dùng.",
@@ -184,6 +185,10 @@
         "tgCodeSent": "Mã đăng nhập đã được gửi tới Telegram của bạn.",
         "tgCodeWait": "Mã vừa được gửi, hãy chờ trước khi yêu cầu lại.",
         "tgCodeWrong": "Mã Telegram sai hoặc đã hết hạn.",
+        "passkeyDisabled": "Đăng nhập bằng passkey chưa được bật.",
+        "passkeyFailed": "Không thể xác minh passkey.",
+        "passkeyRequired": "Hãy xác nhận bằng passkey của bạn.",
+        "passkeyNeedsTwoFactor": "Nhập mã xác thực hai yếu tố, rồi dùng lại passkey.",
         "maintenance": "Bảng điều khiển đang bảo trì. Hiện chỉ chủ sở hữu mới có thể đăng nhập."
       }
     },
@@ -1734,7 +1739,29 @@
           "subSigningRotate": "Xoay khóa ký (vô hiệu mọi liên kết đã cấp)",
           "tgLogin": "Mã đăng nhập Telegram",
           "tgLoginDesc": "Yêu cầu quản trị viên có cuộc trò chuyện Telegram được liên kết nhập mã dùng một lần do bot gửi, sau mật khẩu. Bỏ qua khi bot Telegram không chạy để bot hỏng không khóa bạn. Quản trị viên chưa liên kết thì không bị hỏi.",
+          "passkeyLogin": "Đăng nhập không mật khẩu bằng passkey",
+          "passkeyLoginDesc": "Cho phép quản trị viên đăng nhập bằng passkey xác minh họ qua mã PIN hoặc sinh trắc học thay cho mật khẩu. Chủ sở hữu vẫn bị yêu cầu mã xác thực hai yếu tố nếu đã bật.",
+          "passkeySecondFactor": "Passkey làm yếu tố thứ hai",
+          "passkeySecondFactorDesc": "Yêu cầu quản trị viên đã đăng ký passkey xác nhận nó sau mật khẩu. Không có phương án dự phòng, nên hãy chắc chắn mỗi quản trị viên đó có passkey dùng được.",
           "saved": "Đã lưu cài đặt bảo mật"
+        },
+        "passkeys": {
+          "title": "Passkey",
+          "intro": "Passkey cho phép bạn đăng nhập bằng thiết bị, khóa bảo mật hoặc trình quản lý mật khẩu. Khi đăng ký sẽ hỏi mật khẩu hiện tại của bạn.",
+          "name": "Tên",
+          "namePlaceholder": "ví dụ: YubiKey, laptop",
+          "add": "Thêm passkey",
+          "created": "Đã thêm",
+          "lastUsed": "Lần dùng cuối",
+          "never": "Chưa bao giờ",
+          "delete": "Xóa",
+          "deleteConfirm": "Gỡ passkey này?",
+          "empty": "Chưa đăng ký passkey nào.",
+          "passwordTitle": "Xác nhận mật khẩu của bạn",
+          "unsupported": "Trình duyệt này không hỗ trợ passkey.",
+          "wrongPassword": "Mật khẩu không đúng.",
+          "added": "Đã thêm passkey",
+          "removed": "Đã gỡ passkey"
         },
         "show": "Hiển thị",
         "hide": "Ẩn",

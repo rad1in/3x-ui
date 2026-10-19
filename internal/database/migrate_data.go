@@ -80,6 +80,7 @@ func migrationModels() []any {
 		&model.SharedAccountFlag{},
 		&model.CleanIPResult{},
 		&model.InboundRotation{},
+		&model.Passkey{},
 	}
 }
 

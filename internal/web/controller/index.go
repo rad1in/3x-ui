@@ -27,6 +27,9 @@ type LoginForm struct {
 	CaptchaId     string `json:"captchaId" form:"captchaId"`
 	CaptchaAnswer string `json:"captchaAnswer" form:"captchaAnswer"`
 	TgCode        string `json:"tgCode" form:"tgCode"`
+	// PasskeyChallengeId and PasskeyCredential answer the second-factor passkey prompt.
+	PasskeyChallengeId string `json:"passkeyChallengeId" form:"passkeyChallengeId"`
+	PasskeyCredential  string `json:"passkeyCredential" form:"passkeyCredential"`
 }
 
 // telegramLogin is how the login step reaches the bot, replaceable in tests.
@@ -53,11 +56,12 @@ type IndexController struct {
 	sessionService panel.SessionService
 	panelService   panel.PanelService
 	tgbot          tgbot.Tgbot
+	passkeys       *service.PasskeyService
 }
 
 // NewIndexController creates a new IndexController and initializes its routes.
 func NewIndexController(g *gin.RouterGroup) *IndexController {
-	a := &IndexController{}
+	a := &IndexController{passkeys: loginPasskeys}
 	a.tgLogin = telegramLogin{running: a.tgbot.IsRunning, send: func(chatId int64, text string) { a.tgbot.SendMsgToTgbot(chatId, text) }}
 	a.initRouter(g)
 	return a
@@ -74,6 +78,9 @@ func (a *IndexController) initRouter(g *gin.RouterGroup) {
 	g.POST("/login", middleware.CSRFMiddleware(), a.login)
 	g.POST("/logout", middleware.CSRFMiddleware(), a.logout)
 	g.POST("/getTwoFactorEnable", middleware.CSRFMiddleware(), a.getTwoFactorEnable)
+	g.POST("/passkey/login/status", middleware.CSRFMiddleware(), a.passkeyLoginStatus)
+	g.POST("/passkey/login/begin", middleware.CSRFMiddleware(), a.passkeyLoginBegin)
+	g.POST("/passkey/login/finish", middleware.CSRFMiddleware(), a.passkeyLoginFinish)
 }
 
 // sponsors is public so the login page can render its slot; failures stay silent.
@@ -143,7 +150,8 @@ func (a *IndexController) login(c *gin.Context) {
 		return
 	}
 
-	if cfg, err := a.security.Get(); err != nil || cfg.CaptchaEnable {
+	// The captcha is spent by the first request; the passkey retry carries a ceremony only a solved one could open.
+	if cfg, err := a.security.Get(); err != nil || (cfg.CaptchaEnable && !a.passkeys.HasPendingFor(form.PasskeyChallengeId, form.Username)) {
 		if err != nil || !loginCaptcha.Verify(form.CaptchaId, form.CaptchaAnswer) {
 			pureJsonMsg(c, http.StatusOK, false, I18nWeb(c, "pages.login.toasts.wrongCaptcha"))
 			return
@@ -178,12 +186,20 @@ func (a *IndexController) login(c *gin.Context) {
 		return
 	}
 
+	if !a.passPasskeyStep(c, user, form, remoteIP) {
+		return
+	}
 	if !a.passTelegramStep(c, user, form.TgCode, remoteIP) {
 		return
 	}
 
-	defaultLoginLimiter.registerSuccess(remoteIP, form.Username)
-	logger.Infof("logged in successfully: username=%q, IP=%q", form.Username, remoteIP)
+	a.establishSession(c, user, form.Username, remoteIP, safeUser, timeStr)
+}
+
+// establishSession records a successful login and signs the browser in.
+func (a *IndexController) establishSession(c *gin.Context, user *model.User, username, remoteIP, safeUser, timeStr string) {
+	defaultLoginLimiter.registerSuccess(remoteIP, username)
+	logger.Infof("logged in successfully: username=%q, IP=%q", username, remoteIP)
 	a.tgbot.UserLoginNotify(tgbot.LoginAttempt{
 		Username: safeUser,
 		IP:       remoteIP,

@@ -6192,6 +6192,41 @@ export const SCHEMAS: Record<string, unknown> = {
     ],
     "type": "object"
   },
+  "Passkey": {
+    "description": "Passkey is one WebAuthn credential an admin registered. The public key is the\nCOSE_Key as the authenticator sent it; CredentialId is unpadded base64url.",
+    "properties": {
+      "createdAt": {
+        "example": 1760684400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "id": {
+        "example": 1,
+        "type": "integer"
+      },
+      "lastUsedAt": {
+        "example": 1760684400000,
+        "format": "int64",
+        "type": "integer"
+      },
+      "name": {
+        "example": "YubiKey",
+        "type": "string"
+      },
+      "userId": {
+        "example": 1,
+        "type": "integer"
+      }
+    },
+    "required": [
+      "createdAt",
+      "id",
+      "lastUsedAt",
+      "name",
+      "userId"
+    ],
+    "type": "object"
+  },
   "PeerActivity": {
     "description": "PeerActivity is one peer's live embedded-Device-reported state, the\ncounterpart of an Xray access-log entry: a tunnel logs no requests, only\nhandshakes and bytes.",
     "properties": {
@@ -6750,6 +6785,13 @@ export const SCHEMAS: Record<string, unknown> = {
       "newLocationAlert": {
         "type": "boolean"
       },
+      "passkeyLoginEnable": {
+        "description": "PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;\nPasskeySecondFactor asks admins who have passkeys for one after the password.",
+        "type": "boolean"
+      },
+      "passkeySecondFactor": {
+        "type": "boolean"
+      },
       "rotateSubSigningKey": {
         "type": "boolean"
       },
@@ -6768,6 +6810,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "backupPassphrase",
       "captchaEnable",
       "newLocationAlert",
+      "passkeyLoginEnable",
+      "passkeySecondFactor",
       "subSigningEnable",
       "subSigningKey",
       "tgLoginEnable"
@@ -6792,6 +6836,13 @@ export const SCHEMAS: Record<string, unknown> = {
       "newLocationAlert": {
         "type": "boolean"
       },
+      "passkeyLoginEnable": {
+        "description": "PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;\nPasskeySecondFactor asks admins who have passkeys for one after the password.",
+        "type": "boolean"
+      },
+      "passkeySecondFactor": {
+        "type": "boolean"
+      },
       "rotateSubSigningKey": {
         "type": "boolean"
       },
@@ -6811,6 +6862,8 @@ export const SCHEMAS: Record<string, unknown> = {
       "captchaEnable",
       "hasBackupPassphrase",
       "newLocationAlert",
+      "passkeyLoginEnable",
+      "passkeySecondFactor",
       "subSigningEnable",
       "subSigningKey",
       "tgLoginEnable"

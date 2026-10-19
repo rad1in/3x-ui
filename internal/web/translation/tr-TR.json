@@ -174,6 +174,7 @@
       "tgCode": "Telegram kodu",
       "tgCodePlaceholder": "Telegram'dan 6 haneli kod",
       "tgCodeMessage": "Panel giriş kodunuz:",
+      "passkeyButton": "Geçiş anahtarıyla giriş yap",
       "toasts": {
         "invalidFormData": "Veri formatı geçersiz.",
         "emptyUsername": "Kullanıcı adı zorunludur",
@@ -184,6 +185,10 @@
         "tgCodeSent": "Giriş kodu Telegram'ınıza gönderildi.",
         "tgCodeWait": "Biraz önce bir kod gönderildi, yenisini istemeden önce bekleyin.",
         "tgCodeWrong": "Telegram kodu yanlış veya süresi dolmuş.",
+        "passkeyDisabled": "Geçiş anahtarıyla giriş etkin değil.",
+        "passkeyFailed": "Geçiş anahtarı doğrulanamadı.",
+        "passkeyRequired": "Geçiş anahtarınızla onaylayın.",
+        "passkeyNeedsTwoFactor": "İki aşamalı doğrulama kodunu girin, ardından geçiş anahtarını yeniden kullanın.",
         "maintenance": "Panel bakımda. Şu anda yalnızca sahip giriş yapabilir."
       }
     },
@@ -1734,7 +1739,29 @@
           "subSigningRotate": "İmza anahtarını yenile (verilen tüm bağlantıları geçersiz kılar)",
           "tgLogin": "Telegram giriş kodu",
           "tgLoginDesc": "Telegram sohbeti bağlı yöneticilerden, parolanın ardından botun gönderdiği tek kullanımlık bir kod ister. Telegram botu çalışmadığı sürece atlanır, böylece bozuk bir bot sizi dışarıda bırakmaz. Bağlı sohbeti olmayan yöneticilere sorulmaz.",
+          "passkeyLogin": "Geçiş anahtarıyla parolasız giriş",
+          "passkeyLoginDesc": "Yöneticilerin parola yerine, kendilerini PIN veya biyometri ile doğrulayan bir geçiş anahtarıyla girmesine izin verir. Etkinse sahipten yine iki aşamalı doğrulama kodu istenir.",
+          "passkeySecondFactor": "Geçiş anahtarı ikinci aşama olarak",
+          "passkeySecondFactorDesc": "Geçiş anahtarı kaydetmiş yöneticilerden parolanın ardından bunu onaylamalarını ister. Yedek yol yoktur; bu yüzden her yöneticinin çalışan bir anahtarı olduğundan emin olun.",
           "saved": "Güvenlik ayarları kaydedildi"
+        },
+        "passkeys": {
+          "title": "Geçiş anahtarları",
+          "intro": "Geçiş anahtarları cihazınızla, bir güvenlik anahtarıyla veya parola yöneticisiyle giriş yapmanızı sağlar. Kayıt sırasında mevcut parolanız istenir.",
+          "name": "Ad",
+          "namePlaceholder": "örn. YubiKey, dizüstü",
+          "add": "Geçiş anahtarı ekle",
+          "created": "Eklendi",
+          "lastUsed": "Son kullanım",
+          "never": "Hiç",
+          "delete": "Sil",
+          "deleteConfirm": "Bu geçiş anahtarı kaldırılsın mı?",
+          "empty": "Kayıtlı geçiş anahtarı yok.",
+          "passwordTitle": "Parolanızı onaylayın",
+          "unsupported": "Bu tarayıcı geçiş anahtarlarını desteklemiyor.",
+          "wrongPassword": "Parola yanlış.",
+          "added": "Geçiş anahtarı eklendi",
+          "removed": "Geçiş anahtarı kaldırıldı"
         },
         "show": "Göster",
         "hide": "Gizle",

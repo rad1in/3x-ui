@@ -23,7 +23,11 @@ type SecurityConfig struct {
 	// voids every link issued so far.
 	// TgLoginEnable asks admins with a linked Telegram chat for a one-time code
 	// after the password, while the Telegram bot is running.
-	TgLoginEnable       bool   `json:"tgLoginEnable"`
+	TgLoginEnable bool `json:"tgLoginEnable"`
+	// PasskeyLoginEnable adds a passwordless sign-in with a user-verifying passkey;
+	// PasskeySecondFactor asks admins who have passkeys for one after the password.
+	PasskeyLoginEnable  bool   `json:"passkeyLoginEnable"`
+	PasskeySecondFactor bool   `json:"passkeySecondFactor"`
 	SubSigningEnable    bool   `json:"subSigningEnable"`
 	SubSigningKey       string `json:"subSigningKey"`
 	RotateSubSigningKey bool   `json:"rotateSubSigningKey,omitempty"`

@@ -174,6 +174,7 @@
       "tgCode": "Telegram 驗證碼",
       "tgCodePlaceholder": "來自 Telegram 的 6 位驗證碼",
       "tgCodeMessage": "你的面板登入驗證碼：",
+      "passkeyButton": "使用通行金鑰登入",
       "toasts": {
         "invalidFormData": "資料格式錯誤",
         "emptyUsername": "請輸入使用者名稱",
@@ -184,6 +185,10 @@
         "tgCodeSent": "登入驗證碼已傳送到你的 Telegram。",
         "tgCodeWait": "剛剛已傳送過驗證碼，請稍後再試。",
         "tgCodeWrong": "Telegram 驗證碼錯誤或已過期。",
+        "passkeyDisabled": "未啟用通行金鑰登入。",
+        "passkeyFailed": "無法驗證通行金鑰。",
+        "passkeyRequired": "請使用通行金鑰確認。",
+        "passkeyNeedsTwoFactor": "請輸入兩步驟驗證碼，然後再次使用通行金鑰。",
         "maintenance": "面板維護中，目前僅擁有者可以登入。"
       }
     },
@@ -1734,7 +1739,29 @@
           "subSigningRotate": "輪替簽章金鑰（使所有已簽發的連結失效）",
           "tgLogin": "Telegram 登入驗證碼",
           "tgLoginDesc": "對已綁定 Telegram 聊天的管理員，在輸入密碼後要求輸入由機器人傳送的一次性驗證碼。Telegram 機器人未執行時會略過此步驟，避免機器人故障把你鎖在門外。未綁定聊天的管理員不受影響。",
+          "passkeyLogin": "通行金鑰免密碼登入",
+          "passkeyLoginDesc": "允許管理員使用透過 PIN 或生物辨識驗證身分的通行金鑰登入，而不需密碼。若已啟用兩步驟驗證，擁有者仍須輸入驗證碼。",
+          "passkeySecondFactor": "通行金鑰作為第二重驗證",
+          "passkeySecondFactorDesc": "要求已註冊通行金鑰的管理員在輸入密碼後確認通行金鑰。沒有備用方式，請確保每位此類管理員都有可用的通行金鑰。",
           "saved": "安全設定已儲存"
+        },
+        "passkeys": {
+          "title": "通行金鑰",
+          "intro": "通行金鑰可讓您使用裝置、安全金鑰或密碼管理員登入。註冊時需要輸入目前的密碼。",
+          "name": "名稱",
+          "namePlaceholder": "例如 YubiKey、筆記型電腦",
+          "add": "新增通行金鑰",
+          "created": "新增時間",
+          "lastUsed": "最後使用",
+          "never": "從未",
+          "delete": "刪除",
+          "deleteConfirm": "要移除此通行金鑰嗎？",
+          "empty": "尚未註冊通行金鑰。",
+          "passwordTitle": "確認您的密碼",
+          "unsupported": "此瀏覽器不支援通行金鑰。",
+          "wrongPassword": "密碼錯誤。",
+          "added": "通行金鑰已新增",
+          "removed": "通行金鑰已移除"
         },
         "show": "顯示",
         "hide": "隱藏",

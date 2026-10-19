@@ -174,6 +174,7 @@
       "tgCode": "Telegramコード",
       "tgCodePlaceholder": "Telegramの6桁コード",
       "tgCodeMessage": "パネルのログインコード:",
+      "passkeyButton": "パスキーでログイン",
       "toasts": {
         "invalidFormData": "データ形式エラー",
         "emptyUsername": "ユーザー名を入力してください",
@@ -184,6 +185,10 @@
         "tgCodeSent": "ログインコードをTelegramに送信しました。",
         "tgCodeWait": "少し前にコードを送信しました。再要求の前にお待ちください。",
         "tgCodeWrong": "Telegramコードが違うか、期限切れです。",
+        "passkeyDisabled": "パスキーでのログインは有効になっていません。",
+        "passkeyFailed": "パスキーを検証できませんでした。",
+        "passkeyRequired": "パスキーで確認してください。",
+        "passkeyNeedsTwoFactor": "二要素認証コードを入力してから、もう一度パスキーを使ってください。",
         "maintenance": "パネルはメンテナンス中です。現在サインインできるのはオーナーのみです。"
       }
     },
@@ -1734,7 +1739,29 @@
           "subSigningRotate": "署名キーをローテーション（発行済みのリンクがすべて無効になります）",
           "tgLogin": "Telegramログインコード",
           "tgLoginDesc": "Telegramチャットを紐付けた管理者に、パスワードの後でボットが送るワンタイムコードを求めます。Telegramボットが動いていない間は省略されるため、ボットの不具合で締め出されることはありません。チャット未設定の管理者は対象外です。",
+          "passkeyLogin": "パスキーによるパスワードレスログイン",
+          "passkeyLoginDesc": "管理者がパスワードの代わりに、PIN または生体認証で本人確認を行うパスキーでログインできるようにします。二要素認証が有効な場合、オーナーには引き続きコードが求められます。",
+          "passkeySecondFactor": "パスキーを第二要素にする",
+          "passkeySecondFactorDesc": "パスキーを登録している管理者に、パスワードの後でパスキーの確認を求めます。代替手段はないため、該当する管理者全員が使えるパスキーを持っていることを確認してください。",
           "saved": "セキュリティ設定を保存しました"
+        },
+        "passkeys": {
+          "title": "パスキー",
+          "intro": "パスキーを使うと、デバイス、セキュリティキー、パスワードマネージャーでログインできます。登録時には現在のパスワードが求められます。",
+          "name": "名前",
+          "namePlaceholder": "例: YubiKey、ノートPC",
+          "add": "パスキーを追加",
+          "created": "追加日",
+          "lastUsed": "最終使用",
+          "never": "なし",
+          "delete": "削除",
+          "deleteConfirm": "このパスキーを削除しますか？",
+          "empty": "登録されたパスキーはありません。",
+          "passwordTitle": "パスワードの確認",
+          "unsupported": "このブラウザはパスキーに対応していません。",
+          "wrongPassword": "パスワードが違います。",
+          "added": "パスキーを追加しました",
+          "removed": "パスキーを削除しました"
         },
         "show": "表示",
         "hide": "非表示",

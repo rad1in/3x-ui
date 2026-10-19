@@ -1397,6 +1397,14 @@ export interface PanelUpdateStatus {
   state: string;
 }
 
+export interface Passkey {
+  createdAt: number;
+  id: number;
+  lastUsedAt: number;
+  name: string;
+  userId: number;
+}
+
 export interface PeerActivity {
   allowedIPs: string;
   down: number;
@@ -1526,6 +1534,8 @@ export interface SecurityConfig {
   captchaEnable: boolean;
   clearBackupPassphrase?: boolean;
   newLocationAlert: boolean;
+  passkeyLoginEnable: boolean;
+  passkeySecondFactor: boolean;
   rotateSubSigningKey?: boolean;
   subSigningEnable: boolean;
   subSigningKey: string;
@@ -1538,6 +1548,8 @@ export interface SecurityConfigView {
   clearBackupPassphrase?: boolean;
   hasBackupPassphrase: boolean;
   newLocationAlert: boolean;
+  passkeyLoginEnable: boolean;
+  passkeySecondFactor: boolean;
   rotateSubSigningKey?: boolean;
   subSigningEnable: boolean;
   subSigningKey: string;

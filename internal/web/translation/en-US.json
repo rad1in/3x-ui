@@ -174,6 +174,7 @@
       "tgCode": "Telegram code",
       "tgCodePlaceholder": "6-digit code from Telegram",
       "tgCodeMessage": "Your panel login code:",
+      "passkeyButton": "Sign in with a passkey",
       "toasts": {
         "invalidFormData": "The input data format is invalid.",
         "emptyUsername": "Username is required",
@@ -184,6 +185,10 @@
         "tgCodeSent": "A login code was sent to your Telegram.",
         "tgCodeWait": "A code was sent a moment ago, wait before asking again.",
         "tgCodeWrong": "The Telegram code is wrong or has expired.",
+        "passkeyDisabled": "Passkey sign-in is not enabled.",
+        "passkeyFailed": "The passkey could not be verified.",
+        "passkeyRequired": "Confirm with your passkey.",
+        "passkeyNeedsTwoFactor": "Enter the two-factor code, then use the passkey again.",
         "maintenance": "The panel is under maintenance. Only the owner can sign in right now."
       }
     },
@@ -1888,7 +1893,29 @@
           "subSigningRotate": "Rotate the signing key (voids every issued link)",
           "tgLogin": "Telegram login code",
           "tgLoginDesc": "Asks admins who have a Telegram chat linked for a one-time code, sent by the bot, after the password. Skipped while the Telegram bot is not running so a broken bot never locks you out. Admins without a linked chat are not asked.",
+          "passkeyLogin": "Passwordless passkey sign-in",
+          "passkeyLoginDesc": "Lets admins sign in with a passkey that verifies them by PIN or biometrics, instead of the password. The owner is still asked for the two-factor code when it is enabled.",
+          "passkeySecondFactor": "Passkey as second factor",
+          "passkeySecondFactorDesc": "Asks admins who have registered a passkey to confirm it after the password. There is no fallback, so make sure each such admin has a working passkey.",
           "saved": "Security settings saved"
+        },
+        "passkeys": {
+          "title": "Passkeys",
+          "intro": "Passkeys let you sign in with your device, a security key or a password manager. Registering one asks for your current password.",
+          "name": "Name",
+          "namePlaceholder": "e.g. YubiKey, laptop",
+          "add": "Add a passkey",
+          "created": "Added",
+          "lastUsed": "Last used",
+          "never": "Never",
+          "delete": "Delete",
+          "deleteConfirm": "Remove this passkey?",
+          "empty": "No passkeys registered.",
+          "passwordTitle": "Confirm your password",
+          "unsupported": "This browser does not support passkeys.",
+          "wrongPassword": "The password is wrong.",
+          "added": "Passkey added",
+          "removed": "Passkey removed"
         },
         "show": "Show",
         "hide": "Hide",

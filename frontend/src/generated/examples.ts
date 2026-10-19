@@ -1545,6 +1545,13 @@ export const EXAMPLES: Record<string, unknown> = {
     "runId": "1735689600123456789",
     "state": "success"
   },
+  "Passkey": {
+    "createdAt": 1760684400000,
+    "id": 1,
+    "lastUsedAt": 1760684400000,
+    "name": "YubiKey",
+    "userId": 1
+  },
   "PeerActivity": {
     "allowedIPs": "10.8.1.2/32",
     "down": 4194304,
@@ -1714,6 +1721,8 @@ export const EXAMPLES: Record<string, unknown> = {
     "captchaEnable": false,
     "clearBackupPassphrase": false,
     "newLocationAlert": false,
+    "passkeyLoginEnable": false,
+    "passkeySecondFactor": false,
     "rotateSubSigningKey": false,
     "subSigningEnable": false,
     "subSigningKey": "",
@@ -1725,6 +1734,8 @@ export const EXAMPLES: Record<string, unknown> = {
     "clearBackupPassphrase": false,
     "hasBackupPassphrase": false,
     "newLocationAlert": false,
+    "passkeyLoginEnable": false,
+    "passkeySecondFactor": false,
     "rotateSubSigningKey": false,
     "subSigningEnable": false,
     "subSigningKey": "",

@@ -24,7 +24,7 @@ constructs the real router and diffs it against the registry both ways.
 
 Scope: everything under /panel/api/ plus the session-auth surface the
 registry also documents (/login, /logout, /csrf-token, /sponsors,
-/getTwoFactorEnable, /ws) and the public shop API (/shop/api). SPA page routes are UI, not API, and stay out;
+/getTwoFactorEnable, /passkey/login/*, /ws) and the public shop API (/shop/api). SPA page routes are UI, not API, and stay out;
 registry paths that start with "/{" describe the standalone subscription
 server, which this engine does not serve.
 */
@@ -35,6 +35,9 @@ var contractExtraRoutes = map[string]bool{
 	"GET /csrf-token":                      true,
 	"GET /sponsors":                        true,
 	"POST /getTwoFactorEnable":             true,
+	"POST /passkey/login/status":           true,
+	"POST /passkey/login/begin":            true,
+	"POST /passkey/login/finish":           true,
 	"GET /ws":                              true,
 	"GET /shop/api/plans":                  true,
 	"POST /shop/api/orders":                true,

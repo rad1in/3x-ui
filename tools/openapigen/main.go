@@ -51,6 +51,7 @@ func run(root, outDir string) error {
 				"WalletEntry",
 				"CleanIPResult",
 				"InboundRotation",
+				"Passkey",
 			),
 			AliasAllow: setOf("Protocol"),
 			Overrides: map[string][]walkOverride{
