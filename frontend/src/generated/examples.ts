@@ -1663,6 +1663,7 @@ export const EXAMPLES: Record<string, unknown> = {
       "bonusPercent": 10,
       "enabled": false
     },
+    "telegramShop": false,
     "walletEnabled": false,
     "zarinpal": {
       "enabled": false,
@@ -1702,6 +1703,7 @@ export const EXAMPLES: Record<string, unknown> = {
       "bonusPercent": 10,
       "enabled": false
     },
+    "telegramShop": false,
     "walletEnabled": false,
     "zarinpal": {
       "enabled": false,

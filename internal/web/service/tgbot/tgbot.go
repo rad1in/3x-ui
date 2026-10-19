@@ -229,6 +229,8 @@ type Tgbot struct {
 	settingService service.SettingService
 	serverService  service.ServerService
 	xrayService    service.XrayService
+	orderService   service.OrderService
+	salesConfig    service.SalesConfigService
 	lastStatus     *service.Status
 }
 

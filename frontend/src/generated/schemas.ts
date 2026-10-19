@@ -6653,6 +6653,10 @@ export const SCHEMAS: Record<string, unknown> = {
       "referral": {
         "$ref": "#/components/schemas/ReferralConfig"
       },
+      "telegramShop": {
+        "description": "TelegramShop opens the shop to customers inside the Telegram bot.",
+        "type": "boolean"
+      },
       "walletEnabled": {
         "type": "boolean"
       },
@@ -6667,6 +6671,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "publicBaseUrl",
       "publicEnabled",
       "referral",
+      "telegramShop",
       "walletEnabled",
       "zarinpal"
     ],
@@ -6712,6 +6717,10 @@ export const SCHEMAS: Record<string, unknown> = {
       "referral": {
         "$ref": "#/components/schemas/ReferralConfig"
       },
+      "telegramShop": {
+        "description": "TelegramShop opens the shop to customers inside the Telegram bot.",
+        "type": "boolean"
+      },
       "walletEnabled": {
         "type": "boolean"
       },
@@ -6730,6 +6739,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "publicBaseUrl",
       "publicEnabled",
       "referral",
+      "telegramShop",
       "walletEnabled",
       "zarinpal"
     ],

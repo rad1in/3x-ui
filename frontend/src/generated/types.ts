@@ -1501,6 +1501,7 @@ export interface SalesConfig {
   publicBaseUrl: string;
   publicEnabled: boolean;
   referral: ReferralConfig;
+  telegramShop: boolean;
   walletEnabled: boolean;
   zarinpal: ZarinpalConfig;
 }
@@ -1517,6 +1518,7 @@ export interface SalesConfigView {
   publicBaseUrl: string;
   publicEnabled: boolean;
   referral: ReferralConfig;
+  telegramShop: boolean;
   walletEnabled: boolean;
   zarinpal: ZarinpalConfig;
 }

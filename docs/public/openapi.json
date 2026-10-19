@@ -6679,6 +6679,10 @@
           "referral": {
             "$ref": "#/components/schemas/ReferralConfig"
           },
+          "telegramShop": {
+            "description": "TelegramShop opens the shop to customers inside the Telegram bot.",
+            "type": "boolean"
+          },
           "walletEnabled": {
             "type": "boolean"
           },
@@ -6693,6 +6697,7 @@
           "publicBaseUrl",
           "publicEnabled",
           "referral",
+          "telegramShop",
           "walletEnabled",
           "zarinpal"
         ],
@@ -6738,6 +6743,10 @@
           "referral": {
             "$ref": "#/components/schemas/ReferralConfig"
           },
+          "telegramShop": {
+            "description": "TelegramShop opens the shop to customers inside the Telegram bot.",
+            "type": "boolean"
+          },
           "walletEnabled": {
             "type": "boolean"
           },
@@ -6756,6 +6765,7 @@
           "publicBaseUrl",
           "publicEnabled",
           "referral",
+          "telegramShop",
           "walletEnabled",
           "zarinpal"
         ],
@@ -19697,6 +19707,7 @@
                       "bonusPercent": 10,
                       "enabled": false
                     },
+                    "telegramShop": false,
                     "walletEnabled": false,
                     "zarinpal": {
                       "enabled": false,

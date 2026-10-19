@@ -15,6 +15,7 @@ const EMPTY: SalesConfigValues = {
   idpay: { enabled: false, apiKey: '', sandbox: false },
   crypto: { enabled: false, apiKey: '', ipnSecret: '', sandbox: false },
   walletEnabled: false,
+  telegramShop: false,
   referral: { enabled: false, bonusPercent: 10 },
   clearSecrets: [],
 };
@@ -83,6 +84,14 @@ export default function SalesSettingsTab() {
           extra={t('pages.sales.config.publicBaseUrlHint')}
         >
           <Input placeholder="https://shop.example.com" dir="ltr" />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.telegramShop')}
+          name="telegramShop"
+          valueProp="checked"
+          extra={t('pages.sales.config.telegramShopHint')}
+        >
+          <Switch />
         </FormField>
 
         <h4>{t('pages.sales.config.walletTitle')}</h4>

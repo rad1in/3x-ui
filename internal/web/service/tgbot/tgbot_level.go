@@ -51,7 +51,7 @@ func commandAllowed(level userLevel, command string) bool {
 func (t *Tgbot) gateCommand(message *telego.Message) (isAdmin bool, ok bool) {
 	level := t.levelOf(message.From.ID)
 	command, _, _ := tu.ParseCommand(message.Text)
-	if commandAllowed(level, command) {
+	if commandAllowed(level, command) || (command == "shop" && t.shopEnabled()) {
 		return level == levelAdmin, true
 	}
 	if level == levelClient {
@@ -64,7 +64,7 @@ func (t *Tgbot) gateCommand(message *telego.Message) (isAdmin bool, ok bool) {
 // no keyboard of ours, so any callback data from one is forged or stale.
 func (t *Tgbot) gateCallback(query *telego.CallbackQuery) (isAdmin bool, ok bool) {
 	level := t.levelOf(query.From.ID)
-	if level == levelStranger {
+	if level == levelStranger && !(isShopCallback(query.Data) && t.shopEnabled()) {
 		t.sendCallbackAnswerTgBot(query.ID, "")
 		return false, false
 	}

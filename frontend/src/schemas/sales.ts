@@ -47,6 +47,7 @@ export const salesConfigSchema = z.object({
     sandbox: z.boolean(),
   }),
   walletEnabled: z.boolean(),
+  telegramShop: z.boolean(),
   referral: z.object({
     enabled: z.boolean(),
     bonusPercent: z

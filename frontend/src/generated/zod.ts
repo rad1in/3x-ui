@@ -1598,6 +1598,7 @@ export const SalesConfigSchema = z.object({
   publicBaseUrl: z.string(),
   publicEnabled: z.boolean(),
   referral: z.lazy(() => ReferralConfigSchema),
+  telegramShop: z.boolean(),
   walletEnabled: z.boolean(),
   zarinpal: z.lazy(() => ZarinpalConfigSchema),
 });
@@ -1615,6 +1616,7 @@ export const SalesConfigViewSchema = z.object({
   publicBaseUrl: z.string(),
   publicEnabled: z.boolean(),
   referral: z.lazy(() => ReferralConfigSchema),
+  telegramShop: z.boolean(),
   walletEnabled: z.boolean(),
   zarinpal: z.lazy(() => ZarinpalConfigSchema),
 });
