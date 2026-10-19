@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ConfigProvider, Tag, Tooltip, message } from 'antd';
 import {
   ApiOutlined,
+  AppstoreOutlined,
   BellOutlined,
   BranchesOutlined,
   ApartmentOutlined,
@@ -43,6 +44,7 @@ import {
 
 import { ClipboardManager, HttpUtil, SizeFormatter } from '@/utils';
 import { activateOnKey } from '@/utils/a11y';
+import { useHostedStatus } from '@/api/queries/useHostedStatus';
 import { useInboundOptions } from '@/api/queries/useInboundOptions';
 import { useAllSettings } from '@/api/queries/useAllSettings';
 import { useTheme } from '@/hooks/useTheme';
@@ -74,6 +76,7 @@ export default function CommandPalette() {
   const { isOpen, close } = useCommandPalette();
   const { allSetting } = useAllSettings();
   const { data: inbounds = [] } = useInboundOptions();
+  const isHostedPanel = !!useHostedStatus().data?.enabled;
 
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -395,6 +398,16 @@ export default function CommandPalette() {
         keywords: ['nodes', 'servers', 'cluster', 'remote nodes'],
         icon: <ClusterOutlined />,
       },
+      ...(isHostedPanel
+        ? []
+        : [
+            {
+              path: '/reseller',
+              title: t('menu.reseller'),
+              keywords: ['reseller', 'resellers', 'panels', 'hosted panels', 'agents', 'quota'],
+              icon: <AppstoreOutlined />,
+            },
+          ]),
       {
         path: '/hosts',
         title: t('menu.hosts'),
@@ -684,6 +697,7 @@ export default function CommandPalette() {
     isDark,
     isUltra,
     allSetting.subURI,
+    isHostedPanel,
     t,
     close,
     navigate,

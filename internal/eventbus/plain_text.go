@@ -3,7 +3,6 @@ package eventbus
 // plainTitles names the events every channel can send as a title plus lines of
 // text, so a new alert needs no per-channel formatting.
 var plainTitles = map[EventType]string{
-	EventResellerCreditLow:   "Reseller credit is low",
 	EventLoginNewLocation:    "New login location",
 	EventClientSharedAccount: "Shared account suspected",
 }

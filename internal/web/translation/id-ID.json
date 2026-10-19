@@ -154,8 +154,7 @@
     "openMenu": "Buka menu",
     "pinSidebar": "Sematkan bilah sisi",
     "unpinSidebar": "Lepas sematan bilah sisi",
-    "subFormats": "Sub Formats",
-    "panels": "Panel"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "Pintasan keyboard",
@@ -2111,7 +2110,6 @@
       "eventClientQuotaWarning": "Peringatan kuota",
       "eventClientExpiryWarning": "Peringatan kedaluwarsa",
       "eventWeeklyReport": "Ringkasan mingguan",
-      "eventResellerCreditLow": "Kredit reseller menipis",
       "eventLoginNewLocation": "Login admin dari tempat baru",
       "eventClientSharedAccount": "Dugaan akun bersama",
       "testDiscordDesc": "Kirim notifikasi uji untuk memverifikasi token bot dan ID saluran Anda",
@@ -2954,57 +2952,6 @@
         "deleted": "Admin dihapus"
       }
     },
-    "reseller": {
-      "title": "Kredit reseller",
-      "mine": "Kredit saya",
-      "hint": "Reseller dipotong sesuai daftar harganya saat membuat atau memperpanjang klien. Isi ulang kredit mereka dan pantau penjualannya.",
-      "hintSelf": "Kredit Anda dipotong sesuai daftar harga Anda saat membuat atau memperpanjang klien.",
-      "credit": "Kredit",
-      "pricePerGb": "Harga per GB",
-      "pricePerDay": "Harga per hari",
-      "manage": "Kelola",
-      "topupTitle": "Tambah atau kurangi kredit",
-      "amountHint": "Jumlah (negatif mengurangi)",
-      "note": "Catatan",
-      "topup": "Terapkan",
-      "pricesTitle": "Daftar harga",
-      "wholesale": "Daftar harga grosir",
-      "wholesaleHint": "Reseller tanpa harga sendiri ditagih menurut daftar ini. Kredit adalah satuan milik panel; atur tingkat peringatan agar Anda diberi tahu saat kredit reseller menipis (0 = nonaktif).",
-      "lowCredit": "Peringatan di bawah",
-      "priceFallback": "Kosongkan harga untuk mengikuti daftar harga panel.",
-      "ranges": {
-        "all": "Semua waktu",
-        "7": "7 hari",
-        "30": "30 hari",
-        "90": "90 hari"
-      },
-      "report": {
-        "reseller": "Reseller",
-        "created": "Dibuat",
-        "renewed": "Diperpanjang",
-        "spent": "Terpakai",
-        "traffic": "Trafik terjual",
-        "days": "Hari terjual",
-        "toppedUp": "Kredit ditambahkan"
-      },
-      "ledger": {
-        "title": "Riwayat kredit",
-        "time": "Waktu",
-        "kind": "Jenis",
-        "amount": "Jumlah",
-        "client": "Klien"
-      },
-      "kinds": {
-        "topup": "Isi ulang",
-        "create": "Klien baru",
-        "renew": "Perpanjangan"
-      },
-      "toasts": {
-        "toppedUp": "Kredit diperbarui",
-        "pricesSaved": "Daftar harga disimpan",
-        "configSaved": "Daftar harga disimpan"
-      }
-    },
     "sales": {
       "hint": "Jual paket ke pelanggan. Paket menentukan harga, kuota, dan durasi; templat klien yang dituju menentukan inbound yang didapat pelanggan.",
       "plansTab": "Paket",
@@ -3165,7 +3112,7 @@
       "saved": "Panel disimpan",
       "deleted": "Panel dihapus",
       "usageReset": "Pemakaian direset",
-      "title": "Panel yang di-hosting",
+      "title": "Reseller",
       "hint": "Buat panel terpisah di server ini dan berikan kepada orang lain. Masing-masing punya login, alamat, database, dan rentang port sendiri, serta tidak dapat melewati batas yang Anda atur di sini.",
       "add": "Panel baru",
       "edit": "Edit panel",
@@ -3200,7 +3147,7 @@
       "resetUsageConfirm": "Mulai periode pemakaian baru untuk panel ini?",
       "deleteConfirm": "Hapus panel ini?",
       "deleteWarning": "Database, inbound, dan kliennya akan dihapus permanen.",
-      "empty": "Belum ada panel yang di-hosting",
+      "empty": "Belum ada panel reseller",
       "emptyHint": "Buat panel untuk memberi seseorang login sendiri dengan kuota, inbound, dan klien yang Anda pilih.",
       "errName": "Masukkan nama hingga 64 karakter",
       "errUsername": "Masukkan nama pengguna tanpa spasi",

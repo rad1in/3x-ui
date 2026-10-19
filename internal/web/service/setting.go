@@ -240,7 +240,6 @@ var defaultValueMap = map[string]string{
 	"nord":                        "",
 	"pia":                         "",
 	"salesConfig":                 "",
-	"resellerConfig":              "",
 	"securityConfig":              "",
 	"externalTrafficInformEnable": "false",
 	"externalTrafficInformURI":    "",

@@ -19,12 +19,9 @@ export interface AdminInput {
 
 export interface AdminView {
   createdAt: number;
-  credit: number;
   groups: string[];
   id: number;
   inboundIds: number[];
-  pricePerDay?: number | null;
-  pricePerGb?: number | null;
   role: string;
   tgChatId: number;
   username: string;
@@ -1485,52 +1482,6 @@ export interface RealityScanResult {
 export interface ReferralConfig {
   bonusPercent: number;
   enabled: boolean;
-}
-
-export interface ResellerAccount {
-  balance: number;
-  entries: ResellerEntry[];
-  prices: ResellerPrices;
-  userId: number;
-}
-
-export interface ResellerConfig {
-  lowCredit: number;
-  pricePerDay: number;
-  pricePerGb: number;
-}
-
-export interface ResellerEntry {
-  amount: number;
-  bytes: number;
-  clientEmail: string;
-  createdAt: number;
-  days: number;
-  id: number;
-  kind: string;
-  note: string;
-  userId: number;
-}
-
-export interface ResellerPrices {
-  pricePerDay: number;
-  pricePerGb: number;
-}
-
-export interface ResellerReport {
-  rows: ResellerReportRow[];
-}
-
-export interface ResellerReportRow {
-  balance: number;
-  bytes: number;
-  created: number;
-  days: number;
-  renewed: number;
-  spent: number;
-  toppedUp: number;
-  userId: number;
-  username: string;
 }
 
 export interface RotationResult {

@@ -40,7 +40,7 @@ The first rows are shared with 3x-ui; the rest exist only in Eternal. The compar
 | Built-in shop: plans, orders, public purchase page | ✅ | ❌ |
 | Card-to-card, Zarinpal, IDPay and crypto (NOWPayments) payments | ✅ | ❌ |
 | Customer wallet, discount codes, referral bonus | ✅ | ❌ |
-| Reseller credit wallet, wholesale prices, sales report | ✅ | ❌ |
+| Reseller panels: separate isolated panels with their own login, address and quotas | ✅ | ❌ |
 | Roles and per-admin scoping (RBAC), admin sessions | ✅ | ❌ |
 | Panel IP allow-list, login lockout, captcha, new-IP/country alerts | ✅ | ❌ |
 | Telegram one-time-code login, signed subscription links | ✅ | ❌ |
@@ -75,7 +75,8 @@ On top of everything 3x-ui provides (VLESS, VMess, Trojan, Shadowsocks, REALITY,
 - Plans, orders and a public purchase page that needs no panel login
 - Card-to-card payments with admin approval, Zarinpal, IDPay and NOWPayments (crypto)
 - Customer wallet, discount codes and referral bonuses
-- Reseller credit wallets with wholesale price lists, sales reports and client transfer
+- Reseller panels: separate isolated panels with their own login, address and quotas
+- Client transfer between admins
 
 **Operations**
 - Roles and per-admin scoping (RBAC), admin sessions, panel IP allow-list, login lockout, login captcha

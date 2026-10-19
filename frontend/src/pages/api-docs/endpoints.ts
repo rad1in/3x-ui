@@ -2482,7 +2482,7 @@ export const sections: readonly Section[] = [
 
   {
     id: 'hosted',
-    title: 'Hosted Panel',
+    title: 'Reseller Panel',
     description:
       'A panel the owner of this server runs for someone else. Its inbound, client, port, traffic and expiry limits are set by the owner and cannot be changed from inside the panel.',
     endpoints: [
@@ -2498,7 +2498,7 @@ export const sections: readonly Section[] = [
 
   {
     id: 'hosted-panels',
-    title: 'Hosted Panels',
+    title: 'Reseller Panels',
     description:
       'Separate panels this server runs for other people. Each has its own database, login, address and inbound port range, and enforces the limits set here. Not available from inside a hosted panel.',
     endpoints: [
@@ -2885,101 +2885,6 @@ export const sections: readonly Section[] = [
         summary:
           'Delete an admin and close its live connections. The last owner and yourself cannot be deleted.',
         params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Admin id.' }],
-      },
-    ],
-  },
-
-  {
-    id: 'reseller',
-    title: 'Reseller credit',
-    description:
-      'Credit and sales of resellers, the admins with the operator role. A reseller is debited by its price list (credit per GiB and per day) when it creates or renews clients; amounts are credit units. The price list and top-ups are owner-only. All endpoints under /panel/api/reseller.',
-    endpoints: [
-      {
-        method: 'GET',
-        path: '/panel/api/reseller/me',
-        summary:
-          "The signed-in reseller's credit, price list and latest ledger lines. Any other role gets an empty account.",
-        responseSchema: 'ResellerAccount',
-      },
-      {
-        method: 'GET',
-        path: '/panel/api/reseller/report',
-        summary:
-          'Sales per reseller between from and to: clients created and renewed, credit spent, traffic and days sold, credit added and the balance. A reseller only sees its own row.',
-        params: [
-          {
-            name: 'from',
-            in: 'query',
-            type: 'integer',
-            desc: 'Window start, unix ms. Omit for no start.',
-          },
-          {
-            name: 'to',
-            in: 'query',
-            type: 'integer',
-            desc: 'Window end, unix ms. Omit for no end.',
-          },
-        ],
-        responseSchema: 'ResellerReport',
-      },
-      {
-        method: 'GET',
-        path: '/panel/api/reseller/account/:id',
-        summary: "One reseller's credit, price list and latest ledger lines. Owner only.",
-        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Admin id of an operator.' }],
-        responseSchema: 'ResellerAccount',
-      },
-      {
-        method: 'POST',
-        path: '/panel/api/reseller/topup/:id',
-        summary:
-          'Add credit to a reseller, or take it back with a negative amount (the balance never goes below zero). Owner only.',
-        params: [
-          { name: 'id', in: 'path', type: 'integer', desc: 'Admin id of an operator.' },
-          {
-            name: 'body',
-            in: 'body (json)',
-            type: 'object',
-            desc: '{"amount": 5000, "note": "paid by card"}',
-          },
-        ],
-        responseSchema: 'ResellerEntry',
-      },
-      {
-        method: 'GET',
-        path: '/panel/api/reseller/config',
-        summary:
-          "The panel's wholesale price list, which every reseller without its own price follows, and the credit level that raises the reseller.credit_low alert (0 = off). Owner only.",
-        responseSchema: 'ResellerConfig',
-      },
-      {
-        method: 'POST',
-        path: '/panel/api/reseller/config/save',
-        summary: 'Save the wholesale price list and the low-credit alert level. Owner only.',
-        params: [
-          {
-            name: 'body',
-            in: 'body (json)',
-            type: 'object',
-            desc: '{"pricePerGb": 100, "pricePerDay": 10, "lowCredit": 1000}',
-          },
-        ],
-      },
-      {
-        method: 'POST',
-        path: '/panel/api/reseller/prices/:id',
-        summary:
-          "Set a reseller's own price list. A null price falls back to the panel's list; 0 makes that dimension free. Owner only.",
-        params: [
-          { name: 'id', in: 'path', type: 'integer', desc: 'Admin id of an operator.' },
-          {
-            name: 'body',
-            in: 'body (json)',
-            type: 'object',
-            desc: '{"pricePerGb": 100, "pricePerDay": null}',
-          },
-        ],
       },
     ],
   },

@@ -542,16 +542,16 @@ func TestFormatEmbed_ClientWarnings(t *testing.T) {
 	}
 }
 
-func TestResellerCreditAlertBecomesAnEmbed(t *testing.T) {
+func TestNewLoginLocationAlertBecomesAnEmbed(t *testing.T) {
 	settingService := setupTestDB(t)
 	sub := NewSubscriber(settingService, NewDiscordService(settingService))
 
 	embed, ok := sub.FormatEmbed(eventbus.Event{
-		Type: eventbus.EventResellerCreditLow, Source: "shop",
-		Data: &eventbus.ResellerCreditData{Username: "shop", Balance: 950, Threshold: 1000},
+		Type: eventbus.EventLoginNewLocation, Source: "root",
+		Data: &eventbus.NewLoginLocationData{Username: "root", IP: "198.51.100.9", Country: "BR", NewCountry: true},
 	})
-	if !ok || embed.Color != ColorOrange || embed.Title != "Reseller credit is low" ||
-		embed.Description != "Reseller shop is low on credit: 950 left, alert level 1000" {
+	if !ok || embed.Color != ColorOrange || embed.Title != "New login location" ||
+		embed.Description != "root signed in from a new country: 198.51.100.9 (BR)" {
 		t.Fatalf("embed = %+v, ok = %v", embed, ok)
 	}
 }

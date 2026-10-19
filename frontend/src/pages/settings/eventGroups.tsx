@@ -26,7 +26,6 @@ export const EVENT_GROUPS: NotificationGroupConfig[] = [
       { key: 'client.quota_warning', label: 'eventClientQuotaWarning', settingKey: '' },
       { key: 'client.expiry_warning', label: 'eventClientExpiryWarning', settingKey: '' },
       { key: 'report.weekly', label: 'eventWeeklyReport', settingKey: '' },
-      { key: 'reseller.credit_low', label: 'eventResellerCreditLow', settingKey: '' },
       { key: 'login.new_location', label: 'eventLoginNewLocation', settingKey: '' },
       { key: 'client.shared_account', label: 'eventClientSharedAccount', settingKey: '' },
     ],

@@ -51,12 +51,6 @@ export const SCHEMAS: Record<string, unknown> = {
         "format": "int64",
         "type": "integer"
       },
-      "credit": {
-        "description": "A reseller's credit and own price list; a nil price follows the panel's list.",
-        "example": 8500,
-        "format": "int64",
-        "type": "integer"
-      },
       "groups": {
         "items": {
           "type": "string"
@@ -72,18 +66,6 @@ export const SCHEMAS: Record<string, unknown> = {
           "type": "integer"
         },
         "type": "array"
-      },
-      "pricePerDay": {
-        "example": 10,
-        "format": "int64",
-        "nullable": true,
-        "type": "integer"
-      },
-      "pricePerGb": {
-        "example": 100,
-        "format": "int64",
-        "nullable": true,
-        "type": "integer"
       },
       "role": {
         "example": "operator",
@@ -101,7 +83,6 @@ export const SCHEMAS: Record<string, unknown> = {
     },
     "required": [
       "createdAt",
-      "credit",
       "groups",
       "id",
       "inboundIds",
@@ -6603,213 +6584,6 @@ export const SCHEMAS: Record<string, unknown> = {
     "required": [
       "bonusPercent",
       "enabled"
-    ],
-    "type": "object"
-  },
-  "ResellerAccount": {
-    "description": "ResellerAccount is a reseller's standing and latest ledger lines.",
-    "properties": {
-      "balance": {
-        "example": 8500,
-        "format": "int64",
-        "type": "integer"
-      },
-      "entries": {
-        "items": {
-          "$ref": "#/components/schemas/ResellerEntry"
-        },
-        "type": "array"
-      },
-      "prices": {
-        "$ref": "#/components/schemas/ResellerPrices"
-      },
-      "userId": {
-        "example": 2,
-        "type": "integer"
-      }
-    },
-    "required": [
-      "balance",
-      "entries",
-      "prices",
-      "userId"
-    ],
-    "type": "object"
-  },
-  "ResellerConfig": {
-    "description": "ResellerConfig is the panel's wholesale price list, which every reseller\nwithout its own price follows, and the credit level that raises an alert.",
-    "properties": {
-      "lowCredit": {
-        "example": 1000,
-        "format": "int64",
-        "type": "integer"
-      },
-      "pricePerDay": {
-        "example": 10,
-        "format": "int64",
-        "type": "integer"
-      },
-      "pricePerGb": {
-        "example": 100,
-        "format": "int64",
-        "type": "integer"
-      }
-    },
-    "required": [
-      "lowCredit",
-      "pricePerDay",
-      "pricePerGb"
-    ],
-    "type": "object"
-  },
-  "ResellerEntry": {
-    "description": "ResellerEntry is one line of a reseller's credit ledger; the balance is the\nsum of the Amount column. Create and renew lines name the client and the\ntraffic and days that were billed.",
-    "properties": {
-      "amount": {
-        "example": -1500,
-        "format": "int64",
-        "type": "integer"
-      },
-      "bytes": {
-        "example": 53687091200,
-        "format": "int64",
-        "type": "integer"
-      },
-      "clientEmail": {
-        "example": "alice",
-        "type": "string"
-      },
-      "createdAt": {
-        "example": 1760684400000,
-        "format": "int64",
-        "type": "integer"
-      },
-      "days": {
-        "example": 30,
-        "format": "int64",
-        "type": "integer"
-      },
-      "id": {
-        "example": 1,
-        "type": "integer"
-      },
-      "kind": {
-        "example": "create",
-        "type": "string"
-      },
-      "note": {
-        "type": "string"
-      },
-      "userId": {
-        "example": 2,
-        "type": "integer"
-      }
-    },
-    "required": [
-      "amount",
-      "bytes",
-      "clientEmail",
-      "createdAt",
-      "days",
-      "id",
-      "kind",
-      "note",
-      "userId"
-    ],
-    "type": "object"
-  },
-  "ResellerPrices": {
-    "description": "ResellerPrices is a price list in credit units; a zero price makes that dimension free.",
-    "properties": {
-      "pricePerDay": {
-        "example": 10,
-        "format": "int64",
-        "type": "integer"
-      },
-      "pricePerGb": {
-        "example": 100,
-        "format": "int64",
-        "type": "integer"
-      }
-    },
-    "required": [
-      "pricePerDay",
-      "pricePerGb"
-    ],
-    "type": "object"
-  },
-  "ResellerReport": {
-    "description": "ResellerReport lists every reseller, or one, with sales between from and to (unix ms, 0 = open).",
-    "properties": {
-      "rows": {
-        "items": {
-          "$ref": "#/components/schemas/ResellerReportRow"
-        },
-        "type": "array"
-      }
-    },
-    "required": [
-      "rows"
-    ],
-    "type": "object"
-  },
-  "ResellerReportRow": {
-    "description": "ResellerReportRow is one reseller's sales in the reported window. Spent is\ncredit used on clients; ToppedUp is credit added by the owner.",
-    "properties": {
-      "balance": {
-        "example": 8500,
-        "format": "int64",
-        "type": "integer"
-      },
-      "bytes": {
-        "example": 1073741824000,
-        "format": "int64",
-        "type": "integer"
-      },
-      "created": {
-        "example": 12,
-        "format": "int64",
-        "type": "integer"
-      },
-      "days": {
-        "example": 570,
-        "format": "int64",
-        "type": "integer"
-      },
-      "renewed": {
-        "example": 7,
-        "format": "int64",
-        "type": "integer"
-      },
-      "spent": {
-        "example": 15000,
-        "format": "int64",
-        "type": "integer"
-      },
-      "toppedUp": {
-        "example": 20000,
-        "format": "int64",
-        "type": "integer"
-      },
-      "userId": {
-        "example": 2,
-        "type": "integer"
-      },
-      "username": {
-        "example": "shop-a",
-        "type": "string"
-      }
-    },
-    "required": [
-      "balance",
-      "bytes",
-      "created",
-      "days",
-      "renewed",
-      "spent",
-      "toppedUp",
-      "userId",
-      "username"
     ],
     "type": "object"
   },

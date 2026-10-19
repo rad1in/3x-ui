@@ -75,7 +75,6 @@ func migrationModels() []any {
 		&model.DiscountCode{},
 		&model.WalletEntry{},
 		&model.ReferralCode{},
-		&model.ResellerEntry{},
 		&model.LoginSeen{},
 		&model.ClientIPSighting{},
 		&model.SharedAccountFlag{},

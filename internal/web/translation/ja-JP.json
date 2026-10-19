@@ -154,8 +154,7 @@
     "openMenu": "メニューを開く",
     "pinSidebar": "サイドバーを固定",
     "unpinSidebar": "サイドバーの固定を解除",
-    "subFormats": "Sub Formats",
-    "panels": "パネル"
+    "subFormats": "Sub Formats"
   },
   "shortcuts": {
     "title": "キーボードショートカット",
@@ -2111,7 +2110,6 @@
       "eventClientQuotaWarning": "通信量の警告",
       "eventClientExpiryWarning": "期限の警告",
       "eventWeeklyReport": "週次サマリー",
-      "eventResellerCreditLow": "リセラーのクレジット残高が少ない",
       "eventLoginNewLocation": "管理者が新しい場所からログイン",
       "eventClientSharedAccount": "共有アカウントの疑い",
       "testDiscordDesc": "BotトークンとチャンネルIDを確認するためのテスト通知を送信します",
@@ -2954,57 +2952,6 @@
         "deleted": "管理者を削除しました"
       }
     },
-    "reseller": {
-      "title": "リセラーのクレジット",
-      "mine": "自分のクレジット",
-      "hint": "リセラーがクライアントを作成または更新すると、価格表に従ってクレジットが引き落とされます。クレジットをチャージし、販売状況を確認できます。",
-      "hintSelf": "クライアントを作成または更新すると、価格表に従ってクレジットが引き落とされます。",
-      "credit": "クレジット",
-      "pricePerGb": "GBあたりの価格",
-      "pricePerDay": "1日あたりの価格",
-      "manage": "管理",
-      "topupTitle": "クレジットの追加・減算",
-      "amountHint": "金額（負の値で減算）",
-      "note": "メモ",
-      "topup": "適用",
-      "pricesTitle": "価格表",
-      "wholesale": "卸価格表",
-      "wholesaleHint": "独自の価格を持たないリセラーにはこの価格表が適用されます。クレジットはパネル独自の単位です。警告レベルを設定すると、残高が少なくなったときに通知されます（0 = 無効）。",
-      "lowCredit": "この値を下回ったら警告",
-      "priceFallback": "価格を空欄にするとパネルの価格表に従います。",
-      "ranges": {
-        "all": "全期間",
-        "7": "7日間",
-        "30": "30日間",
-        "90": "90日間"
-      },
-      "report": {
-        "reseller": "リセラー",
-        "created": "作成数",
-        "renewed": "更新数",
-        "spent": "使用額",
-        "traffic": "販売トラフィック",
-        "days": "販売日数",
-        "toppedUp": "追加クレジット"
-      },
-      "ledger": {
-        "title": "クレジット履歴",
-        "time": "日時",
-        "kind": "種類",
-        "amount": "金額",
-        "client": "クライアント"
-      },
-      "kinds": {
-        "topup": "チャージ",
-        "create": "新規クライアント",
-        "renew": "更新"
-      },
-      "toasts": {
-        "toppedUp": "クレジットを更新しました",
-        "pricesSaved": "価格表を保存しました",
-        "configSaved": "卸価格表を保存しました"
-      }
-    },
     "sales": {
       "hint": "プランを顧客に販売します。プランは価格・容量・期間を定め、紐づくクライアントテンプレートが顧客に付与するインバウンドを決めます。",
       "plansTab": "プラン",
@@ -3165,7 +3112,7 @@
       "saved": "パネルを保存しました",
       "deleted": "パネルを削除しました",
       "usageReset": "使用量をリセットしました",
-      "title": "ホストパネル",
+      "title": "リセラー",
       "hint": "このサーバー上に独立したパネルを作成し、他の人に渡せます。各パネルは独自のログイン、アドレス、データベース、インバウンドポート範囲を持ち、ここで設定した上限を超えられません。",
       "add": "新しいパネル",
       "edit": "パネルを編集",
@@ -3200,7 +3147,7 @@
       "resetUsageConfirm": "このパネルの新しい使用期間を開始しますか？",
       "deleteConfirm": "このパネルを削除しますか？",
       "deleteWarning": "データベース、インバウンド、クライアントは完全に削除されます。",
-      "empty": "ホストパネルはまだありません",
+      "empty": "リセラーパネルはまだありません",
       "emptyHint": "パネルを作成すると、指定した通信量・インバウンド・クライアント数で専用ログインを渡せます。",
       "errName": "64 文字以内の名前を入力してください",
       "errUsername": "空白を含まないユーザー名を入力してください",

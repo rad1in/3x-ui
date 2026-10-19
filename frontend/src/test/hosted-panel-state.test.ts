@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { HostedPanelView } from '@/generated/zod';
-import { hostedPanelState, hostedPanelUrl, suggestHostedPorts } from '@/pages/panels/panelState';
+import { hostedPanelState, hostedPanelUrl, suggestHostedPorts } from '@/pages/reseller/panelState';
 
 function panel(over: Partial<HostedPanelView> = {}): HostedPanelView {
   return {

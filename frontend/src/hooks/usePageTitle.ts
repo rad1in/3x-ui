@@ -22,7 +22,6 @@ const TITLE_KEYS: Record<string, string> = {
   '/admins': 'menu.admins',
   '/sessions': 'menu.sessions',
   '/reseller': 'menu.reseller',
-  '/panels': 'menu.panels',
 };
 
 export function usePageTitle() {

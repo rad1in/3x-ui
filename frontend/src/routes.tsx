@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter, type RouteObject } from 'react-router';
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router';
 import { Spin } from 'antd';
 
 import PanelLayout from '@/layouts/PanelLayout';
@@ -17,9 +17,8 @@ const SponsorsPage = lazy(() => import('@/pages/sponsors/SponsorsPage'));
 const SalesPage = lazy(() => import('@/pages/sales/SalesPage'));
 const AuditPage = lazy(() => import('@/pages/audit/AuditPage'));
 const AdminsPage = lazy(() => import('@/pages/admins/AdminsPage'));
-const ResellerPage = lazy(() => import('@/pages/reseller/ResellerPage'));
 const SessionsPage = lazy(() => import('@/pages/sessions/SessionsPage'));
-const PanelsPage = lazy(() => import('@/pages/panels/PanelsPage'));
+const ResellerPage = lazy(() => import('@/pages/reseller/ResellerPage'));
 
 function withSuspense(node: React.ReactNode) {
   return (
@@ -62,9 +61,9 @@ const routes: RouteObject[] = [
       { path: 'sales', element: withSuspense(<SalesPage />) },
       { path: 'audit', element: withSuspense(<AuditPage />) },
       { path: 'admins', element: withSuspense(<AdminsPage />) },
-      { path: 'reseller', element: withSuspense(<ResellerPage />) },
       { path: 'sessions', element: withSuspense(<SessionsPage />) },
-      { path: 'panels', element: withSuspense(<PanelsPage />) },
+      { path: 'reseller', element: withSuspense(<ResellerPage />) },
+      { path: 'panels', element: <Navigate to="/reseller" replace /> },
     ],
   },
 ];
