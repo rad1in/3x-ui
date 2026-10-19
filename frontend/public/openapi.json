@@ -8287,6 +8287,48 @@
         }
       }
     },
+    "/panel/api/inbounds/report": {
+      "get": {
+        "tags": [
+          "Inbounds"
+        ],
+        "summary": "Download a traffic summary of the inbounds you can see (up, down, quota, expiry, client count) as an Excel workbook, PDF table or CSV. Cells starting with = + - or @ are quoted so spreadsheets do not run them.",
+        "operationId": "get_panel_api_inbounds_report",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "xlsx, pdf or csv.",
+            "schema": {
+              "type": "string",
+              "default": "xlsx"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/panel/api/inbounds/list/slim": {
       "get": {
         "tags": [
@@ -13869,7 +13911,7 @@
         "tags": [
           "Clients"
         ],
-        "summary": "Usage report of every client you can see. format=csv (default) downloads a spreadsheet-ready file with byte counts; format=html returns a printable page that can be saved as PDF from the browser. Period columns sum the per-day usage of the last days days; cells starting with = + - or @ are quoted so spreadsheets do not run them.",
+        "summary": "Usage report of every client you can see. format=csv (default) downloads a spreadsheet-ready file with byte counts; format=xlsx downloads an Excel workbook; format=pdf downloads a PDF table; format=html returns a printable page. Period columns sum the per-day usage of the last days days; cells starting with = + - or @ are quoted so spreadsheets do not run them.",
         "operationId": "get_panel_api_clients_report",
         "parameters": [
           {
@@ -13886,7 +13928,7 @@
             "name": "format",
             "in": "query",
             "required": false,
-            "description": "csv or html.",
+            "description": "csv, xlsx, pdf or html.",
             "schema": {
               "type": "string",
               "default": "csv"
@@ -19185,6 +19227,57 @@
                       }
                     ],
                     "total": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/orders/export": {
+      "get": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Download the orders (newest first, at most 50000) as an Excel workbook, PDF table or CSV. The order token and pay link are left out; cells starting with = + - or @ are quoted so spreadsheets do not run them.",
+        "operationId": "get_panel_api_sales_orders_export",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "xlsx, pdf or csv.",
+            "schema": {
+              "type": "string",
+              "default": "xlsx"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Only orders of this status; empty exports every status.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {}
                   }
                 }
               }

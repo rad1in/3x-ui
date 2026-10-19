@@ -9,6 +9,7 @@ import (
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/common"
+	"github.com/mhsanaei/3x-ui/v3/internal/util/tableexport"
 )
 
 // ClientReportRow is one client's usage over the report window plus its
@@ -71,22 +72,13 @@ func reportExpiry(ms int64) string {
 	return time.UnixMilli(ms).Format(usageDayLayout)
 }
 
-// csvSafe stops a spreadsheet from running a cell as a formula: a leading
-// = + - @ tab or CR gets a quote in front, as OWASP's CSV-injection advice says.
-func csvSafe(cell string) string {
-	if cell != "" && (cell[0] == '=' || cell[0] == '+' || cell[0] == '-' || cell[0] == '@' || cell[0] == '\t' || cell[0] == '\r') {
-		return "'" + cell
-	}
-	return cell
-}
-
 // WriteReportCSV writes the rows as CSV with byte counts in plain integers.
 func WriteReportCSV(w io.Writer, rows []ClientReportRow) error {
 	cw := csv.NewWriter(w)
 	_ = cw.Write([]string{"email", "group", "enabled", "period_up_bytes", "period_down_bytes", "total_up_bytes", "total_down_bytes", "quota_bytes", "expiry"})
 	for _, r := range rows {
 		_ = cw.Write([]string{
-			csvSafe(r.Email), csvSafe(r.Group), strconv.FormatBool(r.Enable),
+			tableexport.EscapeFormula(r.Email), tableexport.EscapeFormula(r.Group), strconv.FormatBool(r.Enable),
 			strconv.FormatInt(r.PeriodUp, 10), strconv.FormatInt(r.PeriodDown, 10),
 			strconv.FormatInt(r.TotalUp, 10), strconv.FormatInt(r.TotalDown, 10),
 			strconv.FormatInt(r.Quota, 10), reportExpiry(r.ExpiryTime),
@@ -134,4 +126,38 @@ tr{break-inside:avoid}
 // WriteReportHTML renders a self-contained, print-friendly report page.
 func WriteReportHTML(w io.Writer, rows []ClientReportRow, days int, now time.Time) error {
 	return reportTemplate.Execute(w, map[string]any{"Rows": rows, "Days": days, "Date": now.Format(usageDayLayout)})
+}
+
+func bytesColumn(header string) tableexport.Column {
+	return tableexport.Column{Header: header, Display: func(v any) string { return common.FormatTraffic(v.(int64)) }}
+}
+
+// quotaColumn reads a zero or negative limit as unlimited, as the panel does.
+func quotaColumn(header string) tableexport.Column {
+	return tableexport.Column{Header: header, Display: func(v any) string {
+		if q := v.(int64); q > 0 {
+			return common.FormatTraffic(q)
+		}
+		return "unlimited"
+	}}
+}
+
+// ReportTable lays the usage rows out for the workbook and PDF: byte counts stay
+// integers in the workbook and read as KB/MB/GB in the PDF.
+func ReportTable(rows []ClientReportRow, days int, now time.Time) tableexport.Table {
+	t := tableexport.Table{
+		Title:    "Client usage report",
+		Subtitle: "Generated " + now.Format(usageDayLayout) + " - last " + strconv.Itoa(days) + " days - " + strconv.Itoa(len(rows)) + " clients",
+		Columns: []tableexport.Column{
+			{Header: "Client"}, {Header: "Group"}, {Header: "Enabled"},
+			bytesColumn("Up (period)"), bytesColumn("Down (period)"),
+			bytesColumn("Total up"), bytesColumn("Total down"),
+			quotaColumn("Quota"),
+			{Header: "Expiry"},
+		},
+	}
+	for _, r := range rows {
+		t.Rows = append(t.Rows, []any{r.Email, r.Group, r.Enable, r.PeriodUp, r.PeriodDown, r.TotalUp, r.TotalDown, r.Quota, reportExpiry(r.ExpiryTime)})
+	}
+	return t
 }

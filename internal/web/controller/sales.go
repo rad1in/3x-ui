@@ -2,6 +2,7 @@ package controller
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
@@ -27,6 +28,7 @@ func NewSalesController(g *gin.RouterGroup) *SalesController {
 	g.POST("/plans/save", a.savePlan)
 	g.POST("/plans/del/:id", a.deletePlan)
 	g.GET("/orders", a.listOrders)
+	g.GET("/orders/export", a.exportOrders)
 	g.POST("/orders/approve/:id", a.approveOrder)
 	g.POST("/orders/reject/:id", a.rejectOrder)
 	g.GET("/discounts", a.listDiscounts)
@@ -78,6 +80,22 @@ func (a *SalesController) listOrders(c *gin.Context) {
 	offset, _ := strconv.Atoi(c.Query("offset"))
 	page, err := a.orderService.ListOrders(c.Query("status"), limit, offset)
 	jsonObj(c, page, err)
+}
+
+func (a *SalesController) exportOrders(c *gin.Context) {
+	format := c.DefaultQuery("format", "xlsx")
+	if !isTableFormat(format) {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), nil)
+		return
+	}
+	status := c.Query("status")
+	orders, err := a.orderService.ExportOrders(status)
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), err)
+		return
+	}
+	now := time.Now()
+	serveTable(c, format, "orders-"+now.Format("2006-01-02"), service.OrdersTable(orders, status, now))
 }
 
 func (a *SalesController) approveOrder(c *gin.Context) {

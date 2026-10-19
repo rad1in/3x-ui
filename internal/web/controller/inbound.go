@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/util/wirecodec"
@@ -77,6 +78,7 @@ func (a *InboundController) inboundServiceFor(c *gin.Context) *service.InboundSe
 func (a *InboundController) initRouter(g *gin.RouterGroup) {
 	g.GET("/list", a.getInbounds)
 	g.GET("/list/slim", a.getInboundsSlim)
+	g.GET("/report", a.trafficReport)
 	g.GET("/options", a.getInboundOptions)
 	g.GET("/allLinks", a.getAllInboundLinks)
 	g.GET("/get/:id", a.getInbound)
@@ -112,6 +114,21 @@ func (a *InboundController) getInbounds(c *gin.Context) {
 		return
 	}
 	jsonObj(c, inbounds, nil)
+}
+
+func (a *InboundController) trafficReport(c *gin.Context) {
+	format := c.DefaultQuery("format", "xlsx")
+	if !isTableFormat(format) {
+		jsonMsg(c, I18nWeb(c, "somethingWentWrong"), nil)
+		return
+	}
+	inbounds, err := a.inboundService.GetInbounds(requestScope(c))
+	if err != nil {
+		jsonMsg(c, I18nWeb(c, "pages.inbounds.toasts.obtain"), err)
+		return
+	}
+	now := time.Now()
+	serveTable(c, format, "inbound-traffic-"+now.Format("2006-01-02"), service.InboundTrafficTable(inbounds, now))
 }
 
 // getInboundsSlim is the list-page variant that strips full client
