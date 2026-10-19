@@ -16,6 +16,52 @@
 > [!IMPORTANT]
 > This project is intended for personal use. Please do not use it for illegal purposes.
 
+## Comparison with 3x-ui
+
+The first rows are shared with 3x-ui; the rest exist only in Eternal. The comparison is against the 3x-ui version this fork branched from and may be outdated if upstream has added features since.
+
+| Feature | Eternal | 3x-ui |
+| --- | :---: | :---: |
+| VLESS, VMess, Trojan, Shadowsocks, REALITY, XTLS | ✅ | ✅ |
+| Hysteria2, TUIC v5, WireGuard, AmneziaWG, MTProto | ✅ | ✅ |
+| Per-client quota, expiry, IP and device limits | ✅ | ✅ |
+| Multi-node management | ✅ | ✅ |
+| Subscription server (raw, JSON, Clash) | ✅ | ✅ |
+| Telegram and Discord bots | ✅ | ✅ |
+| REST API with scoped tokens | ✅ | ✅ |
+| Routing rules, WARP and outbound chaining | ✅ | ✅ |
+| SQLite and PostgreSQL | ✅ | ✅ |
+| Fail2ban IP limits | ✅ | ✅ |
+| 13 languages, dark and light themes, PWA | ✅ | ✅ |
+| OpenVPN inbounds | ✅ | ❌ |
+| IKEv2/IPsec and L2TP/IPsec inbounds | ✅ | ❌ |
+| SSTP (Windows built-in VPN) and OpenConnect/AnyConnect | ✅ | ❌ |
+| SSH tunnel accounts with metered traffic | ✅ | ❌ |
+| Built-in shop: plans, orders, public purchase page | ✅ | ❌ |
+| Card-to-card, Zarinpal, IDPay and crypto (NOWPayments) payments | ✅ | ❌ |
+| Customer wallet, discount codes, referral bonus | ✅ | ❌ |
+| Reseller credit wallet, wholesale prices, sales report | ✅ | ❌ |
+| Roles and per-admin scoping (RBAC), admin sessions | ✅ | ❌ |
+| Panel IP allow-list, login lockout, captcha, new-IP/country alerts | ✅ | ❌ |
+| Telegram one-time-code login, signed subscription links | ✅ | ❌ |
+| MySQL / MariaDB backend | ✅ | ❌ |
+| Encrypted and scheduled backups to local folder or S3 | ✅ | ❌ |
+| Prometheus metrics and Grafana dashboard | ✅ | ❌ |
+| Cloudflare clean-IP scanner, port/SNI rotation, blocked-port alerts | ✅ | ❌ |
+| One-command node install and automatic node failover | ✅ | ❌ |
+| Node monthly cap, cost tracking and speed test | ✅ | ❌ |
+| Client templates, daily usage chart, instant disconnect | ✅ | ❌ |
+| Import from Marzban, Marzneshin and Hiddify | ✅ | ❌ |
+| Telegram trial accounts | ✅ | ❌ |
+| sing-box, Outline, Surge, Quantumult X and Loon subscriptions | ✅ | ❌ |
+| Short subscription links, rate limiting, fetch statistics | ✅ | ❌ |
+| Webhooks, ntfy, Gotify, Slack and Bale notifications | ✅ | ❌ |
+| Editable bot texts and weekly summary report | ✅ | ❌ |
+| Shared-account detection and maintenance mode | ✅ | ❌ |
+| Panel health check, usage report export, keyboard shortcuts | ✅ | ❌ |
+| Decoy site for unknown visitors, audit log, branding settings | ✅ | ❌ |
+| `x-ui client` command line | ✅ | ❌ |
+
 ## What the fork adds
 
 On top of everything 3x-ui provides (VLESS, VMess, Trojan, Shadowsocks, REALITY, Hysteria2, TUIC, AmneziaWG, MTProto, multi-node, subscriptions, Telegram and Discord bots, REST API), Eternal adds:
