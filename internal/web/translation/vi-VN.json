@@ -2110,7 +2110,6 @@
       "eventClientQuotaWarning": "Cảnh báo hạn mức",
       "eventClientExpiryWarning": "Cảnh báo hết hạn",
       "eventWeeklyReport": "Tóm tắt hằng tuần",
-      "eventResellerCreditLow": "Tín dụng đại lý thấp",
       "eventLoginNewLocation": "Quản trị viên đăng nhập từ nơi mới",
       "eventClientSharedAccount": "Nghi ngờ tài khoản dùng chung",
       "testDiscordDesc": "Gửi thông báo thử nghiệm để xác minh token bot và ID kênh",
@@ -2983,57 +2982,6 @@
       "toasts": {
         "saved": "Đã lưu quản trị viên",
         "deleted": "Đã xóa quản trị viên"
-      }
-    },
-    "reseller": {
-      "title": "Tín dụng đại lý",
-      "mine": "Tín dụng của tôi",
-      "hint": "Đại lý bị trừ tín dụng theo bảng giá khi tạo hoặc gia hạn khách hàng. Nạp tín dụng cho họ và theo dõi doanh số.",
-      "hintSelf": "Bạn bị trừ tín dụng theo bảng giá của mình khi tạo hoặc gia hạn khách hàng.",
-      "credit": "Tín dụng",
-      "pricePerGb": "Giá mỗi GB",
-      "pricePerDay": "Giá mỗi ngày",
-      "manage": "Quản lý",
-      "topupTitle": "Cộng hoặc trừ tín dụng",
-      "amountHint": "Số tiền (số âm sẽ trừ)",
-      "note": "Ghi chú",
-      "topup": "Áp dụng",
-      "pricesTitle": "Bảng giá",
-      "wholesale": "Bảng giá sỉ",
-      "wholesaleHint": "Đại lý không có giá riêng sẽ bị tính theo bảng này. Tín dụng là đơn vị riêng của bảng điều khiển; đặt mức cảnh báo để được báo khi tín dụng của đại lý sắp hết (0 = tắt).",
-      "lowCredit": "Cảnh báo khi dưới",
-      "priceFallback": "Để trống giá để theo bảng giá của bảng điều khiển.",
-      "ranges": {
-        "all": "Toàn bộ thời gian",
-        "7": "7 ngày",
-        "30": "30 ngày",
-        "90": "90 ngày"
-      },
-      "report": {
-        "reseller": "Đại lý",
-        "created": "Đã tạo",
-        "renewed": "Đã gia hạn",
-        "spent": "Đã chi",
-        "traffic": "Lưu lượng đã bán",
-        "days": "Số ngày đã bán",
-        "toppedUp": "Tín dụng đã nạp"
-      },
-      "ledger": {
-        "title": "Lịch sử tín dụng",
-        "time": "Thời gian",
-        "kind": "Loại",
-        "amount": "Số tiền",
-        "client": "Khách hàng"
-      },
-      "kinds": {
-        "topup": "Nạp tiền",
-        "create": "Khách mới",
-        "renew": "Gia hạn"
-      },
-      "toasts": {
-        "toppedUp": "Đã cập nhật tín dụng",
-        "pricesSaved": "Đã lưu bảng giá",
-        "configSaved": "Đã lưu bảng giá"
       }
     },
     "sales": {

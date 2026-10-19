@@ -18,7 +18,7 @@ const SalesPage = lazy(() => import('@/pages/sales/SalesPage'));
 const AuditPage = lazy(() => import('@/pages/audit/AuditPage'));
 const AdminsPage = lazy(() => import('@/pages/admins/AdminsPage'));
 const SessionsPage = lazy(() => import('@/pages/sessions/SessionsPage'));
-const ResellerPage = lazy(() => import('@/pages/panels/PanelsPage'));
+const ResellerPage = lazy(() => import('@/pages/reseller/ResellerPage'));
 
 function withSuspense(node: React.ReactNode) {
   return (

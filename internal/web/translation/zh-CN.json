@@ -2110,7 +2110,6 @@
       "eventClientQuotaWarning": "流量预警",
       "eventClientExpiryWarning": "到期预警",
       "eventWeeklyReport": "每周摘要",
-      "eventResellerCreditLow": "分销商额度不足",
       "eventLoginNewLocation": "管理员从新位置登录",
       "eventClientSharedAccount": "疑似共享账号",
       "testDiscordDesc": "发送测试通知以验证您的机器人令牌和频道 ID",
@@ -2983,57 +2982,6 @@
       "toasts": {
         "saved": "管理员已保存",
         "deleted": "管理员已删除"
-      }
-    },
-    "reseller": {
-      "title": "分销商额度",
-      "mine": "我的额度",
-      "hint": "分销商创建或续期客户时，会按其价格表扣除额度。可在此为其充值并查看销售情况。",
-      "hintSelf": "创建或续期客户时，会按您的价格表扣除额度。",
-      "credit": "额度",
-      "pricePerGb": "每 GB 价格",
-      "pricePerDay": "每天价格",
-      "manage": "管理",
-      "topupTitle": "增加或扣减额度",
-      "amountHint": "金额（负数为扣减）",
-      "note": "备注",
-      "topup": "应用",
-      "pricesTitle": "价格表",
-      "wholesale": "批发价格表",
-      "wholesaleHint": "没有自定义价格的分销商按此价格表计费。额度是面板自己的单位；设置提醒线，可在分销商额度不足时收到通知（0 = 关闭）。",
-      "lowCredit": "低于此值时提醒",
-      "priceFallback": "价格留空则沿用面板价格表。",
-      "ranges": {
-        "all": "全部时间",
-        "7": "7 天",
-        "30": "30 天",
-        "90": "90 天"
-      },
-      "report": {
-        "reseller": "分销商",
-        "created": "新建",
-        "renewed": "续期",
-        "spent": "已消耗",
-        "traffic": "售出流量",
-        "days": "售出天数",
-        "toppedUp": "已充值额度"
-      },
-      "ledger": {
-        "title": "额度记录",
-        "time": "时间",
-        "kind": "类型",
-        "amount": "金额",
-        "client": "客户"
-      },
-      "kinds": {
-        "topup": "充值",
-        "create": "新客户",
-        "renew": "续期"
-      },
-      "toasts": {
-        "toppedUp": "额度已更新",
-        "pricesSaved": "价格表已保存",
-        "configSaved": "价格表已保存"
       }
     },
     "sales": {

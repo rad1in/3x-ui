@@ -31,7 +31,7 @@ func mayCall(t *testing.T, role, method, path string) bool {
 	return allowed
 }
 
-// A reseller must never move clients between resellers, itself included.
+// An operator must never move clients between admins, itself included.
 func TestOnlyOwnersAndAdminsMayTransferClients(t *testing.T) {
 	for role, want := range map[string]bool{
 		model.AdminRoleOwner:    true,
@@ -40,29 +40,6 @@ func TestOnlyOwnersAndAdminsMayTransferClients(t *testing.T) {
 	} {
 		if got := mayCall(t, role, http.MethodPost, "/clients/transfer"); got != want {
 			t.Errorf("%s may call POST /clients/transfer = %v, want %v", role, got, want)
-		}
-	}
-}
-
-// A reseller can read its own sales but never another reseller's credit or the price list.
-func TestResellerRoutesKeepCreditAndPricesOwnerOnly(t *testing.T) {
-	cases := []struct {
-		method, path string
-		role         string
-		want         bool
-	}{
-		{http.MethodGet, "/reseller/me", model.AdminRoleOperator, true},
-		{http.MethodGet, "/reseller/report", model.AdminRoleOperator, true},
-		{http.MethodPost, "/reseller/topup/:id", model.AdminRoleOperator, false},
-		{http.MethodPost, "/reseller/prices/:id", model.AdminRoleOperator, false},
-		{http.MethodGet, "/reseller/account/:id", model.AdminRoleOperator, false},
-		{http.MethodGet, "/reseller/config", model.AdminRoleOperator, false},
-		{http.MethodPost, "/reseller/topup/:id", model.AdminRoleAdmin, false},
-		{http.MethodPost, "/reseller/topup/:id", model.AdminRoleOwner, true},
-	}
-	for _, c := range cases {
-		if got := mayCall(t, c.role, c.method, c.path); got != c.want {
-			t.Errorf("%s may call %s %s = %v, want %v", c.role, c.method, c.path, got, c.want)
 		}
 	}
 }
