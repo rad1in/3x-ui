@@ -3046,7 +3046,11 @@
         "errBonus": "Bonus 0 ile 100 arasında olmalıdır",
         "cryptoTitle": "Kripto (NOWPayments)",
         "cryptoHint": "Yalnızca USD veya EUR fiyatlı paketler içindir. Ödemeler NOWPayments’ın imzalı webhook’uyla onaylanır.",
-        "ipnSecret": "IPN gizli anahtarı"
+        "ipnSecret": "IPN gizli anahtarı",
+        "stripeTitle": "Stripe",
+        "stripeHint": "USD veya EUR fiyatlı planlar için Stripe Checkout ile kart ve cüzdan ödemesi. Mağaza adresine /shop/api/webhook/stripe ekleyip Stripe'ta checkout.session.completed ve checkout.session.async_payment_succeeded için webhook uç noktası olarak tanımlayın. sk_test_ ile başlayan anahtar test modundadır.",
+        "secretKey": "Gizli anahtar",
+        "webhookSecret": "Webhook imza anahtarı"
       },
       "discounts": {
         "add": "İndirim kodu ekle",
@@ -3090,7 +3094,8 @@
         "card": "Karttan karta",
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
-        "crypto": "Kripto"
+        "crypto": "Kripto",
+        "stripe": "Stripe"
       }
     },
     "sessions": {

@@ -1663,6 +1663,11 @@ export const EXAMPLES: Record<string, unknown> = {
       "bonusPercent": 10,
       "enabled": false
     },
+    "stripe": {
+      "enabled": false,
+      "secretKey": "",
+      "webhookSecret": ""
+    },
     "walletEnabled": false,
     "zarinpal": {
       "enabled": false,
@@ -1690,6 +1695,8 @@ export const EXAMPLES: Record<string, unknown> = {
     "hasCryptoApiKey": false,
     "hasCryptoIpnSecret": false,
     "hasIdpayApiKey": false,
+    "hasStripeSecretKey": false,
+    "hasStripeWebhookSecret": false,
     "hasZarinpalMerchantId": false,
     "idpay": {
       "apiKey": "",
@@ -1701,6 +1708,11 @@ export const EXAMPLES: Record<string, unknown> = {
     "referral": {
       "bonusPercent": 10,
       "enabled": false
+    },
+    "stripe": {
+      "enabled": false,
+      "secretKey": "",
+      "webhookSecret": ""
     },
     "walletEnabled": false,
     "zarinpal": {
@@ -1894,6 +1906,11 @@ export const EXAMPLES: Record<string, unknown> = {
         "until": "2026-11-01T00:00:00Z"
       }
     ]
+  },
+  "StripeConfig": {
+    "enabled": false,
+    "secretKey": "",
+    "webhookSecret": ""
   },
   "SubBalancer": {
     "createdAt": 1710000000000,

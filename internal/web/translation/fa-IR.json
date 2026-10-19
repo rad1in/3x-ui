@@ -3046,7 +3046,11 @@
         "errBonus": "پاداش باید بین ۰ تا ۱۰۰ باشد",
         "cryptoTitle": "ارز دیجیتال (NOWPayments)",
         "cryptoHint": "فقط برای پلن‌هایی با قیمت دلار یا یورو. پرداخت با یک وب‌هوک امضاشده از NOWPayments تأیید می‌شود.",
-        "ipnSecret": "کلید محرمانه IPN"
+        "ipnSecret": "کلید محرمانه IPN",
+        "stripeTitle": "Stripe",
+        "stripeHint": "پرداخت با کارت و کیف پول از طریق Stripe Checkout برای پلن‌هایی که قیمتشان به دلار یا یورو است. نشانی فروشگاه را به همراه مسیر /shop/api/webhook/stripe در Stripe به‌عنوان وب‌هوک برای رویدادهای checkout.session.completed و checkout.session.async_payment_succeeded ثبت کنید. کلیدی که با sk_test_ شروع شود حالت آزمایشی است.",
+        "secretKey": "کلید محرمانه",
+        "webhookSecret": "رمز امضای وب‌هوک"
       },
       "discounts": {
         "add": "افزودن کد تخفیف",
@@ -3090,7 +3094,8 @@
         "card": "کارت‌به‌کارت",
         "zarinpal": "زرین‌پال",
         "idpay": "آی‌دی‌پی",
-        "crypto": "ارز دیجیتال"
+        "crypto": "ارز دیجیتال",
+        "stripe": "Stripe"
       }
     },
     "sessions": {

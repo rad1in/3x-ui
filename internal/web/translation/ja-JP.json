@@ -3046,7 +3046,11 @@
         "errBonus": "ボーナスは 0 から 100 の間で指定してください",
         "cryptoTitle": "暗号資産（NOWPayments）",
         "cryptoHint": "USD または EUR 建てのプラン専用です。支払いは NOWPayments の署名付き Webhook で確認されます。",
-        "ipnSecret": "IPN シークレット"
+        "ipnSecret": "IPN シークレット",
+        "stripeTitle": "Stripe",
+        "stripeHint": "USD または EUR で価格設定したプラン向けに、Stripe Checkout でカードやウォレット決済を受け付けます。ショップのアドレスに /shop/api/webhook/stripe を付けた URL を、checkout.session.completed と checkout.session.async_payment_succeeded の Webhook エンドポイントとして Stripe に登録してください。sk_test_ で始まるキーはテストモードです。",
+        "secretKey": "シークレットキー",
+        "webhookSecret": "Webhook 署名シークレット"
       },
       "discounts": {
         "add": "割引コードを追加",
@@ -3090,7 +3094,8 @@
         "card": "カード間振込",
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
-        "crypto": "暗号資産"
+        "crypto": "暗号資産",
+        "stripe": "Stripe"
       }
     },
     "sessions": {

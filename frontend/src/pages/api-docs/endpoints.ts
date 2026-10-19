@@ -2683,14 +2683,14 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/panel/api/sales/config',
         summary:
-          'Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto). Secrets (the Zarinpal merchant id, the IDPay API key and the NOWPayments API key and IPN secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.',
+          'Selling configuration: whether the public shop is on, its public base URL and the payment methods (card-to-card, Zarinpal, IDPay, NOWPayments crypto, Stripe). Secrets (the Zarinpal merchant id, the IDPay API key, the NOWPayments API key and IPN secret and the Stripe secret key and webhook signing secret) are never returned: they come back blank and the has... flags say whether they are set. Owner only.',
         responseSchema: 'SalesConfigView',
       },
       {
         method: 'POST',
         path: '/panel/api/sales/config/save',
         summary:
-          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay or crypto section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.',
+          'Replace the selling configuration. An enabled card section needs a 16 figure card number (Persian numerals are accepted); an enabled Zarinpal, IDPay, crypto or Stripe section needs its secrets and the public base URL (http or https), because the gateway sends the customer or its webhook back to it. A blank secret keeps the stored one; list a secret in clearSecrets (zarinpal.merchantId, idpay.apiKey, crypto.apiKey, crypto.ipnSecret, stripe.secretKey, stripe.webhookSecret) to empty it. Secrets are encrypted at rest when node token encryption is on. A disabled section is stored as is. Owner only.',
         params: [{ name: 'body', in: 'body (json)', type: 'object', desc: 'SalesConfig.' }],
       },
     ],
@@ -2750,7 +2750,7 @@ export const sections: readonly Section[] = [
             name: 'gateway',
             in: 'body (json)',
             type: 'string',
-            desc: 'Payment method: card, zarinpal, idpay, crypto or wallet. A wallet payment is for renewals only, needs proof and is delivered at once.',
+            desc: 'Payment method: card, zarinpal, idpay, crypto, stripe or wallet. A wallet payment is for renewals only, needs proof and is delivered at once.',
           },
           {
             name: 'discountCode',
@@ -2807,9 +2807,9 @@ export const sections: readonly Section[] = [
         method: 'GET',
         path: '/shop/api/callback/:gateway',
         summary:
-          'Where Zarinpal (Status and Authority in the query) and IDPay (a form POST, see the POST entry) send the customer back. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.',
+          'Where Zarinpal (Status and Authority in the query), IDPay (a form POST, see the POST entry) and Stripe Checkout (success URL, or cancel=1 when the customer backs out) send the customer back. The order is named by the order query parameter. The redirect is only a hint: the shop asks the gateway to verify the payment server to server before it delivers anything, and a verification that fails or does not match the order amount fails the order. Answers 303 to the shop order page, or 404 for an unknown gateway or order. Needs the shop to be on.',
         params: [
-          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay'] },
+          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay', 'stripe'] },
           { name: 'order', in: 'query', type: 'string', desc: 'Order token.' },
         ],
       },
@@ -2829,11 +2829,25 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'POST',
+        path: '/shop/api/webhook/stripe',
+        summary:
+          'Stripe webhook (add it as an endpoint for checkout.session.completed and checkout.session.async_payment_succeeded). The Stripe-Signature header must carry an HMAC-SHA256 of timestamp.body keyed with the webhook signing secret and a timestamp within 5 minutes; anything else answers 401 and changes nothing. The event only names the order: the shop reads the Checkout Session back from Stripe and delivers only when it is paid for the order amount and currency. A paid session for another amount is parked in review; a payment arriving after the customer backed out is parked in review instead of being lost. A replayed event delivers nothing twice. Events the shop does not use answer 200, a Stripe outage or internal failure 500 so Stripe retries. Stripe plans must be priced in USD or EUR.',
+        params: [
+          {
+            name: 'Stripe-Signature',
+            in: 'header',
+            type: 'string',
+            desc: 'Stripe signature header (t=timestamp,v1=signature).',
+          },
+        ],
+      },
+      {
+        method: 'POST',
         path: '/shop/api/callback/:gateway',
         summary:
           'The same callback for gateways that return the customer with a form POST (IDPay sends status 10 when the customer paid).',
         params: [
-          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay'] },
+          { name: 'gateway', in: 'path', type: 'string', enum: ['zarinpal', 'idpay', 'stripe'] },
           { name: 'order', in: 'query', type: 'string', desc: 'Order token.' },
         ],
       },

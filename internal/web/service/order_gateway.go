@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/url"
+	"slices"
 	"strconv"
 	"sync"
 	"time"
@@ -19,6 +20,7 @@ const (
 	GatewayZarinpal = payment.Zarinpal
 	GatewayIDPay    = payment.IDPay
 	GatewayCrypto   = payment.NOWPayments
+	GatewayStripe   = payment.Stripe
 )
 
 const (
@@ -45,17 +47,25 @@ func isOnline(gateway string) bool {
 // isVerifiable marks the gateways whose payments the shop can confirm by
 // asking them; crypto payments are reported by a signed webhook instead.
 func isVerifiable(gateway string) bool {
-	return gateway == GatewayZarinpal || gateway == GatewayIDPay
+	return slices.Contains(verifiableGateways, gateway)
+}
+
+var verifiableGateways = []string{GatewayZarinpal, GatewayIDPay, GatewayStripe}
+
+// usesPlanCurrency marks the gateways that charge in the plan's own currency
+// instead of converting to rials.
+func usesPlanCurrency(gateway string) bool {
+	return gateway == GatewayCrypto || gateway == GatewayStripe
 }
 
 // gatewayAcceptsCurrency: the Iranian gateways take toman and rials, the
-// crypto invoice is priced in dollars or euros.
+// crypto invoice and Stripe are priced in dollars or euros.
 func gatewayAcceptsCurrency(gateway, currency string) bool {
 	switch gateway {
 	case GatewayZarinpal, GatewayIDPay:
 		_, ok := payment.RialAmount(0, currency)
 		return ok
-	case GatewayCrypto:
+	case GatewayCrypto, GatewayStripe:
 		return currency == "USD" || currency == "EUR"
 	default:
 		return true
@@ -86,6 +96,8 @@ func (s *OrderService) newGateway(name string, cfg *SalesConfig) payment.Starter
 		return &payment.IDPayGateway{APIKey: cfg.IDPay.ApiKey, Sandbox: cfg.IDPay.Sandbox}
 	case GatewayCrypto:
 		return &payment.NOWPaymentsGateway{APIKey: cfg.Crypto.ApiKey, Sandbox: cfg.Crypto.Sandbox}
+	case GatewayStripe:
+		return &payment.StripeGateway{SecretKey: cfg.Stripe.SecretKey}
 	default:
 		return nil
 	}
@@ -98,8 +110,14 @@ func callbackURL(cfg *SalesConfig, order *model.Order) string {
 	return cfg.PublicBaseURL + "/shop/api/callback/" + order.Gateway + "?order=" + url.QueryEscape(order.Token)
 }
 
+// cancelURL is the callback a customer who backs out of the hosted checkout
+// is sent to; the cancel flag makes it close the order without asking.
+func cancelURL(cfg *SalesConfig, order *model.Order) string {
+	return callbackURL(cfg, order) + "&cancel=1"
+}
+
 // startRequest prices the order the way the gateway wants it: rials for the
-// Iranian gateways, the plan currency for the crypto invoice.
+// Iranian gateways, the plan currency for the crypto invoice and Stripe.
 func startRequest(cfg *SalesConfig, order *model.Order) (payment.StartRequest, bool) {
 	req := payment.StartRequest{
 		OrderToken:  order.Token,
@@ -107,9 +125,13 @@ func startRequest(cfg *SalesConfig, order *model.Order) (payment.StartRequest, b
 		CallbackURL: callbackURL(cfg, order),
 		ReturnURL:   ShopOrderURL(cfg, order.Token),
 	}
-	if order.Gateway == GatewayCrypto {
+	if usesPlanCurrency(order.Gateway) {
 		req.Amount, req.Currency = order.Amount, order.Currency
-		req.Description = "Order " + strconv.Itoa(order.Id)
+		if order.Gateway == GatewayCrypto {
+			req.Description = "Order " + strconv.Itoa(order.Id)
+		} else {
+			req.CancelURL = cancelURL(cfg, order)
+		}
 		return req, true
 	}
 	rials, ok := payment.RialAmount(order.Amount, order.Currency)
@@ -207,15 +229,32 @@ func (s *OrderService) verifyOnline(order *model.Order) (*payment.VerifyResult, 
 	if err != nil {
 		return nil, err
 	}
-	amount, ok := payment.RialAmount(order.Amount, order.Currency)
+	amount, currency, ok := verifyAmount(order)
 	gw, verifiable := s.newGateway(order.Gateway, cfg).(payment.Gateway)
 	if !ok || !verifiable || order.GatewayRef == "" {
 		return nil, salesErr(ErrOrderState)
 	}
-	return gw.Verify(context.Background(), payment.VerifyRequest{Ref: order.GatewayRef, OrderToken: order.Token, Amount: amount})
+	return gw.Verify(context.Background(), payment.VerifyRequest{Ref: order.GatewayRef, OrderToken: order.Token, Amount: amount, Currency: currency})
+}
+
+// verifyAmount is the amount the gateway must have been paid, in the unit it
+// charges in; the currency is empty for the rial gateways.
+func verifyAmount(order *model.Order) (int64, string, bool) {
+	if usesPlanCurrency(order.Gateway) {
+		return order.Amount, order.Currency, true
+	}
+	rials, ok := payment.RialAmount(order.Amount, order.Currency)
+	return rials, "", ok
 }
 
 func (s *OrderService) finishVerified(inboundSvc *InboundService, order *model.Order, res *payment.VerifyResult) (*model.Order, bool, error) {
+	switch {
+	case res.Pending:
+		return order, false, nil
+	case res.Mismatch:
+		logger.Warningf("order %d: %s reports money that does not match the order", order.Id, order.Gateway)
+		return s.parkForReview(order, model.OrderStatusPending, order.GatewayRef, "paid amount or reference differs from the order")
+	}
 	if !res.Paid {
 		closed, err := s.closeOrder(order.Id, model.OrderStatusFailed)
 		return closed, false, err
@@ -237,7 +276,7 @@ func (s *OrderService) ReconcileOnline(inboundSvc *InboundService) (int, bool, e
 	now := time.Now()
 	var pending []model.Order
 	err := database.GetDB().
-		Where("gateway IN ? AND status = ? AND created_at <= ?", []string{GatewayZarinpal, GatewayIDPay}, model.OrderStatusPending, now.Add(-reconcileMinAge).UnixMilli()).
+		Where("gateway IN ? AND status = ? AND created_at <= ?", verifiableGateways, model.OrderStatusPending, now.Add(-reconcileMinAge).UnixMilli()).
 		Find(&pending).Error
 	if err != nil {
 		return 0, false, err
@@ -277,7 +316,7 @@ func (s *OrderService) reconcileOne(inboundSvc *InboundService, order *model.Ord
 		}
 		return false, false
 	}
-	if !res.Paid {
+	if !res.Paid && !res.Mismatch {
 		if now.Sub(created) > orderExpiry {
 			_, _ = s.closeOrder(current.Id, model.OrderStatusCanceled)
 		}

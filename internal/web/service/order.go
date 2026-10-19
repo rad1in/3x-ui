@@ -162,6 +162,8 @@ func gatewayEnabled(cfg *SalesConfig, gateway string) bool {
 		return cfg.IDPay.Enabled && cfg.IDPay.ApiKey != "" && cfg.PublicBaseURL != ""
 	case GatewayCrypto:
 		return cfg.Crypto.Enabled && cfg.Crypto.ApiKey != "" && cfg.Crypto.IpnSecret != "" && cfg.PublicBaseURL != ""
+	case GatewayStripe:
+		return cfg.Stripe.Enabled && cfg.Stripe.SecretKey != "" && cfg.PublicBaseURL != ""
 	default:
 		return false
 	}

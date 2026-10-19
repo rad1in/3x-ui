@@ -3046,7 +3046,11 @@
         "errBonus": "獎勵比例須在 0 到 100 之間",
         "cryptoTitle": "加密貨幣（NOWPayments）",
         "cryptoHint": "僅適用於以 USD 或 EUR 定價的方案，收款由 NOWPayments 的簽名回呼確認。",
-        "ipnSecret": "IPN 金鑰"
+        "ipnSecret": "IPN 金鑰",
+        "stripeTitle": "Stripe",
+        "stripeHint": "透過 Stripe Checkout 接受信用卡與電子錢包付款，適用於以美元或歐元計價的方案。請在 Stripe 中將商店網址加上 /shop/api/webhook/stripe 新增為 Webhook 端點，訂閱 checkout.session.completed 與 checkout.session.async_payment_succeeded。以 sk_test_ 開頭的金鑰為測試模式。",
+        "secretKey": "密鑰",
+        "webhookSecret": "Webhook 簽署密鑰"
       },
       "discounts": {
         "add": "新增優惠碼",
@@ -3090,7 +3094,8 @@
         "card": "銀行卡轉帳",
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
-        "crypto": "加密貨幣"
+        "crypto": "加密貨幣",
+        "stripe": "Stripe"
       }
     },
     "sessions": {

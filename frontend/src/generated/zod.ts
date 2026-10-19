@@ -1598,6 +1598,7 @@ export const SalesConfigSchema = z.object({
   publicBaseUrl: z.string(),
   publicEnabled: z.boolean(),
   referral: z.lazy(() => ReferralConfigSchema),
+  stripe: z.lazy(() => StripeConfigSchema),
   walletEnabled: z.boolean(),
   zarinpal: z.lazy(() => ZarinpalConfigSchema),
 });
@@ -1610,11 +1611,14 @@ export const SalesConfigViewSchema = z.object({
   hasCryptoApiKey: z.boolean(),
   hasCryptoIpnSecret: z.boolean(),
   hasIdpayApiKey: z.boolean(),
+  hasStripeSecretKey: z.boolean(),
+  hasStripeWebhookSecret: z.boolean(),
   hasZarinpalMerchantId: z.boolean(),
   idpay: z.lazy(() => IDPayConfigSchema),
   publicBaseUrl: z.string(),
   publicEnabled: z.boolean(),
   referral: z.lazy(() => ReferralConfigSchema),
+  stripe: z.lazy(() => StripeConfigSchema),
   walletEnabled: z.boolean(),
   zarinpal: z.lazy(() => ZarinpalConfigSchema),
 });
@@ -1785,6 +1789,13 @@ export const SponsorListSchema = z.object({
   sponsors: z.array(z.lazy(() => SponsorSchema)),
 });
 export type SponsorList = z.infer<typeof SponsorListSchema>;
+
+export const StripeConfigSchema = z.object({
+  enabled: z.boolean(),
+  secretKey: z.string(),
+  webhookSecret: z.string(),
+});
+export type StripeConfig = z.infer<typeof StripeConfigSchema>;
 
 export const SubBalancerSchema = z.object({
   createdAt: z.number().int(),

@@ -360,3 +360,39 @@ func (g *refGateway) Verify(_ context.Context, req payment.VerifyRequest) (*paym
 	}
 	return &payment.VerifyResult{}, nil
 }
+
+func TestStripeOrderRefusesIranianCurrenciesAndKeepsAnUndecidedPaymentPending(t *testing.T) {
+	f := newOnlineFixture(t, 27011)
+	cfg := &SalesConfig{PublicBaseURL: "https://shop.example.com", Stripe: StripeConfig{Enabled: true, SecretKey: "sk_test"}}
+	if err := (&SalesConfigService{}).Save(cfg); err != nil {
+		t.Fatalf("Save config: %v", err)
+	}
+	_, err := f.orders.CreateOrder(CreateOrderInput{PlanId: f.plan.Id, Kind: model.OrderKindNew, Email: "alice", Gateway: GatewayStripe})
+	wantSalesError(t, err, ErrCurrencyUnsupported)
+
+	usd := *f.plan
+	usd.Id, usd.Name, usd.Currency, usd.Price = 0, "Dollar", "USD", 1999
+	plan, err := (&PlanService{}).SavePlan(&usd)
+	if err != nil {
+		t.Fatalf("SavePlan: %v", err)
+	}
+	order, err := f.orders.CreateOrder(CreateOrderInput{PlanId: plan.Id, Kind: model.OrderKindNew, Email: "bob", Gateway: GatewayStripe})
+	if err != nil {
+		t.Fatalf("CreateOrder: %v", err)
+	}
+	if order, err = f.orders.StartPayment(order); err != nil {
+		t.Fatalf("StartPayment: %v", err)
+	}
+	if f.gw.startReq.Amount != 1999 || f.gw.startReq.Currency != "USD" || f.gw.startReq.CancelURL == "" {
+		t.Fatalf("start request = %+v, want the plan price in its own currency and a cancel URL", f.gw.startReq)
+	}
+
+	f.gw.verifyRes = &payment.VerifyResult{Pending: true}
+	got, _, err := f.orders.CompleteGatewayPayment(&InboundService{}, order.Token, true)
+	if err != nil || got.Status != model.OrderStatusPending {
+		t.Fatalf("order = %+v err = %v, want it left pending", got, err)
+	}
+	if f.gw.verifyReq.Amount != 1999 || f.gw.verifyReq.Currency != "USD" {
+		t.Fatalf("verify request = %+v, want minor units and currency", f.gw.verifyReq)
+	}
+}

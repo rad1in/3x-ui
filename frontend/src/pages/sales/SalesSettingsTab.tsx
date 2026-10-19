@@ -14,6 +14,7 @@ const EMPTY: SalesConfigValues = {
   zarinpal: { enabled: false, merchantId: '', sandbox: false },
   idpay: { enabled: false, apiKey: '', sandbox: false },
   crypto: { enabled: false, apiKey: '', ipnSecret: '', sandbox: false },
+  stripe: { enabled: false, secretKey: '', webhookSecret: '' },
   walletEnabled: false,
   referral: { enabled: false, bonusPercent: 10 },
   clearSecrets: [],
@@ -28,6 +29,8 @@ const SECRET_MERCHANT = 'zarinpal.merchantId';
 const SECRET_IDPAY = 'idpay.apiKey';
 const SECRET_CRYPTO_KEY = 'crypto.apiKey';
 const SECRET_CRYPTO_IPN = 'crypto.ipnSecret';
+const SECRET_STRIPE_KEY = 'stripe.secretKey';
+const SECRET_STRIPE_WEBHOOK = 'stripe.webhookSecret';
 
 export default function SalesSettingsTab() {
   const { t } = useTranslation();
@@ -216,6 +219,38 @@ export default function SalesSettingsTab() {
           valueProp="checked"
         >
           <Switch />
+        </FormField>
+
+        <h4>{t('pages.sales.config.stripeTitle')}</h4>
+        <FormField
+          label={t('pages.sales.config.gatewayEnabled')}
+          name="stripe.enabled"
+          valueProp="checked"
+          extra={t('pages.sales.config.stripeHint')}
+        >
+          <Switch />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.secretKey')}
+          name="stripe.secretKey"
+          extra={secretField(SECRET_STRIPE_KEY, config?.hasStripeSecretKey)}
+        >
+          <Input.Password
+            dir="ltr"
+            autoComplete="off"
+            placeholder={config?.hasStripeSecretKey ? t('pages.sales.config.secretKept') : ''}
+          />
+        </FormField>
+        <FormField
+          label={t('pages.sales.config.webhookSecret')}
+          name="stripe.webhookSecret"
+          extra={secretField(SECRET_STRIPE_WEBHOOK, config?.hasStripeWebhookSecret)}
+        >
+          <Input.Password
+            dir="ltr"
+            autoComplete="off"
+            placeholder={config?.hasStripeWebhookSecret ? t('pages.sales.config.secretKept') : ''}
+          />
         </FormField>
 
         <Button

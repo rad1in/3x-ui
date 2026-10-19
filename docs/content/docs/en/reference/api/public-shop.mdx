@@ -49,14 +49,15 @@ _openapi:
         the order to review; allowed while it is pending or already in review.'
       url: '#tell-the-shop-a-card-transfer-was-made-ref-is-the-tracking-number-or-last-numbers-up-to-64-characters-note-is-free-text-up-to-500-moves-the-order-to-review-allowed-while-it-is-pending-or-already-in-review'
     - depth: 2
-      title: 'Where Zarinpal (Status and Authority in the query) and IDPay (a form
-        POST, see the POST entry) send the customer back. The order is named by
+      title: 'Where Zarinpal (Status and Authority in the query), IDPay (a form POST,
+        see the POST entry) and Stripe Checkout (success URL, or cancel=1 when
+        the customer backs out) send the customer back. The order is named by
         the order query parameter. The redirect is only a hint: the shop asks
         the gateway to verify the payment server to server before it delivers
         anything, and a verification that fails or does not match the order
         amount fails the order. Answers 303 to the shop order page, or 404 for
         an unknown gateway or order. Needs the shop to be on.'
-      url: '#where-zarinpal-status-and-authority-in-the-query-and-idpay-a-form-post-see-the-post-entry-send-the-customer-back-the-order-is-named-by-the-order-query-parameter-the-redirect-is-only-a-hint-the-shop-asks-the-gateway-to-verify-the-payment-server-to-server-before-it-delivers-anything-and-a-verification-that-fails-or-does-not-match-the-order-amount-fails-the-order-answers-303-to-the-shop-order-page-or-404-for-an-unknown-gateway-or-order-needs-the-shop-to-be-on'
+      url: '#where-zarinpal-status-and-authority-in-the-query-idpay-a-form-post-see-the-post-entry-and-stripe-checkout-success-url-or-cancel1-when-the-customer-backs-out-send-the-customer-back-the-order-is-named-by-the-order-query-parameter-the-redirect-is-only-a-hint-the-shop-asks-the-gateway-to-verify-the-payment-server-to-server-before-it-delivers-anything-and-a-verification-that-fails-or-does-not-match-the-order-amount-fails-the-order-answers-303-to-the-shop-order-page-or-404-for-an-unknown-gateway-or-order-needs-the-shop-to-be-on'
     - depth: 2
       title: The same callback for gateways that return the customer with a form POST
         (IDPay sends status 10 when the customer paid).
@@ -74,6 +75,20 @@ _openapi:
         retrying, internal failures 500 so it retries. Crypto plans must be
         priced in USD or EUR; unpaid crypto orders are canceled after 7 days.
       url: '#nowpayments-webhook-set-as-ipn_callback_url-on-every-crypto-invoice-the-x-nowpayments-sig-header-must-be-the-hmac-sha512-keyed-with-the-ipn-secret-of-the-body-with-its-keys-sorted-at-every-depth-an-invalid-or-missing-signature-answers-401-and-changes-nothing-the-order-is-found-by-order_id-and-its-price_amount-and-price_currency-must-equal-the-order-finished-delivers-the-client-partially_paid-parks-the-order-in-review-for-the-admin-failed-and-expired-fail-it-a-finished-payment-for-an-order-already-failed-or-canceled-is-parked-in-review-instead-of-being-lost-orders-the-shop-cannot-use-are-answered-200-so-the-sender-stops-retrying-internal-failures-500-so-it-retries-crypto-plans-must-be-priced-in-usd-or-eur-unpaid-crypto-orders-are-canceled-after-7-days'
+    - depth: 2
+      title: 'Stripe webhook (add it as an endpoint for checkout.session.completed and
+        checkout.session.async_payment_succeeded). The Stripe-Signature header
+        must carry an HMAC-SHA256 of timestamp.body keyed with the webhook
+        signing secret and a timestamp within 5 minutes; anything else answers
+        401 and changes nothing. The event only names the order: the shop reads
+        the Checkout Session back from Stripe and delivers only when it is paid
+        for the order amount and currency. A paid session for another amount is
+        parked in review; a payment arriving after the customer backed out is
+        parked in review instead of being lost. A replayed event delivers
+        nothing twice. Events the shop does not use answer 200, a Stripe outage
+        or internal failure 500 so Stripe retries. Stripe plans must be priced
+        in USD or EUR.'
+      url: '#stripe-webhook-add-it-as-an-endpoint-for-checkoutsessioncompleted-and-checkoutsessionasync_payment_succeeded-the-stripe-signature-header-must-carry-an-hmac-sha256-of-timestampbody-keyed-with-the-webhook-signing-secret-and-a-timestamp-within-5-minutes-anything-else-answers-401-and-changes-nothing-the-event-only-names-the-order-the-shop-reads-the-checkout-session-back-from-stripe-and-delivers-only-when-it-is-paid-for-the-order-amount-and-currency-a-paid-session-for-another-amount-is-parked-in-review-a-payment-arriving-after-the-customer-backed-out-is-parked-in-review-instead-of-being-lost-a-replayed-event-delivers-nothing-twice-events-the-shop-does-not-use-answer-200-a-stripe-outage-or-internal-failure-500-so-stripe-retries-stripe-plans-must-be-priced-in-usd-or-eur'
   structuredData:
     headings:
       - content: Plans on sale, by sort order, and the payment methods that are switched
@@ -104,14 +119,16 @@ _openapi:
           Moves the order to review; allowed while it is pending or already in
           review.'
         id: tell-the-shop-a-card-transfer-was-made-ref-is-the-tracking-number-or-last-numbers-up-to-64-characters-note-is-free-text-up-to-500-moves-the-order-to-review-allowed-while-it-is-pending-or-already-in-review
-      - content: 'Where Zarinpal (Status and Authority in the query) and IDPay (a form
-          POST, see the POST entry) send the customer back. The order is named
-          by the order query parameter. The redirect is only a hint: the shop
-          asks the gateway to verify the payment server to server before it
-          delivers anything, and a verification that fails or does not match the
-          order amount fails the order. Answers 303 to the shop order page, or
-          404 for an unknown gateway or order. Needs the shop to be on.'
-        id: where-zarinpal-status-and-authority-in-the-query-and-idpay-a-form-post-see-the-post-entry-send-the-customer-back-the-order-is-named-by-the-order-query-parameter-the-redirect-is-only-a-hint-the-shop-asks-the-gateway-to-verify-the-payment-server-to-server-before-it-delivers-anything-and-a-verification-that-fails-or-does-not-match-the-order-amount-fails-the-order-answers-303-to-the-shop-order-page-or-404-for-an-unknown-gateway-or-order-needs-the-shop-to-be-on
+      - content: 'Where Zarinpal (Status and Authority in the query), IDPay (a form
+          POST, see the POST entry) and Stripe Checkout (success URL, or
+          cancel=1 when the customer backs out) send the customer back. The
+          order is named by the order query parameter. The redirect is only a
+          hint: the shop asks the gateway to verify the payment server to server
+          before it delivers anything, and a verification that fails or does not
+          match the order amount fails the order. Answers 303 to the shop order
+          page, or 404 for an unknown gateway or order. Needs the shop to be
+          on.'
+        id: where-zarinpal-status-and-authority-in-the-query-idpay-a-form-post-see-the-post-entry-and-stripe-checkout-success-url-or-cancel1-when-the-customer-backs-out-send-the-customer-back-the-order-is-named-by-the-order-query-parameter-the-redirect-is-only-a-hint-the-shop-asks-the-gateway-to-verify-the-payment-server-to-server-before-it-delivers-anything-and-a-verification-that-fails-or-does-not-match-the-order-amount-fails-the-order-answers-303-to-the-shop-order-page-or-404-for-an-unknown-gateway-or-order-needs-the-shop-to-be-on
       - content: The same callback for gateways that return the customer with a form
           POST (IDPay sends status 10 when the customer paid).
         id: the-same-callback-for-gateways-that-return-the-customer-with-a-form-post-idpay-sends-status-10-when-the-customer-paid
@@ -128,6 +145,19 @@ _openapi:
           Crypto plans must be priced in USD or EUR; unpaid crypto orders are
           canceled after 7 days.
         id: nowpayments-webhook-set-as-ipn_callback_url-on-every-crypto-invoice-the-x-nowpayments-sig-header-must-be-the-hmac-sha512-keyed-with-the-ipn-secret-of-the-body-with-its-keys-sorted-at-every-depth-an-invalid-or-missing-signature-answers-401-and-changes-nothing-the-order-is-found-by-order_id-and-its-price_amount-and-price_currency-must-equal-the-order-finished-delivers-the-client-partially_paid-parks-the-order-in-review-for-the-admin-failed-and-expired-fail-it-a-finished-payment-for-an-order-already-failed-or-canceled-is-parked-in-review-instead-of-being-lost-orders-the-shop-cannot-use-are-answered-200-so-the-sender-stops-retrying-internal-failures-500-so-it-retries-crypto-plans-must-be-priced-in-usd-or-eur-unpaid-crypto-orders-are-canceled-after-7-days
+      - content: 'Stripe webhook (add it as an endpoint for checkout.session.completed
+          and checkout.session.async_payment_succeeded). The Stripe-Signature
+          header must carry an HMAC-SHA256 of timestamp.body keyed with the
+          webhook signing secret and a timestamp within 5 minutes; anything else
+          answers 401 and changes nothing. The event only names the order: the
+          shop reads the Checkout Session back from Stripe and delivers only
+          when it is paid for the order amount and currency. A paid session for
+          another amount is parked in review; a payment arriving after the
+          customer backed out is parked in review instead of being lost. A
+          replayed event delivers nothing twice. Events the shop does not use
+          answer 200, a Stripe outage or internal failure 500 so Stripe retries.
+          Stripe plans must be priced in USD or EUR.'
+        id: stripe-webhook-add-it-as-an-endpoint-for-checkoutsessioncompleted-and-checkoutsessionasync_payment_succeeded-the-stripe-signature-header-must-carry-an-hmac-sha256-of-timestampbody-keyed-with-the-webhook-signing-secret-and-a-timestamp-within-5-minutes-anything-else-answers-401-and-changes-nothing-the-event-only-names-the-order-the-shop-reads-the-checkout-session-back-from-stripe-and-delivers-only-when-it-is-paid-for-the-order-amount-and-currency-a-paid-session-for-another-amount-is-parked-in-review-a-payment-arriving-after-the-customer-backed-out-is-parked-in-review-instead-of-being-lost-a-replayed-event-delivers-nothing-twice-events-the-shop-does-not-use-answer-200-a-stripe-outage-or-internal-failure-500-so-stripe-retries-stripe-plans-must-be-priced-in-usd-or-eur
     contents: []
 ---
 
@@ -140,7 +170,7 @@ export default function Layout(props) {
   return (
     <>
       {props.children}
-      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/shop/api/plans","method":"get"},{"path":"/shop/api/quote","method":"post"},{"path":"/shop/api/wallet","method":"get"},{"path":"/shop/api/orders","method":"post"},{"path":"/shop/api/orders/{token}","method":"get"},{"path":"/shop/api/orders/{token}/receipt","method":"post"},{"path":"/shop/api/callback/{gateway}","method":"get"},{"path":"/shop/api/callback/{gateway}","method":"post"},{"path":"/shop/api/ipn/nowpayments","method":"post"}]} showTitle />
+      <Comp document="./public/openapi.json" webhooks={[]} operations={[{"path":"/shop/api/plans","method":"get"},{"path":"/shop/api/quote","method":"post"},{"path":"/shop/api/wallet","method":"get"},{"path":"/shop/api/orders","method":"post"},{"path":"/shop/api/orders/{token}","method":"get"},{"path":"/shop/api/orders/{token}/receipt","method":"post"},{"path":"/shop/api/callback/{gateway}","method":"get"},{"path":"/shop/api/callback/{gateway}","method":"post"},{"path":"/shop/api/ipn/nowpayments","method":"post"},{"path":"/shop/api/webhook/stripe","method":"post"}]} showTitle />
     </>
   );
 }

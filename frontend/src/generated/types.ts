@@ -1501,6 +1501,7 @@ export interface SalesConfig {
   publicBaseUrl: string;
   publicEnabled: boolean;
   referral: ReferralConfig;
+  stripe: StripeConfig;
   walletEnabled: boolean;
   zarinpal: ZarinpalConfig;
 }
@@ -1512,11 +1513,14 @@ export interface SalesConfigView {
   hasCryptoApiKey: boolean;
   hasCryptoIpnSecret: boolean;
   hasIdpayApiKey: boolean;
+  hasStripeSecretKey: boolean;
+  hasStripeWebhookSecret: boolean;
   hasZarinpalMerchantId: boolean;
   idpay: IDPayConfig;
   publicBaseUrl: string;
   publicEnabled: boolean;
   referral: ReferralConfig;
+  stripe: StripeConfig;
   walletEnabled: boolean;
   zarinpal: ZarinpalConfig;
 }
@@ -1672,6 +1676,12 @@ export interface Sponsor {
 export interface SponsorList {
   contact?: string;
   sponsors: Sponsor[];
+}
+
+export interface StripeConfig {
+  enabled: boolean;
+  secretKey: string;
+  webhookSecret: string;
 }
 
 export interface SubBalancer {

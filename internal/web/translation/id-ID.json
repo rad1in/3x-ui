@@ -3046,7 +3046,11 @@
         "errBonus": "Bonus harus antara 0 dan 100",
         "cryptoTitle": "Kripto (NOWPayments)",
         "cryptoHint": "Hanya untuk paket berharga USD atau EUR. Pembayaran dikonfirmasi lewat webhook bertanda tangan dari NOWPayments.",
-        "ipnSecret": "Rahasia IPN"
+        "ipnSecret": "Rahasia IPN",
+        "stripeTitle": "Stripe",
+        "stripeHint": "Kartu dan dompet digital lewat Stripe Checkout, untuk paket berharga USD atau EUR. Tambahkan alamat toko plus /shop/api/webhook/stripe sebagai endpoint webhook Stripe untuk checkout.session.completed dan checkout.session.async_payment_succeeded. Kunci sk_test_ memakai mode uji.",
+        "secretKey": "Kunci rahasia",
+        "webhookSecret": "Rahasia tanda tangan webhook"
       },
       "discounts": {
         "add": "Tambah kode diskon",
@@ -3090,7 +3094,8 @@
         "card": "Kartu ke kartu",
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
-        "crypto": "Kripto"
+        "crypto": "Kripto",
+        "stripe": "Stripe"
       }
     },
     "sessions": {

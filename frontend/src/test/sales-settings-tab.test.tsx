@@ -19,6 +19,8 @@ const view = {
   hasIdpayApiKey: false,
   hasCryptoApiKey: false,
   hasCryptoIpnSecret: false,
+  hasStripeSecretKey: false,
+  hasStripeWebhookSecret: false,
 };
 
 function savedBodies() {

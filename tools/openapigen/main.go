@@ -115,6 +115,7 @@ func run(root, outDir string) error {
 				"ZarinpalConfig",
 				"IDPayConfig",
 				"CryptoConfig",
+				"StripeConfig",
 				"ReferralConfig",
 				"WalletView",
 				"WalletBalance",

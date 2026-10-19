@@ -56,6 +56,7 @@ func newShopController(g *gin.RouterGroup, notFound gin.HandlerFunc, orders *ser
 	api.POST("/quote", a.rateLimited, a.quote)
 	api.GET("/wallet", a.rateLimited, a.wallet)
 	api.POST("/ipn/nowpayments", a.ipn)
+	api.POST("/webhook/stripe", a.stripeWebhook)
 	api.GET("/callback/:gateway", a.rateLimited, a.callback)
 	api.POST("/callback/:gateway", a.rateLimited, a.callback)
 	return a
@@ -177,6 +178,8 @@ func (a *ShopController) callback(c *gin.Context) {
 		claimsPaid = payment.ZarinpalCallbackPaid(c.Request.URL.Query())
 	case service.GatewayIDPay:
 		claimsPaid = payment.IDPayCallbackPaid(c.Request.Form)
+	case service.GatewayStripe:
+		claimsPaid = payment.CheckoutReturnPaid(c.Request.URL.Query())
 	default:
 		a.deny(c)
 		return
@@ -234,6 +237,39 @@ func (a *ShopController) ipn(c *gin.Context) {
 		c.JSON(http.StatusOK, entity.Msg{Msg: err.Error()})
 	default:
 		logger.Warningf("shop crypto ipn: %v", err)
+		c.JSON(http.StatusInternalServerError, entity.Msg{Msg: shopInternalError})
+	}
+}
+
+// stripeWebhook receives Stripe Checkout events. A forged one is refused; an
+// event that needs no action is answered 200, while a failure on our side or
+// at Stripe answers 500 so Stripe delivers it again.
+func (a *ShopController) stripeWebhook(c *gin.Context) {
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, shopIPNBodyLimit)
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, entity.Msg{Msg: "bad_request"})
+		return
+	}
+	order, needRestart, err := a.orderService.HandleStripeWebhook(&a.inboundService, body, c.GetHeader("Stripe-Signature"))
+	if needRestart {
+		a.xrayService.SetToNeedRestart()
+	}
+	if order != nil && order.FulfilledAt > 0 {
+		notifyClientsChanged()
+	}
+	var salesErr *service.SalesError
+	switch {
+	case err == nil:
+		c.JSON(http.StatusOK, entity.Msg{Success: true})
+	case errors.As(err, &salesErr) && salesErr.Code == service.ErrBadSignature:
+		c.JSON(http.StatusUnauthorized, entity.Msg{Msg: salesErr.Code})
+	case errors.As(err, &salesErr) && salesErr.Code == service.ErrGatewayUnavailable:
+		a.deny(c)
+	case errors.As(err, &salesErr):
+		c.JSON(http.StatusOK, entity.Msg{Msg: salesErr.Code})
+	default:
+		logger.Warningf("shop stripe webhook: %v", err)
 		c.JSON(http.StatusInternalServerError, entity.Msg{Msg: shopInternalError})
 	}
 }

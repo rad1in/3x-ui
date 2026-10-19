@@ -3046,7 +3046,11 @@
         "errBonus": "El bono debe estar entre 0 y 100",
         "cryptoTitle": "Cripto (NOWPayments)",
         "cryptoHint": "Solo para planes en USD o EUR. Los pagos se confirman con un webhook firmado de NOWPayments.",
-        "ipnSecret": "Secreto IPN"
+        "ipnSecret": "Secreto IPN",
+        "stripeTitle": "Stripe",
+        "stripeHint": "Tarjetas y monederos con Stripe Checkout, para planes con precio en USD o EUR. Añade la dirección de la tienda más /shop/api/webhook/stripe como endpoint de webhook en Stripe para checkout.session.completed y checkout.session.async_payment_succeeded. Una clave sk_test_ usa el modo de prueba.",
+        "secretKey": "Clave secreta",
+        "webhookSecret": "Secreto de firma del webhook"
       },
       "discounts": {
         "add": "Añadir código de descuento",
@@ -3090,7 +3094,8 @@
         "card": "Tarjeta a tarjeta",
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
-        "crypto": "Cripto"
+        "crypto": "Cripto",
+        "stripe": "Stripe"
       }
     },
     "sessions": {

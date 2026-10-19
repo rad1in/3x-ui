@@ -3046,7 +3046,11 @@
         "errBonus": "يجب أن تكون النسبة بين 0 و100",
         "cryptoTitle": "العملات الرقمية (NOWPayments)",
         "cryptoHint": "للخطط المسعّرة بالدولار أو اليورو فقط. يتم تأكيد الدفع عبر إشعار موقّع من NOWPayments.",
-        "ipnSecret": "مفتاح IPN السري"
+        "ipnSecret": "مفتاح IPN السري",
+        "stripeTitle": "Stripe",
+        "stripeHint": "البطاقات والمحافظ عبر Stripe Checkout للباقات المسعّرة بالدولار أو اليورو. أضف عنوان المتجر مع المسار /shop/api/webhook/stripe كنقطة Webhook في Stripe للحدثين checkout.session.completed وcheckout.session.async_payment_succeeded. المفتاح الذي يبدأ بـ sk_test_ يعمل في وضع الاختبار.",
+        "secretKey": "المفتاح السري",
+        "webhookSecret": "سر توقيع Webhook"
       },
       "discounts": {
         "add": "إضافة كود خصم",
@@ -3090,7 +3094,8 @@
         "card": "بطاقة إلى بطاقة",
         "zarinpal": "زرين بال",
         "idpay": "IDPay",
-        "crypto": "عملات رقمية"
+        "crypto": "عملات رقمية",
+        "stripe": "Stripe"
       }
     },
     "sessions": {

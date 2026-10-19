@@ -3046,7 +3046,11 @@
         "errBonus": "The bonus must be between 0 and 100",
         "cryptoTitle": "Crypto (NOWPayments)",
         "cryptoHint": "Only for plans priced in USD or EUR. Payments are confirmed by a signed NOWPayments webhook.",
-        "ipnSecret": "IPN secret"
+        "ipnSecret": "IPN secret",
+        "stripeTitle": "Stripe",
+        "stripeHint": "Cards and wallets through Stripe Checkout, for plans priced in USD or EUR. Add the shop address plus /shop/api/webhook/stripe as a Stripe webhook endpoint for checkout.session.completed and checkout.session.async_payment_succeeded. A sk_test_ key is Stripe's test mode.",
+        "secretKey": "Secret key",
+        "webhookSecret": "Webhook signing secret"
       },
       "discounts": {
         "add": "Add discount code",
@@ -3090,7 +3094,8 @@
         "card": "Card to card",
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
-        "crypto": "Crypto"
+        "crypto": "Crypto",
+        "stripe": "Stripe"
       }
     },
     "sessions": {

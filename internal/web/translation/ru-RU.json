@@ -3046,7 +3046,11 @@
         "errBonus": "Бонус должен быть от 0 до 100",
         "cryptoTitle": "Криптовалюта (NOWPayments)",
         "cryptoHint": "Только для тарифов в USD или EUR. Платежи подтверждаются подписанным вебхуком NOWPayments.",
-        "ipnSecret": "IPN-секрет"
+        "ipnSecret": "IPN-секрет",
+        "stripeTitle": "Stripe",
+        "stripeHint": "Карты и кошельки через Stripe Checkout для тарифов с ценой в USD или EUR. Добавьте адрес магазина с путём /shop/api/webhook/stripe как webhook-эндпоинт в Stripe для событий checkout.session.completed и checkout.session.async_payment_succeeded. Ключ, начинающийся с sk_test_, работает в тестовом режиме.",
+        "secretKey": "Секретный ключ",
+        "webhookSecret": "Секрет подписи webhook"
       },
       "discounts": {
         "add": "Добавить промокод",
@@ -3090,7 +3094,8 @@
         "card": "Перевод на карту",
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
-        "crypto": "Криптовалюта"
+        "crypto": "Криптовалюта",
+        "stripe": "Stripe"
       }
     },
     "sessions": {

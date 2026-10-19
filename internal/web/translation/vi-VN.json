@@ -3046,7 +3046,11 @@
         "errBonus": "Mức thưởng phải từ 0 đến 100",
         "cryptoTitle": "Tiền mã hóa (NOWPayments)",
         "cryptoHint": "Chỉ dùng cho gói định giá bằng USD hoặc EUR. Thanh toán được xác nhận bằng webhook có chữ ký của NOWPayments.",
-        "ipnSecret": "Khóa bí mật IPN"
+        "ipnSecret": "Khóa bí mật IPN",
+        "stripeTitle": "Stripe",
+        "stripeHint": "Thanh toán thẻ và ví qua Stripe Checkout cho các gói định giá bằng USD hoặc EUR. Thêm địa chỉ cửa hàng cùng /shop/api/webhook/stripe làm endpoint webhook trong Stripe cho checkout.session.completed và checkout.session.async_payment_succeeded. Khóa sk_test_ chạy ở chế độ thử nghiệm.",
+        "secretKey": "Khóa bí mật",
+        "webhookSecret": "Bí mật ký webhook"
       },
       "discounts": {
         "add": "Thêm mã giảm giá",
@@ -3090,7 +3094,8 @@
         "card": "Chuyển khoản thẻ",
         "zarinpal": "Zarinpal",
         "idpay": "IDPay",
-        "crypto": "Tiền mã hóa"
+        "crypto": "Tiền mã hóa",
+        "stripe": "Stripe"
       }
     },
     "sessions": {

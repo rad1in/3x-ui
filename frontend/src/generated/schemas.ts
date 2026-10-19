@@ -6653,6 +6653,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "referral": {
         "$ref": "#/components/schemas/ReferralConfig"
       },
+      "stripe": {
+        "$ref": "#/components/schemas/StripeConfig"
+      },
       "walletEnabled": {
         "type": "boolean"
       },
@@ -6667,6 +6670,7 @@ export const SCHEMAS: Record<string, unknown> = {
       "publicBaseUrl",
       "publicEnabled",
       "referral",
+      "stripe",
       "walletEnabled",
       "zarinpal"
     ],
@@ -6696,6 +6700,12 @@ export const SCHEMAS: Record<string, unknown> = {
       "hasIdpayApiKey": {
         "type": "boolean"
       },
+      "hasStripeSecretKey": {
+        "type": "boolean"
+      },
+      "hasStripeWebhookSecret": {
+        "type": "boolean"
+      },
       "hasZarinpalMerchantId": {
         "type": "boolean"
       },
@@ -6712,6 +6722,9 @@ export const SCHEMAS: Record<string, unknown> = {
       "referral": {
         "$ref": "#/components/schemas/ReferralConfig"
       },
+      "stripe": {
+        "$ref": "#/components/schemas/StripeConfig"
+      },
       "walletEnabled": {
         "type": "boolean"
       },
@@ -6725,11 +6738,14 @@ export const SCHEMAS: Record<string, unknown> = {
       "hasCryptoApiKey",
       "hasCryptoIpnSecret",
       "hasIdpayApiKey",
+      "hasStripeSecretKey",
+      "hasStripeWebhookSecret",
       "hasZarinpalMerchantId",
       "idpay",
       "publicBaseUrl",
       "publicEnabled",
       "referral",
+      "stripe",
       "walletEnabled",
       "zarinpal"
     ],
@@ -7356,6 +7372,26 @@ export const SCHEMAS: Record<string, unknown> = {
     },
     "required": [
       "sponsors"
+    ],
+    "type": "object"
+  },
+  "StripeConfig": {
+    "description": "StripeConfig is the Stripe account. SecretKey and WebhookSecret are secrets;\na sk_test_ key is Stripe's test mode.",
+    "properties": {
+      "enabled": {
+        "type": "boolean"
+      },
+      "secretKey": {
+        "type": "string"
+      },
+      "webhookSecret": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "enabled",
+      "secretKey",
+      "webhookSecret"
     ],
     "type": "object"
   },
