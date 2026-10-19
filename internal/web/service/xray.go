@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net"
 	"path"
 	"path/filepath"
 	"runtime"
@@ -184,6 +185,7 @@ func (s *XrayService) GetXrayConfig() (*xray.Config, error) {
 		xrayConfig.InboundConfigs = onlyAPIInbound(xrayConfig.InboundConfigs)
 	}
 	bindAPIInboundToLoopback(xrayConfig.InboundConfigs)
+	xrayConfig.Metrics = bindMetricsToLoopback(xrayConfig.Metrics)
 	xrayConfig.Policy = ensureStatsPolicy(xrayConfig.Policy)
 	xrayConfig.RouterConfig = stripDisabledRules(xrayConfig.RouterConfig)
 	// A pasted or restored template can carry pre-#6258 XHTTP keys, a pre-26.10.10 xdns mask or a
@@ -1783,6 +1785,34 @@ func bindAPIInboundToLoopback(inbounds []xray.InboundConfig) {
 			inbounds[i].Listen = loopbackListen()
 		}
 	}
+}
+
+// metricsListenOnLoopback moves the template's stock 127.0.0.1 metrics address to
+// this panel's loopback so hosted panels do not fight over the same port.
+func metricsListenOnLoopback(listen string) string {
+	host, port, err := net.SplitHostPort(listen)
+	if err != nil || host != "127.0.0.1" {
+		return listen
+	}
+	return net.JoinHostPort(config.LoopbackIP(), port)
+}
+
+func bindMetricsToLoopback(raw json_util.RawMessage) json_util.RawMessage {
+	var block map[string]any
+	if len(raw) == 0 || json.Unmarshal(raw, &block) != nil {
+		return raw
+	}
+	listen, _ := block["listen"].(string)
+	moved := metricsListenOnLoopback(listen)
+	if moved == listen {
+		return raw
+	}
+	block["listen"] = moved
+	rewritten, err := json.Marshal(block)
+	if err != nil {
+		return raw
+	}
+	return rewritten
 }
 
 // onlyAPIInbound drops template inbounds on a hosted panel: they would escape

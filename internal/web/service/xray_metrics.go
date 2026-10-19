@@ -147,7 +147,7 @@ func (s *XrayMetricsService) discoverListen() (string, error) {
 	if parsed.Metrics == nil || strings.TrimSpace(parsed.Metrics.Listen) == "" {
 		return "", nil
 	}
-	return strings.TrimSpace(parsed.Metrics.Listen), nil
+	return metricsListenOnLoopback(strings.TrimSpace(parsed.Metrics.Listen)), nil
 }
 
 type rawObsEntry struct {
