@@ -2112,6 +2112,8 @@
       "eventWeeklyReport": "خلاصه هفتگی",
       "eventLoginNewLocation": "ورود ادمین از جای جدید",
       "eventClientSharedAccount": "مشکوک به حساب اشتراکی",
+      "eventTicketOpened": "تیکت پشتیبانی جدید",
+      "eventTicketReplied": "مشتری به تیکتی پاسخ داد",
       "testDiscordDesc": "ارسال یک اعلان آزمایشی برای بررسی توکن ربات و شناسه کانال",
       "discordNotInitialized": "سرویس دیسکورد راه‌اندازی نشده است",
       "discordBotNotEnabled": "ربات دیسکورد فعال نیست",
@@ -2958,6 +2960,7 @@
       "ordersTab": "سفارش‌ها",
       "discountsTab": "کدهای تخفیف",
       "walletsTab": "کیف پول‌ها",
+      "ticketsTab": "تیکت‌ها",
       "settingsTab": "تنظیمات",
       "plans": {
         "add": "افزودن پلن",
@@ -3014,6 +3017,26 @@
           "failed": "ناموفق",
           "canceled": "لغوشده"
         }
+      },
+      "tickets": {
+        "replied": "پاسخ ارسال شد",
+        "closed": "تیکت بسته شد",
+        "reopened": "تیکت دوباره باز شد",
+        "subject": "موضوع",
+        "client": "مشتری",
+        "status": "وضعیت",
+        "statuses": {
+          "open": "در انتظار پاسخ",
+          "answered": "پاسخ داده شده",
+          "closed": "بسته"
+        },
+        "updated": "آخرین فعالیت",
+        "allStatuses": "همه وضعیت‌ها",
+        "reopen": "بازگشایی",
+        "close": "بستن",
+        "confirmClose": "این تیکت بسته شود؟",
+        "replyHint": "پاسخ خود را بنویسید (متن ساده)",
+        "send": "ارسال پاسخ"
       },
       "config": {
         "saved": "تنظیمات فروش ذخیره شد",
@@ -3206,6 +3229,21 @@
     "receiptNote": "توضیح (اختیاری)",
     "receiptSent": "رسید ارسال شد و به‌زودی بررسی می‌شود.",
     "sendReceipt": "ارسال رسید",
+    "tickets": {
+      "title": "پشتیبانی",
+      "show": "نمایش تیکت‌های من",
+      "empty": "هنوز تیکتی ندارید",
+      "subject": "موضوع تیکت جدید",
+      "message": "پیام شما (متن ساده)",
+      "send": "ارسال",
+      "back": "بازگشت به فهرست",
+      "closed": "این تیکت بسته شده است.",
+      "statuses": {
+        "open": "در انتظار پاسخ",
+        "answered": "پاسخ داده شده",
+        "closed": "بسته"
+      }
+    },
     "errors": {
       "plan_unavailable": "این پلن در دسترس نیست.",
       "invalid_email": "نام کاربری معتبر نیست.",
@@ -3223,6 +3261,10 @@
       "referral_invalid": "این کد معرف معتبر نیست.",
       "wallet_insufficient": "موجودی کیف پول کافی نیست.",
       "proof_invalid": "شناسه اشتراک با این حساب مطابقت ندارد.",
+      "ticket_invalid": "موضوع (حداکثر ۱۲۰ نویسه) و پیام (حداکثر ۲۰۰۰ نویسه) را وارد کنید.",
+      "ticket_not_found": "تیکت پیدا نشد.",
+      "ticket_limit": "تیکت‌های باز شما زیاد است. منتظر پاسخ بمانید یا یکی را ببندید.",
+      "ticket_closed": "این تیکت بسته شده است.",
       "rate_limited": "درخواست‌های زیاد. کمی صبر کنید و دوباره تلاش کنید.",
       "network": "مشکلی پیش آمد. دوباره تلاش کنید."
     }

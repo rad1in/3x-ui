@@ -2112,6 +2112,8 @@
       "eventWeeklyReport": "Haftalık özet",
       "eventLoginNewLocation": "Yöneticinin yeni bir yerden girişi",
       "eventClientSharedAccount": "Paylaşılan hesap şüphesi",
+      "eventTicketOpened": "Yeni destek talebi",
+      "eventTicketReplied": "Müşteri bir talebi yanıtladı",
       "testDiscordDesc": "Bot belirtecinizi ve kanal kimliğinizi doğrulamak için bir test bildirimi gönderin",
       "discordNotInitialized": "Discord servisi başlatılmadı",
       "discordBotNotEnabled": "Discord botu etkin değil",
@@ -2958,6 +2960,7 @@
       "ordersTab": "Siparişler",
       "discountsTab": "İndirimler",
       "walletsTab": "Cüzdanlar",
+      "ticketsTab": "Destek talepleri",
       "settingsTab": "Ayarlar",
       "plans": {
         "add": "Paket ekle",
@@ -3014,6 +3017,26 @@
           "failed": "Başarısız",
           "canceled": "İptal edildi"
         }
+      },
+      "tickets": {
+        "replied": "Yanıt gönderildi",
+        "closed": "Talep kapatıldı",
+        "reopened": "Talep yeniden açıldı",
+        "subject": "Konu",
+        "client": "Müşteri",
+        "status": "Durum",
+        "statuses": {
+          "open": "Yanıt bekliyor",
+          "answered": "Yanıtlandı",
+          "closed": "Kapalı"
+        },
+        "updated": "Son etkinlik",
+        "allStatuses": "Tüm durumlar",
+        "reopen": "Yeniden aç",
+        "close": "Kapat",
+        "confirmClose": "Bu talep kapatılsın mı?",
+        "replyHint": "Bir yanıt yazın (düz metin)",
+        "send": "Yanıtı gönder"
       },
       "config": {
         "saved": "Satış ayarları kaydedildi",
@@ -3206,6 +3229,21 @@
     "receiptNote": "Not (isteğe bağlı)",
     "receiptSent": "Dekont gönderildi. Kısa süre içinde incelenecek.",
     "sendReceipt": "Dekontu gönder",
+    "tickets": {
+      "title": "Destek",
+      "show": "Taleplerimi göster",
+      "empty": "Henüz talep yok",
+      "subject": "Yeni talebin konusu",
+      "message": "Mesajınız (düz metin)",
+      "send": "Gönder",
+      "back": "Listeye dön",
+      "closed": "Bu talep kapalı.",
+      "statuses": {
+        "open": "Yanıt bekliyor",
+        "answered": "Yanıtlandı",
+        "closed": "Kapalı"
+      }
+    },
     "errors": {
       "plan_unavailable": "Bu paket mevcut değil.",
       "invalid_email": "Bu kullanıcı adı geçersiz.",
@@ -3223,6 +3261,10 @@
       "referral_invalid": "Bu yönlendirme kodu geçersiz.",
       "wallet_insufficient": "Cüzdan bakiyeniz yetersiz.",
       "proof_invalid": "Abonelik kimliği bu hesapla eşleşmiyor.",
+      "ticket_invalid": "Bir konu (en fazla 120 karakter) ve mesaj (en fazla 2000) girin.",
+      "ticket_not_found": "Talep bulunamadı.",
+      "ticket_limit": "Çok fazla açık talebiniz var. Yanıt bekleyin veya birini kapatın.",
+      "ticket_closed": "Bu talep kapalı.",
       "rate_limited": "Çok fazla istek. Lütfen biraz bekleyip tekrar deneyin.",
       "network": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
     }

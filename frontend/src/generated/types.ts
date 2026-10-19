@@ -1702,6 +1702,33 @@ export interface SubShortLinkView {
   url: string;
 }
 
+export interface Ticket {
+  clientEmail: string;
+  createdAt: number;
+  id: number;
+  status: string;
+  subject: string;
+  updatedAt: number;
+}
+
+export interface TicketDetail {
+  messages: TicketMessage[];
+  ticket: Ticket;
+}
+
+export interface TicketMessage {
+  author: string;
+  body: string;
+  createdAt: number;
+  id: number;
+  ticketId: number;
+}
+
+export interface TicketPage {
+  items: Ticket[];
+  total: number;
+}
+
 export interface Traffic {
   Down: number;
   IsInbound: boolean;

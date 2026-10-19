@@ -2112,6 +2112,8 @@
       "eventWeeklyReport": "每周摘要",
       "eventLoginNewLocation": "管理员从新位置登录",
       "eventClientSharedAccount": "疑似共享账号",
+      "eventTicketOpened": "新的支持工单",
+      "eventTicketReplied": "客户回复了工单",
       "testDiscordDesc": "发送测试通知以验证您的机器人令牌和频道 ID",
       "discordNotInitialized": "Discord 服务未初始化",
       "discordBotNotEnabled": "Discord 机器人未启用",
@@ -2958,6 +2960,7 @@
       "ordersTab": "订单",
       "discountsTab": "优惠码",
       "walletsTab": "钱包",
+      "ticketsTab": "工单",
       "settingsTab": "设置",
       "plans": {
         "add": "添加套餐",
@@ -3014,6 +3017,26 @@
           "failed": "失败",
           "canceled": "已取消"
         }
+      },
+      "tickets": {
+        "replied": "回复已发送",
+        "closed": "工单已关闭",
+        "reopened": "工单已重新打开",
+        "subject": "主题",
+        "client": "客户",
+        "status": "状态",
+        "statuses": {
+          "open": "等待回复",
+          "answered": "已回复",
+          "closed": "已关闭"
+        },
+        "updated": "最近活动",
+        "allStatuses": "所有状态",
+        "reopen": "重新打开",
+        "close": "关闭",
+        "confirmClose": "关闭此工单？",
+        "replyHint": "输入回复（纯文本）",
+        "send": "发送回复"
       },
       "config": {
         "saved": "销售设置已保存",
@@ -3206,6 +3229,21 @@
     "receiptNote": "备注（可选）",
     "receiptSent": "凭证已提交，稍后将审核。",
     "sendReceipt": "提交凭证",
+    "tickets": {
+      "title": "客服支持",
+      "show": "查看我的工单",
+      "empty": "还没有工单",
+      "subject": "新工单的主题",
+      "message": "你的消息（纯文本）",
+      "send": "发送",
+      "back": "返回列表",
+      "closed": "此工单已关闭。",
+      "statuses": {
+        "open": "等待回复",
+        "answered": "已回复",
+        "closed": "已关闭"
+      }
+    },
     "errors": {
       "plan_unavailable": "该套餐不可用。",
       "invalid_email": "用户名无效。",
@@ -3223,6 +3261,10 @@
       "referral_invalid": "该推荐码无效。",
       "wallet_insufficient": "钱包余额不足。",
       "proof_invalid": "订阅 ID 与此账户不匹配。",
+      "ticket_invalid": "请输入主题（最多120个字符）和消息（最多2000个字符）。",
+      "ticket_not_found": "未找到工单。",
+      "ticket_limit": "未关闭的工单过多。请等待回复或关闭其中一个。",
+      "ticket_closed": "此工单已关闭。",
       "rate_limited": "请求过多，请稍候再试。",
       "network": "出错了，请重试。"
     }

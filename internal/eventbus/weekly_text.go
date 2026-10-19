@@ -50,3 +50,8 @@ func (d WeeklySummaryData) Lines() []string {
 	}
 	return lines
 }
+
+// Lines renders the ticket as plain text for channels without their own layout.
+func (d TicketEventData) Lines() []string {
+	return []string{fmt.Sprintf("#%d from %s: %s", d.TicketId, d.Email, d.Subject), d.Excerpt}
+}

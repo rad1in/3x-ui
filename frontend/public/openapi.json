@@ -7525,6 +7525,116 @@
         ],
         "type": "object"
       },
+      "Ticket": {
+        "description": "Ticket is a support thread opened by a customer, who is the client with\nClientEmail. Subject and every message body are plain text.",
+        "properties": {
+          "clientEmail": {
+            "example": "alice",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "status": {
+            "example": "open",
+            "type": "string"
+          },
+          "subject": {
+            "example": "Connection drops every hour",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "clientEmail",
+          "createdAt",
+          "id",
+          "status",
+          "subject",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "TicketDetail": {
+        "description": "TicketDetail is a ticket with its whole conversation, oldest message first.",
+        "properties": {
+          "messages": {
+            "items": {
+              "$ref": "#/components/schemas/TicketMessage"
+            },
+            "type": "array"
+          },
+          "ticket": {
+            "$ref": "#/components/schemas/Ticket"
+          }
+        },
+        "required": [
+          "messages",
+          "ticket"
+        ],
+        "type": "object"
+      },
+      "TicketMessage": {
+        "description": "TicketMessage is one line of a ticket's conversation.",
+        "properties": {
+          "author": {
+            "example": "customer",
+            "type": "string"
+          },
+          "body": {
+            "example": "It disconnects about once an hour.",
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "id": {
+            "example": 1,
+            "type": "integer"
+          },
+          "ticketId": {
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "author",
+          "body",
+          "createdAt",
+          "id",
+          "ticketId"
+        ],
+        "type": "object"
+      },
+      "TicketPage": {
+        "description": "TicketPage is one page of tickets, most recently active first, with the\nunpaged total.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Ticket"
+            },
+            "type": "array"
+          },
+          "total": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total"
+        ],
+        "type": "object"
+      },
       "Traffic": {
         "description": "Traffic represents network traffic statistics for Xray connections.\nIt tracks upload and download bytes for inbound or outbound traffic.",
         "properties": {
@@ -7891,7 +8001,7 @@
     },
     {
       "name": "Public Shop",
-      "description": "The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed, bad_signature, amount_mismatch, discount_invalid, discount_used, referral_invalid, wallet_insufficient, proof_invalid); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address."
+      "description": "The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed, bad_signature, amount_mismatch, discount_invalid, discount_used, referral_invalid, wallet_insufficient, proof_invalid, ticket_invalid, ticket_not_found, ticket_limit, ticket_closed, rate_limited); rate_limited also arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address."
     },
     {
       "name": "Admins",
@@ -19331,6 +19441,347 @@
         }
       }
     },
+    "/panel/api/sales/tickets": {
+      "get": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Support tickets, most recently active first, with the total for the filter. status is open (the customer spoke last), answered or closed; empty lists all.",
+        "operationId": "get_panel_api_sales_tickets",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Only tickets in this status.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "open",
+                "answered",
+                "closed"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Page size, 1 to 200.",
+            "schema": {
+              "type": "integer",
+              "default": 200
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Rows to skip.",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/TicketPage"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "items": [
+                      {
+                        "clientEmail": "alice",
+                        "createdAt": 0,
+                        "id": 1,
+                        "status": "open",
+                        "subject": "Connection drops every hour",
+                        "updatedAt": 0
+                      }
+                    ],
+                    "total": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/tickets/{id}": {
+      "get": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "One ticket with its whole conversation, oldest message first. Message bodies are plain text.",
+        "operationId": "get_panel_api_sales_tickets_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Ticket id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/TicketDetail"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "messages": [
+                      {
+                        "author": "customer",
+                        "body": "It disconnects about once an hour.",
+                        "createdAt": 0,
+                        "id": 1,
+                        "ticketId": 1
+                      }
+                    ],
+                    "ticket": {
+                      "clientEmail": "alice",
+                      "createdAt": 0,
+                      "id": 1,
+                      "status": "open",
+                      "subject": "Connection drops every hour",
+                      "updatedAt": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/tickets/reply/{id}": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Answer a ticket as an admin and mark it answered. Plain text, 1 to 2000 characters. Fails with ticket_closed on a closed ticket and ticket_invalid on an empty or oversized text.",
+        "operationId": "post_panel_api_sales_tickets_reply_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Ticket id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "description": "The reply."
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/TicketDetail"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "messages": [
+                      {
+                        "author": "customer",
+                        "body": "It disconnects about once an hour.",
+                        "createdAt": 0,
+                        "id": 1,
+                        "ticketId": 1
+                      }
+                    ],
+                    "ticket": {
+                      "clientEmail": "alice",
+                      "createdAt": 0,
+                      "id": 1,
+                      "status": "open",
+                      "subject": "Connection drops every hour",
+                      "updatedAt": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/tickets/close/{id}": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Close a ticket; the customer can no longer reply to it.",
+        "operationId": "post_panel_api_sales_tickets_close_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Ticket id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/Ticket"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "clientEmail": "alice",
+                    "createdAt": 0,
+                    "id": 1,
+                    "status": "open",
+                    "subject": "Connection drops every hour",
+                    "updatedAt": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/panel/api/sales/tickets/reopen/{id}": {
+      "post": {
+        "tags": [
+          "Sales"
+        ],
+        "summary": "Take a closed ticket back to open.",
+        "operationId": "post_panel_api_sales_tickets_reopen_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Ticket id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/Ticket"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "clientEmail": "alice",
+                    "createdAt": 0,
+                    "id": 1,
+                    "status": "open",
+                    "subject": "Connection drops every hour",
+                    "updatedAt": 0
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/panel/api/sales/discounts": {
       "get": {
         "tags": [
@@ -20218,6 +20669,359 @@
                     "status": "pending",
                     "subscriptionUrl": "",
                     "token": "3f9c2a7e5b1d4c8a9e0f6b2d7a1c4e8f"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/api/tickets": {
+      "get": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "The support tickets of an account, most recently active first, for whoever proves the account: the client subscription id (email and proof) or one of its order tokens (order). A wrong proof answers proof_invalid.",
+        "operationId": "get_shop_api_tickets",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "description": "Client username; with proof.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "proof",
+            "in": "query",
+            "required": false,
+            "description": "The client subscription id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "An order token of the client, instead of email and proof.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Ticket"
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": [
+                    {
+                      "clientEmail": "alice",
+                      "createdAt": 0,
+                      "id": 1,
+                      "status": "open",
+                      "subject": "Connection drops every hour",
+                      "updatedAt": 0
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "Open a ticket. subject is up to 120 characters and body up to 2000, both plain text (control and direction-override characters are dropped, markup is kept as literal text). Limits: 5 unclosed tickets and 20 customer messages per hour per account (ticket_limit, rate_limited). Admins are notified through the ticket.opened event.",
+        "operationId": "post_shop_api_tickets",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Client username; with proof."
+                  },
+                  "proof": {
+                    "type": "string",
+                    "description": "The client subscription id."
+                  },
+                  "order": {
+                    "type": "string",
+                    "description": "An order token of the client, instead of email and proof."
+                  },
+                  "subject": {
+                    "type": "string",
+                    "description": ""
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": ""
+                  }
+                },
+                "required": [
+                  "subject",
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/TicketDetail"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "messages": [
+                      {
+                        "author": "customer",
+                        "body": "It disconnects about once an hour.",
+                        "createdAt": 0,
+                        "id": 1,
+                        "ticketId": 1
+                      }
+                    ],
+                    "ticket": {
+                      "clientEmail": "alice",
+                      "createdAt": 0,
+                      "id": 1,
+                      "status": "open",
+                      "subject": "Connection drops every hour",
+                      "updatedAt": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/api/tickets/{id}": {
+      "get": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "One ticket of the account with its conversation. Another account ticket answers ticket_not_found.",
+        "operationId": "get_shop_api_tickets_id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Ticket id.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "description": "Client username; with proof.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "proof",
+            "in": "query",
+            "required": false,
+            "description": "The client subscription id.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "description": "An order token of the client, instead of email and proof.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/TicketDetail"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "messages": [
+                      {
+                        "author": "customer",
+                        "body": "It disconnects about once an hour.",
+                        "createdAt": 0,
+                        "id": 1,
+                        "ticketId": 1
+                      }
+                    ],
+                    "ticket": {
+                      "clientEmail": "alice",
+                      "createdAt": 0,
+                      "id": 1,
+                      "status": "open",
+                      "subject": "Connection drops every hour",
+                      "updatedAt": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/shop/api/tickets/{id}/reply": {
+      "post": {
+        "tags": [
+          "Public Shop"
+        ],
+        "summary": "Add a message to a ticket and leave it open for the admins (ticket.replied event). A closed ticket answers ticket_closed.",
+        "operationId": "post_shop_api_tickets_id_reply",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Ticket id.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Client username; with proof."
+                  },
+                  "proof": {
+                    "type": "string",
+                    "description": "The client subscription id."
+                  },
+                  "order": {
+                    "type": "string",
+                    "description": "An order token of the client, instead of email and proof."
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": ""
+                  }
+                },
+                "required": [
+                  "body"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    },
+                    "obj": {
+                      "$ref": "#/components/schemas/TicketDetail"
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "obj": {
+                    "messages": [
+                      {
+                        "author": "customer",
+                        "body": "It disconnects about once an hour.",
+                        "createdAt": 0,
+                        "id": 1,
+                        "ticketId": 1
+                      }
+                    ],
+                    "ticket": {
+                      "clientEmail": "alice",
+                      "createdAt": 0,
+                      "id": 1,
+                      "status": "open",
+                      "subject": "Connection drops every hour",
+                      "updatedAt": 0
+                    }
                   }
                 }
               }

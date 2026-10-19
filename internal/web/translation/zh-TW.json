@@ -2112,6 +2112,8 @@
       "eventWeeklyReport": "每週摘要",
       "eventLoginNewLocation": "管理員從新位置登入",
       "eventClientSharedAccount": "疑似共用帳號",
+      "eventTicketOpened": "新的支援工單",
+      "eventTicketReplied": "客戶回覆了工單",
       "testDiscordDesc": "傳送測試通知以驗證您的機器人權杖與頻道 ID",
       "discordNotInitialized": "Discord 服務未初始化",
       "discordBotNotEnabled": "Discord 機器人未啟用",
@@ -2958,6 +2960,7 @@
       "ordersTab": "訂單",
       "discountsTab": "優惠碼",
       "walletsTab": "錢包",
+      "ticketsTab": "工單",
       "settingsTab": "設定",
       "plans": {
         "add": "新增方案",
@@ -3014,6 +3017,26 @@
           "failed": "失敗",
           "canceled": "已取消"
         }
+      },
+      "tickets": {
+        "replied": "回覆已送出",
+        "closed": "工單已關閉",
+        "reopened": "工單已重新開啟",
+        "subject": "主旨",
+        "client": "客戶",
+        "status": "狀態",
+        "statuses": {
+          "open": "等待回覆",
+          "answered": "已回覆",
+          "closed": "已關閉"
+        },
+        "updated": "最近活動",
+        "allStatuses": "所有狀態",
+        "reopen": "重新開啟",
+        "close": "關閉",
+        "confirmClose": "關閉此工單？",
+        "replyHint": "輸入回覆（純文字）",
+        "send": "傳送回覆"
       },
       "config": {
         "saved": "銷售設定已儲存",
@@ -3206,6 +3229,21 @@
     "receiptNote": "備註（選填）",
     "receiptSent": "憑證已提交，稍後將審核。",
     "sendReceipt": "提交憑證",
+    "tickets": {
+      "title": "客服支援",
+      "show": "檢視我的工單",
+      "empty": "還沒有工單",
+      "subject": "新工單的主旨",
+      "message": "你的訊息（純文字）",
+      "send": "傳送",
+      "back": "返回清單",
+      "closed": "此工單已關閉。",
+      "statuses": {
+        "open": "等待回覆",
+        "answered": "已回覆",
+        "closed": "已關閉"
+      }
+    },
     "errors": {
       "plan_unavailable": "該方案不可用。",
       "invalid_email": "使用者名稱無效。",
@@ -3223,6 +3261,10 @@
       "referral_invalid": "該推薦碼無效。",
       "wallet_insufficient": "錢包餘額不足。",
       "proof_invalid": "訂閱 ID 與此帳戶不符。",
+      "ticket_invalid": "請輸入主旨（最多120個字元）和訊息（最多2000個字元）。",
+      "ticket_not_found": "找不到工單。",
+      "ticket_limit": "未關閉的工單過多。請等待回覆或關閉其中一個。",
+      "ticket_closed": "此工單已關閉。",
       "rate_limited": "請求過多，請稍候再試。",
       "network": "發生錯誤，請重試。"
     }

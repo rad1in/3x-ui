@@ -2112,6 +2112,8 @@
       "eventWeeklyReport": "الملخص الأسبوعي",
       "eventLoginNewLocation": "دخول مشرف من مكان جديد",
       "eventClientSharedAccount": "اشتباه في حساب مشترك",
+      "eventTicketOpened": "تذكرة دعم جديدة",
+      "eventTicketReplied": "ردّ عميل على تذكرة",
       "testDiscordDesc": "إرسال إشعار تجريبي للتحقق من رمز البوت ومعرّف القناة",
       "discordNotInitialized": "خدمة ديسكورد غير مهيأة",
       "discordBotNotEnabled": "بوت ديسكورد غير مفعّل",
@@ -2958,6 +2960,7 @@
       "ordersTab": "الطلبات",
       "discountsTab": "أكواد الخصم",
       "walletsTab": "المحافظ",
+      "ticketsTab": "التذاكر",
       "settingsTab": "الإعدادات",
       "plans": {
         "add": "إضافة باقة",
@@ -3014,6 +3017,26 @@
           "failed": "فشل",
           "canceled": "ملغى"
         }
+      },
+      "tickets": {
+        "replied": "تم إرسال الرد",
+        "closed": "تم إغلاق التذكرة",
+        "reopened": "تمت إعادة فتح التذكرة",
+        "subject": "الموضوع",
+        "client": "العميل",
+        "status": "الحالة",
+        "statuses": {
+          "open": "بانتظار الرد",
+          "answered": "تم الرد",
+          "closed": "مغلقة"
+        },
+        "updated": "آخر نشاط",
+        "allStatuses": "كل الحالات",
+        "reopen": "إعادة فتح",
+        "close": "إغلاق",
+        "confirmClose": "إغلاق هذه التذكرة؟",
+        "replyHint": "اكتب ردًا (نص عادي)",
+        "send": "إرسال الرد"
       },
       "config": {
         "saved": "تم حفظ إعدادات المبيعات",
@@ -3206,6 +3229,21 @@
     "receiptNote": "ملاحظة (اختياري)",
     "receiptSent": "تم إرسال الإيصال. سنراجعه قريبًا.",
     "sendReceipt": "إرسال الإيصال",
+    "tickets": {
+      "title": "الدعم",
+      "show": "عرض تذاكري",
+      "empty": "لا توجد تذاكر بعد",
+      "subject": "موضوع تذكرة جديدة",
+      "message": "رسالتك (نص عادي)",
+      "send": "إرسال",
+      "back": "العودة إلى القائمة",
+      "closed": "هذه التذكرة مغلقة.",
+      "statuses": {
+        "open": "بانتظار الرد",
+        "answered": "تم الرد",
+        "closed": "مغلقة"
+      }
+    },
     "errors": {
       "plan_unavailable": "هذه الباقة غير متاحة.",
       "invalid_email": "اسم المستخدم غير صالح.",
@@ -3223,6 +3261,10 @@
       "referral_invalid": "كود الإحالة غير صحيح.",
       "wallet_insufficient": "رصيد المحفظة لا يكفي.",
       "proof_invalid": "معرّف الاشتراك غير صحيح.",
+      "ticket_invalid": "أدخل موضوعًا (حتى 120 حرفًا) ورسالة (حتى 2000).",
+      "ticket_not_found": "التذكرة غير موجودة.",
+      "ticket_limit": "لديك تذاكر مفتوحة كثيرة. انتظر الرد أو أغلق إحداها.",
+      "ticket_closed": "هذه التذكرة مغلقة.",
       "rate_limited": "طلبات كثيرة، انتظر قليلًا ثم أعد المحاولة.",
       "network": "حدث خطأ. حاول مرة أخرى."
     }

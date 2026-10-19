@@ -1817,6 +1817,37 @@ export const SubShortLinkViewSchema = z.object({
 });
 export type SubShortLinkView = z.infer<typeof SubShortLinkViewSchema>;
 
+export const TicketSchema = z.object({
+  clientEmail: z.string(),
+  createdAt: z.number().int(),
+  id: z.number().int(),
+  status: z.string(),
+  subject: z.string(),
+  updatedAt: z.number().int(),
+});
+export type Ticket = z.infer<typeof TicketSchema>;
+
+export const TicketDetailSchema = z.object({
+  messages: z.array(z.lazy(() => TicketMessageSchema)),
+  ticket: z.lazy(() => TicketSchema),
+});
+export type TicketDetail = z.infer<typeof TicketDetailSchema>;
+
+export const TicketMessageSchema = z.object({
+  author: z.string(),
+  body: z.string(),
+  createdAt: z.number().int(),
+  id: z.number().int(),
+  ticketId: z.number().int(),
+});
+export type TicketMessage = z.infer<typeof TicketMessageSchema>;
+
+export const TicketPageSchema = z.object({
+  items: z.array(z.lazy(() => TicketSchema)),
+  total: z.number().int(),
+});
+export type TicketPage = z.infer<typeof TicketPageSchema>;
+
 export const TrafficSchema = z.object({
   Down: z.number().int(),
   IsInbound: z.boolean(),

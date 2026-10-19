@@ -48,6 +48,11 @@ const (
 	ErrWalletInsufficient  = "wallet_insufficient"
 	ErrProofInvalid        = "proof_invalid"
 	ErrAmountMismatch      = "amount_mismatch"
+	ErrTicketInvalid       = "ticket_invalid"
+	ErrTicketNotFound      = "ticket_not_found"
+	ErrTicketLimit         = "ticket_limit"
+	ErrTicketClosed        = "ticket_closed"
+	ErrRateLimited         = "rate_limited"
 )
 
 // SalesError is a refusal that is safe to show a customer verbatim by code.

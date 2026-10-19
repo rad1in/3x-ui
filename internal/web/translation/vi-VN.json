@@ -2112,6 +2112,8 @@
       "eventWeeklyReport": "Tóm tắt hằng tuần",
       "eventLoginNewLocation": "Quản trị viên đăng nhập từ nơi mới",
       "eventClientSharedAccount": "Nghi ngờ tài khoản dùng chung",
+      "eventTicketOpened": "Phiếu hỗ trợ mới",
+      "eventTicketReplied": "Khách hàng đã trả lời một phiếu",
       "testDiscordDesc": "Gửi thông báo thử nghiệm để xác minh token bot và ID kênh",
       "discordNotInitialized": "Dịch vụ Discord chưa được khởi tạo",
       "discordBotNotEnabled": "Bot Discord chưa được bật",
@@ -2958,6 +2960,7 @@
       "ordersTab": "Đơn hàng",
       "discountsTab": "Giảm giá",
       "walletsTab": "Ví",
+      "ticketsTab": "Phiếu hỗ trợ",
       "settingsTab": "Cài đặt",
       "plans": {
         "add": "Thêm gói",
@@ -3014,6 +3017,26 @@
           "failed": "Thất bại",
           "canceled": "Đã hủy"
         }
+      },
+      "tickets": {
+        "replied": "Đã gửi phản hồi",
+        "closed": "Đã đóng phiếu",
+        "reopened": "Đã mở lại phiếu",
+        "subject": "Chủ đề",
+        "client": "Khách hàng",
+        "status": "Trạng thái",
+        "statuses": {
+          "open": "Chờ phản hồi",
+          "answered": "Đã trả lời",
+          "closed": "Đã đóng"
+        },
+        "updated": "Hoạt động gần nhất",
+        "allStatuses": "Mọi trạng thái",
+        "reopen": "Mở lại",
+        "close": "Đóng",
+        "confirmClose": "Đóng phiếu này?",
+        "replyHint": "Viết phản hồi (văn bản thuần)",
+        "send": "Gửi phản hồi"
       },
       "config": {
         "saved": "Đã lưu cài đặt bán hàng",
@@ -3206,6 +3229,21 @@
     "receiptNote": "Ghi chú (tùy chọn)",
     "receiptSent": "Đã gửi biên lai. Sẽ được xem xét sớm.",
     "sendReceipt": "Gửi biên lai",
+    "tickets": {
+      "title": "Hỗ trợ",
+      "show": "Xem phiếu của tôi",
+      "empty": "Chưa có phiếu nào",
+      "subject": "Chủ đề phiếu mới",
+      "message": "Tin nhắn của bạn (văn bản thuần)",
+      "send": "Gửi",
+      "back": "Quay lại danh sách",
+      "closed": "Phiếu này đã đóng.",
+      "statuses": {
+        "open": "Chờ phản hồi",
+        "answered": "Đã trả lời",
+        "closed": "Đã đóng"
+      }
+    },
     "errors": {
       "plan_unavailable": "Gói này không khả dụng.",
       "invalid_email": "Tên người dùng không hợp lệ.",
@@ -3223,6 +3261,10 @@
       "referral_invalid": "Mã giới thiệu không hợp lệ.",
       "wallet_insufficient": "Số dư ví không đủ.",
       "proof_invalid": "ID đăng ký không khớp với tài khoản này.",
+      "ticket_invalid": "Nhập chủ đề (tối đa 120 ký tự) và tin nhắn (tối đa 2000).",
+      "ticket_not_found": "Không tìm thấy phiếu.",
+      "ticket_limit": "Bạn có quá nhiều phiếu đang mở. Hãy chờ phản hồi hoặc đóng một phiếu.",
+      "ticket_closed": "Phiếu này đã đóng.",
       "rate_limited": "Quá nhiều yêu cầu. Vui lòng đợi một chút rồi thử lại.",
       "network": "Đã xảy ra lỗi. Vui lòng thử lại."
     }

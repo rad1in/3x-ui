@@ -2112,6 +2112,8 @@
       "eventWeeklyReport": "Resumen semanal",
       "eventLoginNewLocation": "Acceso de administrador desde un lugar nuevo",
       "eventClientSharedAccount": "Posible cuenta compartida",
+      "eventTicketOpened": "Nuevo ticket de soporte",
+      "eventTicketReplied": "Un cliente respondió a un ticket",
       "testDiscordDesc": "Enviar una notificación de prueba para verificar el token del bot y el ID del canal",
       "discordNotInitialized": "Servicio de Discord no inicializado",
       "discordBotNotEnabled": "El bot de Discord no está habilitado",
@@ -2958,6 +2960,7 @@
       "ordersTab": "Pedidos",
       "discountsTab": "Descuentos",
       "walletsTab": "Monederos",
+      "ticketsTab": "Tickets",
       "settingsTab": "Ajustes",
       "plans": {
         "add": "Añadir plan",
@@ -3014,6 +3017,26 @@
           "failed": "Fallido",
           "canceled": "Cancelado"
         }
+      },
+      "tickets": {
+        "replied": "Respuesta enviada",
+        "closed": "Ticket cerrado",
+        "reopened": "Ticket reabierto",
+        "subject": "Asunto",
+        "client": "Cliente",
+        "status": "Estado",
+        "statuses": {
+          "open": "Esperando respuesta",
+          "answered": "Respondido",
+          "closed": "Cerrado"
+        },
+        "updated": "Última actividad",
+        "allStatuses": "Todos los estados",
+        "reopen": "Reabrir",
+        "close": "Cerrar",
+        "confirmClose": "¿Cerrar este ticket?",
+        "replyHint": "Escribe una respuesta (texto plano)",
+        "send": "Enviar respuesta"
       },
       "config": {
         "saved": "Ajustes de ventas guardados",
@@ -3206,6 +3229,21 @@
     "receiptNote": "Nota (opcional)",
     "receiptSent": "Recibo enviado. Se revisará en breve.",
     "sendReceipt": "Enviar recibo",
+    "tickets": {
+      "title": "Soporte",
+      "show": "Ver mis tickets",
+      "empty": "Aún no hay tickets",
+      "subject": "Asunto del nuevo ticket",
+      "message": "Tu mensaje (texto plano)",
+      "send": "Enviar",
+      "back": "Volver a la lista",
+      "closed": "Este ticket está cerrado.",
+      "statuses": {
+        "open": "Esperando respuesta",
+        "answered": "Respondido",
+        "closed": "Cerrado"
+      }
+    },
     "errors": {
       "plan_unavailable": "Ese plan no está disponible.",
       "invalid_email": "Ese usuario no es válido.",
@@ -3223,6 +3261,10 @@
       "referral_invalid": "Ese código de referido no es válido.",
       "wallet_insufficient": "El saldo de tu monedero no es suficiente.",
       "proof_invalid": "El id de suscripción no corresponde a esta cuenta.",
+      "ticket_invalid": "Escribe un asunto (hasta 120 caracteres) y un mensaje (hasta 2000).",
+      "ticket_not_found": "Ticket no encontrado.",
+      "ticket_limit": "Tienes demasiados tickets abiertos. Espera una respuesta o cierra uno.",
+      "ticket_closed": "Este ticket está cerrado.",
       "rate_limited": "Demasiadas solicitudes. Espera un poco e inténtalo de nuevo.",
       "network": "Algo salió mal. Inténtalo de nuevo."
     }

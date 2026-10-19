@@ -2633,6 +2633,72 @@ export const sections: readonly Section[] = [
       },
       {
         method: 'GET',
+        path: '/panel/api/sales/tickets',
+        summary:
+          'Support tickets, most recently active first, with the total for the filter. status is open (the customer spoke last), answered or closed; empty lists all.',
+        params: [
+          {
+            name: 'status',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            enum: ['open', 'answered', 'closed'],
+            desc: 'Only tickets in this status.',
+          },
+          {
+            name: 'limit',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 200,
+            desc: 'Page size, 1 to 200.',
+          },
+          {
+            name: 'offset',
+            in: 'query',
+            type: 'integer',
+            optional: true,
+            defaultValue: 0,
+            desc: 'Rows to skip.',
+          },
+        ],
+        responseSchema: 'TicketPage',
+      },
+      {
+        method: 'GET',
+        path: '/panel/api/sales/tickets/:id',
+        summary:
+          'One ticket with its whole conversation, oldest message first. Message bodies are plain text.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Ticket id.' }],
+        responseSchema: 'TicketDetail',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/tickets/reply/:id',
+        summary:
+          'Answer a ticket as an admin and mark it answered. Plain text, 1 to 2000 characters. Fails with ticket_closed on a closed ticket and ticket_invalid on an empty or oversized text.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Ticket id.' },
+          { name: 'body', in: 'body (json)', type: 'string', desc: 'The reply.' },
+        ],
+        responseSchema: 'TicketDetail',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/tickets/close/:id',
+        summary: 'Close a ticket; the customer can no longer reply to it.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Ticket id.' }],
+        responseSchema: 'Ticket',
+      },
+      {
+        method: 'POST',
+        path: '/panel/api/sales/tickets/reopen/:id',
+        summary: 'Take a closed ticket back to open.',
+        params: [{ name: 'id', in: 'path', type: 'integer', desc: 'Ticket id.' }],
+        responseSchema: 'Ticket',
+      },
+      {
+        method: 'GET',
         path: '/panel/api/sales/discounts',
         summary:
           'Every discount code, newest first, with uses: how many orders currently hold a use of it (orders failed, canceled or rejected give theirs back).',
@@ -2700,7 +2766,7 @@ export const sections: readonly Section[] = [
     id: 'shop',
     title: 'Public Shop',
     description:
-      'The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed, bad_signature, amount_mismatch, discount_invalid, discount_used, referral_invalid, wallet_insufficient, proof_invalid); rate_limited arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address.',
+      'The customer-facing purchase API. It needs no panel session: a customer holds only the order token. It lives at /shop/api, outside the panel base path, and answers 404 (or the decoy site) until the shop is switched on in the sales configuration. Refusals come back as success false with a stable code in msg (plan_unavailable, invalid_email, invalid_kind, email_taken, email_unknown, gateway_unavailable, order_not_found, order_state, receipt_invalid, currency_unsupported, gateway_failed, bad_signature, amount_mismatch, discount_invalid, discount_used, referral_invalid, wallet_insufficient, proof_invalid, ticket_invalid, ticket_not_found, ticket_limit, ticket_closed, rate_limited); rate_limited also arrives with HTTP 429 and internal_error with 500. Writes are limited to 30 per 10 minutes per address.',
     endpoints: [
       {
         method: 'GET',
@@ -2802,6 +2868,132 @@ export const sections: readonly Section[] = [
           { name: 'note', in: 'body (json)', type: 'string', optional: true },
         ],
         responseSchema: 'ShopOrderView',
+      },
+      {
+        method: 'GET',
+        path: '/shop/api/tickets',
+        summary:
+          'The support tickets of an account, most recently active first, for whoever proves the account: the client subscription id (email and proof) or one of its order tokens (order). A wrong proof answers proof_invalid.',
+        params: [
+          {
+            name: 'email',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'Client username; with proof.',
+          },
+          {
+            name: 'proof',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'The client subscription id.',
+          },
+          {
+            name: 'order',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'An order token of the client, instead of email and proof.',
+          },
+        ],
+        responseSchema: 'Ticket',
+        responseSchemaArray: true,
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/tickets',
+        summary:
+          'Open a ticket. subject is up to 120 characters and body up to 2000, both plain text (control and direction-override characters are dropped, markup is kept as literal text). Limits: 5 unclosed tickets and 20 customer messages per hour per account (ticket_limit, rate_limited). Admins are notified through the ticket.opened event.',
+        params: [
+          {
+            name: 'email',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Client username; with proof.',
+          },
+          {
+            name: 'proof',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'The client subscription id.',
+          },
+          {
+            name: 'order',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'An order token of the client, instead of email and proof.',
+          },
+          { name: 'subject', in: 'body (json)', type: 'string' },
+          { name: 'body', in: 'body (json)', type: 'string' },
+        ],
+        responseSchema: 'TicketDetail',
+      },
+      {
+        method: 'GET',
+        path: '/shop/api/tickets/:id',
+        summary:
+          'One ticket of the account with its conversation. Another account ticket answers ticket_not_found.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Ticket id.' },
+          {
+            name: 'email',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'Client username; with proof.',
+          },
+          {
+            name: 'proof',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'The client subscription id.',
+          },
+          {
+            name: 'order',
+            in: 'query',
+            type: 'string',
+            optional: true,
+            desc: 'An order token of the client, instead of email and proof.',
+          },
+        ],
+        responseSchema: 'TicketDetail',
+      },
+      {
+        method: 'POST',
+        path: '/shop/api/tickets/:id/reply',
+        summary:
+          'Add a message to a ticket and leave it open for the admins (ticket.replied event). A closed ticket answers ticket_closed.',
+        params: [
+          { name: 'id', in: 'path', type: 'integer', desc: 'Ticket id.' },
+          {
+            name: 'email',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'Client username; with proof.',
+          },
+          {
+            name: 'proof',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'The client subscription id.',
+          },
+          {
+            name: 'order',
+            in: 'body (json)',
+            type: 'string',
+            optional: true,
+            desc: 'An order token of the client, instead of email and proof.',
+          },
+          { name: 'body', in: 'body (json)', type: 'string' },
+        ],
+        responseSchema: 'TicketDetail',
       },
       {
         method: 'GET',

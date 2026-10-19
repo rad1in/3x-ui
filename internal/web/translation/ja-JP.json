@@ -2112,6 +2112,8 @@
       "eventWeeklyReport": "週次サマリー",
       "eventLoginNewLocation": "管理者が新しい場所からログイン",
       "eventClientSharedAccount": "共有アカウントの疑い",
+      "eventTicketOpened": "新しいサポートチケット",
+      "eventTicketReplied": "顧客がチケットに返信しました",
       "testDiscordDesc": "BotトークンとチャンネルIDを確認するためのテスト通知を送信します",
       "discordNotInitialized": "Discord サービスが初期化されていません",
       "discordBotNotEnabled": "Discord ボットが有効になっていません",
@@ -2958,6 +2960,7 @@
       "ordersTab": "注文",
       "discountsTab": "割引コード",
       "walletsTab": "ウォレット",
+      "ticketsTab": "チケット",
       "settingsTab": "設定",
       "plans": {
         "add": "プランを追加",
@@ -3014,6 +3017,26 @@
           "failed": "失敗",
           "canceled": "キャンセル"
         }
+      },
+      "tickets": {
+        "replied": "返信を送信しました",
+        "closed": "チケットを閉じました",
+        "reopened": "チケットを再開しました",
+        "subject": "件名",
+        "client": "顧客",
+        "status": "状態",
+        "statuses": {
+          "open": "返信待ち",
+          "answered": "回答済み",
+          "closed": "クローズ"
+        },
+        "updated": "最終更新",
+        "allStatuses": "すべての状態",
+        "reopen": "再開",
+        "close": "閉じる",
+        "confirmClose": "このチケットを閉じますか？",
+        "replyHint": "返信を入力（プレーンテキスト）",
+        "send": "返信を送信"
       },
       "config": {
         "saved": "販売設定を保存しました",
@@ -3206,6 +3229,21 @@
     "receiptNote": "メモ（任意）",
     "receiptSent": "受付情報を送信しました。まもなく確認されます。",
     "sendReceipt": "送信する",
+    "tickets": {
+      "title": "サポート",
+      "show": "自分のチケットを表示",
+      "empty": "チケットはまだありません",
+      "subject": "新しいチケットの件名",
+      "message": "メッセージ（プレーンテキスト）",
+      "send": "送信",
+      "back": "一覧に戻る",
+      "closed": "このチケットはクローズされています。",
+      "statuses": {
+        "open": "返信待ち",
+        "answered": "回答済み",
+        "closed": "クローズ"
+      }
+    },
     "errors": {
       "plan_unavailable": "そのプランは利用できません。",
       "invalid_email": "ユーザー名が正しくありません。",
@@ -3223,6 +3261,10 @@
       "referral_invalid": "その紹介コードは無効です。",
       "wallet_insufficient": "ウォレット残高が不足しています。",
       "proof_invalid": "サブスクリプション ID がこのアカウントと一致しません。",
+      "ticket_invalid": "件名（120文字まで）とメッセージ（2000文字まで）を入力してください。",
+      "ticket_not_found": "チケットが見つかりません。",
+      "ticket_limit": "未解決のチケットが多すぎます。返信を待つか、どれかを閉じてください。",
+      "ticket_closed": "このチケットはクローズされています。",
       "rate_limited": "リクエストが多すぎます。しばらくしてからお試しください。",
       "network": "問題が発生しました。もう一度お試しください。"
     }

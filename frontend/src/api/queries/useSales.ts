@@ -5,11 +5,15 @@ import { keys } from '@/api/queryKeys';
 import {
   DiscountCodeSchema,
   OrderPageSchema,
+  TicketDetailSchema,
+  TicketPageSchema,
   PlanSchema,
   WalletViewSchema,
   SalesConfigViewSchema,
   type DiscountCode,
   type OrderPage,
+  type TicketDetail,
+  type TicketPage,
   type Plan,
   type WalletView,
   type SalesConfigView,
@@ -167,6 +171,62 @@ export function useSalesConfig() {
     loading: query.isLoading,
     save: save.mutateAsync,
     saving: save.isPending,
+  };
+}
+
+export const TICKET_PAGE_SIZE = 20;
+
+export function useTickets(status: string, page: number) {
+  return useQuery({
+    queryKey: keys.sales.tickets(status, page),
+    queryFn: async (): Promise<TicketPage> => {
+      const msg = await HttpUtil.get(
+        '/panel/api/sales/tickets',
+        { status, limit: TICKET_PAGE_SIZE, offset: (page - 1) * TICKET_PAGE_SIZE },
+        { silent: true },
+      );
+      if (!msg?.success) throw new Error(msg?.msg || 'Failed to load tickets');
+      return parseMsg(msg, TicketPageSchema, 'sales/tickets').obj ?? { items: [], total: 0 };
+    },
+  });
+}
+
+export function useTicket(id: number | null) {
+  return useQuery({
+    queryKey: keys.sales.ticket(id ?? 0),
+    enabled: id !== null,
+    queryFn: async (): Promise<TicketDetail> => {
+      const msg = await HttpUtil.get(`/panel/api/sales/tickets/${id}`, undefined, { silent: true });
+      if (!msg?.success) throw new Error(msg?.msg || 'Failed to load the ticket');
+      return parseMsg(msg, TicketDetailSchema, 'sales/ticket', { strict: true })
+        .obj as TicketDetail;
+    },
+  });
+}
+
+export function useTicketActions() {
+  const queryClient = useQueryClient();
+  const refresh = (msg: { success?: boolean } | undefined) => {
+    if (msg?.success) void queryClient.invalidateQueries({ queryKey: keys.sales.root() });
+  };
+  const reply = useMutation({
+    mutationFn: (args: { id: number; body: string }) =>
+      HttpUtil.post(`/panel/api/sales/tickets/reply/${args.id}`, { body: args.body }, JSON_HEADERS),
+    onSettled: refresh,
+  });
+  const close = useMutation({
+    mutationFn: (id: number) => HttpUtil.post(`/panel/api/sales/tickets/close/${id}`),
+    onSettled: refresh,
+  });
+  const reopen = useMutation({
+    mutationFn: (id: number) => HttpUtil.post(`/panel/api/sales/tickets/reopen/${id}`),
+    onSettled: refresh,
+  });
+  return {
+    reply: reply.mutateAsync,
+    replying: reply.isPending,
+    close: close.mutateAsync,
+    reopen: reopen.mutateAsync,
   };
 }
 
