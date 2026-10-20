@@ -172,12 +172,14 @@ const (
 )
 
 // IKEv2Profile renders one client's profile of an ikev2 inbound: the name to
-// save it under, its media type and body.
-func IKEv2Profile(ib *model.Inbound, email, format string) (name, mime string, body []byte, err error) {
+// save it under, its media type and body. A non-empty dial is the address
+// clients connect to when a host moves it away from the certificate's name.
+func IKEv2Profile(ib *model.Inbound, email, format, dial string) (name, mime string, body []byte, err error) {
 	inst, clients, ok := ipsec.ServerOf(ib)
 	if !ok {
 		return "", "", nil, fmt.Errorf("inbound %d is not a configured ikev2 inbound", ib.Id)
 	}
+	inst.Dial = dial
 	var client *ipsec.Client
 	for i := range clients {
 		if clients[i].Email == email {
@@ -210,5 +212,5 @@ func (s *InboundService) IKEv2Profile(id int, email, format string) (string, str
 	if err != nil {
 		return "", "", nil, err
 	}
-	return IKEv2Profile(ib, email, format)
+	return IKEv2Profile(ib, email, format, "")
 }

@@ -30,6 +30,7 @@ func MobileConfig(inst Instance, user, password, remark string) []byte {
 	}
 	name := xmlText(remark)
 	addr := xmlText(inst.Address)
+	dial := xmlText(inst.dialAddress())
 	// DH 14 / AES-256 / SHA2-256 is in the server's proposals; iOS needs it named.
 	sa := `<dict>
         <key>EncryptionAlgorithm</key><string>AES-256</string>
@@ -49,7 +50,7 @@ func MobileConfig(inst Instance, user, password, remark string) []byte {
         <key>ExtendedAuthEnabled</key><integer>1</integer>
         <key>AuthName</key><string>` + xmlText(user) + `</string>
         <key>AuthPassword</key><string>` + xmlText(password) + `</string>
-        <key>RemoteAddress</key><string>` + addr + `</string>
+        <key>RemoteAddress</key><string>` + dial + `</string>
         <key>RemoteIdentifier</key><string>` + addr + `</string>
         <key>LocalIdentifier</key><string>` + xmlText(user) + `</string>
         <key>ServerCertificateIssuerCommonName</key><string>` + xmlText(ca.Subject.CommonName) + `</string>
@@ -101,7 +102,7 @@ func SSWAN(inst Instance, user, remark string) []byte {
 		"name": remark,
 		"type": "ikev2-eap",
 		"remote": map[string]any{
-			"addr": inst.Address,
+			"addr": inst.dialAddress(),
 			"id":   inst.Address,
 			"cert": cert,
 		},
