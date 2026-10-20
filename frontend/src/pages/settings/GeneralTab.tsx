@@ -16,6 +16,7 @@ import { isOutboundProtocol } from '@/schemas/primitives';
 import { HttpUtil, LanguageManager } from '@/utils';
 import { onNumber } from '@/utils/onNumber';
 import { DefaultSettingTag, SettingListItem } from '@/components/ui';
+import { useHostedStatus } from '@/api/queries/useHostedStatus';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { catTabLabel } from './catTabLabel';
 import { sanitizePath } from './uriPath';
@@ -36,6 +37,8 @@ interface GeneralTabProps {
 export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProps) {
   const { t } = useTranslation();
   const { isMobile } = useMediaQuery();
+  // The owner assigns a hosted panel its address; its admin must not move it.
+  const isHosted = !!useHostedStatus().data?.enabled;
 
   const [lang, setLang] = useState<string>(() => LanguageManager.getLanguage());
   const [inboundOptions, setInboundOptions] = useState<{ label: string; value: string }[]>([]);
@@ -187,53 +190,61 @@ export default function GeneralTab({ allSetting, updateSetting }: GeneralTabProp
           label: catTabLabel(<SettingOutlined />, t('pages.settings.panelSettings'), isMobile),
           children: (
             <>
-              <SettingListItem
-                paddings="small"
-                title={t('pages.settings.panelListeningIP')}
-                description={t('pages.settings.panelListeningIPDesc')}
-              >
-                <Input
-                  value={allSetting.webListen}
-                  onChange={(e) => updateSetting({ webListen: e.target.value })}
-                />
-              </SettingListItem>
+              {!isHosted && (
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.panelListeningIP')}
+                  description={t('pages.settings.panelListeningIPDesc')}
+                >
+                  <Input
+                    value={allSetting.webListen}
+                    onChange={(e) => updateSetting({ webListen: e.target.value })}
+                  />
+                </SettingListItem>
+              )}
 
-              <SettingListItem
-                paddings="small"
-                title={t('pages.settings.panelListeningDomain')}
-                description={t('pages.settings.panelListeningDomainDesc')}
-              >
-                <Input
-                  value={allSetting.webDomain}
-                  onChange={(e) => updateSetting({ webDomain: e.target.value })}
-                />
-              </SettingListItem>
+              {!isHosted && (
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.panelListeningDomain')}
+                  description={t('pages.settings.panelListeningDomainDesc')}
+                >
+                  <Input
+                    value={allSetting.webDomain}
+                    onChange={(e) => updateSetting({ webDomain: e.target.value })}
+                  />
+                </SettingListItem>
+              )}
 
-              <SettingListItem
-                paddings="small"
-                title={t('pages.settings.panelPort')}
-                badge={<DefaultSettingTag settingKey="webPort" value={allSetting.webPort} />}
-                description={t('pages.settings.panelPortDesc')}
-              >
-                <InputNumber
-                  value={allSetting.webPort}
-                  min={1}
-                  max={65535}
-                  style={{ width: '100%' }}
-                  onChange={onNumber((v) => updateSetting({ webPort: v }))}
-                />
-              </SettingListItem>
+              {!isHosted && (
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.panelPort')}
+                  badge={<DefaultSettingTag settingKey="webPort" value={allSetting.webPort} />}
+                  description={t('pages.settings.panelPortDesc')}
+                >
+                  <InputNumber
+                    value={allSetting.webPort}
+                    min={1}
+                    max={65535}
+                    style={{ width: '100%' }}
+                    onChange={onNumber((v) => updateSetting({ webPort: v }))}
+                  />
+                </SettingListItem>
+              )}
 
-              <SettingListItem
-                paddings="small"
-                title={t('pages.settings.panelUrlPath')}
-                description={t('pages.settings.panelUrlPathDesc')}
-              >
-                <Input
-                  value={allSetting.webBasePath}
-                  onChange={(e) => updateSetting({ webBasePath: sanitizePath(e.target.value) })}
-                />
-              </SettingListItem>
+              {!isHosted && (
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.panelUrlPath')}
+                  description={t('pages.settings.panelUrlPathDesc')}
+                >
+                  <Input
+                    value={allSetting.webBasePath}
+                    onChange={(e) => updateSetting({ webBasePath: sanitizePath(e.target.value) })}
+                  />
+                </SettingListItem>
+              )}
 
               <SettingListItem
                 paddings="small"

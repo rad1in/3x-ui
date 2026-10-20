@@ -2362,6 +2362,7 @@ func (s *SettingService) keepHostedAddress(next *entity.AllSetting) error {
 		return err
 	}
 	next.WebListen, next.WebPort, next.WebBasePath = current.WebListen, current.WebPort, current.WebBasePath
+	next.WebDomain = current.WebDomain
 	next.SubListen, next.SubPort = current.SubListen, current.SubPort
 	return nil
 }

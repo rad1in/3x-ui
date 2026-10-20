@@ -23,6 +23,8 @@ func hostedGuardEngine() *gin.Engine {
 	api.POST("/server/importDB", ok)
 	api.POST("/server/installXray/:version", ok)
 	api.POST("/clients/add", ok)
+	api.POST("/sales/plans/save", ok)
+	api.POST("/sales/orders/approve/:id", ok)
 	return engine
 }
 
@@ -34,6 +36,8 @@ func TestHostedGuardBlocksEscapesOnlyOnHostedPanels(t *testing.T) {
 		{"/panel/api/server/importDB", http.StatusForbidden},
 		{"/panel/api/server/installXray/v26.1.1", http.StatusForbidden},
 		{"/panel/api/clients/add", http.StatusNoContent},
+		{"/panel/api/sales/plans/save", http.StatusForbidden},
+		{"/panel/api/sales/orders/approve/3", http.StatusForbidden},
 	}
 	for _, tc := range cases {
 		for _, isHosted := range []bool{false, true} {
