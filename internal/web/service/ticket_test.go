@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mhsanaei/3x-ui/v3/internal/database"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
 	"github.com/mhsanaei/3x-ui/v3/internal/eventbus"
 )
@@ -220,6 +221,10 @@ func TestAdminTicketListFiltersByStatus(t *testing.T) {
 	open, err := svc.List(model.TicketOpen, 10, 0)
 	if err != nil || open.Total != 1 || open.Items[0].Id != b.Ticket.Id {
 		t.Fatalf("open list = %+v, %v", open, err)
+	}
+	// Same-millisecond writes tie on updated_at; pin the older ticket so the order is decided by time.
+	if err := database.GetDB().Model(&model.Ticket{}).Where("id = ?", b.Ticket.Id).Update("updated_at", 1).Error; err != nil {
+		t.Fatal(err)
 	}
 	all, _ := svc.List("", 10, 0)
 	if all.Total != 2 || all.Items[0].Id != a.Ticket.Id {
