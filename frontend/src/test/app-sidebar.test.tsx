@@ -93,6 +93,7 @@ test('hides the Reseller page inside a panel that another panel hosts', async ()
   get.mockResolvedValue(new Msg(true, '', ordinaryView));
   const ordinary = await renderSidebar();
   expect(await screen.findByRole('menuitem', { name: /Reseller/ })).not.toBeNull();
+  expect(screen.getByRole('menuitem', { name: /Sales/ })).not.toBeNull();
   ordinary.unmount();
 
   get.mockResolvedValue(new Msg(true, '', hostedView));
@@ -102,5 +103,6 @@ test('hides the Reseller page inside a panel that another panel hosts', async ()
   );
   await act(async () => {});
   expect(screen.queryByRole('menuitem', { name: /Reseller/ })).toBeNull();
+  expect(screen.queryByRole('menuitem', { name: /Sales/ })).toBeNull();
   get.mockRestore();
 });

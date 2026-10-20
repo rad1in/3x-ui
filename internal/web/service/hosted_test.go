@@ -169,6 +169,7 @@ func TestHostedPanelKeepsOwnerAssignedAddress(t *testing.T) {
 	edited := *before
 	edited.WebPort, edited.WebBasePath, edited.WebListen = 2053, "/mine/", "10.0.0.1"
 	edited.SubPort, edited.SubListen = 2096, "10.0.0.1"
+	edited.WebDomain = "panel.example.com"
 	edited.PageSize = 77
 	if err := s.UpdateAllSetting(&edited, SecretClears{}); err != nil {
 		t.Fatal(err)
@@ -178,7 +179,7 @@ func TestHostedPanelKeepsOwnerAssignedAddress(t *testing.T) {
 		t.Fatal(err)
 	}
 	if after.WebPort != before.WebPort || after.WebBasePath != before.WebBasePath || after.WebListen != before.WebListen ||
-		after.SubPort != before.SubPort || after.SubListen != before.SubListen {
+		after.SubPort != before.SubPort || after.SubListen != before.SubListen || after.WebDomain != before.WebDomain {
 		t.Errorf("hosted panel moved its address: web %s:%d%s sub %s:%d",
 			after.WebListen, after.WebPort, after.WebBasePath, after.SubListen, after.SubPort)
 	}

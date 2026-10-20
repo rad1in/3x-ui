@@ -444,12 +444,16 @@ export default function CommandPalette() {
         keywords: ['api', 'api docs', 'swagger', 'rest api', 'endpoints'],
         icon: <ApiOutlined />,
       },
-      {
-        path: '/sales',
-        title: t('menu.sales'),
-        keywords: ['sales', 'plans', 'orders', 'payments', 'shop'],
-        icon: <ShoppingCartOutlined />,
-      },
+      ...(isHostedPanel
+        ? []
+        : [
+            {
+              path: '/sales',
+              title: t('menu.sales'),
+              keywords: ['sales', 'plans', 'orders', 'payments', 'shop'],
+              icon: <ShoppingCartOutlined />,
+            },
+          ]),
       {
         path: '/sponsors',
         title: t('menu.sponsors'),

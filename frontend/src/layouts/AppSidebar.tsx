@@ -222,7 +222,9 @@ export default function AppSidebar() {
           { key: '/routing', icon: 'routing', title: t('menu.routing') },
           { key: '/settings', icon: 'setting', title: t('menu.settings') },
           { key: '/xray', icon: 'tool', title: t('menu.xray') },
-          { key: '/sales', icon: 'sales', title: t('menu.sales') },
+          ...(isHostedPanel
+            ? []
+            : [{ key: '/sales', icon: 'sales' as const, title: t('menu.sales') }]),
           { key: '/audit', icon: 'audit', title: t('menu.audit') },
           { key: '/admins', icon: 'admins', title: t('menu.admins') },
           { key: '/sessions', icon: 'sessions', title: t('menu.sessions') },

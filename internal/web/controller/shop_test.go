@@ -15,6 +15,7 @@ import (
 	"github.com/mhsanaei/3x-ui/v3/internal/database"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/dbtest"
 	"github.com/mhsanaei/3x-ui/v3/internal/database/model"
+	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
 )
 
@@ -82,6 +83,14 @@ func TestShopIsInvisibleWhileSwitchedOff(t *testing.T) {
 	}
 	if code, _ := h.call(t, http.MethodPost, "/shop/api/orders", `{}`); code != http.StatusNotFound {
 		t.Fatalf("POST orders = %d, want 404 while the shop is off", code)
+	}
+}
+
+func TestShopStaysClosedInsideAHostedPanel(t *testing.T) {
+	t.Setenv(hosted.EnvDir, t.TempDir())
+	h := newShopHarness(t, true)
+	if code, _ := h.call(t, http.MethodGet, "/shop/api/plans", ""); code != http.StatusNotFound {
+		t.Fatalf("hosted panel served the shop: status %d", code)
 	}
 }
 

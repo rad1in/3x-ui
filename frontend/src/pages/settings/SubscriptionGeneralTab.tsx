@@ -15,6 +15,7 @@ import type { SubProfileMode } from '@/schemas/setting';
 import { onNumber } from '@/utils/onNumber';
 import { DefaultSettingTag, SettingListItem } from '@/components/ui';
 import { RemarkTemplateField } from '@/components/form';
+import { useHostedStatus } from '@/api/queries/useHostedStatus';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { catTabLabel } from './catTabLabel';
 import { sanitizePath, normalizePath } from './uriPath';
@@ -38,6 +39,7 @@ export default function SubscriptionGeneralTab({
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { isMobile } = useMediaQuery();
+  const isHosted = !!useHostedStatus().data?.enabled;
   // Keep the URL semantic while mapping to the legacy numeric key used by these inner tabs.
   const initialTab =
     searchParams.get('subscriptionTab') === 'happ' ? HAPP_SETTINGS_TAB : PANEL_SETTINGS_TAB;
@@ -91,16 +93,18 @@ export default function SubscriptionGeneralTab({
                   }
                 />
               )}
-              <SettingListItem
-                paddings="small"
-                title={t('pages.settings.subListen')}
-                description={t('pages.settings.subListenDesc')}
-              >
-                <Input
-                  value={allSetting.subListen}
-                  onChange={(e) => updateSetting({ subListen: e.target.value })}
-                />
-              </SettingListItem>
+              {!isHosted && (
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.subListen')}
+                  description={t('pages.settings.subListenDesc')}
+                >
+                  <Input
+                    value={allSetting.subListen}
+                    onChange={(e) => updateSetting({ subListen: e.target.value })}
+                  />
+                </SettingListItem>
+              )}
               <SettingListItem
                 paddings="small"
                 title={t('pages.settings.subDomain')}
@@ -111,20 +115,22 @@ export default function SubscriptionGeneralTab({
                   onChange={(e) => updateSetting({ subDomain: e.target.value })}
                 />
               </SettingListItem>
-              <SettingListItem
-                paddings="small"
-                title={t('pages.settings.subPort')}
-                badge={<DefaultSettingTag settingKey="subPort" value={allSetting.subPort} />}
-                description={t('pages.settings.subPortDesc')}
-              >
-                <InputNumber
-                  value={allSetting.subPort}
-                  min={1}
-                  max={65535}
-                  style={{ width: '100%' }}
-                  onChange={onNumber((v) => updateSetting({ subPort: v }))}
-                />
-              </SettingListItem>
+              {!isHosted && (
+                <SettingListItem
+                  paddings="small"
+                  title={t('pages.settings.subPort')}
+                  badge={<DefaultSettingTag settingKey="subPort" value={allSetting.subPort} />}
+                  description={t('pages.settings.subPortDesc')}
+                >
+                  <InputNumber
+                    value={allSetting.subPort}
+                    min={1}
+                    max={65535}
+                    style={{ width: '100%' }}
+                    onChange={onNumber((v) => updateSetting({ subPort: v }))}
+                  />
+                </SettingListItem>
+              )}
               <SettingListItem
                 paddings="small"
                 title={t('pages.settings.subPath')}

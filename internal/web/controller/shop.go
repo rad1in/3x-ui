@@ -10,6 +10,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/mhsanaei/3x-ui/v3/internal/hosted"
 	"github.com/mhsanaei/3x-ui/v3/internal/logger"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/entity"
 	"github.com/mhsanaei/3x-ui/v3/internal/web/service"
@@ -86,7 +87,7 @@ func (a *ShopController) page(c *gin.Context) {
 
 func (a *ShopController) gate(c *gin.Context) {
 	cfg, err := a.configService.Get()
-	if err != nil || !cfg.PublicEnabled {
+	if hosted.Enabled() || err != nil || !cfg.PublicEnabled {
 		a.deny(c)
 		return
 	}

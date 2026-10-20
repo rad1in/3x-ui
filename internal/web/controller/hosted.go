@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 
@@ -35,8 +36,13 @@ func HostedForbiddenRoutes() []string {
 	return out
 }
 
+// A hosted panel does not sell: its owner runs the shop, so every sales route is closed.
+func hostedForbidden(method, path string) bool {
+	return hostedForbiddenRoutes[method+" "+path] || strings.HasPrefix(path, "/sales/")
+}
+
 func hostedGuard(c *gin.Context) {
-	if hosted.Enabled() && hostedForbiddenRoutes[c.Request.Method+" "+relAPIPath(c.FullPath())] {
+	if hosted.Enabled() && hostedForbidden(c.Request.Method, relAPIPath(c.FullPath())) {
 		c.AbortWithStatusJSON(http.StatusForbidden, entity.Msg{Success: false, Msg: service.ErrHostedForbidden.Error()})
 		return
 	}
