@@ -71,13 +71,59 @@ func (s *SubService) addVPNAccounts(inbound *model.Inbound, clients []model.Clie
 	if inst, _, ok := ocserv.ServerOf(inbound); ok {
 		port = inst.Port
 	}
-	for _, c := range clients {
-		s.vpnAccounts = append(s.vpnAccounts, VPNAccount{
-			InboundId: inbound.Id, Protocol: string(inbound.Protocol), Remark: remark,
-			Server: server, Username: c.Email, Password: c.Password, PSK: psk,
-			Port: port, Fingerprint: fingerprint,
-		})
+	targets := s.vpnTargets(inbound, server)
+	for _, target := range targets {
+		shownPort, shownRemark := port, remark
+		if target.Port != 0 && port != 0 {
+			shownPort = target.Port
+		}
+		if len(targets) > 1 && target.Remark != "" {
+			shownRemark = remark + " · " + target.Remark
+		}
+		for _, c := range clients {
+			s.vpnAccounts = append(s.vpnAccounts, VPNAccount{
+				InboundId: inbound.Id, Protocol: string(inbound.Protocol), Remark: shownRemark,
+				Server: target.Server, Username: c.Email, Password: c.Password, PSK: psk,
+				Port: shownPort, Fingerprint: fingerprint,
+			})
+		}
 	}
+}
+
+// vpnTarget is an address a client of a VPN inbound dials; Port 0 keeps the inbound's own.
+type vpnTarget struct {
+	Server string
+	Port   int
+	Remark string
+}
+
+// vpnTargets lists where the inbound's hosts say clients connect, or just own
+// when it has none. A host without an address of its own keeps own, which for
+// IKEv2, SSTP and AnyConnect is the name their certificate was issued for.
+func (s *SubService) vpnTargets(inbound *model.Inbound, own string) []vpnTarget {
+	eps := s.hostEndpoints(inbound, "raw")
+	if len(eps) == 0 {
+		return []vpnTarget{{Server: own}}
+	}
+	fallback := s.resolveInboundAddress(inbound)
+	targets := make([]vpnTarget, 0, len(eps))
+	seen := map[vpnTarget]bool{}
+	for _, ep := range eps {
+		t := vpnTarget{Server: own}
+		if dest, _ := ep["dest"].(string); dest != "" && dest != fallback {
+			t.Server = dest
+		}
+		if port, ok := ep["port"].(float64); ok && int(port) != inbound.Port {
+			t.Port = int(port)
+		}
+		t.Remark, _ = ep["remark"].(string)
+		key := vpnTarget{Server: t.Server, Port: t.Port}
+		if !seen[key] {
+			seen[key] = true
+			targets = append(targets, t)
+		}
+	}
+	return targets
 }
 
 func (s *SubService) vpnUsernames() []string {
@@ -109,7 +155,11 @@ func (s *SubService) OpenVPNProfileFile(subId string, inboundId int) (name, body
 	if name == "" {
 		name = "openvpn-" + strconv.Itoa(ib.Id)
 	}
-	return name + ".ovpn", openvpn.ClientProfile(inst, s.resolveInboundAddress(&ib), remark), nil
+	target := s.vpnTargets(&ib, s.resolveInboundAddress(&ib))[0]
+	if target.Port != 0 {
+		inst.Port = target.Port
+	}
+	return name + ".ovpn", openvpn.ClientProfile(inst, target.Server, remark), nil
 }
 
 // SSTPCAFile is the CA certificate Windows must trust for subId's SSTP
@@ -149,5 +199,9 @@ func (s *SubService) IKEv2ProfileFile(subId string, inboundId int, format string
 	if len(clients) == 0 {
 		return "", "", nil, errNoVPNProfile
 	}
-	return service.IKEv2Profile(&ib, clients[0].Email, format)
+	own := s.resolveInboundAddress(&ib)
+	if inst, _, ok := ipsec.ServerOf(&ib); ok {
+		own = inst.Address
+	}
+	return service.IKEv2Profile(&ib, clients[0].Email, format, s.vpnTargets(&ib, own)[0].Server)
 }

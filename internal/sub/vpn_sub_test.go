@@ -292,3 +292,98 @@ func TestOCServSubscriptionListsTheAccountAndGatesItsCA(t *testing.T) {
 		t.Fatal("a subscription with no account on the inbound downloaded its CA")
 	}
 }
+
+func addHostTo(t *testing.T, inboundID int, address string, port int) {
+	t.Helper()
+	h := &model.Host{InboundId: inboundID, Remark: "iran", Address: address, Port: port, Security: "same"}
+	if err := database.GetDB().Create(h).Error; err != nil {
+		t.Fatal(err)
+	}
+}
+
+// A host moves an inbound's public address, so a VPN login must list the host's
+// address and the profile must dial it, not the machine that serves the page.
+func TestOpenVPNFollowsTheHostAddress(t *testing.T) {
+	initSubDB(t)
+	ib := seedOpenVPNInbound(t, "OVPNHOST")
+	addHostTo(t, ib.Id, "79.143.87.149", 33306)
+	s := &SubService{}
+	s.PrepareForRequest("panel.example.net")
+	if _, _, _, _, err := s.getSubs("OVPNHOST"); err != nil {
+		t.Fatal(err)
+	}
+	if len(s.vpnAccounts) != 1 || s.vpnAccounts[0].Server != "79.143.87.149" {
+		t.Fatalf("accounts = %+v, want the host address", s.vpnAccounts)
+	}
+	_, body, err := s.OpenVPNProfileFile("OVPNHOST", ib.Id)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(body, "remote 79.143.87.149 33306") {
+		t.Errorf("profile does not dial the host:\n%s", body)
+	}
+}
+
+func TestL2TPFollowsTheHostAddress(t *testing.T) {
+	initSubDB(t)
+	settings, _ := json.Marshal(map[string]any{
+		"psk": "shared-key-123", "pool": "10.90.0.0/24",
+		"clients": []map[string]any{{"email": "l2@e", "password": "pw-l2", "subId": "L2HOST", "enable": true}},
+	})
+	db := database.GetDB()
+	ib := &model.Inbound{UserId: 1, Tag: "l2tp-1701", Enable: true, Port: 1701, Protocol: model.L2TP, Remark: "Old phones", Settings: string(settings)}
+	if err := db.Create(ib).Error; err != nil {
+		t.Fatal(err)
+	}
+	client := &model.ClientRecord{Email: "l2@e", SubID: "L2HOST", Password: "pw-l2", Enable: true}
+	if err := db.Create(client).Error; err != nil {
+		t.Fatal(err)
+	}
+	if err := db.Create(&model.ClientInbound{ClientId: client.Id, InboundId: ib.Id}).Error; err != nil {
+		t.Fatal(err)
+	}
+	addHostTo(t, ib.Id, "79.143.87.149", 0)
+	s := &SubService{}
+	s.PrepareForRequest("panel.example.net")
+	if _, _, _, _, err := s.getSubs("L2HOST"); err != nil {
+		t.Fatal(err)
+	}
+	if len(s.vpnAccounts) != 1 || s.vpnAccounts[0].Server != "79.143.87.149" || s.vpnAccounts[0].PSK != "shared-key-123" {
+		t.Fatalf("accounts = %+v, want the host address and the key", s.vpnAccounts)
+	}
+}
+
+// IKEv2 clients dial the host but still check the certificate against the
+// name it was issued for, so the profile keeps that name as the identity.
+func TestIKEv2ProfileDialsTheHostButKeepsTheCertificateName(t *testing.T) {
+	initSubDB(t)
+	ib := seedIKEv2Inbound(t, "IKEHOST")
+	addHostTo(t, ib.Id, "79.143.87.149", 0)
+	s := &SubService{}
+	s.PrepareForRequest("panel.example.net")
+	if _, _, _, _, err := s.getSubs("IKEHOST"); err != nil {
+		t.Fatal(err)
+	}
+	if len(s.vpnAccounts) != 1 || s.vpnAccounts[0].Server != "79.143.87.149" {
+		t.Fatalf("accounts = %+v, want the host address", s.vpnAccounts)
+	}
+	_, _, body, err := s.IKEv2ProfileFile("IKEHOST", ib.Id, "mobileconfig")
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := string(body)
+	if !strings.Contains(p, "<key>RemoteAddress</key><string>79.143.87.149</string>") ||
+		!strings.Contains(p, "<key>RemoteIdentifier</key><string>ike.example.com</string>") {
+		t.Errorf("profile must dial the host and identify the certificate name:\n%s", p)
+	}
+	_, _, sswan, err := s.IKEv2ProfileFile("IKEHOST", ib.Id, "sswan")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var parsed struct {
+		Remote struct{ Addr, ID string } `json:"remote"`
+	}
+	if err := json.Unmarshal(sswan, &parsed); err != nil || parsed.Remote.Addr != "79.143.87.149" || parsed.Remote.ID != "ike.example.com" {
+		t.Errorf("sswan remote = %+v (%v)", parsed.Remote, err)
+	}
+}

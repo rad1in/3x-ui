@@ -30,10 +30,19 @@ type Instance struct {
 	Id      int
 	Tag     string
 	Address string // what clients dial; the server cert names it
+	Dial    string // set only for profiles: where to connect when a host moves the server
 	Pool    netip.Prefix
 	DNS     []string
 	PKI     PKI
 	Users   map[string]User
+}
+
+// dialAddress is where a client connects; its identity check still uses Address.
+func (i Instance) dialAddress() string {
+	if i.Dial != "" {
+		return i.Dial
+	}
+	return i.Address
 }
 
 func connName(id int) string { return "ikev2-" + strconv.Itoa(id) }
